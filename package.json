@@ -1,0 +1,16 @@
+{
+  "name": "ad_inmuebles",
+  "version": "1.0.0",
+  "description": "Proyecto Final de Trimestre",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron src/index.js"
+  },
+  "keywords": [],
+  "authors": "Escobarq , Arenassss , jeisonwaldir , IngSeg",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^27.0.4",
+    "electron-reload": "^2.0.0-alpha.1"
+  }
+}
