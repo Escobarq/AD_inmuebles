@@ -13,6 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
 let mainWindow 
 let newProductWindow
 
+/*inicio de aplicacion index.html*/
 app.on('ready', () => {
     mainWindow = new BrowserWindow({});
     mainWindow.loadURL(url.format({
@@ -20,6 +21,8 @@ app.on('ready', () => {
         protocol: 'file',
         slashes: true
     }))
+/**/
+    
 /* Uso del  menu */
    const mainMenu =  Menu.buildFromTemplate(templateMenu)
    Menu.setApplicationMenu(mainMenu);
