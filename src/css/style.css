@@ -1,4 +1,5 @@
-.Contener-botons{
+
+ .Contener-botons{
     display: grid;
     grid-template-columns: repeat(4 , 100px);
     column-gap: 20px;
@@ -24,4 +25,4 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
+} 

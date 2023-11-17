@@ -11,7 +11,7 @@ function createWindow() {
     },
   });
 
-  window.loadFile('views/index.html');
+  window.loadFile('../src/views/index.html');
 
 
   window.on('closed', function () {
