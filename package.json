@@ -4,13 +4,14 @@
   "description": "Proyecto Final de Trimestre",
   "main": "src/index.js",
   "scripts": {
-    "start": "electron src/index.js"
+    "start": "electron src/index.js",
+    "watch": "nodemon --exec electron ."
   },
   "keywords": [],
-  "authors": "Escobarq , Arenassss , jeisonwaldir , IngSeg",
+  "authors": "Escobarq , Arenassss , jeisonwaldir , Ing Sg",
   "license": "ISC",
   "dependencies": {
-    "electron": "^27.0.4",
-    "electron-reload": "^2.0.0-alpha.1"
+    "bootstrap": "^5.3.2",
+    "electron": "^27.0.4"
   }
 }
