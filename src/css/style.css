@@ -1,0 +1,28 @@
+
+ .Contener-botons{
+    display: grid;
+    grid-template-columns: repeat(4 , 100px);
+    column-gap: 20px;
+    row-gap: 20px;
+    height: min-content;
+}
+.Botons-principal{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100px;
+    height: 150px;
+    padding: 2px;
+    background-color: rgb(255, 94, 94);
+    color: wheat;
+}
+.Ico{
+    width: 90px;
+}
+.Contener {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
