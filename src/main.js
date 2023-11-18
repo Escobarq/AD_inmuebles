@@ -1,5 +1,6 @@
 const { BrowserWindow } = require('electron');
 
+
 let window;
 
 function createWindow() {
@@ -18,7 +19,7 @@ function createWindow() {
     window = null;
   });
 
-  window.setMenu(null);
+  // window.setMenu(null);
 
   return window;
 }
