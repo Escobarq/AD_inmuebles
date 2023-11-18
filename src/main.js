@@ -7,12 +7,13 @@ function createWindow() {
   window = new BrowserWindow({
     width: 800,
     height: 600,
+
     webPreferences: {
       nodeIntegration: true,
     },
   });
 
-  window.loadFile('../src/views/index.html');
+  window.loadFile('../src/views/R-Arrendatario.html');
 
 
   window.on('closed', function () {

@@ -1,0 +1,14 @@
+.contenido-form{
+    width: 800px;
+}
+.campos {
+    display: inline-flex;
+    align-items: center;
+    width: 300px;
+    justify-content: space-between;
+
+}
+.in-text{
+    height: 15px;
+    width: 130px;
+}
