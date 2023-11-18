@@ -1,5 +1,8 @@
 const { app } = require('electron');
 const { createWindow } = require('./main');
+const electronReload = require('electron-reload');
+
+electronReload(__dirname);
 
 app.whenReady().then(createWindow);
 
