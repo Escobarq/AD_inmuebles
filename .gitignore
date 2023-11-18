@@ -1,12 +1,31 @@
-# Dependencias
+# Dependencias de Node.js
 /node_modules
 
-# Archivos de compilación
+# Carpetas generadas por npm
+/.npm
+/.yarn
+/.pnp
+.yarn-error.log
+
+# Archivos de construcción específicos de Electron
 /dist
 /out
+/release
+/build
 
-# Archivos de configuración
+# Carpetas y archivos de configuración de Electron
+/.electron
+/electron-debug.log
+/electron-builder-debug.yml
+/electron-builder-out.yml
+
+# Archivos de configuración específicos de Node.js
 /.env
 
 # Archivos de registro
 *.log
+
+# Archivos temporales y de respaldo
+.DS_Store
+Thumbs.db
+*~
