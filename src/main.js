@@ -1,5 +1,5 @@
+/*Aqui en este archivo se construye las ventanas */ 
 const { BrowserWindow } = require('electron');
-
 
 let window;
 
@@ -15,13 +15,10 @@ function createWindow() {
 
   window.loadFile('../src/views/R-Arrendatario.html');
 
-
   window.on('closed', function () {
     window = null;
   });
-
   // window.setMenu(null);
-
   return window;
 }
 

@@ -1,3 +1,6 @@
+
+/*Ejecuta la ventana y el proyecto*/
+
 const { app } = require('electron');
 const { createWindow } = require('./main');
 const electronReload = require('electron-reload');
