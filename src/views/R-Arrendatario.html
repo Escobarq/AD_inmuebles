@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/forms.css">
-    <link rel="stylesheet" href="../resources/css/bootstrap.css">
-    <link rel="stylesheet" href="../resources/css/css">
+    <link rel="stylesheet" href="../resources/css/bootstrap.min.css">
+    <script src="../resources/js/bootstrap.bundle.min.js"></script>
     <title>Registro Arrendatario</title>
 </head>
 <body>
@@ -30,7 +30,7 @@
             </section>
             <section class="campos">
                 <p>Valor del Arriendo</p>
-                <input class="in-text" type="text" name="Nombre" id="">
+                <input class="in-text" type="number" name="Nombre" id="">
             </section>
             <section class="campos">
                 <p>Valor Deposito</p>
@@ -38,29 +38,39 @@
             </section>
             <section class="campos">
                 <p>Fecha inicio Contrato</p>
-                <input class="in-text" type="text" name="Nombre" id="">
+                <input class="in-text" type="date" name="Nombre" id="">
             </section>
             <section class="campos">
                 <p>Fecha fin Contrato</p>
-                <input class="in-text" type="text" name="Nombre" id="">
+                <input class="in-text" type="date" name="Nombre" id="">
             </section>
             <section class="campos">
                 <p>Meses alquiler</p>
-                <input class="in-text" type="text" name="Nombre" id="">
+                <input class="in-text" type="number" name="Nombre" id="">
             </section>
-            <div class="dropdown">
-                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown link
-                </a>
-              
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-              </div>
+            
             <a href="../index.html">Pruebaaaaaaaa</a>
         </div>
+        <!-- Large button groups (default and split) -->
+<div class="btn-group">
+    <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      Large button
+    </button>
+    <ul class="dropdown-menu">
+      ...
+    </ul>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-secondary btn-lg" type="button">
+      Large split button
+    </button>
+    <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+      <span class="visually-hidden">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu">
+      ...
+    </ul>
+  </div>
     </div>
 </body>
 </html>
