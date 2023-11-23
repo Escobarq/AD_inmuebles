@@ -24,11 +24,14 @@
 }
 .Botons-principal:hover {
     cursor: pointer;
-    
+}
+a {
+    text-decoration: none;
 }
 .title {
     font-size: 20px;
     text-align: center;
+    
 }
 
 .Ico{
