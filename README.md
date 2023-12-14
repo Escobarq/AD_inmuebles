@@ -1,5 +1,8 @@
-# AD_inmuebles
-Proyecto Final de Trimestre para el Centro de Biotecnologia industrial SENA  CBI Palmira valle del cauca
+# React + Vite
 
-para este momento solo seria instalar las dependencia con npm i o npm install
-y por ultimo ejecutar el proyecto con npm start o npx electron .
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
