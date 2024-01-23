@@ -1,9 +1,9 @@
+## Logo
+![logo](https://github.com/Escobarq/AD_inmuebles/blob/e7ff0d7e273786eabf72b6708b99c83a7d846b7d/public/icon.png)
 
 # Electron.js - Adminmuebles
 
 Guia para rapida para correr el proyecto
-
-
 
 ## Autores
 
