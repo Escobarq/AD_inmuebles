@@ -1,9 +1,10 @@
 import React from "react";
-import home from '../../assets/icons slide/home.png'
-import informe from '../../assets/icons slide/informe.png'
-import recibo from '../../assets/icons slide/recibo.png'
-import registro from '../../assets/icons slide/registro.png'
-import ver from '../../assets/icons slide/ver.png'
+import home from '../../assets/iconSlide/home.png'
+import informe from '../../assets/iconSlide/informe.png'
+import recibo from '../../assets/iconSlide/recibo.png'
+import registro from '../../assets/iconSlide/registro.png'
+import flecha from '../../assets/iconSlide/flecha.png'
+import ver from '../../assets/iconSlide/ver.png'
 import { useState, useRef } from "react";
 import "./Slide.css";
 
@@ -39,11 +40,7 @@ const Icon = ({ icon }) => (
   <span className="material-symbols-outlined">{icon}</span>
 );
 
-const NavHeader = () => (
-  <header className="sidebar-header">
-    <span>Admin</span>
-  </header>
-);
+
 
 const NavButton = ({
   onClick,
@@ -72,6 +69,8 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
     items.some((i) => i === activeItem) || item === activeItem;
 
   return (
+
+
     <div
       className={`sub-nav ${isSubNavOpen(item.name, item.items) ? "open" : ""}`}
       style={{
@@ -87,7 +86,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
             name={subItem}
             isActive={activeItem === subItem}
           />
-        ))}
+          ))}
       </div>
     </div>
   );
@@ -103,18 +102,19 @@ export const Sidebar = () => {
 
   return (
     <aside className="sidebar">
-      <NavHeader />
+      <div className="info-side">
+
       {menuItems.map((item) => (
-        <div>
+        <div className="elemento">
           {!item.items && (
             <NavButton
-              onClick={handleClick}
-              name={item.name}
-              icon={item.icon}
-              isActive={activeItem === item.name}
-              hasSubNav={!!item.items}
+            onClick={handleClick}
+            name={item.name}
+            icon={item.icon}
+            isActive={activeItem === item.name}
+            hasSubNav={!!item.items}
             />
-          )}
+            )}
           {item.items && (
             <>
               <NavButton
@@ -123,17 +123,18 @@ export const Sidebar = () => {
                 icon={item.icon}
                 isActive={activeItem === item.name}
                 hasSubNav={!!item.items}
-                subNavIcon="../../assets/icons slide/flecha.png"
-              />
+                subNavIcon={flecha}
+                />
               <SubMenu
                 activeItem={activeItem}
                 handleClick={handleClick}
                 item={item}
-              />
+                />
             </>
           )}
         </div>
       ))}
+      </div>
     </aside>
   );
 };
