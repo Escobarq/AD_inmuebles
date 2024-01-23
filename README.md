@@ -1,8 +1,30 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Electron.js - Adminmuebles
 
-Currently, two official plugins are available:
+Guia para rapida para correr el proyecto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+
+## Autores
+
+- [@Arenasssss](https://github.com/Arenasssss)
+- [@Jeison](https://github.com/jeisonwaldir)
+- [@IngSg](https://github.com/IngSg)
+## Ejecutar
+
+1.Instalar las dependencias en la ruta del proyecto 
+
+```bash
+  npm install
+```
+2.Despues de instalar las dependencias hay que correr primero el proyecto en la web ya que este se ejecute en el puerto 6060
+
+```bash
+  npm run dev
+```
+3.Por ultimo para correr con electron se ejecuta con el siguiente comando
+
+```bash
+  npm run electron-start
+```
+
