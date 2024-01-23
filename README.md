@@ -27,4 +27,5 @@ Guia para rapida para correr el proyecto
 ```bash
   npm run electron-start
 ```
-
+## Imagenes
+![App Screenshot](https://github.com/Escobarq/AD_inmuebles/blob/31e65ddafb518b803cd43699fd03e58747c3dd40/public/Home.png)
