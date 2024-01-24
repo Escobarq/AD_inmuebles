@@ -5,7 +5,6 @@
 body {
   margin: 0;
   background: #ffffff;
-  font-family: "Euclid Circular A";
 }
 
 button {
@@ -46,19 +45,17 @@ button {
   align-items: center;
   height: 50px;
   width: 100%;
-  border-radius: 6px;
-  font-family: inherit;
+  border-radius: 6px 6px 0 0;
   font-size: 16px;
   font-weight: 400;
   line-height: 1;
-  padding: 0 16px;
+  padding: 0 18px;
   color: #000000;
   background-color: white;
   transition: background 0.3s;
 }
 
-.sidebar button span:nth-child(2) {
-    
+.sidebar button span:nth-child(2) {  
   flex: 1 1 auto;
 }
 
@@ -88,14 +85,12 @@ button {
   transition: 0.5s;
 }
 
-
-
 .sub-nav button {
     background: #FFF900;
   padding-left: 54px;
 }
 .elemento {
-  margin: 10px;
+  margin: 20px;
 }
 .sub-nav button::before {
   content: "";
@@ -110,6 +105,7 @@ button {
 }
 .sub-nav-inner button {
   height: 30px;
+  border-radius: 0%;
 }
 .material-symbols-outlined {
   font-size: 22px;

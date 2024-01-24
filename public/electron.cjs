@@ -1,16 +1,20 @@
+//Modules for app correct usage electron.js
 const { app, BrowserWindow } = require('electron/main')
 const path = require('node:path')
 
 function createWindow () {
+  // Create a window
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1920,
+    height: 1080,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
   })
-
-  win.loadURL('http://localhost:6969')
+  //Load the window
+  win.loadURL('http://localhost:6969');
+  //menu hidebar invisible
+  win.setMenuBarVisibility(false);
 }
 
 app.whenReady().then(() => {
@@ -24,7 +28,7 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform !== '') {
     app.quit()
   }
 })
