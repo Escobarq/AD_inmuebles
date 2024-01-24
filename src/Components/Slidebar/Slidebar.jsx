@@ -61,7 +61,6 @@ const NavButton = ({
   </button>
 );
 
-
 const SubMenu = ({ item, activeItem, handleClick }) => {
   const navRef = useRef(null);
 
