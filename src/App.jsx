@@ -11,8 +11,8 @@ function App() {
     <div className="Contener-todo">
       <Sidebar/>
       <Routes>
-        <Route path="P" element= { <Home/>} />
-        <Route path="/" element= { <Propietarios/>} />
+        <Route path="/home" element= { <Home/>} />
+        <Route path="/RPropietario" element= { <Propietarios/>} />
       </Routes>
     </div>
     </>

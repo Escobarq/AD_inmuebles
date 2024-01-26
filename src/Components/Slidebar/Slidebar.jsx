@@ -7,11 +7,13 @@ import flecha from '../../assets/iconSlide/flecha.png'
 import ver from '../../assets/iconSlide/ver.png'
 import { useState, useRef } from "react";
 import "./Slide.css";
+import { Link } from "react-router-dom";
 
 const menuItems = [
   {
       icon: <img className="icon-side" src={home} alt="" />,
       name: "Inicio",
+      path: "/",
   },
   {
     icon: <img className="icon-side" src={registro} alt="" />,
