@@ -8,6 +8,7 @@ import flecha from '../../assets/iconSlide/flecha.png'
 import ver from '../../assets/iconSlide/ver.png'
 import { useState, useRef } from "react";
 import "./Slide.css";
+import { Link } from "react-router-dom";
 
 const menuItems = [
   {
