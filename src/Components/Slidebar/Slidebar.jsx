@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom"; // Importa el componente Link de react-router-dom
 import home from '../../assets/iconSlide/home.png'
 import informe from '../../assets/iconSlide/informe.png'
 import recibo from '../../assets/iconSlide/recibo.png'
@@ -10,13 +11,15 @@ import "./Slide.css";
 
 const menuItems = [
   {
-      icon: <img className="icon-side" src={home} alt="" />,
-      name: "Inicio",
+    icon: <img className="icon-side" src={home} alt="" />,
+    name: "Inicio",
+    to: "/"
   },
   {
     icon: <img className="icon-side" src={registro} alt="" />,
     name: "Registro",
-    items: ["Propietario", "Inmueble", "Arrendatario "],
+    items: ["Propietario", "Inmueble", "Arrendatario"],
+    to: ["/Propietario", "/", "/Arrendatario"], // Agrega las rutas correspondientes
   },
   {
     icon: <img className="icon-side" src={recibo} alt="" />,
@@ -26,21 +29,18 @@ const menuItems = [
   {
     icon: <img className="icon-side" src={ver} alt="" />,
     name: "ver",
-    items: ["Propietarios", "Inmuebles", "Arrendatario", "Codeudor", "Historias Recibos", "Historial Gastos"],
+    items: ["Propietarios", "Inmuebles", "Arrendatarios", "Codeudor", "Historias Recibos", "Historial Gastos"],
   },
   {
     icon: <img className="icon-side" src={informe} alt="" />,
     name: "Informes",
     items: ["Contrato Arrendatario", "Gastos inmueble"],
   },
-  
 ];
 
 const Icon = ({ icon }) => (
   <span className="material-symbols-outlined">{icon}</span>
 );
-
-
 
 const NavButton = ({
   onClick,
@@ -49,15 +49,26 @@ const NavButton = ({
   isActive,
   hasSubNav,
   subNavIcon,
+  to, // Agrega la propiedad to para las rutas
 }) => (
   <button
     type="button"
     onClick={() => onClick(name)}
     className={isActive ? "active" : ""}
   >
-    {icon && <Icon icon={icon} />}
-    <span>{name}</span>
-    {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" />}
+    {to ? (
+      <Link to={to}>
+        {icon && <Icon icon={icon} />}
+        <span>{name}</span>
+        {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" />}
+      </Link>
+    ) : (
+      <>
+        {icon && <Icon icon={icon} />}
+        <span>{name}</span>
+        {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" />}
+      </>
+    )}
   </button>
 );
 
@@ -68,8 +79,6 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
     items.some((i) => i === activeItem) || item === activeItem;
 
   return (
-
-
     <div
       className={`sub-nav ${isSubNavOpen(item.name, item.items) ? "open" : ""}`}
       style={{
@@ -84,8 +93,9 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
             onClick={handleClick}
             name={subItem}
             isActive={activeItem === subItem}
+            to={item.to && item.to[item.items.indexOf(subItem)]} // Añade la ruta correspondiente si existe
           />
-          ))}
+        ))}
       </div>
     </div>
   );
@@ -102,37 +112,38 @@ export const Sidebar = () => {
   return (
     <aside className="sidebar">
       <div className="info-side">
-
-      {menuItems.map((item) => (
-        <div className="elemento">
-          {!item.items && (
-            <NavButton
-            onClick={handleClick}
-            name={item.name}
-            icon={item.icon}
-            isActive={activeItem === item.name}
-            hasSubNav={!!item.items}
-            />
-            )}
-          {item.items && (
-            <>
+        {menuItems.map((item) => (
+          <div className="elemento" key={item.name}>
+            {!item.items && (
               <NavButton
                 onClick={handleClick}
                 name={item.name}
                 icon={item.icon}
                 isActive={activeItem === item.name}
                 hasSubNav={!!item.items}
-                subNavIcon={flecha}
+                to={item.to}
+              />
+            )}
+            {item.items && (
+              <>
+                <NavButton
+                  onClick={handleClick}
+                  name={item.name}
+                  icon={item.icon}
+                  isActive={activeItem === item.name}
+                  hasSubNav={!!item.items}
+                  subNavIcon={flecha}
+                  to={item.to}
                 />
-              <SubMenu
-                activeItem={activeItem}
-                handleClick={handleClick}
-                item={item}
+                <SubMenu
+                  activeItem={activeItem}
+                  handleClick={handleClick}
+                  item={item}
                 />
-            </>
-          )}
-        </div>
-      ))}
+              </>
+            )}
+          </div>
+        ))}
       </div>
     </aside>
   );
