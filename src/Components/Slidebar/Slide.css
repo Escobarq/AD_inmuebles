@@ -18,6 +18,10 @@ button {
   text-align: left;
 }
 
+a{
+  color: black;
+  text-decoration: dotted;
+}
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -91,13 +95,12 @@ button {
 
 .sub-nav button {
     background: #FFF900;
-  padding-left: 54px;
+  padding-left: 44px;
 }
 .elemento {
   margin: 20px;
 }
 .sub-nav button::before {
-  content: "";
   position: absolute;
   top: 50%;
   left: 25px;
