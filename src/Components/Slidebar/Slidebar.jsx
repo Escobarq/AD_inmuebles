@@ -19,7 +19,7 @@ const menuItems = [
     icon: <img className="icon-side" src={registro} alt="" />,
     name: "Registro",
     items: ["Propietario", "Inmueble", "Arrendatario"],
-    to: ["/Propietario", "/", "/Arrendatario"], // Agrega las rutas correspondientes
+    to: ["/Propietario", "/Inmueble", "/Arrendatario"], // Agrega las rutas correspondientes
   },
   {
     icon: <img className="icon-side" src={recibo} alt="" />,
@@ -59,13 +59,13 @@ const NavButton = ({
     {to ? (
       <Link to={to}>
         {icon && <Icon icon={icon} />}
-        <span>{name}</span>
+        <span className="name_tittle">{name}</span>
         {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" />}
       </Link>
     ) : (
       <>
         {icon && <Icon icon={icon} />}
-        <span>{name}</span>
+        <span className="name_tittle">{name}</span>
         {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" />}
       </>
     )}

@@ -1,30 +1,38 @@
 import React from "react";
-import "../Propietarios/propietarios.css";
 
-export const Propietarios = () => {
+export const Inmueble = () => {
   return (
     <>
       <div className="contener-home">
         <div className="filtros_propetario">
-
+            
           <div className="custom-input">
-            <label htmlFor="email">Cedula</label>
-            <input type="number" id="cedula" placeholder="Numero" />
+            <label htmlFor="nombre-arrendatario">Tipo Inmueble</label>
+            <select id="nombre-arrendatario">
+              <option value="" disabled selected>
+                Seleccione un Inmueble
+              </option>
+              <option value="arrendatario1">Casa</option>
+              <option value="arrendatario2">Oficina</option>
+              <option value="arrendatario2">Bodega</option>
+              <option value="arrendatario2">Local</option>
+              <option value="arrendatario2">Apartamento</option>
+            </select>
           </div>
 
           <div className="custom-input">
-            <label htmlFor="email">Nombre Propetario</label>
-            <input type="text" id="nombre-propetario" placeholder="Nombre" />
+            <label htmlFor="email">Barrio</label>
+            <input type="text" id="barrio" placeholder="Barrio" />
           </div>
 
           <div className="custom-input">
-            <label htmlFor="email">Fecha Ingreso</label>
-            <input type="date" id="fecha-ingreso" />
-          </div>        
+            <label htmlFor="email">Cuidad</label>
+            <input type="text" id="ciudad" placeholder="Cuidad" />
+          </div>
         </div>
 
         <div className="title_view">
-          <h1 className="tittle_propetario">Propetario</h1>
+          <h1 className="tittle_propetario">Inmueble</h1>
         </div>
 
         <div className="view_esp">
@@ -54,9 +62,9 @@ export const Propietarios = () => {
               <td>Ahorro</td>
               <td>110022334455</td>
               <td>
-              <button class="btn btn-sm btn-warning">
-            <span class="editar-icon">&#9998;</span> Editar
-          </button>
+                <button class="btn btn-sm btn-warning">
+                  <span class="editar-icon">&#9998;</span> Editar
+                </button>
               </td>
             </tr>
           </table>

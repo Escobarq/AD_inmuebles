@@ -1,12 +1,15 @@
 * {
   box-sizing: border-box;
+  text-decoration: none !important;
 }
 
 body {
   margin: 0;
   background: #ffffff;
 }
-
+.to {
+  text-decoration: none;
+}
 button {
   background: transparent;
   border: 0;
@@ -29,9 +32,15 @@ a{
   transition: width 0.4s;
 }
 .info-side{
+  display: flex;
+  flex-direction: column;
   position: sticky;
   top: 17%;
-  gap: 8px;
+  gap: 1%;
+}
+.name_tittle{
+  margin: 0.3rem;
+  color: #000000;
 }
 
 .sidebar-logo {
@@ -45,10 +54,10 @@ a{
   height: 50px;
   width: 100%;
   border-radius: 6px 6px 0 0;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 400;
   line-height: 1;
-  padding: 0 18px;
+  padding: 0 16px;
   color: #000000;
   background-color: white;
   transition: background 0.3s;
