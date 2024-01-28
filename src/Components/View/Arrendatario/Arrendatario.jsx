@@ -1,33 +1,34 @@
 import React from 'react'
-import "../../../assets/boostrap/bootstrap-grid.min.css";
 import "../Propietarios/propietarios.css";
-import editar from "../../../assets/editar.png";
 
 export const Arrendatario = () => {
   return (
     
     <>
-      <div className="contener-home">
+     <div className="contener-home">
         <div className="filtros_propetario">
 
           <div className="custom-input">
-            <label htmlFor="email">Cedula</label>
-            <input type="number" id="cedula" placeholder="Numero" />
-          </div>
-
-          <div className="custom-input">
             <label htmlFor="email">Nombre Arrendatario</label>
-            <input type="text" id="nombre-propetario" placeholder="Nombre" />
+            <input type="number" id="nombre-arrendatario" placeholder="Nombre Arrendatario" />
           </div>
 
           <div className="custom-input">
-            <label htmlFor="email">Fecha Ingreso</label>
-            <input type="date" id="fecha-ingreso" />
+            <label htmlFor="email">Fecha Vencimiento Seguro</label>
+            <input type="date" id="fecha-vencimiento-seguro" />
           </div>
-          
+
+          <div className="custom-input">
+            <label htmlFor="email">Fecha Vencimiento Ultima Cuota</label>
+            <input type="date" id="fecha-vencimiento-ultima-cuota" />
+          </div>        
         </div>
-        <div className="view_esp">
+
+        <div className="title_view">
           <h1 className="tittle_propetario">Arrendatario</h1>
+        </div>
+        
+        <div className="view_esp">
           <table>
             <tr>
               <th>Nombre</th>
@@ -54,7 +55,9 @@ export const Arrendatario = () => {
               <td>Ahorro</td>
               <td>110022334455</td>
               <td>
-                <img className="editar" src={editar} alt="" />
+              <button class="btn btn-sm btn-warning">
+            <span class="editar-icon">&#9998;</span> Editar
+          </button>
               </td>
             </tr>
           </table>
