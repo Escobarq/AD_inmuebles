@@ -53,7 +53,9 @@ export const Propietarios = () => {
               <td>Ahorro</td>
               <td>110022334455</td>
               <td>
-                <img className="editar" src={editar} alt="" />
+              <button class="btn btn-sm btn-warning">
+            <span class="editar-icon">&#9998;</span> Editar
+          </button>
               </td>
             </tr>
           </table>
