@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom'
 import { Propietarios } from './Components/View/Propietarios/propietarios'
 import { Arrendatario } from './Components/View/Arrendatario/Arrendatario';
 import { Inmueble } from './Components/View/Inmueble/Inmueble';
+import { Rarrendatario } from './Components/View/Ra/Rarrendatario';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/Propietario" element= { <Propietarios/>} />
         <Route path="/Arrendatario" element= {<Arrendatario/>} />
         <Route path="/Inmueble" element= {<Inmueble/>} />
+        <Route path="/Reciboarrendatario" element={<Rarrendatario/>} />
       </Routes>
     </div>
     </>
