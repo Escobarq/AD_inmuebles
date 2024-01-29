@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom'
 import { Propietarios } from './Components/View/Propietarios/propietarios'
 import { Arrendatario } from './Components/View/Arrendatario/Arrendatario';
 import { Inmueble } from './Components/View/Inmueble/Inmueble';
+import { ReciboGastos } from './Components/ReciboGastos';
 
 function App() {
   return (
@@ -13,12 +14,9 @@ function App() {
     <div className="Contener-todo">
       <Sidebar/>
       <Routes>
-        <Route path="/" element= { <Home/>} />
-        <Route path="/Propietario" element= { <Propietarios/>} />
-        <Route path="/Arrendatario" element= {<Arrendatario/>} />
-        <Route path="/Inmueble" element= {<Inmueble/>} />
+        <Route path="/" element= { <ReciboGastos/>} />
       </Routes>
-    </div>
+    </div>.
     </>
   )
 }
