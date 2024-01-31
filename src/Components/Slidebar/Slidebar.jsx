@@ -18,8 +18,7 @@ const menuItems = [
   {
     icon: <img className="icon-side" src={registro} alt="" />,
     name: "Registro",
-    items: ["Propietario", "Inmueble", "Arrendatario"],
-    to: ["/Propietario", "/Inmueble", "/Arrendatario"], // Agrega las rutas correspondientes
+    items: ["Propietario", "Inmueble", "Arrendatario"], // Agrega las rutas correspondientes
   },
   {
     icon: <img className="icon-side" src={recibo} alt="" />,
@@ -30,6 +29,7 @@ const menuItems = [
     icon: <img className="icon-side" src={ver} alt="" />,
     name: "ver",
     items: ["Propietarios", "Inmuebles", "Arrendatarios", "Codeudor", "Historias Recibos", "Historial Gastos"],
+    to: ["/Propietario", "/Inmueble", "/Arrendatario","/Codeudor","/H_recibos","/H_gastos"],
   },
   {
     icon: <img className="icon-side" src={informe} alt="" />,
