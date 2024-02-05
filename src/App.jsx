@@ -10,7 +10,9 @@ import { H_gastos } from './Components/View/H_gastos/H_gastos';
 import { H_recibos } from './Components/View/H_recibos/H_recibos';
 // import { useEffect, useState } from 'react';
 // import axios from 'axios';
-
+import RPropietario from './Components/Register/Propietario/RPropietario';
+import { ReciboGastos } from './Components/ReciboGastos';
+import { Rarrendatario } from './Components/View/Ra/Rarrendatario';
 
 function App() {
   return (
@@ -25,8 +27,11 @@ function App() {
         <Route path="/Codeudor" element= {<Codeudor/>} />
         <Route path="/H_gastos" element= {<H_gastos/>} />
         <Route path="/H_recibos" element= {<H_recibos/>} />
+        <Route path="/RPropietario" element= {<RPropietario/>} />
+        <Route path="/RGastos" element= { <ReciboGastos/>} />
+        <Route path="/Reciboarrendatario" element={<Rarrendatario/>} />
       </Routes>
-    </div>
+    </div>.
     </>
   )
 }
