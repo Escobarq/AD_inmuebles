@@ -25,7 +25,7 @@ export const Arrendatario = () => {
         </div>
 
         <div className="title_view">
-          <h1 className="tittle_propetario">Arrendatario</h1>
+          <h1 className="tittle_propetario">Arrendatarios</h1>
         </div>
         
         <div className="view_esp">

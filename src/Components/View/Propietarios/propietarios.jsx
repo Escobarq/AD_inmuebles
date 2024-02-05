@@ -24,18 +24,17 @@ export const Propietarios = () => {
         </div>
 
         <div className="title_view">
-          <h1 className="tittle_propetario">Propetario</h1>
+          <h1 className="tittle_propetario">Propetarios</h1>
         </div>
 
         <div className="view_esp">
           <table>
             <tr>
+              <th>Id Propetario</th>
               <th>Nombre</th>
-              <th>Dirección</th>
-              <th>Teléfono</th>
+              <th>Direccion</th>
+              <th>Telefono</th>
               <th>Correo</th>
-              <th>Cédula</th>
-              <th>Ciudad</th>
               <th>Fecha de ingreso</th>
               <th>Banco</th>
               <th>Tipo cuenta</th>
@@ -43,12 +42,11 @@ export const Propietarios = () => {
               <th>Editar</th>
             </tr>
             <tr>
-              <td>Juan Pérez</td>
-              <td>312 83893 50</td>
-              <td>145 6749</td>
-              <td>Popayán</td>
-              <td>Cristian Paz</td>
-              <td>Cali</td>
+              <td>1</td>
+              <td>Jeison Waldir Ortiz</td>
+              <td>Calle 17</td>
+              <td>+573225478896</td>
+              <td>jeisonwaldir@gmail.com</td>
               <td>2024/01/23</td>
               <td>Nequi</td>
               <td>Ahorro</td>
