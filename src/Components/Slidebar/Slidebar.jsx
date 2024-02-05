@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Link } from "react-router-dom"; // Importa el componente Link de react-router-dom
 import home from '../../assets/iconSlide/home.png'
 import informe from '../../assets/iconSlide/informe.png'
@@ -25,7 +25,7 @@ const menuItems = [
     icon: <img className="icon-side" src={recibo} alt="" />,
     name: "Recibo",
     items: ["Recibo Arrendatario", "Recibo Gastos"],
-    to:["/Reciboarrendatario"]
+    to:["/Reciboarrendatario","/RGastos"]
   },
   {
     icon: <img className="icon-side" src={ver} alt="" />,
@@ -92,6 +92,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
       <div ref={navRef} className="sub-nav-inner">
         {item?.items.map((subItem) => (
           <NavButton
+            key={subItem.id}
             onClick={handleClick}
             name={subItem}
             isActive={activeItem === subItem}

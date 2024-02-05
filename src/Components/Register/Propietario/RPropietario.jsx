@@ -1,4 +1,4 @@
-import React from 'react'
+
 import "./RPropietario.css"
 import Btn_inmueble from '../../../assets/btn_inmueble.png'
 import save from '../../../assets/save.png'

@@ -33,5 +33,4 @@ app.get('/propietarios', (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`
   );
-  console.log('conexion exitosa 2');
 });
