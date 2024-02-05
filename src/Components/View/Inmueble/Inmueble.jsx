@@ -32,22 +32,27 @@ export const Inmueble = () => {
         </div>
 
         <div className="title_view">
-          <h1 className="tittle_propetario">Inmueble</h1>
+          <h1 className="tittle_propetario">Inmuebles</h1>
         </div>
 
         <div className="view_esp">
           <table>
             <tr>
-              <th>Nombre</th>
-              <th>Dirección</th>
-              <th>Teléfono</th>
-              <th>Correo</th>
-              <th>Cédula</th>
-              <th>Ciudad</th>
-              <th>Fecha de ingreso</th>
-              <th>Banco</th>
-              <th>Tipo cuenta</th>
-              <th>Numero cuenta</th>
+              <th>Id propetario</th>
+              <th>Id inmueble</th>
+              <th>Direccion</th>
+              <th>Estrato</th>
+              <th>Cuidad</th>
+              <th>Barrio</th>
+              <th>Tipo</th>
+              <th>Numero_Niveles</th>
+              <th>Valor_Inmueble</th>
+              <th>Numero_Baños</th>
+              <th>Servicios_Publicos</th>
+              <th>Numero_Habitaciones</th>
+              <th>Estado</th>
+              <th>Numero_Terrazas</th>
+              <th>Area_Construida</th>
               <th>Editar</th>
             </tr>
             <tr>

@@ -1,0 +1,75 @@
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.col1 {
+    display: flex;
+    width: 95%;
+}
+.col2 {
+    display: flex;
+    width: 95%;
+}
+.col3{
+    display: flex;
+}
+
+.td{
+    display: flex;
+    height: auto;
+    padding: 2%;
+    width: 80%;
+}
+
+
+
+input,
+select {
+    display: inline-block;
+    margin-right: 10px;
+    border: none;
+    width: 95%;
+    padding: 8px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border-radius: 2%;
+}
+select{
+    cursor: pointer;
+    border-radius: 2%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+button.cancelar {
+    background-color: #ff3333;
+}
+
+.iconos {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.iconos button {
+    font-size: 18px;
+}
