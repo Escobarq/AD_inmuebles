@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import jsPDF from 'jspdf';
 import reciboa from '../Ra/reciboa.jpeg';
 

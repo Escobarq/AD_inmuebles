@@ -11,7 +11,7 @@ import { H_recibos } from './Components/View/H_recibos/H_recibos';
 // import { useEffect, useState } from 'react';
 // import axios from 'axios';
 import RPropietario from './Components/Register/Propietario/RPropietario';
-import { ReciboGastos } from './Components/ReciboGastos';
+import { ReciboGastos } from './Components/View/Rg/ReciboGastos';
 import { Rarrendatario } from './Components/View/Ra/Rarrendatario';
 
 function App() {
