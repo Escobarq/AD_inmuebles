@@ -102,6 +102,11 @@ th {
   max-width: 150px;
   color: #ffffff;
 }
+.button_send{
+  width: 40%;
+  height: auto;
+  max-width: 100px;
+}
 
 @media screen and (max-width: 1200px) {
   th, td {
