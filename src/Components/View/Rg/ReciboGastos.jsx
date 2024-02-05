@@ -1,30 +1,24 @@
-import React from 'react'
-import '../assets/ReciboGastos.css'
-import { useReactToPrint } from 'react-to-print'
-import React, {useState, useRef } from "react"
 
+import './ReciboGastos.css'
+// import { useReactToPrint } from 'react-to-print'
+// import {useState, useRef } from "react"
 
-
-
-function Userlisting(){
-    const conponentPDF= useRef
-    const [ userData, setUserdata] = useState([]);
-}
-const generatePDF= useReactToPrint({
-    content: ()=> conponentPDF.current,
-    documentTitle:"Userdata",
-    onAfterPrint:()=>alert("Data saved in PDF")
-});
-
-
+// function Userlisting(){
+//     const conponentPDF= useRef
+//     const [ userData, setUserdata] = useState([]);
+// }
+// const generatePDF= useReactToPrint({
+//     content: ()=> conponentPDF.current,
+//     documentTitle:"Userdata",
+//     onAfterPrint:()=>alert("Data saved in PDF")
+// });
 
 export const ReciboGastos = () => {
-
 
     return (
         <>
             <div className="contener-home">
-                <div ref={conponentPDF} style={{width:'100%'}}>
+                <div style={{width:'100%'}}>
                 <form>
                     <div className='col1'>
                         <label>
@@ -64,9 +58,9 @@ export const ReciboGastos = () => {
                     </div>
                 </form>
                 </div>
-                <div class="iconos">
-                    <button className='btn btn-success' onClick={generatePDF}>PDF</button>
-                    <button class="cancelar" onclick="cancelarFormulario()">Cancelar</button>
+                <div className="iconos">
+                    <button className='btn btn-success'>PDF</button>
+                    <button className="cancelar">Cancelar</button>
                 </div>
             </div>
 
