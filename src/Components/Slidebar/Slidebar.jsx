@@ -25,6 +25,7 @@ const menuItems = [
     icon: <img className="icon-side" src={recibo} alt="" />,
     name: "Recibo",
     items: ["Recibo Arrendatario", "Recibo Gastos"],
+    to:["/Reciboarrendatario"]
   },
   {
     icon: <img className="icon-side" src={ver} alt="" />,
