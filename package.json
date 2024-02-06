@@ -19,6 +19,7 @@
     "jspdf": "^2.5.1",
     "mysql": "^2.18.1",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.10.0",
     "react-dom": "^18.2.0",
     "react-pdf": "^7.7.0",
     "react-router-dom": "^6.21.3",
