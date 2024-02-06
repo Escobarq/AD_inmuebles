@@ -59,7 +59,7 @@ export const ReciboGastos = () => {
                 </form>
                 </div>
                 <div className="iconos">
-                    <button className='btn btn-success'>PDF</button>
+                    <button className='btn btn-success'>Guardar</button>
                     <button className="cancelar">Cancelar</button>
                 </div>
             </div>

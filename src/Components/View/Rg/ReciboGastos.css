@@ -22,10 +22,7 @@ label {
     width: 80%;
 }
 
-
-
-input,
-select {
+input,select {
     display: inline-block;
     margin-right: 10px;
     border: none;
@@ -39,19 +36,7 @@ select{
     cursor: pointer;
     border-radius: 2%;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-button {
+btn-success {
     background-color: #4caf50;
     color: #fff;
     padding: 10px;

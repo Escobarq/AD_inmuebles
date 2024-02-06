@@ -19,7 +19,7 @@ const menuItems = [
     icon: <img className="icon-side" src={registro} alt="" />,
     name: "Registro", // Agrega las rutas correspondientes
     items: ["Propietario", "Inmueble", "Arrendatario"],
-    to: ["/RPropietario"]
+    to: ["/RPropietario","/RInmueble","/RArrendatario"]
   },
   {
     icon: <img className="icon-side" src={recibo} alt="" />,
