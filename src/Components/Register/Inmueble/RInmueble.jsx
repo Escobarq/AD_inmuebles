@@ -1,14 +1,10 @@
+import React from 'react'
 
-import "./RPropietario.css"
-import Btn_inmueble from '../../../assets/btn_inmueble.png'
-import save from '../../../assets/save.png'
-import cancel from '../../../assets/cancel.png'
-export const RPropietario = () => {
+export const RInmueble = () => {
   return (
-    <>
     <div className='contener-home contener-rpropietario'>
-      <div className="izq">
-      <h1>Registro Propietario</h1>
+       <div className="izq">
+      <h1>Registro Inmueble</h1>
 
       <form className='form-propietario' action="">
 
@@ -58,27 +54,6 @@ export const RPropietario = () => {
 
       </form>
       </div>
-      <div className="der">
-        <button type="button">
-        <img src={Btn_inmueble} alt="" />
-        </button>
-
-        <article className="save_delete">
-          <button type="button">
-        <img src={save} alt="" />
-        <p className="text_button">Guardar</p>
-          </button>
-
-        <button type="button">
-        <img src={cancel} alt="" />
-        <p className="text_button">Cancelar</p>
-        </button>
-
-        </article> 
-      </div>
     </div>
-    </>
   )
 }
-
-
