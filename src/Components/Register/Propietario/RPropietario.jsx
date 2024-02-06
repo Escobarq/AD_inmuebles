@@ -59,11 +59,12 @@ export const RPropietario = () => {
       </form>
       </div>
       <div className="der">
+
+        <article className="save_delete">
         <button type="button">
         <img src={Btn_inmueble} alt="" />
         </button>
 
-        <article className="save_delete">
           <button type="button">
         <img src={save} alt="" />
         <p className="text_button">Guardar</p>

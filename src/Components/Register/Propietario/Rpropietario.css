@@ -7,12 +7,13 @@
     width: 60%;
 }
 .der{
-    display: flex;
     width: 40%;
     height: 100%;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-end;
+}
+
+.contener-buttons{
+    background-color: blue;
+    display: flex;
 }
 
 .btn-comproba{
@@ -22,6 +23,14 @@
     display: flex;
     margin: 3% 0;
     justify-content: space-between;
+    align-items: center;
+}
+.selecIn{
+    background-color: white;
+    margin-right: 2%;
+}
+.selecIn span{
+   margin-right: 10%;
 }
 .form-propietario{
     margin-top: 10%;
@@ -35,8 +44,10 @@
 }
 .save_delete{
     display: flex;
+    height: 100%;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
+    justify-content: flex-end;
 }
 .text_button{
     text-align: center;

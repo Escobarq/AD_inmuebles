@@ -12,8 +12,8 @@ import { H_recibos } from './Components/View/H_recibos/H_recibos';
 import { RPropietario } from './Components/Register/Propietario/RPropietario';
 import { ReciboGastos } from './Components/View/Rg/ReciboGastos';
 import { Rarrendatario } from './Components/View/Ra/Rarrendatario';
-import { RArrendatario } from './Components/Register/Arrendatario/RArrendatario';
-import { RInmueble } from './Components/Register/Inmueble/RInmueble';
+import { ReArrendatario } from './Components/Register/Arrendatario/ReArrendatario';
+import { RInmuebleB } from './Components/Register/Inmueble/RInmuebleB';
 
 function App() {
   return (
@@ -31,8 +31,8 @@ function App() {
         <Route path="/RPropietario" element= {<RPropietario/>} />
         <Route path="/RGastos" element= { <ReciboGastos/>} />
         <Route path="/Reciboarrendatario" element={<Rarrendatario/>} />
-        <Route path="/RArrendatario" element= {<RArrendatario/>} />
-        <Route path="/RInmueble" element= {<RInmueble/>} />
+        <Route path="/ReArrendatario" element= {<ReArrendatario/>} />
+        <Route path="/RInmuebleB" element= {<RInmuebleB/>} />
       </Routes>
     </div>.
     </>

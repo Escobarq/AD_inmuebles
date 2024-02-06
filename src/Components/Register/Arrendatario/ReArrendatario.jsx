@@ -1,11 +1,12 @@
 import React from 'react'
 import save from '../../../assets/save.png'
 import cancel from '../../../assets/cancel.png'
+import './ReArrendatario.css'
 
-export const RArrendatario = () => {
+export const ReArrendatario = () => {
   return (
     <div className='contener-home contener-rpropietario'>
-       <div className="izq">
+       <div className="izq RA">
       <h1> Arrendatario</h1>
 
       <form className='form-propietario' action="">
@@ -16,7 +17,7 @@ export const RArrendatario = () => {
         </article>
 
         <article className='componente-form'>
-          <p>Número Documento de identidad</p>
+          <p>No. Documento de identidad</p>
           <input className='input-form' type="number" name="" min={1} max={9999999999} id="" />
         </article>
 
@@ -77,9 +78,9 @@ export const RArrendatario = () => {
 
       </form>
       </div>
-      <div className="der">
+      <div className="der RA">
       <h1>Codeudor</h1>
-
+      <form className='form-propietario' action="">
       <article className='componente-form'>
           <p>Tipo de Documento</p>
           <input className='input-form' type="text" name="" id="" />
@@ -123,8 +124,9 @@ export const RArrendatario = () => {
             <option value="Cuenta Corriente">Oficina</option>
           </select>
         </article>
+        </form>
 
-        <article className="save_delete">
+        <article className="save_deleter">
           <button type="button">
         <img src={save} alt="" />
         <p className="text_button">Guardar</p>
