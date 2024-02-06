@@ -33,3 +33,11 @@
     padding-left: 2%;
     width: 47%;
 }
+.save_delete{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.text_button{
+    text-align: center;
+}

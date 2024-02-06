@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // En my-electron-app/server/server.js
 const express = require('express');
 const mysql = require('mysql');
@@ -6,8 +7,8 @@ const port = 3006; // Puedes elegir cualquier puerto que no esté en uso
 
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'admin',
-  password: '123',
+  user: 'root',
+  password: '',
   database: 'adminmuebles',
 });
 
