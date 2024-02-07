@@ -1,0 +1,10 @@
+.RA{
+    width: 50%;
+}
+.save_deleter{
+    display: flex;
+    margin-top: 15%;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
