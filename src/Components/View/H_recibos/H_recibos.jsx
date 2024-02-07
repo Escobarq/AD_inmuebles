@@ -53,6 +53,7 @@ export const H_recibos = () => {
         </div>
 
         <div className="view_esp">
+        <div className="table-container">
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -112,6 +113,7 @@ export const H_recibos = () => {
               </tr>
             </tbody>
           </Table>
+          </div>
         </div>
       </div>
     </>

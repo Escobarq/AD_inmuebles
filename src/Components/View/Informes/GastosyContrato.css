@@ -1,0 +1,13 @@
+
+.title_views {
+  display: flex;
+  width: 100%;
+  padding: 2%;
+  justify-content: flex-start;
+}
+.table-container{
+    height: 15rem;
+}
+.total_general{
+    width: 100%;
+}

@@ -44,6 +44,7 @@ export const Inmueble = () => {
           <h1 className="tittle_propetario">Inmuebles</h1>
         </div>
         <div className="view_esp">
+        <div className="table-container">
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -120,6 +121,7 @@ export const Inmueble = () => {
               </tr>
             </tbody>
           </Table>
+         </div> 
         </div>
         {/* Modal */}
         <Modal
