@@ -45,6 +45,7 @@ export const H_gastos = () => {
         </div>
 
         <div className="view_esp">
+        <div className="table-container">
         <Table striped bordered hover>
             <thead>
               <tr>
@@ -108,6 +109,7 @@ export const H_gastos = () => {
               </tr>
             </tbody>
           </Table>
+          </div>
         </div>
       </div>
     </>
