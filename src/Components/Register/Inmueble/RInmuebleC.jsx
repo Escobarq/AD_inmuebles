@@ -8,12 +8,12 @@ import cancel from '../../../assets/cancel.png'
 
 const menuItems = [
   {
-    name: "Bodega", // Agrega las rutas correspondientes
-    items: ["Oficina", "Casa", "Apartamento", "Local"],
-    to: ["/RInmuebleO","/RInmuebleC","/RInmuebleA", "/RInmuebleL"]
+    name: "Casa", // Agrega las rutas correspondientes
+    items: ["Oficina", "Bodega", "Apartamento", "Local"],
+    to: ["/RInmuebleO","/RInmuebleB","/RInmuebleA", "/RInmuebleL"]
   },
 ];
-const tab = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
+const tab = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
 
 const NavButton = ({
   onClick,
@@ -81,7 +81,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
       </div>
     );
 };
-export const RInmuebleB = () => {
+export const RInmuebleC = () => {
 
   const [activeItem, setActiveItem] = useState("");
 
@@ -203,3 +203,4 @@ export const RInmuebleB = () => {
     </div>
   )
 }
+

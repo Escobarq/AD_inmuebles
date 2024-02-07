@@ -14,6 +14,10 @@ import { ReciboGastos } from './Components/View/Rg/ReciboGastos';
 import { Rarrendatario } from './Components/View/Ra/Rarrendatario';
 import { ReArrendatario } from './Components/Register/Arrendatario/ReArrendatario';
 import { RInmuebleB } from './Components/Register/Inmueble/RInmuebleB';
+import { RInmuebleA } from './Components/Register/Inmueble/RInmuebleA';
+import { RInmuebleC } from './Components/Register/Inmueble/RInmuebleC';
+import { RInmuebleL } from './Components/Register/Inmueble/RInmuebleL';
+import { RInmuebleO } from './Components/Register/Inmueble/RinmuebleO';
 
 function App() {
   return (
@@ -32,7 +36,11 @@ function App() {
         <Route path="/RGastos" element= { <ReciboGastos/>} />
         <Route path="/Reciboarrendatario" element={<Rarrendatario/>} />
         <Route path="/ReArrendatario" element= {<ReArrendatario/>} />
+        <Route path="/RInmuebleA" element= {<RInmuebleA/>} />
         <Route path="/RInmuebleB" element= {<RInmuebleB/>} />
+        <Route path="/RInmuebleC" element= {<RInmuebleC/>} />
+        <Route path="/RInmuebleL" element= {<RInmuebleL/>} />
+        <Route path="/RInmuebleO" element= {<RInmuebleO/>} />
       </Routes>
     </div>.
     </>

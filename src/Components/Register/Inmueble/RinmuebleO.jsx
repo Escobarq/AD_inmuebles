@@ -8,12 +8,12 @@ import cancel from '../../../assets/cancel.png'
 
 const menuItems = [
   {
-    name: "Bodega", // Agrega las rutas correspondientes
-    items: ["Oficina", "Casa", "Apartamento", "Local"],
-    to: ["/RInmuebleO","/RInmuebleC","/RInmuebleA", "/RInmuebleL"]
+    name: "Oficina", // Agrega las rutas correspondientes
+    items: ["Bodega", "Casa", "Apartamento", "Local"],
+    to: ["/RInmuebleB","/RInmuebleC","/RInmuebleA", "/RInmuebleL"]
   },
 ];
-const tab = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
+const tab = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
 
 const NavButton = ({
   onClick,
@@ -81,7 +81,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
       </div>
     );
 };
-export const RInmuebleB = () => {
+export const RInmuebleO = () => {
 
   const [activeItem, setActiveItem] = useState("");
 
@@ -161,11 +161,6 @@ export const RInmuebleB = () => {
           <input type="number" className='input-form' name="" id="" />
         </article>
 
-        <article className='componente-form'>
-          <p>Oficina</p>
-          <input className='input-form' type="Text" name="" id="" />
-        </article>
-
       </form>
       </div>
       <div className="der RA">
@@ -203,3 +198,4 @@ export const RInmuebleB = () => {
     </div>
   )
 }
+

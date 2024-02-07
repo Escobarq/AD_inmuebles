@@ -8,12 +8,12 @@ import cancel from '../../../assets/cancel.png'
 
 const menuItems = [
   {
-    name: "Bodega", // Agrega las rutas correspondientes
-    items: ["Oficina", "Casa", "Apartamento", "Local"],
-    to: ["/RInmuebleO","/RInmuebleC","/RInmuebleA", "/RInmuebleL"]
+    name: "Apartamento", // Agrega las rutas correspondientes
+    items: ["Oficina", "Casa", "Bodega", "Local"],
+    to: ["/RInmuebleO","/RInmuebleC","/RInmuebleB", "/RInmuebleL"]
   },
 ];
-const tab = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
+const tab = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
 
 const NavButton = ({
   onClick,
@@ -81,7 +81,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
       </div>
     );
 };
-export const RInmuebleB = () => {
+export const RInmuebleA = () => {
 
   const [activeItem, setActiveItem] = useState("");
 
@@ -162,8 +162,8 @@ export const RInmuebleB = () => {
         </article>
 
         <article className='componente-form'>
-          <p>Oficina</p>
-          <input className='input-form' type="Text" name="" id="" />
+          <p>No. Habitaciones</p>
+          <input className='input-form' type="number" name="" id="" />
         </article>
 
       </form>
@@ -172,13 +172,23 @@ export const RInmuebleB = () => {
         <form className='form-porpietario' action="">
 
       <article className='componente-form'>
+          <p>No. Niveles</p>
+          <input className='input-form' type="number" name="" id="" />
+        </article>
+
+      <article className='componente-form'>
+          <p>Terraza</p>
+          <input className='input-form' type="number" name="" id="" />
+        </article>
+
+      <article className='componente-form'>
           <p>Servicios Publicos</p>
           <input className='input-form' type="text" name="" id="" />
         </article>
 
         <article className='componente-form'>
           <p>aseguramiento</p>
-          <input className='input-form' type="text" name="" min={1} max={9999999999} id="" />
+          <input className='input-form' type="date" name="" min={1} max={9999999999} id="" />
         </article>
 
         <article className='componente-form'>

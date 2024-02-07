@@ -25,13 +25,8 @@
     justify-content: space-between;
     align-items: center;
 }
-.selecIn{
-    background-color: white;
-    margin-right: 2%;
-}
-.selecIn span{
-   margin-right: 10%;
-}
+
+
 .form-propietario{
     margin-top: 10%;
     row-gap: 5%;
