@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useRef } from "react";
-import flecha from '../../../assets/iconSlide/flecha.png'
+import flecha1 from '../../../assets/iconSlide/flecha1.png'
 import { Link } from 'react-router-dom';
 import './RInmuebleB.css'
 import save from '../../../assets/save.png'
@@ -34,14 +34,14 @@ const NavButton = ({
       <Link to={to}>
         <span className="name_tittle">{name}</span>
         {tab}
-        {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" />}
+        {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" className="flecha1"/>}
       </Link>
     ) : (
       <>
         
         <span className="name_tittle">{name}</span>
         {tab}
-        {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" />}
+        {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" className="flecha1"/>}
       </>
     )}
   </button>
@@ -115,7 +115,7 @@ export const RInmuebleO = () => {
                   icon={item.icon}
                   isActive={activeItem === item.name}
                   hasSubNav={!!item.items}
-                  subNavIcon={flecha}
+                  subNavIcon={flecha1}
                   to={item.to}
                 />
                 <SubMenu

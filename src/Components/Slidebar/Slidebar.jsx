@@ -37,6 +37,7 @@ const menuItems = [
     icon: <img className="icon-side" src={informe} alt="" />,
     name: "Informes",
     items: ["Contrato Arrendatario", "Gastos inmueble"],
+    to:["/Carrendatario","/Ginmuebles"]
   },
 ];
 

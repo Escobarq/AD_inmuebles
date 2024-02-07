@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { Table, Button } from "react-bootstrap";
-import "../Propietarios/propietarios.css";
+import "./propietarios.css";
 
 export const Propietarios = () => {
   return (
@@ -29,6 +29,7 @@ export const Propietarios = () => {
         </div>
 
         <div className="view_esp">
+        <div className="table-container">
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -75,6 +76,7 @@ export const Propietarios = () => {
               </tr>
             </tbody>
           </Table>
+          </div>
         </div>
       </div>
     </>

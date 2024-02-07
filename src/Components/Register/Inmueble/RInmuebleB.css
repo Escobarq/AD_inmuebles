@@ -3,9 +3,17 @@
 
 }
 #selectInmue{
-    color: blue;
+    background-color: #ffffff;
+    width: auto;
 }
 .selecIn{
-    background-color: white;
+    background-color: #ffffff;
     margin-right: 2%;
+}
+.flecha1{
+    width: 20px;
+}
+
+.nuevo1{
+    background-color: #ffffff;
 }
