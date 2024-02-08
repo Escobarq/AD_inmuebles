@@ -1,9 +1,12 @@
 /* eslint-disable no-undef */
 // En my-electron-app/server/server.js
 const express = require('express');
+const cors = require('cors');
 const mysql = require('mysql');
 const app = express();
 const port = 3006; // Puedes elegir cualquier puerto que no esté en uso
+
+app.use(cors()); 
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -17,7 +20,7 @@ connection.connect();
 // Define las rutas de tu API aquí
 app.get('/propietarios', (req, res) => {
   console.log('Antes de la consulta'); // Mensaje de depuración
-  const query = 'SELECT * FROM propietarios';
+  const query = 'SELECT * FROM propietario';
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Error al obtener propietarios:', err);
