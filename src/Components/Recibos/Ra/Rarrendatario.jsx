@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import jsPDF from 'jspdf';
+
 import reciboa from '../Ra/reciboa.jpeg';
 import '../Ra/Rarrendatario.css';
+
+import reciboa from './reciboa.jpeg';
+
 export const Rarrendatario = () => {
   const [formData, setFormData] = useState({
     fecha: '',

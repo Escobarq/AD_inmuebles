@@ -1,61 +1,50 @@
-/* eslint-disable no-unused-vars */
-import React from "react";
-import { Table, Button } from "react-bootstrap";
-import "./propietarios.css";
 
-export const Propietarios = () => {
+import { Table, Button } from "react-bootstrap";
+
+export const Codeudor = () => {
   return (
     <>
-      <div className="contener-home">
+    <div className="contener-home">
         <div className="filtros_propetario">
+
           <div className="custom-input">
-            <label htmlFor="email">Cedula</label>
-            <input type="number" id="cedula" placeholder="Numero" />
+            <label htmlFor="email">Nombre del Codeudor</label>
+            <input type="text" id="n-codeudor" placeholder="nombre del codeudor" />
           </div>
 
           <div className="custom-input">
-            <label htmlFor="email">Nombre Propetario</label>
-            <input type="text" id="nombre-propetario" placeholder="Nombre" />
+            <label htmlFor="email">Numero Documento</label>
+            <input type="text" id="numero-documento" placeholder="numero de documento" />
           </div>
 
           <div className="custom-input">
-            <label htmlFor="email">Fecha Ingreso</label>
-            <input type="date" id="fecha-ingreso" />
-          </div>
+            <label htmlFor="email">Telefono</label>
+            <input type='tel' id="telefono" placeholder="Telefono" />
+          </div>        
         </div>
 
         <div className="title_view">
-          <h1 className="tittle_propetario">Propetarios</h1>
+          <h1 className="tittle_propetario">Codeudores</h1>
         </div>
 
         <div className="view_esp">
         <div className="table-container">
-          <Table striped bordered hover>
+        <Table striped bordered hover>
             <thead>
               <tr>
-                <th>Id Propietario</th>
-                <th>Nombre</th>
-                <th>Dirección</th>
-                <th>Teléfono</th>
-                <th>Correo</th>
-                <th>Fecha de ingreso</th>
-                <th>Banco</th>
-                <th>Tipo de cuenta</th>
-                <th>Número de cuenta</th>
-                <th>Editar</th>
+              <th>Nombre</th>
+              <th>Dirección</th>
+              <th>Teléfono</th>
+              <th>Correo</th>
+              <th>Editar</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>a</td>
-                <td>a</td>
-                <td>a</td>
-                <td>a</td>
-                <td>a</td>
-                <td>a</td>
-                <td>a</td>
-                <td>a</td>
-                <td>a</td>
+              <td>Juan Pérez</td>
+              <td>312 83893 50</td>
+              <td>145 6749</td>
+              <td>Popayán</td>
                 <td>
                   <Button variant="warning">
                     <svg
@@ -80,5 +69,5 @@ export const Propietarios = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}

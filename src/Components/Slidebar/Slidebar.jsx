@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Link } from "react-router-dom"; // Importa el componente Link de react-router-dom
 import home from '../../assets/iconSlide/home.png'
 import informe from '../../assets/iconSlide/informe.png'
@@ -17,25 +17,27 @@ const menuItems = [
   },
   {
     icon: <img className="icon-side" src={registro} alt="" />,
-    name: "Registro",
+    name: "Registro", // Agrega las rutas correspondientes
     items: ["Propietario", "Inmueble", "Arrendatario"],
-    to: ["/Propietario", "/Inmueble", "/Arrendatario"], // Agrega las rutas correspondientes
+    to: ["/RPropietario","/RInmuebleB","/ReArrendatario"]
   },
   {
     icon: <img className="icon-side" src={recibo} alt="" />,
     name: "Recibo",
     items: ["Recibo Arrendatario", "Recibo Gastos"],
-    to:["/Reciboarrendatario"]
+    to:["/Reciboarrendatario","/RGastos"]
   },
   {
     icon: <img className="icon-side" src={ver} alt="" />,
     name: "ver",
     items: ["Propietarios", "Inmuebles", "Arrendatarios", "Codeudor", "Historias Recibos", "Historial Gastos"],
+    to: ["/Propietario", "/Inmueble", "/Arrendatario","/Codeudor","/H_recibos","/H_gastos"],
   },
   {
     icon: <img className="icon-side" src={informe} alt="" />,
     name: "Informes",
     items: ["Contrato Arrendatario", "Gastos inmueble"],
+    to:["/Carrendatario","/Ginmuebles"]
   },
 ];
 
@@ -91,6 +93,7 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
       <div ref={navRef} className="sub-nav-inner">
         {item?.items.map((subItem) => (
           <NavButton
+            key={subItem.id}
             onClick={handleClick}
             name={subItem}
             isActive={activeItem === subItem}

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 //Modules for app correct usage electron.js
 const { app, BrowserWindow } = require('electron/main')
 const path = require('node:path')
@@ -8,7 +9,11 @@ function createWindow () {
     width: 1920,
     height: 1080,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      nodeIntegrationInWorker: true,
+      contextIsolation: false,
     }
   })
   //Load the window
