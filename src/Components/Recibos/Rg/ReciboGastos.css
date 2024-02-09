@@ -58,3 +58,17 @@ button.cancelar {
 .iconos button {
     font-size: 18px;
 }
+.logo {
+    position: absolute;
+    top: 20px; /* Ajusta la posición vertical */
+    left: 20px; /* Ajusta la posición horizontal */
+    width: 100px; /* Ajusta el tamaño del logo */
+    height: auto; /* Ajusta el tamaño del logo manteniendo la proporción */
+}
+
+h1 {
+    position: absolute;
+    top: 20px; /* Ajusta la posición vertical */
+    left: 140px; /* Ajusta la posición horizontal, dejando espacio al lado del logo */
+    margin: 0; /* Elimina el margen por defecto del título */
+}
