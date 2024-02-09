@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import './RInmuebleB.css'
 import save from '../../../assets/save.png'
 import cancel from '../../../assets/cancel.png'
+import { useForm } from "react-hook-form";
 
 const menuItems = [
   {
@@ -80,8 +81,10 @@ const SubMenu = ({ item, activeItem, handleClick }) => {
       </div>
     );
 };
+
 export const RInmuebleB = () => {
 
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [activeItem, setActiveItem] = useState("");
 
   const handleClick = (item) => {
@@ -89,8 +92,43 @@ export const RInmuebleB = () => {
     setActiveItem(item !== activeItem ? item : "");
   };
 
+  const onsubmitRegistro = async (data) => {
+    console.log('Datos a enviar:', JSON.stringify(data));
+
+    try {
+      const response = await fetch('http://localhost:3006/ReinmuebleB', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error al crear usuario. Código de estado: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      return responseData;
+
+  } catch (error) {
+      if (error.message.includes('correo ya registrado')) {
+          alert('El correo ya está registrado');
+      } else {
+          console.error('Error al crear usuario:', error);
+          throw error; // Re-lanza el error para que pueda ser manejado en el componente
+      }
+  }
+  };
+
   return (
     <div className='contener-home contener-rpropietario'>
+      <form
+      id='Bodega-form'
+      onSubmit={handleSubmit(onsubmitRegistro)}
+      method='post'
+      encType='multipart/form-data'
+      className='form-inmueble' action="">
        <div className="izq RA">
        <article className='componente-form'>
           <p>Tipo Inmueble</p>
@@ -128,77 +166,87 @@ export const RInmuebleB = () => {
         ))}
         </article>
 
-      <form className='form-propietario' action="">
 
       <article className='componente-form'>
           <p>No. Matricula</p>
-          <input className='input-form' type="number" name="" id="" />
+          <input {...register('Nmatricula')}
+          placeholder='Nmatricula'
+          className='input-form' type="number" name="Nmatricula" id="" />
         </article>
 
         <article className='componente-form'>
           <p>Dirección</p>
-          <input className='input-form' type="text" name="" min={1} max={9999999999} id="" />
+          <input {...register('Direccion')} className="input-form" type="text" />
+
         </article>
 
         <article className='componente-form'>
           <p>ciudad</p>
-          <input className='input-form' type="text" name="" id="" maxLength={100} />
+          <input {...register('Ciudad')} className="input-form" type="text" />
+
         </article>
 
         <article className='componente-form'>
           <p>Barrio</p>
-          <input className='input-form' type="text" name="" min={1000000000} max={9999999999} id="" />
+         <input {...register('Barrio')} className="input-form" type="text" />
+
         </article>
 
         <article className='componente-form'>
           <p>Estrato</p>
-          <input className='input-form' type="number" name="" id="" />
+          <input {...register('Estrato')} className="input-form" type="number" />
+
         </article>
 
         <article className='componente-form'>
           <p>No. Baños</p>
-          <input type="number" className='input-form' name="" id="" />
+          <input {...register('Nbanos')} className="input-form" type="number" />
+
         </article>
 
         <article className='componente-form'>
           <p>Oficina</p>
-          <input className='input-form' type="Text" name="" id="" />
+          <input
+          
+          className='input-form' type="Text" name="" id="" />
         </article>
 
-      </form>
       </div>
       <div className="der RA">
-        <form className='form-porpietario' action="">
+        
 
       <article className='componente-form'>
           <p>Servicios Publicos</p>
-          <input className='input-form' type="text" name="" id="" />
+         <input {...register('Spublicos')} className="input-form" type="text" />
+
         </article>
 
         <article className='componente-form'>
           <p>aseguramiento</p>
-          <input className='input-form' type="text" name="" min={1} max={9999999999} id="" />
+          <input {...register('aseguramiento')} className="input-form" type="date" />
+
         </article>
 
         <article className='componente-form'>
           <p>No. Identidad Propietario</p>
-          <input className='input-form' type="number" name="" id="" maxLength={100} />
+         <input {...register('Nidentificacionp')} className="input-form" type="number" />
+
         </article>
 
-        </form>
         <article className="save_deleter">
-          <button type="button">
+          <button type="submit">
         <img src={save} alt="" />
         <p className="text_button">Guardar</p>
           </button>
 
-        <button type="button">
+        <button type="reset">
         <img src={cancel} alt="" />
         <p className="text_button">Cancelar</p>
         </button>
 
         </article> 
       </div>
+      </form>
     </div>
   )
 }

@@ -32,7 +32,42 @@ app.get('/propietarios', (req, res) => {
   });
 });
 
+app.post('/ReinmuebleB', async (req,res) => {
 
+  const { Nmatricula,
+    Direccion,
+    ciudad,
+    barrio,
+    estrato,
+    nbanos,
+    Spublicos,
+    aseguramiento
+   } = req.body;
+
+  try {
+
+    await pool.query(
+      'INSERT INTO inmueble (No_Matricula, Direccion, Estrato, Ciudad, Barrio, Tipo, No_Banos, Servicios_Publicos, Aseguramiento, Descripcion) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
+      [Nmatricula,
+        Direccion,
+        estrato,
+        ciudad,
+        barrio,
+        "Bodega",
+        nbanos,
+        Spublicos,
+        aseguramiento,
+        "holkaaaaaaaaaa"]
+    );
+
+    res.status(201).json({ message: 'Inmueble Registrado exitosamente' });
+  } catch (error) {
+    console.error('Error adding product:', error);
+    res.status(500).json({ error: 'Error al añadir el inmueble' });
+  }
+
+
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`
