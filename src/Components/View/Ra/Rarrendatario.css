@@ -1,0 +1,33 @@
+.image-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  h1 {
+    font-size: 18px;
+    text-align: center;
+  }
+  
+  .flex-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .form-column {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+  }
+  
+  /* Otros estilos */
+  .green-button {
+    background-color: green;
+  }
+  
+  .red-button {
+    background-color: red;
+    margin-left: 10px;
+  }
+  
