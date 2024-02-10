@@ -25,13 +25,6 @@ const Home = () => {
       fetchData();
     }, []);
   
-    if (error) {
-      return <div>Error: {error}</div>;
-    }
-  
-    if (propietarios.length === 0) {
-      return <div>Cargando...</div>;
-    }
   
     return ( 
         <>

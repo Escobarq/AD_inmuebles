@@ -24,6 +24,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.50.1",
     "react-pdf": "^7.7.0",
     "react-router-dom": "^6.21.3",
     "react-to-print": "^2.14.15"
