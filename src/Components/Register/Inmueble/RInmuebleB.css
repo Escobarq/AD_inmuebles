@@ -17,3 +17,7 @@
 .nuevo1{
     background-color: #ffffff;
 }
+.form-inmueble{
+    display: flex;
+    width: 100%;
+}

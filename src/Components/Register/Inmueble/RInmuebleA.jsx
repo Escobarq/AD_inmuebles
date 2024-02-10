@@ -5,6 +5,9 @@ import { Link } from 'react-router-dom';
 import './RInmuebleB.css'
 import save from '../../../assets/save.png'
 import cancel from '../../../assets/cancel.png'
+import { useForm } from "react-hook-form";
+import { crearInmueble } from "../../Hooks/RegisterInmueble";
+
 
 const menuItems = [
   {
@@ -133,7 +136,7 @@ export const RInmuebleA = () => {
 
       <article className='componente-form'>
           <p>No. Matricula</p>
-          <input className='input-form' type="number" name="" id="" />
+          <input className='input-form'  type="number" name="" id="" />
         </article>
 
         <article className='componente-form'>
