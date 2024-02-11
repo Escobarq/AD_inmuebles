@@ -1,30 +1,8 @@
-import { useEffect, useState } from 'react';
+
 import logo from '../../assets/Logo.png'
 import './Home.css'
 const Home = () => {
-    const [propietarios, setPropietarios] = useState([]);
-    const [error, setError] = useState(null);
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await fetch('http://localhost:3006/propietarios');
-  
-          if (!response.ok) {
-            throw new Error('No se pudo obtener la lista de propietarios');
-          }
-  
-          const propietariosData = await response.json();
-          setPropietarios(propietariosData);
-          console.log(propietariosData)
-        } catch (error) {
-          setError(error.message);
-        }
-      };
-  
-      fetchData();
-    }, []);
-  
+
   
     return ( 
         <>
