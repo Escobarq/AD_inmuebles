@@ -1,204 +1,112 @@
-import { useState, useRef } from "react";
-import flecha1 from '../../../assets/iconSlide/flecha1.png'
-import { Link } from 'react-router-dom';
-import './RInmuebleB.css'
-import save from '../../../assets/save.png'
-import cancel from '../../../assets/cancel.png'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Form, Button } from "react-bootstrap";
 
-const menuItems = [
-  {
-    name: "Bodega", // Agrega las rutas correspondientes
-    items: ["Oficina", "Casa", "Apartamento", "Local"],
-    to: ["/RInmuebleO","/RInmuebleC","/RInmuebleA", "/RInmuebleL"]
-  },
-];
-const tab = <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>;
 
-const NavButton = ({
-  onClick,
-  name,
-  isActive,
-  hasSubNav,
-  subNavIcon,
-  to, // Agrega la propiedad to para las rutas
-}) => (
-  
-  <button 
-    id='selectInmue'
-    type="button"
-    onClick={() => onClick(name)}
-    className={isActive ? "active" : ""}
-  >
-    {to ? (
-      <Link to={to}>
-        <span className="name_tittle">{name}</span>
-        {tab}
-        {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" className="flecha1"/>}
-      </Link>
-    ) : (
-      <>
-        
-        <span className="name_tittle">{name}</span>
-        {tab}
-        {hasSubNav && subNavIcon && <img src={subNavIcon} alt="Sub Nav Icon" className="flecha1"/>}
-      </>
-    )}
-  </button>
-);
+export const RInmuebleB = () => {
+  const handleSelectChange = (event) => {
+    const selectedOption = event.target.value;
+    if (selectedOption) {
+      window.location.assign(`/${selectedOption}`);
+    }
+  };
+  return (
+    <div className="contener-home contener-rpropietario">
+      <div className="container">
+        <div className="row">
+          <div className="col-md-6">
+            <Form className="form-propietario" style={{ marginTop: "0" }}>
+              <Form.Group controlId="formTipoInmueble">
+                <Form.Label>Tipo Inmueble</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={handleSelectChange}
+                >
+                  <option value="">Selecciona El tipo de Inmueble</option>
+                  <option value="RInmuebleA">Apartamento</option>
+                  <option value="RinmuebleO">Oficina</option>
+                  <option value="RInmuebleB">Bodega</option>
+                  <option value="RInmuebleL">Local</option>
+                  <option value="RInmuebleC">Casa</option>
+                </Form.Select>
+              </Form.Group>
 
-const SubMenu = ({ item, activeItem, handleClick }) => {
-  const navRef = useRef(null);
+              <Form.Group controlId="formNoMatricula">
+                <Form.Label>No. Matricula</Form.Label>
+                <Form.Control type="number" />
+              </Form.Group>
 
-  const isSubNavOpen = (item, items) =>
-    items.some((i) => i === activeItem) || item === activeItem;
+              <Form.Group controlId="formDireccion">
+                <Form.Label>Dirección</Form.Label>
+                <Form.Control type="text" />
+              </Form.Group>
 
-    return (
-      <div
-      className={`sub-nav ${isSubNavOpen(item.name, item.items) ? "open" : ""}`}
-      style={{
-        position: "absolute", 
-        zIndex: 1,
-        width: "15%",
-        height: !isSubNavOpen(item.name, item.items)
-          ? 0
-          : navRef.current?.clientHeight,
-      }}
-      >
-        <div ref={navRef} className="sub-nav-inner1">
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {item?.items.map((subItem) => (
-              <NavButton
-                key={subItem.id}
-                onClick={handleClick}
-                name={subItem}
-                isActive={activeItem === subItem}
-                to={item.to && item.to[item.items.indexOf(subItem)]}
-              />
-            ))}
+              <Form.Group controlId="formCiudad">
+                <Form.Label>Ciudad</Form.Label>
+                <Form.Control type="text" />
+              </Form.Group>
+
+              <Form.Group controlId="formBarrio">
+                <Form.Label>Barrio</Form.Label>
+                <Form.Control type="text" />
+              </Form.Group>
+
+              <Form.Group controlId="formNoBanos">
+                <Form.Label>Valor</Form.Label>
+                <Form.Control type="number" />
+              </Form.Group>
+              
+            </Form>
+          </div>
+
+          <div className="col-md-6">
+            <Form.Group controlId="formEstrato">
+              <Form.Label>Estrato</Form.Label>
+              <Form.Control type="number" />
+            </Form.Group>
+
+            <Form.Group controlId="formNoBanos">
+              <Form.Label>No. Baños</Form.Label>
+              <Form.Control type="number" />
+            </Form.Group>
+
+            <Form.Group controlId="formNoHabitaciones">
+              <Form.Label>Servicios Publicos</Form.Label>
+              <Form.Control type="number" />
+            </Form.Group>
+
+            <Form className="form-porpietario">
+              <Form.Group controlId="formNoNiveles">
+                <Form.Label>Aseguramiento</Form.Label>
+                <Form.Control type="date" />
+              </Form.Group>
+
+              <Form.Group controlId="formNoIdentidadPropietario">
+                <Form.Label>No. Identidad Propietario</Form.Label>
+                <Form.Control type="number" />
+              </Form.Group>
+
+              <Form.Group controlId="formNoIdentidadPropietario">
+                <Form.Label>Descripción</Form.Label>
+                <Form.Control as="textarea" rows={2} style={{ width: '100%' , resize:'none'}}/>
+              </Form.Group>
+
+            </Form>
+            <div className="col-md-12">
+            <div className="save_deleter d-flex flex-row justify-between justify-content-end">
+                <Button variant="success m-2">
+                  <FontAwesomeIcon icon={faSave} />
+                  <span className="text_button ms-2">Guardar</span>
+                </Button>
+                <Button variant="danger m-2">
+                  <FontAwesomeIcon icon={faTimes} />
+                  <span className="text_button ms-2">Cancelar</span>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    );
-};
-export const RInmuebleB = () => {
-
-  const [activeItem, setActiveItem] = useState("");
-
-  const handleClick = (item) => {
-    console.log("activeItem", activeItem);
-    setActiveItem(item !== activeItem ? item : "");
-  };
-
-  return (
-    <div className='contener-home contener-rpropietario'>
-       <div className="izq RA">
-       <article className='componente-form'>
-          <p>Tipo Inmueble</p>
-          {menuItems.map((item) => (
-          <div className="input-form selecIn" key={item.name}>
-            {!item.items && (
-              <NavButton
-                onClick={handleClick}
-                name={item.name}
-                icon={item.icon}
-                isActive={activeItem === item.name}
-                hasSubNav={!!item.items}
-                to={item.to}
-              />
-            )}
-            {item.items && (
-              <>
-                <NavButton
-                  onClick={handleClick}
-                  name={item.name}
-                  icon={item.icon}
-                  isActive={activeItem === item.name}
-                  hasSubNav={!!item.items}
-                  subNavIcon={flecha1}
-                  to={item.to}
-                />
-                <SubMenu
-                  activeItem={activeItem}
-                  handleClick={handleClick}
-                  item={item}
-                />
-              </>
-            )}
-          </div>
-        ))}
-        </article>
-
-      <form className='form-propietario' action="">
-
-      <article className='componente-form'>
-          <p>No. Matricula</p>
-          <input className='input-form' type="number" name="" id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>Dirección</p>
-          <input className='input-form' type="text" name="" min={1} max={9999999999} id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>ciudad</p>
-          <input className='input-form' type="text" name="" id="" maxLength={100} />
-        </article>
-
-        <article className='componente-form'>
-          <p>Barrio</p>
-          <input className='input-form' type="text" name="" min={1000000000} max={9999999999} id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>Estrato</p>
-          <input className='input-form' type="number" name="" id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>No. Baños</p>
-          <input type="number" className='input-form' name="" id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>Oficina</p>
-          <input className='input-form' type="Text" name="" id="" />
-        </article>
-
-      </form>
-      </div>
-      <div className="der RA">
-        <form className='form-porpietario' action="">
-
-      <article className='componente-form'>
-          <p>Servicios Publicos</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>aseguramiento</p>
-          <input className='input-form' type="text" name="" min={1} max={9999999999} id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>No. Identidad Propietario</p>
-          <input className='input-form' type="number" name="" id="" maxLength={100} />
-        </article>
-
-        </form>
-        <article className="save_deleter">
-          <button type="button">
-        <img src={save} alt="" />
-        <p className="text_button">Guardar</p>
-          </button>
-
-        <button type="button">
-        <img src={cancel} alt="" />
-        <p className="text_button">Cancelar</p>
-        </button>
-
-        </article> 
-      </div>
     </div>
-  )
-}
+  );
+};
