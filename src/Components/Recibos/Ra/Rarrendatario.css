@@ -4,11 +4,6 @@
     margin-bottom: 10px;
   }
   
-  h1 {
-    font-size: 18px;
-    text-align: center;
-  }
-  
   .flex-container {
     display: flex;
     justify-content: space-between;

@@ -94,12 +94,6 @@ select {
     height: auto;
 }
 
-h1 {
-    position: absolute;
-    top: 20px;
-    left: 140px;
-    margin: 0;
-}
 .logo-container {
     position: absolute;
     top: 6%;

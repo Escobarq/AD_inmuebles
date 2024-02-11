@@ -1,7 +1,6 @@
 import  { useState } from 'react';
 import jsPDF from 'jspdf';
 
-
 import '../Ra/Rarrendatario.css';
 
 import reciboa from './reciboa.jpeg';
