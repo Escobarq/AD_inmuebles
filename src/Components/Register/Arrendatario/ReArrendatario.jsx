@@ -4,142 +4,58 @@ import cancel from '../../../assets/cancel.png'
 import './ReArrendatario.css'
 
 export const ReArrendatario = () => {
-  return (
-    <div className='contener-home contener-rpropietario'>
-       <div className="izq RA">
-      <h1> Arrendatario</h1>
+  return (<div className="container">
+  <div className='contener-home contener-rpropietario'>
+      <div className="row">
+          <div className="col-md-6">
+              <h1>Arrendatario</h1>
+              <form className='form-propietario' action="">
+                  <div className="form-group">
+                      <label htmlFor="tipoDocumentoArrendatario">Tipo de Documento</label>
+                      <input className='form-control' type="text" name="" id="tipoDocumentoArrendatario" />
+                  </div>
 
-      <form className='form-propietario' action="">
-
-      <article className='componente-form'>
-          <p>Tipo de Documento</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>No. Documento de identidad</p>
-          <input className='input-form' type="number" name="" min={1} max={9999999999} id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>Nombre Arrendatario</p>
-          <input className='input-form' type="text" name="" id="" maxLength={100} />
-        </article>
-
-        <article className='componente-form'>
-          <p>Direccion Propietario</p>
-          <input className='input-form' type="number" name="" min={1000000000} max={9999999999} id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>Cuidad Propietario</p>
-          <input className='input-form' type="email" name="" id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>Barrio Propietario</p>
-          <input className='input-form' type="email" name="" id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>Correo Propietario</p>
-          <input className='input-form' type="email" name="" id="" />
-        </article>
+                  <div className="form-group">
+                      <label htmlFor="numeroDocumentoArrendatario">No. Documento de identidad</label>
+                      <input className='form-control' type="number" name="" min={1} max={9999999999} id="numeroDocumentoArrendatario" />
+                  </div>
+              </form>
+          </div>
+          <div className="col-md-6">
+              <h1>Codeudor</h1>
+              <form className='form-propietario' action="">
         
-        <article className='componente-form'>
-          <p>Forma de Pago </p>
-          <input className='input-form' type="email" name="" id="" />
-        </article>
+                  <div className="form-group">
+                      <label htmlFor="tipoDocumentoCodeudor">Tipo de Documento</label>
+                      <input className='form-control' type="text" name="" id="tipoDocumentoCodeudor" />
+                  </div>
 
-        <article className='componente-form'>
-          <p>Telefono Arrendatario</p>
-          <input className='input-form' type="email" name="" id="" />
-        </article>
+                  <div className="form-group">
+                      <label htmlFor="numeroDocumentoCodeudor">No. Documento de identidad</label>
+                      <input className='form-control' type="text" name="" id="numeroDocumentoCodeudor" />
+                  </div>
 
-        <article className='componente-form'>
-          <p>Fecha Inicio Contrato</p>
-          <input className='input-form' type="email" name="" id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>Fecha Termino Contrato</p>
-          <input className='input-form' type="Text" name="" id="" />
-        </article>
-        
-        <article className='componente-form'>
-          <p>Meses de Alquiler</p>
-          <input className='input-form' type="Text" name="" id="" />
-        </article>
-
-        <article className='componente-form'>
-          <p>Valor de Desopito</p>
-          <input className='input-form' type="Text" name="" id="" />
-        </article>
-
-      </form>
+              </form>
+          </div>
       </div>
-      <div className="der RA">
-      <h1>Codeudor</h1>
-      <form className='form-propietario' action="">
-      <article className='componente-form'>
-          <p>Tipo de Documento</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-      <article className='componente-form'>
-          <p>No Documento Identidad</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-      <article className='componente-form'>
-          <p>Nombre Codeudor</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-      <article className='componente-form'>
-          <p>Direccion Codeudor</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-      <article className='componente-form'>
-          <p>Cuidad Codeudor</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-      <article className='componente-form'>
-          <p>Correo Codeudor</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-      <article className='componente-form'>
-          <p>Telefono Codeudor</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-      <article className='componente-form'>
-          <p>No Matricula</p>
-          <input className='input-form' type="text" name="" id="" />
-        </article>
-        <article className='componente-form'>
-          <p>Tipo de Inmueble </p>
-          <select className='input-form' name="" id="">
-            <option value="" disabled hidden selected>Seleccion el Tipo </option>
-            <option value="Ahorro de cuenta">Casa</option>
-            <option value="Cuenta Corriente">Bodega</option>
-            <option value="Cuenta Corriente">Apartamento</option>
-            <option value="Cuenta Corriente">Local</option>
-            <option value="Cuenta Corriente">Oficina</option>
-          </select>
-        </article>
-        </form>
+      <div className="row">
+          <div className="col-md-12 d-flex justify-content-center">
+              <div className="btn-group" role="group">
+                  <button type="button" className="btn btn-primary">
+                      <img src={save} alt="" />
+                      <span className="text_button">Guardar</span>
+                  </button>
 
-        <article className="save_deleter">
-          <button type="button">
-        <img src={save} alt="" />
-        <p className="text_button">Guardar</p>
-          </button>
-
-        <button type="button">
-        <img src={cancel} alt="" />
-        <p className="text_button">Cancelar</p>
-        </button>
-
-        </article> 
+                  <button type="button" className="btn btn-secondary">
+                      <img src={cancel} alt="" />
+                      <span className="text_button">Cancelar</span>
+                  </button>
+              </div>
+          </div>
       </div>
-    </div>
+  </div>
+</div>
+
   )
 }
 

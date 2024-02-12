@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
   password: '',
   database: 'adminmuebles',
 });
-
+  
 connection.connect();
 
 // Ruta para registrar un propietario
