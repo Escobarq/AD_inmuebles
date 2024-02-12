@@ -29,7 +29,60 @@ app.post('/RPropietario', async (req, res) => {
     banco,
     direccion
   } = req.body;
+
+  try {
+
   
+  connection.query(
+    'INSERT INTO propietario (Nombre_Completo, Documento_Identidad, Direccion, Telefono, Correo, Banco, Tipo_Cuenta, Numero_Cuenta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [
+      nombrepropietario,
+      numerodocumento,
+      direccion,
+      telefono,
+      correoelectronico,
+      banco,
+      tipocuenta,
+      telefono
+    ],
+    (error, results,) => {
+      if (error) {
+        console.error('Error al añadir propietario:', error);
+        res.status(500).json({ error: 'Error al añadir propietario' });
+      } else {
+        console.log('Propietario agregado:', results);
+        res.status(201).json({ message: 'Propietario registrado exitosamente' });
+      }
+    }
+  );
+
+} catch (error) {
+  console.error('Error al añadir propietario:', error);
+  res.status(500).json({ error: 'Error al añadir propietario' });
+}
+});
+
+  app.post('/Reinmueble', async (req,res) => { 
+
+    const { Nmatricula,
+      Direccion,
+      Ciudad,
+      Barrio,
+      Tipo,
+      NoNiveles,
+      ValorIn,
+      Estrato,
+      NoHabita,
+      Estado,
+      NoTerraza,
+      AreaM,
+      Descripcion,
+      Nbanos,
+      Spublicos,
+      aseguramiento,
+  
+     } = req.body;
+     
   try {
 
     if (Tipo == "Bodega") {
@@ -126,37 +179,43 @@ app.post('/RPropietario', async (req, res) => {
      );
     }
 
-
     res.status(201).json({ message: 'Inmueble Registrado exitosamente' });
-
-    connection.query(
-      'INSERT INTO propietario (Nombre_Completo, Documento_Identidad, Direccion, Telefono, Correo, Banco, Tipo_Cuenta, Numero_Cuenta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [
-        nombrepropietario,
-        numerodocumento,
-        direccion,
-        telefono,
-        correoelectronico,
-        banco,
-        tipocuenta,
-        telefono
-      ],
-      (error, results,) => {
-        if (error) {
-          console.error('Error al añadir propietario:', error);
-          res.status(500).json({ error: 'Error al añadir propietario' });
-        } else {
-          console.log('Propietario agregado:', results);
-          res.status(201).json({ message: 'Propietario registrado exitosamente' });
-        }
-      }
-    );
 
   } catch (error) {
     console.error('Error al añadir propietario:', error);
-    res.status(500).json({ error: 'Error al añadir propietario' });
+    res.status(500).json({ error: 'Error al Registrar inmueble' });
   }
 });
+
+/*Registro Codeudor */
+app.post('/Rcodeudor', async (req, res) => {
+
+  const {
+    nombrecompleto,
+    documentoidentidad,
+    telefono,
+    correoelectronico,
+    direccion
+  } = req.body;
+
+  try{
+    connection.query(
+      'INSERT INTO codeudor (Nombre_Completo, Documento_Identidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?)',
+      [nombrecompleto,
+        documentoidentidad,
+        telefono,
+        correoelectronico,
+        direccion,
+      ]
+    );
+  }
+  catch (error) {
+    console.error('Error al añadir codeudor:', error);
+    res.status(500).json({ error: 'Error al añadir codeudor' });
+  }
+}),
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
