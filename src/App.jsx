@@ -22,7 +22,7 @@ import { Rarrendatario } from './Components/Recibos/Ra/Rarrendatario';
 import { ReciboGastos } from './Components/Recibos/Rg/ReciboGastos';
 import { Login } from './Components/Login/Login';
 import { Slidebar } from './Components/Slidebar/Slidebar';
-
+import { RegistroCodeudor } from './Components/Register/Rc/Registrocodeudor';
 function App() {
   const location = useLocation();
   
@@ -51,7 +51,9 @@ function App() {
         <Route path="/RInmuebleO" element={<RInmuebleO />} />
         <Route path="/Carrendatario" element={<ContratoA />} />
         <Route path="/Ginmuebles" element={<GastosIn />} />
+        <Route path="/Registrocodeudor" element={<RegistroCodeudor/>} />
       </Routes>
+
     </div>
   </>
   )
