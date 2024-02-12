@@ -62,6 +62,19 @@ export const Slidebar = () => {
                   Arrendatarios
                 </Nav.Link>
               </Nav.Item>
+
+              <Nav.Item>
+                <Nav.Link
+                  as={NavLink}
+                  to="/Registrocodeudor"
+                  onClick={() => handleItemClick('SubItem4')}
+                  active={activeItem === 'SubItem4'}
+                >
+                 Registro Codeudor
+                </Nav.Link>
+              </Nav.Item>
+
+
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
@@ -81,6 +94,7 @@ export const Slidebar = () => {
                   Recibo Arrendatario
                 </Nav.Link>
               </Nav.Item>
+              
               <Nav.Item>
                 <Nav.Link
                   as={NavLink}

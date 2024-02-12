@@ -6,7 +6,7 @@ const mysql = require('mysql');
 const app = express();
 const port = 3006; // Puedes elegir cualquier puerto que no esté en uso
 
-app.use(cors()); 
+app.use(cors());
 app.use(express.json());
 
 const connection = mysql.createConnection({
@@ -18,44 +18,20 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-// Define las rutas de tu API aquí
-app.get('/propietarios', (req, res) => {
-  console.log('Antes de la consulta'); // Mensaje de depuración
-  const query = 'SELECT * FROM propietario';
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Error al obtener propietarios:', err);
-      res.status(500).json({ error: 'Error al obtener propietarios', details: err.message });
-    } else {
-      console.log('Después de la consulta', results); // Mensaje de depuración
-      res.json(results);
-    }
-  });
-});
-
-app.post('/Reinmueble', async (req,res) => {
+// Ruta para registrar un propietario
+app.post('/RPropietario', async (req, res) => {
+  const {
+    numerodocumento,
+    nombrepropietario,
+    telefono,
+    correoelectronico,
+    tipocuenta,
+    banco,
+    direccion
+  } = req.body;
   
-
-  const { Nmatricula,
-    Direccion,
-    Ciudad,
-    Barrio,
-    Tipo,
-    NoNiveles,
-    ValorIn,
-    Estrato,
-    NoHabita,
-    Estado,
-    NoTerraza,
-    AreaM,
-    Descripcion,
-    Nbanos,
-    Spublicos,
-    aseguramiento,
-
-   } = req.body;
-
   try {
+
     if (Tipo == "Bodega") {
       
       connection.query(
@@ -94,7 +70,7 @@ app.post('/Reinmueble', async (req,res) => {
 
     else if(Tipo == "Apartamento") {
        connection.query(
-       'INSERT INTO inmueble (No_Matricula, Direccion, Estrato, Ciudad, Barrio, Tipo, No_Habitaciones, No_Niveles, No_Terraza No_Banos, Servicios_Publicos, Aseguramiento, Descripcion, Valor_Inmueble, Estado) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+       'INSERT INTO inmueble (No_Matricula, Direccion, Estrato, Ciudad, Barrio, Tipo, No_Habitaciones, No_Niveles, No_Terraza, No_Banos, Servicios_Publicos, Aseguramiento, Descripcion, Valor_Inmueble, Estado) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
        [Nmatricula,
          Direccion,
          Estrato,
@@ -152,16 +128,36 @@ app.post('/Reinmueble', async (req,res) => {
 
 
     res.status(201).json({ message: 'Inmueble Registrado exitosamente' });
+
+    connection.query(
+      'INSERT INTO propietario (Nombre_Completo, Documento_Identidad, Direccion, Telefono, Correo, Banco, Tipo_Cuenta, Numero_Cuenta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        nombrepropietario,
+        numerodocumento,
+        direccion,
+        telefono,
+        correoelectronico,
+        banco,
+        tipocuenta,
+        telefono
+      ],
+      (error, results,) => {
+        if (error) {
+          console.error('Error al añadir propietario:', error);
+          res.status(500).json({ error: 'Error al añadir propietario' });
+        } else {
+          console.log('Propietario agregado:', results);
+          res.status(201).json({ message: 'Propietario registrado exitosamente' });
+        }
+      }
+    );
+
   } catch (error) {
-    console.log(Nmatricula)
-    console.error('Error adding product:', error);
-    res.status(500).json({ error: 'Error al añadir el inmueble' });
+    console.error('Error al añadir propietario:', error);
+    res.status(500).json({ error: 'Error al añadir propietario' });
   }
-
-
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`
-  );
+  console.log(`Server is running on port ${port}`);
 });
