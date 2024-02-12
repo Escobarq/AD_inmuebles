@@ -62,6 +62,8 @@ app.post('/RPropietario', async (req, res) => {
 }
 });
 
+// Ruta para registrar un Inmueble
+
   app.post('/Reinmueble', async (req,res) => { 
 
     const { Nmatricula,
