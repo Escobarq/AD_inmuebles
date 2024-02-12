@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import "./Rarrendatario.css"
+import { pdfjs } from 'react-pdf';
+
+
 export const Rarrendatario = () => {
   const [formData, setFormData] = useState({
     fecha: '',
@@ -94,7 +97,7 @@ export const Rarrendatario = () => {
         <div className='titulo'>
           <span>RECIBO DE ARRENDATARIO </span>
         </div>
-        <div className='row'>
+        <div className="row" >
           <div className='col-md-6'>
             <label htmlFor='fecha'>Fecha:</label>
             <input type='date' id='fecha' name='fecha' value={formData.fecha} onChange={handleInputChange} />

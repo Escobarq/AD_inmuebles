@@ -22,7 +22,7 @@ import { Rarrendatario } from './Components/Recibos/Ra/Rarrendatario';
 import { ReciboGastos } from './Components/Recibos/Rg/ReciboGastos';
 import { Login } from './Components/Login/Login';
 import { Slidebar } from './Components/Slidebar/Slidebar';
-import { RegistroCodeudor } from './Components/Register/Rc/Registrocodeudor';
+import { RegistroCodeudor } from './Components/Register/Codeudor/Registrocodeudor';
 function App() {
   const location = useLocation();
   
