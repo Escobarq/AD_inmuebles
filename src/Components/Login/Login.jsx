@@ -6,10 +6,9 @@ import { Link } from "react-router-dom";
 export const Login = () => {
   return (
     <>
-      <section className="vh-100 login-section">
-        <div className="container py-5 h-100">
+      <section className="vh-100 login login-section">        
           <div className="row d-flex justify-content-center align-items-center h-100">
-            <div className="col col-xl-10">
+            <div className="col col-xl-10 conten-login">
               <div
                 className="card login-card"
                 style={{ boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.1)" }}
@@ -103,8 +102,7 @@ export const Login = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </div>        
       </section>
     </>
   );
