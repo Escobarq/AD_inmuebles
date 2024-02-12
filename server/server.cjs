@@ -31,6 +31,104 @@ app.post('/RPropietario', async (req, res) => {
   } = req.body;
   
   try {
+
+    if (Tipo == "Bodega") {
+      
+      connection.query(
+       'INSERT INTO inmueble (No_Matricula, Direccion, Estrato, Ciudad, Barrio, Tipo, No_Banos, Servicios_Publicos, Aseguramiento, Descripcion, Valor_Inmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+       [Nmatricula,
+         Direccion,
+         Estrato,
+         Ciudad,
+         Barrio,
+         Tipo,
+         Nbanos,
+         Spublicos,
+         aseguramiento,
+         Descripcion,
+        ValorIn,
+      Estado]
+     );
+    }
+    else if(Tipo == "Casa") {
+       connection.query(
+       'INSERT INTO inmueble (No_Matricula, Direccion, Estrato, Ciudad, Barrio, Tipo, No_Banos, Servicios_Publicos, Aseguramiento, Descripcion, Valor_Inmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+       [Nmatricula,
+         Direccion,
+         Estrato,
+         Ciudad,
+         Barrio,
+         Tipo,
+         Nbanos,
+         Spublicos,
+         aseguramiento,
+         Descripcion,
+        ValorIn,
+      Estado]
+     );
+    }
+
+    else if(Tipo == "Apartamento") {
+       connection.query(
+       'INSERT INTO inmueble (No_Matricula, Direccion, Estrato, Ciudad, Barrio, Tipo, No_Habitaciones, No_Niveles, No_Terraza, No_Banos, Servicios_Publicos, Aseguramiento, Descripcion, Valor_Inmueble, Estado) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+       [Nmatricula,
+         Direccion,
+         Estrato,
+         Ciudad,
+         Barrio,
+         Tipo,
+         NoHabita,
+         NoNiveles,
+         NoTerraza,
+         Nbanos,
+         Spublicos,
+         aseguramiento,
+         Descripcion,
+        ValorIn,
+      Estado]
+     );
+    }
+
+    else if(Tipo == "Oficina") {
+       connection.query(
+       'INSERT INTO inmueble (No_Matricula, Direccion, Estrato, Ciudad, Barrio, Tipo, No_Banos, Servicios_Publicos, Aseguramiento, Descripcion, Valor_Inmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+       [Nmatricula,
+         Direccion,
+         Estrato,
+         Ciudad,
+         Barrio,
+         Tipo,
+         Nbanos,
+         Spublicos,
+         aseguramiento,
+         Descripcion,
+        ValorIn,
+      Estado]
+     );
+    }
+    
+    else if(Tipo == "Local") {
+       connection.query(
+       'INSERT INTO inmueble (No_Matricula, Direccion, Estrato, Ciudad, Barrio, Tipo, No_Banos, No_Habitaciones, Servicios_Publicos, Aseguramiento, Descripcion, Valor_Inmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+       [Nmatricula,
+         Direccion,
+         Estrato,
+         Ciudad,
+         Barrio,
+         Tipo,
+         Nbanos,
+         NoHabita,
+         Spublicos,
+         aseguramiento,
+         Descripcion,
+        ValorIn,
+      Estado]
+     );
+    }
+
+
+    res.status(201).json({ message: 'Inmueble Registrado exitosamente' });
+
     connection.query(
       'INSERT INTO propietario (Nombre_Completo, Documento_Identidad, Direccion, Telefono, Correo, Banco, Tipo_Cuenta, Numero_Cuenta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [
@@ -53,6 +151,7 @@ app.post('/RPropietario', async (req, res) => {
         }
       }
     );
+
   } catch (error) {
     console.error('Error al añadir propietario:', error);
     res.status(500).json({ error: 'Error al añadir propietario' });
