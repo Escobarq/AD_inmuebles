@@ -89,8 +89,10 @@ export const RInmuebleA = () => {
               </Form.Group>
 
               <Form.Group controlId="formEstrato">
+
                 <Form.Label>Estrato</Form.Label>
                 <Form.Control {...register("Estrato")} type="number" />
+
               </Form.Group>
 
               <Form.Group controlId="formNoBanos">
