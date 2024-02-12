@@ -63,6 +63,7 @@ app.post('/RPropietario', async (req, res) => {
 });
 
 // Ruta para registrar un Inmueble
+
   app.post('/Reinmueble', async (req,res) => { 
 
     const { Nmatricula,
@@ -187,6 +188,36 @@ app.post('/RPropietario', async (req, res) => {
     res.status(500).json({ error: 'Error al Registrar inmueble' });
   }
 });
+
+/*Registro Codeudor */
+app.post('/Rcodeudor', async (req, res) => {
+
+  const {
+    nombrecompleto,
+    documentoidentidad,
+    telefono,
+    correoelectronico,
+    direccion
+  } = req.body;
+
+  try{
+    connection.query(
+      'INSERT INTO codeudor (Nombre_Completo, Documento_Identidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?)',
+      [nombrecompleto,
+        documentoidentidad,
+        telefono,
+        correoelectronico,
+        direccion,
+      ]
+    );
+  }
+  catch (error) {
+    console.error('Error al añadir codeudor:', error);
+    res.status(500).json({ error: 'Error al añadir codeudor' });
+  }
+}),
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -70,7 +70,7 @@ export const Slidebar = () => {
                   onClick={() => handleItemClick('SubItem4')}
                   active={activeItem === 'SubItem4'}
                 >
-                 Registro Codeudor
+                  Codeudor
                 </Nav.Link>
               </Nav.Item>
 
