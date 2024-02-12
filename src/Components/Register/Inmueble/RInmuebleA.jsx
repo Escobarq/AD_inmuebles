@@ -54,7 +54,7 @@ export const RInmuebleA = () => {
               </Form.Group>
 
               <Form.Group controlId="formEstrato">
-                <Form.Label>Estrato</Form.Label>
+  0              <Form.Label>Estrato</Form.Label>
                 <Form.Control type="number" />
               </Form.Group>
 

@@ -1,85 +1,122 @@
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
+import Btn_inmueble from "../../../assets/btn_inmueble.png"
 import "./RPropietario.css"
-import Btn_inmueble from '../../../assets/btn_inmueble.png'
-import save from '../../../assets/save.png'
-import cancel from '../../../assets/cancel.png'
+import { Form, Button } from 'react-bootstrap';
+import { useForm } from "react-hook-form";
+
 export const RPropietario = () => {
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const onsubmitRegistro = async (data) => {
+    try {
+      const response = await fetch('http://localhost:3006/RPropietario', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (response.ok) {
+        reset(); // Reinicia el formulario si la solicitud es exitosa
+        // Muestra un mensaje de éxito o redirige a otra página
+      } else {
+        // Maneja la respuesta de error del servidor
+      }
+    } catch (error) {
+      // Maneja los errores de red o de la aplicación
+      console.error('Error al enviar datos al servidor:', error);
+    }
+  };
+
   return (
     <>
-    <div className='contener-home contener-rpropietario'>
-      <div className="izq">
-      <h1>Registro Propietario</h1>
+      <div className='contener-home contener-rpropietario'>
+        <div className='container'>
+          <div className='row'>
+            <Form className="form-propietario row" style={{ marginTop: "0" }} onSubmit={handleSubmit(onsubmitRegistro)} method="post">
+              <div className='col-md-6'>
+                <h1>Registro Propietario</h1>
+                <div className='todoform'>
+                  <div className='izquier'>
+                    
+                    <Form.Group controlId='formNoMatricula'>
+                      <Form.Label>Fecha de ingreso:</Form.Label>
+                      <Form.Control {...register("fechaingreso")} type='date' />
+                    </Form.Group>
 
-      <form className='form-propietario' action="">
+                    <Form.Group controlId='formDireccion'>
+                      <Form.Label>Numero de Documento:</Form.Label>
+                      <Form.Control {...register("numerodocumento")} type='number' />
+                    </Form.Group>
 
-      <article className='componente-form'>
-          <p>Fecha de ingreso</p>
-          <input className='input-form' type="date" name="" id="" />
-        </article>
+                    <Form.Group controlId='formCiudad'>
+                      <Form.Label>Nombre de Propietario:</Form.Label>
+                      <Form.Control {...register("nombrepropietario")} type='text' maxLength={100}/>
+                    </Form.Group>
 
-        <article className='componente-form'>
-          <p>Número Documento de identidad</p>
-          <input className='input-form' type="number" name="" min={1} max={9999999999} id="" />
-        </article>
+                    <Form.Group controlId='formBarrio'>
+                      <Form.Label>Telefono:</Form.Label>
+                      <Form.Control {...register("telefono")} type='number' />
+                    </Form.Group>
+                  </div>
+                </div>
+              </div>
 
-        <article className='componente-form'>
-          <p>Nombre Propietario</p>
-          <input className='input-form' type="text" name="" id="" maxLength={100} />
-        </article>
+              <div className='col-md-6'>
+                <div className='izqui'>
+                  
+                  <Form.Group controlId='formEstrato'>
+                    <Form.Label>Correo Electronico:</Form.Label>
+                    <Form.Control {...register("correoelectronico")} type='email' />
+                  </Form.Group>
 
-        <article className='componente-form'>
-          <p>Telefono Propietario</p>
-          <input className='input-form' type="number" name="" min={1000000000} max={9999999999} id="" />
-        </article>
+                  <Form.Group controlId="formTipoInmueble" className="col col-md.auto">
+                    <Form.Label>Tipo De Cuenta</Form.Label>
+                    <Form.Select {...register("tipocuenta")} aria-label="Default select example">
+                      <option value="">Selecciona El tipo de Cuenta</option>
+                      <option value="ahorro de cuenta">Ahorro de Cuenta</option>
+                      <option value="cuenta corriente">Cuenta Corriente</option>
+                    </Form.Select>
+                  </Form.Group>
 
-        <article className='componente-form'>
-          <p>Correo Propietario</p>
-          <input className='input-form' type="email" name="" id="" />
-        </article>
+                  <Form.Group controlId='formValor'>
+                    <Form.Label>Banco</Form.Label>
+                    <Form.Control {...register("banco")} type='Text' />
+                  </Form.Group>
 
-        <article className='componente-form'>
-          <p>Tipo de Cuenta Bancaria</p>
-          <select className='input-form' name="" id="">
-            <option value="" disabled hidden selected>Seleccion el Tipo de Cuenta</option>
-            <option value="Ahorro de cuenta">Ahorro de cuenta</option>
-            <option value="Cuenta Corriente">Cuenta Corriente</option>
-          </select>
-        </article>
+                  <Form.Group controlId='formNoHabitaciones'>
+                    <Form.Label>Direccion Del Propetario</Form.Label>
+                    <Form.Control {...register("direccion")} type='text' />
+                  </Form.Group>
+                </div>
 
-        <article className='componente-form'>
-          <p>Banco</p>
-          <input className='input-form' type="Text" name="" id="" />
-        </article>
-        
-        <article className='componente-form'>
-          <p>Dirección del propietario</p>
-          <input className='input-form' type="Text" name="" id="" />
-        </article>
-
-      </form>
+                <div className='contener-buttons'>
+                  <img src={Btn_inmueble} alt="" className="btninmueble"/>
+                  
+                  <div className="save_deleter d-flex flex-row justify-between justify-content-end">
+                    <Button type="submit" variant="success m-2">
+                      <FontAwesomeIcon icon={faSave} />
+                      <span className="text_button ms-2">Guardar</span>
+                    </Button>
+                    <Button type="reset" variant="danger m-2">
+                      <FontAwesomeIcon icon={faTimes} />
+                      <span className="text_button ms-2">Cancelar</span>
+                    </Button>
+                  </div>
+                </div>
+              </div> 
+            </Form>
+          </div>
+        </div>
       </div>
-      <div className="der">
-
-        <article className="save_delete">
-        <button type="button">
-        <img src={Btn_inmueble} alt="" />
-        </button>
-
-          <button type="button">
-        <img src={save} alt="" />
-        <p className="text_button">Guardar</p>
-          </button>
-
-        <button type="button">
-        <img src={cancel} alt="" />
-        <p className="text_button">Cancelar</p>
-        </button>
-
-        </article> 
-      </div>
-    </div>
     </>
   )
 }
-
-
