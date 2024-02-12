@@ -62,6 +62,7 @@ app.post('/RPropietario', async (req, res) => {
 }
 });
 
+
 // Ruta para registrar un Inmueble
 
   app.post('/Reinmueble', async (req,res) => { 
@@ -186,6 +187,7 @@ app.post('/RPropietario', async (req, res) => {
   } catch (error) {
     console.error('Error al añadir propietario:', error);
     res.status(500).json({ error: 'Error al Registrar inmueble' });
+
   }
 });
 
@@ -210,6 +212,7 @@ app.post('/Rcodeudor', async (req, res) => {
         direccion,
       ]
     );
+
   }
   catch (error) {
     console.error('Error al añadir codeudor:', error);

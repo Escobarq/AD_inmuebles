@@ -12,7 +12,7 @@ export const Slidebar = () => {
   };
   return (
     <>
-     <div className="bg-light border-end" id="sidebar" style={{ width: '300px' ,marginRight:'3%'}}>
+     <div className="bg-light border-end" id="sidebar" style={{ width: '300px' ,marginRight:'3%', height: "100vh"}}>
       <div className="sidebar-heading p-3 bg-dark text-white">
         Menu
       </div>

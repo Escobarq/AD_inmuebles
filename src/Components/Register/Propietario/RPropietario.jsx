@@ -98,6 +98,7 @@ export const RPropietario = () => {
                   </Form.Group>
                 </div>
 
+              </div> 
                 <div className='contener-buttons'>
                   <img src={Btn_inmueble} alt="" className="btninmueble"/>
                   
@@ -112,7 +113,6 @@ export const RPropietario = () => {
                     </Button>
                   </div>
                 </div>
-              </div> 
             </Form>
           </div>
         </div>
