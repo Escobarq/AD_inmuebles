@@ -55,7 +55,7 @@ export const RInmuebleL = () => {
           <div className="col-md-6">
               <Form.Group controlId="formTipoInmueble">
                 <Form.Label>Tipo Inmueble</Form.Label>
-                <Form.Select
+                <Form.Select className="formSelect"
                   aria-label="Default select example"
                   onChange={handleSelectChange}
                 >
@@ -135,8 +135,9 @@ export const RInmuebleL = () => {
                   style={{ width: "100%", resize: "none" }}
                 />
               </Form.Group>
-            <div className="col-md-12">
-              <div className="save_deleter d-flex flex-row justify-between justify-content-end">
+          </div>
+          <div className="col-md-12">
+              <div className="save_deleter">
                 <Button type="submit" variant="success m-2">
                   <FontAwesomeIcon icon={faSave} />
                   <span className="text_button ms-2">Guardar</span>
@@ -147,7 +148,6 @@ export const RInmuebleL = () => {
                 </Button>
               </div>
             </div>
-          </div>
             </Form>
         </div>
       </div>
