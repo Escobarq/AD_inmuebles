@@ -1,24 +1,22 @@
-import  { useState } from 'react';
-import jsPDF from 'jspdf';
-
-import '../Ra/Rarrendatario.css';
-
-import reciboa from './reciboa.jpeg';
-
+import React, { useState } from 'react';
+import "./Rarrendatario.css"
 export const Rarrendatario = () => {
   const [formData, setFormData] = useState({
     fecha: '',
-    cedula: '',
+    documentoIdentidad: '',
+    nombre: '',
+    recibidoDe: '',
     concepto: '',
+    suma: '',
+    periodoDesde: '',
+    periodoHasta: '',
+    pagadoCon: '',
     direccion: '',
-    recibido_Por: '',
-    periodo_Desde: '',
-    periodo_Hasta: '',
-    numero_del_Arrendatario: '',
+    recibidoPor: '',
   });
 
-  const handleGuardarClick = () => {
-    // Check if any field is empty
+  const handleGuardarClick = async () => {
+    // Validar el formulario antes de generar el PDF
     for (const key in formData) {
       const element = formData[key];
       if (!element) {
@@ -27,19 +25,45 @@ export const Rarrendatario = () => {
       }
     }
 
-    const doc = new jsPDF();
-    const imgWidth = 30;
-    const imgHeight = 30;
-    const x = 10;
-    const y = 10;
-    doc.text(`RECIBO DE ARRENDAMIENTO `, imgWidth + 20, y + 10); // Agregar Recibo N° al principio
-    let yOffset = imgHeight + 20;
-    for (const key in formData) {
-      const element = formData[key];
-      if (element) {
-        doc.text(`${key}: ${element}`, 10, yOffset);
-        yOffset += 10;
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const { width, height } = page.getSize();
+      const fontSize = 15;
+      const padding = 50;
+
+      // Añadir los datos del formulario al PDF
+      page.drawText('RECIBO DE ARRENDAMIENTO', {
+        x: padding,
+        y: height - padding - fontSize,
+        size: fontSize,
+        color: rgb(0, 0, 0),
+      });
+
+      let yOffset = height - padding - fontSize * 2;
+      for (const key in formData) {
+        const element = formData[key];
+        if (element) {
+          page.drawText(`${key}: ${element}`, {
+            x: padding,
+            y: yOffset,
+            size: fontSize,
+            color: rgb(0, 0, 0),
+          });
+          yOffset -= fontSize;
+        }
       }
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'recibo.pdf';
+      link.click();
+    } catch (error) {
+      console.error(error);
+      alert('Ocurrió un error al generar el PDF');
     }
   };
 
@@ -51,64 +75,62 @@ export const Rarrendatario = () => {
   const handleCancelarClick = () => {
     setFormData({
       fecha: '',
-      cedula: '',
+      documentoIdentidad: '',
+      nombre: '',
+      recibidoDe: '',
       concepto: '',
+      suma: '',
+      periodoDesde: '',
+      periodoHasta: '',
+      pagadoCon: '',
       direccion: '',
-      recibido_Por: '',
-      periodo_Desde: '',
-      periodo_Hasta: '',
-      numero_del_Arrendatario: '',
+      recibidoPor: '',
     });
   };
 
-
-    return (
+  return (
+    <div className='container'>
       <form className='formu'>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-          <img src={reciboa} alt="recibo arrendatario" style={{ maxWidth: '80%', height: 'auto', marginRight: '10px' }} />
+        <div className='titulo'>
+          <span>RECIBO DE ARRENDATARIO </span>
         </div>
-         <center> <span style={{ fontSize: '18px' }}>RECIBO DE ARRENDATARIO </span>  </center>
-    
-    
- 
-      
-      
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px' }}>
-          <label htmlFor="fecha">Fecha:</label>
-          
-          <input type="text" id="fecha" name="fecha" value={formData.fecha} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
-          <label htmlFor="numeroArrendatario">Número de arrendatario:</label>
-          <input type="text" id="numeroArrendatario" name="numero_del_Arrendatario" value={formData.numero_del_Arrendatario} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
-          <label htmlFor="cedula">Cédula:</label>
-          <input type="text" id="cedula" name="cedula" value={formData.cedula} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
-          <label htmlFor="recibidoDe">Recibido de:</label>
-          <input type="text" id="recibidoDe" name="recibido_Por" value={formData.recibido_Por} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
-          <label htmlFor="concepto">Concepto:</label>
-          <input type="text" id="concepto" name="concepto" value={formData.concepto} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
-          <label htmlFor="periodoDesde">Periodo desde:</label>
-          <input type="text" id="periodoDesde" name="periodo_Desde" value={formData.periodo_Desde} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
-          <label htmlFor="periodoHasta">Periodo hasta:</label>
-          <input type="text" id="periodoHasta" name="periodo_Hasta" value={formData.periodo_Hasta} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
+        <div className='row'>
+          <div className='col-md-6'>
+            <label htmlFor='fecha'>Fecha:</label>
+            <input type='date' id='fecha' name='fecha' value={formData.fecha} onChange={handleInputChange} />
+            <label htmlFor='numeroArrendatario'>Número de identidad:</label>
+            <input type='number' id='numeroArrendatario' name='documentoIdentidad' value={formData.documentoIdentidad} onChange={handleInputChange} />
+            <label htmlFor='cedula'>nombre:</label>
+            <input type='text' id='cedula' name='nombre' value={formData.nombre} onChange={handleInputChange} />
+            <label htmlFor='recibidoDe'>Recibido de:</label>
+            <input type='text' id='recibidoDe' name='recibidoDe' value={formData.recibidoDe} onChange={handleInputChange} />
+            <label htmlFor='concepto'>Concepto:</label>
+            <input type='text' id='concepto' name='concepto' value={formData.concepto} onChange={handleInputChange} />
+            <label htmlFor='suma'>Suma :</label>
+            <input type='number' id='suma' name='suma' value={formData.suma} onChange={handleInputChange} />
+          </div>
+          <div className='col-md-6'>
+            <label htmlFor='periodoDesde'>Periodo desde:</label>
+            <input type='date' id='periodoDesde' name='periodoDesde' value={formData.periodoDesde} onChange={handleInputChange} />
+            <label htmlFor='periodoHasta'>Periodo hasta:</label>
+            <input type='date' id='periodoHasta' name='periodoHasta' value={formData.periodoHasta} onChange={handleInputChange} />
+            <label htmlFor='pagadoCon'>Pagado con :</label>
+            <input type='text' id='pagadoCon' name='pagadoCon' value={formData.pagadoCon} onChange={handleInputChange} />
+            <label htmlFor='direccion'>Dirección:</label>
+            <input type='text' id='direccion' name='direccion' value={formData.direccion} onChange={handleInputChange} />
+            <label htmlFor='recibidoPor'>Recibido por:</label>
+            <input type='text' id='recibidoPor' name='recibidoPor' value={formData.recibidoPor} onChange={handleInputChange} />
+          </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label htmlFor="pagadoCon">Pagado con:</label>
-          <input type="text" id="pagadoCon" name="pagadoCon" value={formData.pagadoCon} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
-          <label htmlFor="direccion">Dirección:</label>
-          <input type="text" id="direccion" name="direccion" value={formData.direccion} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
-          <label htmlFor="recibidoPor">Recibido por:</label>
-          <input type="text" id="recibidoPor" name="recibidoPor" value={formData.recibidoPor} onChange={handleInputChange} style={{ marginBottom: '10px' }} />
-         
-      <button type="button" style={{ backgroundColor: 'green' }} onClick={handleGuardarClick}>
-        Guardar recibo
-      </button>
-      <button type="button" style={{ backgroundColor: 'red', marginLeft: '10px' }} onClick={handleCancelarClick}>
-        Cancelar
-      </button>
-        
+        <div className='botones'>
+          <button type='button' className='guardar' onClick={handleGuardarClick}>
+            Guardar recibo
+          </button>
+          <button type='button' className='cancelar' onClick={handleCancelarClick}>
+            Cancelar
+          </button>
         </div>
-      </div>
-     
-    </form>
+      </form>
+    </div>
   );
 };
