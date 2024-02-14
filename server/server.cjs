@@ -62,7 +62,9 @@ app.post('/RPropietario', async (req, res) => {
 }
 });
 
+
 // Ruta para registrar un Inmueble
+
   app.post('/Reinmueble', async (req,res) => { 
 
     const { Nmatricula,
@@ -185,8 +187,71 @@ app.post('/RPropietario', async (req, res) => {
   } catch (error) {
     console.error('Error al añadir propietario:', error);
     res.status(500).json({ error: 'Error al Registrar inmueble' });
+
   }
 });
+
+/*Registro Codeudor */
+app.post('/Rcodeudor', async (req, res) => {
+
+  const {
+    nombrecompleto,
+    documentoidentidad,
+    telefono,
+    correoelectronico,
+    direccion
+  } = req.body;
+
+  try{
+    connection.query(
+      'INSERT INTO codeudor (Nombre_Completo, Documento_Identidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?)',
+      [nombrecompleto,
+        documentoidentidad,
+        telefono,
+        correoelectronico,
+        direccion,
+      ]
+    );
+
+  }
+  catch (error) {
+    console.error('Error al añadir codeudor:', error);
+    res.status(500).json({ error: 'Error al añadir codeudor' });
+  }
+}),
+
+/*
+Funcion para logear
+*/
+app.post('/Login_user', (req, res) => {
+  const { correousuario, contrausuario } = req.body; // Datos del formulario
+
+  // Consulta SQL para buscar un usuario con el correo electrónico proporcionado
+  const sql = `SELECT * FROM trabajador WHERE correo = ?`;
+
+  connection.query(sql, [correousuario], (error, results) => {
+    if (error) {
+      console.error('Error al realizar la consulta:', error);
+      res.status(500).json({ message: 'Error del servidor' });
+    } else {
+      if (results.length > 0) {
+        const user = results[0];
+        // Verifica si la contraseña coincide
+        if (user.contrasena === contrausuario) {
+          // Las credenciales son válidas
+          res.status(200).json({ message: 'Inicio de sesión exitoso' });
+        } else {
+          // La contraseña es incorrecta
+          res.status(401).json({ message: 'Contraseña incorrecta' });
+        }
+      } else {
+        // No se encontró un usuario con el correo electrónico proporcionado
+        res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+    }
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

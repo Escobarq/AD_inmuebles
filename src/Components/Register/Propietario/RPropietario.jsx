@@ -132,6 +132,7 @@ export const RPropietario = () => {
               
             </div>
               </div>
+
             </Form>
           </div>
         </div>
