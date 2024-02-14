@@ -252,6 +252,34 @@ app.post('/Login_user', (req, res) => {
   });
 });
 
+/*Registrar usuario*/
+app.post('/RegistrarUsuario', async (req, res) => {
+  const { nombre, apellido, correo, contrasena, telefono } = req.body;
+  const idrol = 2
+
+  // Validación básica de entrada
+  if (!nombre || !apellido || !correo || !contrasena || !telefono) {
+    return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+  }
+
+  try {
+    await connection.query(
+      'INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, idrol) VALUES (?, ?, ?, ?, ?, ?)',
+      [nombre, apellido, correo, contrasena, telefono,idrol] // El ID del rol '2' se debe reemplazar por el ID real del rol 'Usuario' en tu base de datos.
+    );
+
+    res.status(201).json({ message: 'Usuario registrado exitosamente' });
+  } catch (error) {
+    console.error('Error al registrar usuario:', error);
+
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ message: 'Ya existe un usuario con ese correo electrónico' });
+    }
+
+    res.status(500).json({ message: 'Error al registrar usuario' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

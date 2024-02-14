@@ -1,11 +1,29 @@
 import login from "../../assets/login.png";
+import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { crearUser } from "../Hooks/RegisterUser";
+import { userLogin } from "../Hooks/Userlogin";
+
 
 export const Login = () => {
+  const [mostrarModal, setMostrarModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const notify = () => toast.success("Se Registro correctamente", {
+    theme: "dark",
+  });
+  const notifi = () => toast.success("Ya existes en la base de datos", {
+    theme: "dark",
+
+  });
+  const falla = () => toast.error("Hubo un error al ingresar los datos , intente nuevamente", {
+    theme: "colored"
+  });
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -18,29 +36,49 @@ export const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const userLogin = async (data) => {
-    console.log(data)
+  //Login//
+  const onsubmitLoginUser = async (data) => {
+
     try {
-      const response = await fetch('http://localhost:3006/Login_user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      
-      if (response.ok) {
-        reset(); // Reinicia el formulario si la solicitud es exitosa
-        window.location.href = '/inicio'; // Redirige al usuario a la vista de inicio
-      } else {
-        // Maneja la respuesta de error del servidor
-      }
+      notify()
+      await userLogin(data);
     } catch (error) {
-      // Maneja los errores de red o de la aplicación
-      console.error('Error al enviar datos al servidor:', error);
+      if (error.message.includes("Cliente ya registrado")) {
+        notifi();
+      } else {
+        falla()
+        throw error; // Re-lanza el error para que pueda ser manejado en el componente
+      }
     }
   };
 
+ 
+  // Modal //
+  const handleMostrarModalClick = () => {
+    setMostrarModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setMostrarModal(false);
+  };
+
+  //Registro Usuario //
+  const onsubmitNewUser = async (data) => {
+    data.Tipo = "Apartamento";
+    try {
+      await crearUser(data);
+      notify('Registro Exioso')
+      reset()
+    } catch (error) {
+      if (error.message.includes("Cliente ya registrado")) {
+        console.log("El cliente ya está registrado");
+      } else {
+        falla()
+        console.error("Error al crear usuario:", error);
+        throw error; // Re-lanza el error para que pueda ser manejado en el componente
+      }
+    }
+  }
   return (
     <>
       <section className="vh-100 login login-section">
@@ -61,7 +99,7 @@ export const Login = () => {
                 </div>
                 <div className="col-md-6 col-lg-7 d-flex align-items-center">
                   <div className="card-body p-4 p-lg-5 text-black">
-                    <form onSubmit={handleSubmit(userLogin)} method="post">
+                    <form onSubmit={handleSubmit(onsubmitLoginUser)} method="post">
                       <div className="d-flex align-items-center mb-3 pb-1">
                         <span className="h1 fw-bold mb-0">
                           Bienvenido Usuario
@@ -133,6 +171,7 @@ export const Login = () => {
                           </p>
                           <a
                             href="#!"
+                            onClick={handleMostrarModalClick}
                             className="btn btn-link"
                             style={{ color: "#393f81" }}
                           >
@@ -142,6 +181,7 @@ export const Login = () => {
                               className="ms-1"
                             />
                           </a>
+
                         </div>
                       </div>
                     </form>
@@ -152,6 +192,56 @@ export const Login = () => {
           </div>
         </div>
       </section>
+      {/* Modal */}
+      <Modal
+        size="lg" 
+        show={mostrarModal}
+        onHide={handleCloseModal}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Registrate</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form method="post" onSubmit={handleSubmit(onsubmitNewUser)}>
+            <div className="row">
+              <div className="col">
+                <input type="text" className="form-control border border-dark" placeholder="Ingresa Nombre"  {...register("nombre")} />
+                <input type="text" className="form-control border border-dark" placeholder="Ingresa Apellido"  {...register("apellido")} />
+                <input type="email" className="form-control border border-dark" placeholder="Ingresa Correo"  {...register("correo")} />
+
+              </div>
+              <div className="col">
+
+                <input type="number" className="form-control border border-dark" placeholder="Ingresa Telefono celular"  {...register("telefono")} />
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="contrausuario"
+                    name="contrausuario"
+                    className="form-control form-control-lg"
+                    placeholder="Ingresa Contraseña"
+                    maxLength={9999999999}
+                    max={15}
+                    {...register("contrasena")}
+                  />
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    style={{ height: "3rem" }}
+                  >
+                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="container d-flex flex-row justify-content-around">
+              <button type="submit" class="btn btn-success w-50">Enviar Datos</button>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
