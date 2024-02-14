@@ -220,6 +220,37 @@ app.post('/Rcodeudor', async (req, res) => {
   }
 }),
 
+/*
+Funcion para logear
+*/
+app.post('/Login_user', (req, res) => {
+  const { correousuario, contrausuario } = req.body; // Datos del formulario
+
+  // Consulta SQL para buscar un usuario con el correo electrónico proporcionado
+  const sql = `SELECT * FROM trabajador WHERE correo = ?`;
+
+  connection.query(sql, [correousuario], (error, results) => {
+    if (error) {
+      console.error('Error al realizar la consulta:', error);
+      res.status(500).json({ message: 'Error del servidor' });
+    } else {
+      if (results.length > 0) {
+        const user = results[0];
+        // Verifica si la contraseña coincide
+        if (user.contrasena === contrausuario) {
+          // Las credenciales son válidas
+          res.status(200).json({ message: 'Inicio de sesión exitoso' });
+        } else {
+          // La contraseña es incorrecta
+          res.status(401).json({ message: 'Contraseña incorrecta' });
+        }
+      } else {
+        // No se encontró un usuario con el correo electrónico proporcionado
+        res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+    }
+  });
+});
 
 
 app.listen(port, () => {
