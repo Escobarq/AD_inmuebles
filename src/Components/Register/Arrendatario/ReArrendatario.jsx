@@ -2,6 +2,7 @@ import React from 'react'
 import './ReArrendatario.css'
 
 export const ReArrendatario = () => {
+
   return (
     <div className='contener-home contener-rpropietario'>
        <div className="izq RA">
@@ -63,20 +64,41 @@ export const ReArrendatario = () => {
           <p>Fecha Termino Contrato</p>
           <input className='input-form' type="Text" name="" id="" />
         </article>
+
         
-        <article className='componente-form'>
-          <p>Meses de Alquiler</p>
-          <input className='input-form' type="Text" name="" id="" />
-        </article>
+                  <div className="form-group">
+                      <label htmlFor="tipoDocumentoCodeudor">Tipo de Documento</label>
+                      <input className='form-control' type="text" name="" id="tipoDocumentoCodeudor" />
+                  </div>
 
-        <article className='componente-form'>
-          <p>Valor de Desopito</p>
-          <input className='input-form' type="Text" name="" id="" />
-        </article>
+                  <div className="form-group">
+                      <label htmlFor="numeroDocumentoCodeudor">No. Documento de identidad</label>
+                      <input className='form-control' type="text" name="" id="numeroDocumentoCodeudor" />
+                  </div>
 
-      </form>
+              </form>
+          </div>
       </div>
-    </div>
+
+      <div className="row">
+          <div className="col-md-12 d-flex justify-content-center">
+              <div className="btn-group" role="group">
+                  <button type="button" className="btn btn-primary">
+                      <img src={save} alt="" />
+                      <span className="text_button">Guardar</span>
+                  </button>
+
+                  <button type="button" className="btn btn-secondary">
+                      <img src={cancel} alt="" />
+                      <span className="text_button">Cancelar</span>
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+
   )
 }
 
