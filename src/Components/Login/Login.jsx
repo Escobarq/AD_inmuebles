@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export const Login = () => {
+  localStorage.clear
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -19,7 +20,7 @@ export const Login = () => {
   } = useForm();
 
   const userLogin = async (data) => {
-    console.log(data)
+
     try {
       const response = await fetch('http://localhost:3006/Login_user', {
         method: 'POST',
@@ -30,7 +31,8 @@ export const Login = () => {
       });
       
       if (response.ok) {
-        reset(); // Reinicia el formulario si la solicitud es exitosa
+        reset();
+        localStorage.setItem('items',(data.correousuario)); // Reinicia el formulario si la solicitud es exitosa
         window.location.href = '/inicio'; // Redirige al usuario a la vista de inicio
       } else {
         // Maneja la respuesta de error del servidor

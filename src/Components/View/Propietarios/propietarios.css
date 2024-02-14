@@ -62,13 +62,12 @@ input[type=number] {
 .title_view {
   display: flex;
   width: 100%;
-  padding: 2%;
-  margin: 2% 0;
+
   justify-content: flex-start; /* Centrar el contenido horizontalmente */
 }
 
 .tittle_propetario {
-  margin-top: 5%;
+
   margin-bottom: 5%;
 }
 
@@ -76,9 +75,6 @@ input[type=number] {
 .view_esp {
   width: 100%;
   height: auto;
-  padding: 2%;
-  overflow-x: auto; /* Modificado para permitir el desplazamiento horizontal en dispositivos pequeños */
-  overflow-y: scroll;
 }
 
 table {
