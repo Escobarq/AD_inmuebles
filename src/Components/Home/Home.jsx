@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+
+import { useEffect, useState } from 'react';
 import logo from '../../assets/Logo.png'
 import './Home.css'
 
@@ -13,6 +14,8 @@ const Home = () => {
             }
             const data = await response.json();
             localStorage.setItem('Rol',(data[0].idrol));
+            localStorage.setItem('user',(data[0].nombre));
+            localStorage.setItem('apellido',(data[0].apellido));
             
             
           } catch (error) {
@@ -33,4 +36,5 @@ const Home = () => {
      );
 }
  
+
 export default Home;
