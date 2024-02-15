@@ -1,20 +1,38 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import './Slide.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faPersonCirclePlus ,faFileInvoiceDollar ,faMagnifyingGlass,faChartColumn } from '@fortawesome/free-solid-svg-icons';
 import { Nav,Accordion  } from 'react-bootstrap';
-
+import logo from '../../assets/Logo.png'
+import { useEffect } from 'react';
 export const Slidebar = () => {
+  const nombre = localStorage.getItem("user")
+  const apellido = localStorage.getItem("apellido")
+  const Rol = localStorage.getItem("Rol")
   const [activeItem, setActiveItem] = useState('');
+  const [TTiporol, setTTiporol] = useState('');
+  
+  useEffect(() => {
+    if(Rol == 1){
+      setTTiporol("Admin")
+    }
+    else if(Rol == 2){
+      setTTiporol("Empleado")
+    }
+   }, []);
 
   const handleItemClick = (itemName) => {
     setActiveItem(itemName);
   };
+
   return (
     <>
      <div className="bg-light border-end" id="sidebar" style={{ width: '300px' ,marginRight:'3%', height: "100vh"}}>
       <div className="sidebar-heading p-3 bg-dark text-white">
-        Menu
+        <p>Bienvenido {nombre}  {apellido}</p>
+        <p>Rol {TTiporol}</p>
+        
       </div>
       <Nav className="flex-column pt-3">
         <Nav.Item>
@@ -218,6 +236,7 @@ export const Slidebar = () => {
         </Accordion>
         </Nav.Item>
       </Nav>
+      <img className='logo-icon' src={logo} alt="" />
     </div>
     </>
   )

@@ -31,3 +31,28 @@
 .conten-login{
     width: 50%;
 }
+
+/* Navbar.css */
+.navbar {
+    height: 60px;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    overflow: hidden;
+    transition: height 0.3s ease-in-out;
+  }
+  
+  .visible {
+    height: 200px; /* Altura deseada cuando está visible */
+  }
+  
+  .arrow {
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  /* Otros estilos para tu Navbar según tus necesidades */
+  

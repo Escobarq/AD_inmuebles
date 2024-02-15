@@ -61,7 +61,7 @@ export const RInmuebleB = () => {
                   aria-label="Default select example"
                   onChange={handleSelectChange}
                 >
-                  <option value="" selected disabled hidden >Bodega</option>
+                  <option value="" selected   >Bodega</option>
                   <option value="RInmuebleA">Apartamento</option>
                   <option value="RinmuebleO">Oficina</option>
                   <option value="RInmuebleL">Local</option>
@@ -100,7 +100,18 @@ export const RInmuebleB = () => {
           <div className="col-md-6">
             <Form.Group controlId="formEstrato">
               <Form.Label>Estrato</Form.Label>
-              <Form.Control required {...register("Estrato")} type="number" />
+              <Form.Select className="formSelect"
+              required {...register("Estrato")}
+                  aria-label="Default select example"
+                >
+                  <option value="" selected   >Seleccione estrato</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                </Form.Select>
             </Form.Group>
 
             <Form.Group controlId="formNoBanos">

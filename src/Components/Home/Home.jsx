@@ -13,6 +13,8 @@ const Home = () => {
             }
             const data = await response.json();
             localStorage.setItem('Rol',(data[0].idrol));
+            localStorage.setItem('user',(data[0].nombre));
+            localStorage.setItem('apellido',(data[0].apellido));
             
             
           } catch (error) {
