@@ -1,6 +1,8 @@
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import "./RegistroCodeudor.css";
 import { useForm } from "react-hook-form";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -41,24 +43,27 @@ export const RegistroCodeudor = () => {
     <Container>
     <Form className='formu' onSubmit={handleSubmit(onsubmitRegistro)}>
       <div className='titulo'>
-        <h1 className='tittle__c'>Registro Codeudor</h1>
+        <h2>Registro Codeudor</h2>
       </div>
-      <Row>
+      
+      <Row className='contener-co'>
         <Col md={6}>
+          
           <Form.Group controlId='nombre'>
             <Form.Label>Nombre:</Form.Label>
             <Form.Control type='text' name='nombrecompleto' {...register("nombrecompleto")} />
           </Form.Group>
+
           <Form.Group controlId='numeroIdentidad'>
             <Form.Label>Número de identidad:</Form.Label>
             <Form.Control type='number' name='documentoidentidad' {...register("documentoidentidad")} max={9999999999}/>
           </Form.Group>
+
           <Form.Group controlId='telefono'>
             <Form.Label>Telefono:</Form.Label>
             <Form.Control type='number' name='telefono' {...register("telefono")} max={9999999999}/>
           </Form.Group>
-        </Col>
-        <Col md={6}>
+        
           <Form.Group controlId='correoElectronico'>
             <Form.Label>Correo</Form.Label>
             <Form.Control type='email' name='correoelectronico' {...register("correoelectronico")} />
@@ -67,16 +72,22 @@ export const RegistroCodeudor = () => {
             <Form.Label>Dirección:</Form.Label>
             <Form.Control type='text' name='direccion' {...register("direccion")} />
           </Form.Group>
+    
         </Col>
+        
       </Row>
-      <div className='botones'>
-        <Button type='submit' className='guardar'>
-          Guardar recibo
-        </Button>
-        <Button type='button' className='cancelar'>
-          Cancelar
-        </Button>
-      </div>
+      <div className='contener-buttons d-flex justify-content-center'>
+    <div className='save_deleter'>
+      <Button type='submit' variant='success m-2'>
+        <FontAwesomeIcon icon={faSave} />
+        <span className='text_button ms-2'>Guardar</span>
+      </Button>
+      <Button type='reset' variant='danger m-2'>
+        <FontAwesomeIcon icon={faTimes} />
+        <span className='text_button ms-2'>Cancelar</span>
+      </Button>
+    </div>
+  </div>
     </Form>
   </Container>
   );
