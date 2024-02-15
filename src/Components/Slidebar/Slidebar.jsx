@@ -202,16 +202,7 @@ export const Slidebar = () => {
             <Accordion.Header>
             <FontAwesomeIcon icon={faChartColumn} size='xl'  className="me-2" />Informes</Accordion.Header>
             <Accordion.Body> 
-              <Nav.Item>
-                <Nav.Link
-                  as={NavLink}
-                  to="/charts"
-                  onClick={() => handleItemClick('SubItem1')}
-                  active={activeItem === 'SubItem1'}
-                >
-                  Informacion Inmueble
-                </Nav.Link>
-              </Nav.Item>
+             
               <Nav.Item>
                 <Nav.Link
                   as={NavLink}

@@ -47,6 +47,7 @@ export const RInmuebleC = () => {
   };
   return (
     <div className="contener-home contener-rpropietario">
+      <h2>Registro Inmueble</h2>
       <div className="container">
         <div className="row">
             <Form className="form-propietario row" style={{ marginTop: "0" }} onSubmit={handleSubmit(onsubmitRegistro)}

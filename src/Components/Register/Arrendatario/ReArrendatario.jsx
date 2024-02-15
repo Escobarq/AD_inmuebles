@@ -41,10 +41,9 @@ export const ReArrendatario = () => {
   }
   return (
     <div className='contener-home contener-rpropietario'>
-      <div className='izq RA'>
         <h1>Registro Arrendatario</h1>
-        <Form className='form-propietario' onSubmit={handleSubmit(onsubmitArrendatario)}>
-          <Row>
+        <Form className='form-propietario row' onSubmit={handleSubmit(onsubmitArrendatario)}>
+          
             <Col md={6}>
               <Form.Group controlId='tipoDocumento'>
                 <Form.Label>Tipo de Documento</Form.Label>
@@ -75,8 +74,8 @@ export const ReArrendatario = () => {
             <Col md={6}>
               
               <Form.Group controlId='correoPropietario'>
-                <Form.Label>Correo Propietario</Form.Label>
-                <Form.Control className='input-form' type='email'  {...register("correo")}/>
+                <Form.Label>Correo Arrendatario</Form.Label>
+                <Form.Control className='input-form' id='correoin' type='email'  {...register("correo")}/>
               </Form.Group>
 
               <Form.Group controlId='telefonoArrendatario'>
@@ -100,9 +99,9 @@ export const ReArrendatario = () => {
               </Form.Group>
 
             </Col>
-          </Row>
+          
         </Form>
-      </div>
+      
       <div className='row'>
         <div className='contener-buttons d-flex justify-content-center'>
           <div className='save_deleter'>

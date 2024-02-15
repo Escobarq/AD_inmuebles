@@ -5,24 +5,7 @@ export const Codeudor = () => {
   return (
     <>
     <div className="contener-home">
-        <div className="filtros_propetario">
-
-          <div className="custom-input">
-            <label htmlFor="email">Nombre del Codeudor</label>
-            <input type="text" id="n-codeudor" placeholder="nombre del codeudor" />
-          </div>
-
-          <div className="custom-input">
-            <label htmlFor="email">Numero Documento</label>
-            <input type="text" id="numero-documento" placeholder="numero de documento" />
-          </div>
-
-          <div className="custom-input">
-            <label htmlFor="email">Telefono</label>
-            <input type='tel' id="telefono" placeholder="Telefono" />
-          </div>        
-        </div>
-
+        
         <div className="title_view">
           <h1 className="tittle_propetario">Codeudores</h1>
         </div>
