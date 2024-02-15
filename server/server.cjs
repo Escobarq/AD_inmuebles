@@ -314,6 +314,34 @@ app.post('/Login_user', (req, res) => {
   });
 });
 
+/*Registrar usuario*/
+app.post('/RegistrarUsuario', async (req, res) => {
+  const { nombre, apellido, correo, contrasena, telefono } = req.body;
+  const idrol = 2
+
+  // Validación básica de entrada
+  if (!nombre || !apellido || !correo || !contrasena || !telefono) {
+    return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+  }
+
+  try {
+    await connection.query(
+      'INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, idrol) VALUES (?, ?, ?, ?, ?, ?)',
+      [nombre, apellido, correo, contrasena, telefono,idrol] // El ID del rol '2' se debe reemplazar por el ID real del rol 'Usuario' en tu base de datos.
+    );
+
+    res.status(201).json({ message: 'Usuario registrado exitosamente' });
+  } catch (error) {
+    console.error('Error al registrar usuario:', error);
+
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ message: 'Ya existe un usuario con ese correo electrónico' });
+    }
+
+    res.status(500).json({ message: 'Error al registrar usuario' });
+  }
+});
+
 //Funcion para traer su información
 app.get('/Infouser', (req, res) => {
   const { correousuario} = req.query; // Datos del formulario
@@ -327,10 +355,58 @@ app.get('/Infouser', (req, res) => {
     } else {
       res.status(200).json(results);
     }
-  });
+  })
 });
 
+// Ruta para registrar un propietario
+app.post('/Rarrendatario', async (req, res) => {
+  const {
+    tipodocumento,
+    numerodocumento,
+    nombrearrendatario,
+    telefono,
+    correo,
+    estado_contrato,
+    meses_alquiler,
+    fecha_inicio,
+    fecha_final,
+    valor_deposito
+  } = req.body;
+
+  try {
+
+  
+  connection.query(
+    'INSERT INTO arrendatario (Nombre_Completo, Documento_Identidad, Telefono, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [
+      tipodocumento,
+      numerodocumento,
+      nombrearrendatario,
+      telefono,
+      correo,
+      estado_contrato,
+      meses_alquiler,
+      fecha_inicio,
+      fecha_final,
+      valor_deposito
+    ],
+    (error, results,) => {
+      if (error) {
+        console.error('Error al añadir propietario:', error);
+        res.status(500).json({ error: 'Error al añadir arrendatario' });
+      } else {
+        console.log('Propietario agregado:', results);
+        res.status(201).json({ message: 'Arrendatario registrado exitosamente' });
+      }
+    }
+  );
+
+} catch (error) {
+  console.error('Error al añadir propietario:', error);
+  res.status(500).json({ error: 'Error al añadir propietario' });
+}
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-});
+})
