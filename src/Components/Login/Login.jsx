@@ -1,4 +1,5 @@
 import login from "../../assets/login.png";
+import './login.css'
 import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -161,13 +162,13 @@ export const Login = () => {
                         </button>
                       </div>
 
-                      <div className="d-flex justify-content-between mt-3">
+                      <div className="footer_login d-flex justify-content-between mt-3 p-auto">
                         <a className="small text-muted" href="#!">
                           Olvidar Contraseña?
                         </a>
                         <div className="d-flex align-items-center">
                           <p
-                            className="mb-0 me-2"
+                            className="text_footer mb-0 me-2"
                             style={{ color: "#393f81" }}
                           >
                             No tienes cuenta?
@@ -240,7 +241,7 @@ export const Login = () => {
               </div>
             </div>
             <div className="container d-flex flex-row justify-content-around">
-              <button type="submit" class="btn btn-success w-50">Enviar Datos</button>
+              <button type="submit" className="btn btn-success w-50">Enviar Datos</button>
             </div>
           </form>
         </Modal.Body>

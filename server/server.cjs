@@ -340,6 +340,7 @@ app.post('/RegistrarUsuario', async (req, res) => {
 
     res.status(500).json({ message: 'Error al registrar usuario' });
   }
+});
 
 //Funcion para traer su información
 app.get('/Infouser', (req, res) => {
@@ -354,11 +355,58 @@ app.get('/Infouser', (req, res) => {
     } else {
       res.status(200).json(results);
     }
-  });
-
+  })
 });
 
+// Ruta para registrar un propietario
+app.post('/Rarrendatario', async (req, res) => {
+  const {
+    tipodocumento,
+    numerodocumento,
+    nombrearrendatario,
+    telefono,
+    correo,
+    estado_contrato,
+    meses_alquiler,
+    fecha_inicio,
+    fecha_final,
+    valor_deposito
+  } = req.body;
+
+  try {
+
+  
+  connection.query(
+    'INSERT INTO arrendatario (Nombre_Completo, Documento_Identidad, Telefono, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [
+      tipodocumento,
+      numerodocumento,
+      nombrearrendatario,
+      telefono,
+      correo,
+      estado_contrato,
+      meses_alquiler,
+      fecha_inicio,
+      fecha_final,
+      valor_deposito
+    ],
+    (error, results,) => {
+      if (error) {
+        console.error('Error al añadir propietario:', error);
+        res.status(500).json({ error: 'Error al añadir arrendatario' });
+      } else {
+        console.log('Propietario agregado:', results);
+        res.status(201).json({ message: 'Arrendatario registrado exitosamente' });
+      }
+    }
+  );
+
+} catch (error) {
+  console.error('Error al añadir propietario:', error);
+  res.status(500).json({ error: 'Error al añadir propietario' });
+}
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-});
+})
