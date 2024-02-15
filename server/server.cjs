@@ -15,8 +15,70 @@ const connection = mysql.createConnection({
   password: '',
   database: 'adminmuebles',
 });
-
+  
 connection.connect();
+
+app.get('/Vpropietarios', (req, res) => {
+  connection.query('SELECT * FROM propietario', (error, results) => {
+    if (error) {
+      console.error('Error al obtener datos de la base de datos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+app.get('/Varrendatario', (req, res) => {
+  connection.query('SELECT * FROM arrendatario', (error, results) => {
+    if (error) {
+      console.error('Error al obtener datos de la base de datos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+app.get('/Vinmueble', (req, res) => {
+  connection.query('SELECT * FROM inmueble', (error, results) => {
+    if (error) {
+      console.error('Error al obtener datos de la base de datos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+app.get('/Vcodeudor', (req, res) => {
+  connection.query('SELECT * FROM codeudor', (error, results) => {
+    if (error) {
+      console.error('Error al obtener datos de la base de datos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+app.get('/VPagoArren', (req, res) => {
+  connection.query('SELECT * FROM pagos_arrendatario', (error, results) => {
+    if (error) {
+      console.error('Error al obtener datos de la base de datos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+app.get('/VReciboPropie', (req, res) => {
+  connection.query('SELECT * FROM recibo_propietario', (error, results) => {
+    if (error) {
+      console.error('Error al obtener datos de la base de datos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
 
 // Ruta para registrar un propietario
 app.post('/RPropietario', async (req, res) => {
@@ -278,6 +340,22 @@ app.post('/RegistrarUsuario', async (req, res) => {
 
     res.status(500).json({ message: 'Error al registrar usuario' });
   }
+
+//Funcion para traer su información
+app.get('/Infouser', (req, res) => {
+  const { correousuario} = req.query; // Datos del formulario
+  // Consulta SQL para buscar un usuario con el correo electrónico proporcionado
+  const sql = `SELECT * FROM trabajador WHERE correo = ?`;
+
+  connection.query(sql, [correousuario], (error, results) => {
+    if (error) {
+      console.error('Error al realizar la consulta:', error);
+      res.status(500).json({ message: 'Error del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+
 });
 
 
