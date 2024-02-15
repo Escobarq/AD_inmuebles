@@ -72,13 +72,13 @@ export const Inmueble = () => {
       if (Inmuebles.Estado == "Ocupado") {
         return (
           <tr>
-            <td>Inmuebles.Id_Propietario</td>
-            <td>Inmuebles.Id_Inmueble</td>
-            <td>Inmuebles</td>
-            <td>Inmuebles</td>
-            <td>Inmuebles</td>
-            <td>Inmuebles</td>
-            <td>Inmuebles</td>
+            <td>{Inmuebles.Id_Propietario}</td>
+            <td>{Inmuebles.Id_Inmueble}</td>
+            <td>{Inmuebles.Direccion}</td>
+            <td>{Inmuebles.Estrato}</td>
+            <td>{Inmuebles.Ciudad}</td>
+            <td>{Inmuebles.Barrio}</td>
+            <td>{Inmuebles.Tipo}</td>
             <td>
               <Button variant="primary" onClick={handleMostrarModalClick}>
                 <svg
@@ -115,13 +115,13 @@ export const Inmueble = () => {
         );
       } else {
         <tr>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
+          <td>{Inmuebles.Id_Propietario}</td>
+          <td>{Inmuebles.Id_Inmueble}</td>
+          <td>{Inmuebles.Direccion}</td>
+          <td>{Inmuebles.Estrato}</td>
+          <td>{Inmuebles.Ciudad}</td>
+          <td>{Inmuebles.Barrio}</td>
+          <td>{Inmuebles.Tipo}</td>
           <td>
             <Button variant="primary" onClick={handleMostrarModalClick}>
               <svg
@@ -159,13 +159,13 @@ export const Inmueble = () => {
     } else {
       return (
         <tr>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
-          <td>Inmuebles</td>
+          <td>{Inmuebles.Id_Propietario}</td>
+          <td>{Inmuebles.Id_Inmueble}</td>
+          <td>{Inmuebles.Direccion}</td>
+          <td>{Inmuebles.Estrato}</td>
+          <td>{Inmuebles.Ciudad}</td>
+          <td>{Inmuebles.Barrio}</td>
+          <td>{Inmuebles.Tipo}</td>
           <td>
             <Button variant="warning">
               <svg

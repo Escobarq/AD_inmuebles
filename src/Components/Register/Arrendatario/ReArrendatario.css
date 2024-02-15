@@ -5,11 +5,10 @@
     flex-direction: row;
     justify-content: center;
 }
-.formSelect{
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    margin-bottom: 20px;
-    height: 45px;
+
+.input-form{
+    height: 10%;
+}
+#correoin{
+    margin-bottom: 12px;
 }
