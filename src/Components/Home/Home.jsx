@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import logo from '../../assets/Logo.png'
 import './Home.css'
@@ -35,4 +36,5 @@ const Home = () => {
      );
 }
  
+
 export default Home;

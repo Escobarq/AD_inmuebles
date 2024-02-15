@@ -1,3 +1,4 @@
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Form, Button } from "react-bootstrap";
@@ -161,3 +162,4 @@ export const RInmuebleB = () => {
     </div>
   );
 };
+

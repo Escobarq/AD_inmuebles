@@ -5,7 +5,6 @@ import { Form, Button } from "react-bootstrap";
  import { useForm } from "react-hook-form";
  import { crearInmueble } from "../../Hooks/RegisterInmueble";
  import { toast } from "react-toastify";
- import 'react-toastify/dist/ReactToastify.css';
 
 export const RInmuebleA = () => {
 

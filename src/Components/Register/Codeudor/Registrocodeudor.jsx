@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import "./RegistroCodeudor.css";
 import { useForm } from "react-hook-form";
 
@@ -38,36 +38,46 @@ export const RegistroCodeudor = () => {
 
 
   return (
-    <div className='container'>
-      <form className='formu'  onSubmit={handleSubmit(onsubmitRegistro)} method="post">
-        <div className='titulo'>
-          <h1 className='tittle__c'>Registro  Codeudor </h1>
-        </div>
-        <div className='row'>
-          <div className='col-md-6'>
-          <label htmlFor='nombre'>Nombre:</label>
-            <input type='text' id='nombre' name='nombrecompleto' {...register("nombrecompleto")}  />
-            <label htmlFor='numeroIdentidad'>Número de identidad:</label>
-            <input type='number' id='numeroIdentidad' name='documentoidentidad' {...register("documentoidentidad")} max={9999999999}/>
-            <label htmlFor='codeudorDe'>Telefono:</label>
-            <input type='number' id='telefono' name='telefono' {...register("telefono")}  max={9999999999}/>
-            <label htmlFor='concepto'>Correo</label>
-            <input type='email' id='correoelectronico' name='correoelectronico' {...register("correoelectronico")}  />
-           </div>
-          <div className='col-md-6'>
-            <label htmlFor='direccion'>Dirección:</label>
-            <input type='text' id='direccion' name='direccion' {...register("direccion")}  />
-          </div>
-        </div>
-        <div className='botones'>
-          <button type='submit' className='guardar'>
-            Guardar recibo
-          </button>
-          <button type='button' className='cancelar'>
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </div>
+    <Container>
+    <Form className='formu' onSubmit={handleSubmit(onsubmitRegistro)}>
+      <div className='titulo'>
+        <h1 className='tittle__c'>Registro Codeudor</h1>
+      </div>
+      <Row>
+        <Col md={6}>
+          <Form.Group controlId='nombre'>
+            <Form.Label>Nombre:</Form.Label>
+            <Form.Control type='text' name='nombrecompleto' {...register("nombrecompleto")} />
+          </Form.Group>
+          <Form.Group controlId='numeroIdentidad'>
+            <Form.Label>Número de identidad:</Form.Label>
+            <Form.Control type='number' name='documentoidentidad' {...register("documentoidentidad")} max={9999999999}/>
+          </Form.Group>
+          <Form.Group controlId='telefono'>
+            <Form.Label>Telefono:</Form.Label>
+            <Form.Control type='number' name='telefono' {...register("telefono")} max={9999999999}/>
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group controlId='correoElectronico'>
+            <Form.Label>Correo</Form.Label>
+            <Form.Control type='email' name='correoelectronico' {...register("correoelectronico")} />
+          </Form.Group>
+          <Form.Group controlId='direccion'>
+            <Form.Label>Dirección:</Form.Label>
+            <Form.Control type='text' name='direccion' {...register("direccion")} />
+          </Form.Group>
+        </Col>
+      </Row>
+      <div className='botones'>
+        <Button type='submit' className='guardar'>
+          Guardar recibo
+        </Button>
+        <Button type='button' className='cancelar'>
+          Cancelar
+        </Button>
+      </div>
+    </Form>
+  </Container>
   );
 };
