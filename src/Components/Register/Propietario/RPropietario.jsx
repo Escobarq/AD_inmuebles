@@ -5,7 +5,12 @@ import "./RPropietario.css"
 import { Form, Button } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 
+
 export const RPropietario = () => {
+
+
+ 
+  
 
   const {
     register,
@@ -23,7 +28,7 @@ export const RPropietario = () => {
         },
         body: JSON.stringify(data),
       });
-      
+
       if (response.ok) {
         reset(); // Reinicia el formulario si la solicitud es exitosa
         // Muestra un mensaje de éxito o redirige a otra página
@@ -40,17 +45,22 @@ export const RPropietario = () => {
     <>
       <div className='contener-home contener-rpropietario'>
         <div className='container'>
+          <h1 className="m-5">Registro Propietario</h1>
           <div className='row'>
             <Form className="form-propietario row" style={{ marginTop: "0" }} onSubmit={handleSubmit(onsubmitRegistro)} method="post">
               <div className='col-md-6'>
-                <h1>Registro Propietario</h1>
-                <div className='todoform'>
+
+                <div className='todoform' style={{ marginRight: "15px" }} >
                   <div className='izquier'>
-                    
+
+
                     <Form.Group controlId='formNoMatricula'>
                       <Form.Label>Fecha de ingreso:</Form.Label>
                       <Form.Control {...register("fechaingreso")} type='date' />
                     </Form.Group>
+
+
+
 
                     <Form.Group controlId='formDireccion'>
                       <Form.Label>Numero de Documento:</Form.Label>
@@ -59,7 +69,7 @@ export const RPropietario = () => {
 
                     <Form.Group controlId='formCiudad'>
                       <Form.Label>Nombre de Propietario:</Form.Label>
-                      <Form.Control {...register("nombrepropietario")} type='text' maxLength={100}/>
+                      <Form.Control {...register("nombrepropietario")} type='text'  maxLength={100} />
                     </Form.Group>
 
                     <Form.Group controlId='formBarrio'>
@@ -72,7 +82,7 @@ export const RPropietario = () => {
 
               <div className='col-md-6'>
                 <div className='izqui'>
-                  
+
                   <Form.Group controlId='formEstrato'>
                     <Form.Label>Correo Electronico:</Form.Label>
                     <Form.Control {...register("correoelectronico")} type='email' />
@@ -80,7 +90,7 @@ export const RPropietario = () => {
 
                   <Form.Group controlId="formTipoInmueble" className="col col-md.auto">
                     <Form.Label>Tipo De Cuenta</Form.Label>
-                    <Form.Select {...register("tipocuenta")} aria-label="Default select example">
+                    <Form.Select className="formSelect" {...register("tipocuenta")} aria-label="Default select example">
                       <option value="">Selecciona El tipo de Cuenta</option>
                       <option value="ahorro de cuenta">Ahorro de Cuenta</option>
                       <option value="cuenta corriente">Cuenta Corriente</option>
@@ -98,21 +108,31 @@ export const RPropietario = () => {
                   </Form.Group>
                 </div>
 
-                <div className='contener-buttons'>
-                  <img src={Btn_inmueble} alt="" className="btninmueble"/>
-                  
-                  <div className="save_deleter d-flex flex-row justify-between justify-content-end">
-                    <Button type="submit" variant="success m-2">
-                      <FontAwesomeIcon icon={faSave} />
-                      <span className="text_button ms-2">Guardar</span>
-                    </Button>
-                    <Button type="reset" variant="danger m-2">
-                      <FontAwesomeIcon icon={faTimes} />
-                      <span className="text_button ms-2">Cancelar</span>
-                    </Button>
-                  </div>
-                </div>
-              </div> 
+              </div>
+              <div className=' d-flex justify-content-end'>
+            <button className='btn btn-primary btn-sm' style={{ background: 'none', border: 'none' }}>
+              <img src={Btn_inmueble} alt="Icono de Inmueble" />
+            </button>
+          </div>
+
+              <div className="contener-buttons d-flex justify-content-center">
+
+
+                
+            <div className="save_deleter">
+              <Button type="submit" variant="success m-2">
+                <FontAwesomeIcon icon={faSave} />
+                <span className="text_button ms-2">Guardar</span>
+              </Button>
+              <Button type="reset" variant="danger m-2">
+                <FontAwesomeIcon icon={faTimes} />
+                <span className="text_button ms-2">Cancelar</span>
+              </Button>
+
+              
+            </div>
+              </div>
+
             </Form>
           </div>
         </div>

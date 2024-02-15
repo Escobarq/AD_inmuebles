@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import "./Rarrendatario.css"
 import { pdfjs } from 'react-pdf';
+import { pdf } from 'pdf';
 
 
 export const Rarrendatario = () => {

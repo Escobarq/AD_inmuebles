@@ -1,73 +1,16 @@
-label {
-    display: block;
-    margin-bottom: 10px;
-}
-
-.contenedor-formulario {
-    width: 70%;
-}
-
-.entregadopor {
-    width: 69%;
-}
-
-.fila-formulario {
-    display: flex;
-    width: 95%;
-}
-
-.fila-formulario1 {
-    display: flex;
-    flex-direction: row;
-}
-
-.grupo-formulario {
-    width: 40%;
-}
-
-.valor {
-    width: 30%;
-}
-
-.grupo1 {
-    width: 32%;
-}
-
-.grupo2 {
-    width: 35%;
-}
-
-.contener-ingry {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: flex-end;
-}
-
-input,
-select {
-    display: inline-block;
-    margin-right: 10px;
-    border: none;
-    width: 95%;
-    padding: 8px;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-    border-radius: 2%;
-}
-
-select {
-    cursor: pointer;
-    border-radius: 2%;
-}
 
 .btn-success {
-    background-color: #4caf50;
+    background-color: #1e4495;
     color: #fff;
-    padding: 10px;
+    padding: 9px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     margin-right: 10px;
+}
+
+.btn-success:hover{
+    background-color: rgb(0, 5, 93);
 }
 .btn-cancelar{
     background-color: #d40000;
@@ -85,22 +28,116 @@ select {
 .iconos button {
     font-size: 18px;
 }
+.fila-formulario1 {
+    display: flex;
+    justify-content: space-between;
+}
 
-.logo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
+.grupo1,
+.grupo2 {
+    flex-basis: 48%; /* Se establece el ancho de cada grupo */
+}
+
+.grupo-formulario,
+.valor{
+    flex-basis: 48%;
+}
+.tit{
+    margin: 9%;
+}
+.btns{
+    margin: 5%;
+}
+.fila-formulario {
+    display: flex;
+    justify-content: space-between;
+}
+
+.grupo-formulario,
+.valor {
+    width: 100%;
+    height: 100%px;
+    display: flex;
+    flex-direction: column;
+   
+}/* Alinea los elementos verticalmente en la parte superior */
+
+.grupo-formulario select {
+    height: 44px; 
+    width: 200px; 
+
+}
+.grupo-formulario select,
+.valor input {
+    margin-bottom: 10px; /* Espacio entre los elementos */
+}
+.logo-pequeno{
+    width: 10%;
+}
+/* Estilos para el contenedor principal del recibo */
+.todo {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+/* Estilos para el título */
+.tit {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para el logo */
+.logo-pequeno {
     width: 100px;
     height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
-.logo-container {
-    position: absolute;
-    top: 6%;
-    left: 28%;
+/* Estilos para los campos del formulario */
+.tod {
+    margin-bottom: 20px;
 }
 
-.logo-pequeno {
-    width: 25%;
-    height: auto;
+/* Estilos para etiquetas y campos de entrada */
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Estilos para los botones */
+.btns {
+    text-align: center;
+}
+
+.guardar-btn,
+.cancelar-btn {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.guardar-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.cancelar-btn {
+    background-color: #dc3545;
+    color: white;
 }

@@ -1,6 +1,6 @@
-export const crearInmueble = async (data) => {
+export const registerArrendatario = async (data) => {
     try {
-        const response = await fetch('http://localhost:3006/Reinmueble', {
+        const response = await fetch('http://localhost:3006/Rarrendatario', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export const crearInmueble = async (data) => {
 
     } catch (error) {
         if (error.message.includes('correo ya registrado')) {
-            
+                
         } else {
             console.error('Error al crear usuario:', error);
             throw error; // Re-lanza el error para que pueda ser manejado en el componente

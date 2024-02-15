@@ -4,8 +4,7 @@ import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Form, Button } from "react-bootstrap";
  import { useForm } from "react-hook-form";
  import { crearInmueble } from "../../Hooks/RegisterInmueble";
- import { ToastContainer, toast } from "react-toastify";
- import 'react-toastify/dist/ReactToastify.css';
+ import { toast } from "react-toastify";
 
 export const RInmuebleA = () => {
 
@@ -57,7 +56,7 @@ export const RInmuebleA = () => {
           <div className="col-md-6">
               <Form.Group controlId="formTipoInmueble" className="col col-md.auto">
                 <Form.Label>Tipo Inmueble</Form.Label>
-                <Form.Select
+                <Form.Select className="formSelect"
                   aria-label="Default select example"
                   onChange={handleSelectChange}
                 >
@@ -143,8 +142,9 @@ export const RInmuebleA = () => {
                 <Form.Label>Descripción</Form.Label>
                 <Form.Control {...register("Descripcion")} as="textarea" rows={2} style={{ width: '100%' , resize:'none'}}/>
               </Form.Group>
-            <div className="col-md-12">
-              <div className="save_deleter d-flex flex-row justify-between justify-content-end">
+          </div>
+          <div className="col-md-12">
+              <div className="save_deleter">
                 <Button type="submit" variant="success m-2">
                   <FontAwesomeIcon icon={faSave} />
                   <span className="text_button ms-2">Guardar</span>
@@ -155,9 +155,7 @@ export const RInmuebleA = () => {
                 </Button>
               </div>
             </div>
-          </div>
             </Form>
-            <ToastContainer />
         </div>
       </div>
     </div>

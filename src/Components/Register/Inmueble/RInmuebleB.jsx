@@ -1,3 +1,4 @@
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Form, Button } from "react-bootstrap";
@@ -57,11 +58,11 @@ export const RInmuebleB = () => {
           <div className="col-md-6">
               <Form.Group controlId="formTipoInmueble">
                 <Form.Label>Tipo Inmueble</Form.Label>
-                <Form.Select
+                <Form.Select className="formSelect"
                   aria-label="Default select example"
                   onChange={handleSelectChange}
                 >
-                  <option value="" selected disabled hidden >Bodega</option>
+                  <option value="" selected   >Bodega</option>
                   <option value="RInmuebleA">Apartamento</option>
                   <option value="RinmuebleO">Oficina</option>
                   <option value="RInmuebleL">Local</option>
@@ -100,7 +101,18 @@ export const RInmuebleB = () => {
           <div className="col-md-6">
             <Form.Group controlId="formEstrato">
               <Form.Label>Estrato</Form.Label>
-              <Form.Control required {...register("Estrato")} type="number" />
+              <Form.Select className="formSelect"
+              required {...register("Estrato")}
+                  aria-label="Default select example"
+                >
+                  <option value="" selected   >Seleccione estrato</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                </Form.Select>
             </Form.Group>
 
             <Form.Group controlId="formNoBanos">
@@ -128,10 +140,10 @@ export const RInmuebleB = () => {
                 <Form.Label>Descripción</Form.Label>
                 <Form.Control required {...register("Descripcion")} as="textarea" rows={2} style={{ width: '100%', resize: 'none' }} />
               </Form.Group>
+          </div>
 
-      
             <div className="col-md-12">
-              <div className="save_deleter d-flex flex-row justify-between justify-content-end">
+              <div className="save_deleter">
                 <Button type="submit" variant="success m-2">
                   <FontAwesomeIcon icon={faSave} />
                   <span className="text_button ms-2">Guardar</span>
@@ -142,7 +154,7 @@ export const RInmuebleB = () => {
                 </Button>
               </div>
             </div>
-          </div>
+
           </Form>
           <ToastContainer />
         </div>
@@ -150,3 +162,4 @@ export const RInmuebleB = () => {
     </div>
   );
 };
+
