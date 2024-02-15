@@ -11,7 +11,7 @@ import { userLogin } from "../Hooks/Userlogin";
 
 export const Login = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
-  
+  localStorage.clear
   const [showPassword, setShowPassword] = useState(false);
 
   const notify = () => toast.success("Se Registro correctamente", {
@@ -36,6 +36,8 @@ export const Login = () => {
     reset,
     formState: { errors },
   } = useForm();
+
+ 
 
   //Login//
   const onsubmitLoginUser = async (data) => {
@@ -65,7 +67,7 @@ export const Login = () => {
 
   //Registro Usuario //
   const onsubmitNewUser = async (data) => {
-    data.Tipo = "Apartamento";
+
     try {
       await crearUser(data);
       notify('Registro Exioso')
