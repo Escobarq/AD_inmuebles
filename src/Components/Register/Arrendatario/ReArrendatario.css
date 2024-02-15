@@ -3,6 +3,7 @@
     margin-top: 5%;
     flex-direction: row;
     justify-content: center;
+
   }
   #correoin{
     margin-bottom: 12px;
@@ -20,3 +21,12 @@
     margin-bottom: 15px;
     height: 40px;
   }
+}
+
+.input-form{
+    height: 10%;
+}
+#correoin{
+    margin-bottom: 12px;
+}
+

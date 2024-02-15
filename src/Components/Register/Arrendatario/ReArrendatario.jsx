@@ -40,7 +40,6 @@ export const ReArrendatario = () => {
     }
   }
   return (
-    <div className='contener-home contener-rpropietario'>
       <h2>Registro Arrendatario</h2>
       <div className='izq RA d-flex justify-content-center align-items-center'>
         <Form className='form-propietario' onSubmit={handleSubmit(onsubmitArrendatario)}>
@@ -49,6 +48,15 @@ export const ReArrendatario = () => {
               <Form.Group controlId='tipoDocumento:'>
                 <Form.Label className='text_normal'>Tipo de Documento</Form.Label>
                 <Form.Control className='input-form' type='number' {...register("tipodocumento")}/>
+
+        <h1>Registro Arrendatario</h1>
+        <Form className='form-propietario row' onSubmit={handleSubmit(onsubmitArrendatario)}>
+          
+            <Col md={6}>
+              <Form.Group controlId='tipoDocumento'>
+                <Form.Label>Tipo de Documento</Form.Label>
+                <Form.Control className='input-form' type='text' {...register("tipodocumento")}/>
+
               </Form.Group>
 
               <Form.Group controlId='numeroDocumento'>
@@ -74,9 +82,13 @@ export const ReArrendatario = () => {
             </Col>
             <Col md={7}>
               
-              <Form.Group controlId='correoPropietario'>
+              <Form.Group controlId='correoPropietario
                 <Form.Label className='text_normal'>Correo arrendatario:</Form.Label>
                 <Form.Control className='input-form' type='email'  {...register("correo")}/>
+
+                <Form.Label>Correo Arrendatario</Form.Label>
+                <Form.Control className='input-form' id='correoin' type='email'  {...register("correo")}/>
+
               </Form.Group>
 
               <Form.Group controlId='telefonoArrendatario'>
@@ -100,9 +112,9 @@ export const ReArrendatario = () => {
               </Form.Group>
 
             </Col>
-          </Row>
+          
         </Form>
-      </div>
+      
       <div className='row'>
   <div className='contener-buttons d-flex justify-content-center'>
     <div className='save_deleter'>
