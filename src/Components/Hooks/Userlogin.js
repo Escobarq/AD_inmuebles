@@ -10,6 +10,7 @@ export const userLogin = async (data) => {
       });
 
       if (response.ok) {
+        localStorage.setItem('items',(data.correousuario)); // Reinicia el formulario si la solicitud es exitosa
         window.location.href = '/inicio'; // Redirige al usuario a la vista de inicio
       } else {
         console.error('hubo un error de nuestro lado')
