@@ -1,3 +1,5 @@
-.tittle__c{
-    text-align: start;
+.contener-co{
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
