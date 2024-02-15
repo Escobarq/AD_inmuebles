@@ -1,6 +1,6 @@
-export const crearInmueble = async (data) => {
+export const crearUser = async (data) => {
     try {
-        const response = await fetch('http://localhost:3006/Reinmueble', {
+        const response = await fetch('http://localhost:3006/RegistrarUsuario', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

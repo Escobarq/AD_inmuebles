@@ -23,13 +23,18 @@ import { ReciboGastos } from './Components/Recibos/Rg/ReciboGastos';
 import { Login } from './Components/Login/Login';
 import { Slidebar } from './Components/Slidebar/Slidebar';
 import { RegistroCodeudor } from './Components/Register/Codeudor/Registrocodeudor';
+import { ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+
 function App() {
   const location = useLocation();
   
   return (
     <>
-    
+     <ToastContainer />
     <div className="Contener-todo">
+    <p className='tittle_relative'>Software Adminmuebles</p>
     {location.pathname !== '/' && <Slidebar/>}
       <Routes>
         <Route path="/" element={<Login />} />
