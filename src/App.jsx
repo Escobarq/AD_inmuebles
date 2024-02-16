@@ -34,7 +34,6 @@ function App() {
     <>
      <ToastContainer />
     <div className="Contener-todo">
-    <p className='tittle_relative'>Software Adminmuebles</p>
     {location.pathname !== '/' && <Slidebar/>}
       <Routes>
         <Route path="/" element={<Login />} />
