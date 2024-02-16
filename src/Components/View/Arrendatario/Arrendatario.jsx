@@ -6,23 +6,7 @@ export const Arrendatario = () => {
     
     <>
      <div className="contener-home">
-        <div className="filtros_propetario">
 
-          <div className="custom-input">
-            <label htmlFor="email">Nombre Arrendatario</label>
-            <input type="number" id="nombre-arrendatario" placeholder="Nombre Arrendatario" />
-          </div>
-
-          <div className="custom-input">
-            <label htmlFor="email">Fecha Vencimiento Seguro</label>
-            <input type="date" id="fecha-vencimiento-seguro" />
-          </div>
-
-          <div className="custom-input">
-            <label htmlFor="email">Fecha Vencimiento Ultima Cuota</label>
-            <input type="date" id="fecha-vencimiento-ultima-cuota" />
-          </div>        
-        </div>
 
         <div className="title_view">
           <h1 className="tittle_propetario">Arrendatarios</h1>

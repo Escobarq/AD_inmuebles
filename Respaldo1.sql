@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `arrendatario` (
   `Id_Arrendatario` int NOT NULL AUTO_INCREMENT,
   `Id_Codeudor` int unsigned DEFAULT NULL,
   `Nombre_Completo` varchar(100) DEFAULT NULL,
+  `Tipo_Documento` varchar(50) DEFAULT NULL,
   `Documento_Identidad` int unsigned DEFAULT NULL,
   `Telefono` int unsigned DEFAULT NULL,
   `Correo` varchar(200) DEFAULT NULL,
@@ -28,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `arrendatario` (
   `Fecha_Inicio_Contrato` date DEFAULT NULL,
   `Fecha_Fin_Contrato` date DEFAULT NULL,
   `Estado` varchar(50) DEFAULT NULL,
+  `Valor_Deposito` decimal(20,5) DEFAULT NULL,
   PRIMARY KEY (`Id_Arrendatario`),
   KEY `Id_Codeudor` (`Id_Codeudor`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
@@ -35,9 +37,9 @@ CREATE TABLE IF NOT EXISTS `arrendatario` (
 -- Volcando datos para la tabla adminmuebles.arrendatario: 2 rows
 DELETE FROM `arrendatario`;
 /*!40000 ALTER TABLE `arrendatario` DISABLE KEYS */;
-INSERT INTO `arrendatario` (`Id_Arrendatario`, `Id_Codeudor`, `Nombre_Completo`, `Documento_Identidad`, `Telefono`, `Correo`, `Cuotas_Pagadas`, `Siguiente_Cuota`, `Cuotas_Pendientes`, `Fecha_Inicio_Contrato`, `Fecha_Fin_Contrato`, `Estado`) VALUES
-	(1, 1, 'Carlos LÃ³pez', 111222333, 1112223334, 'carlos@gmail.com', 5, '2024-03-01', 7, '2024-01-01', '2024-12-31', 'Vigente'),
-	(2, 2, 'Ana RodrÃ­guez', 444555666, 4294967295, 'ana@gmail.com', 10, '2024-03-15', 5, '2023-12-01', '2024-11-30', 'Vigente');
+INSERT INTO `arrendatario` (`Id_Arrendatario`, `Id_Codeudor`, `Nombre_Completo`, `Tipo_Documento`, `Documento_Identidad`, `Telefono`, `Correo`, `Cuotas_Pagadas`, `Siguiente_Cuota`, `Cuotas_Pendientes`, `Fecha_Inicio_Contrato`, `Fecha_Fin_Contrato`, `Estado`, `Valor_Deposito`) VALUES
+	(1, 1, 'Carlos LÃ³pez', NULL, 111222333, 1112223334, 'carlos@gmail.com', 5, '2024-03-01', 7, '2024-01-01', '2024-12-31', 'Vigente', 30000000.00000),
+	(2, 2, 'Ana RodrÃ­guez', NULL, 444555666, 4294967295, 'ana@gmail.com', 10, '2024-03-15', 5, '2023-12-01', '2024-11-30', 'Vigente', NULL);
 /*!40000 ALTER TABLE `arrendatario` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.codeudor
@@ -83,14 +85,22 @@ CREATE TABLE IF NOT EXISTS `inmueble` (
   PRIMARY KEY (`Id_Inmueble`),
   KEY `Id_Arrendatario` (`Id_Arrendatario`),
   KEY `Id_Propietario` (`Id_Propietario`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.inmueble: 7 rows
+-- Volcando datos para la tabla adminmuebles.inmueble: 10 rows
 DELETE FROM `inmueble`;
 /*!40000 ALTER TABLE `inmueble` DISABLE KEYS */;
 INSERT INTO `inmueble` (`Id_Inmueble`, `Id_Arrendatario`, `Id_Propietario`, `No_Matricula`, `Direccion`, `Estrato`, `Ciudad`, `Barrio`, `Tipo`, `No_Niveles`, `Valor_Inmueble`, `No_Banos`, `Servicios_Publicos`, `No_Habitaciones`, `Estado`, `No_Terraza`, `Area_Construida_m2`, `Aseguramiento`, `Descripcion`) VALUES
+	(11, NULL, NULL, 2, 'jkjhkjh', 3, 'jhkjhjh', 'jhkjhkjh', 'Apartamento', 1, 2000, 1, 'jhkjhkjhk', NULL, NULL, 2, NULL, '2024-02-12', 'trdfgjkjfdgfgf'),
+	(10, NULL, NULL, 2, '+ñp', 1, '´l+p´+', 'pkk', 'Bodega', NULL, 2000, 2, 'p´´pp', NULL, NULL, NULL, NULL, NULL, 'lhjkljkhhj'),
 	(1, 1, 1, 12345, 'Calle 456', 4, 'Ciudad A', 'Barrio X', 'Casa', 2, 1500000, 2, 'Agua, EnergÃ­a', 3, 'Desocupado', 1, 120.5, '2024-03-01', 'Casa de dos pisos'),
-	(2, 2, 2, 67890, 'Avenida 789', 5, 'Ciudad B', 'Barrio Y', 'Apartamento', 1, 2000000, 1, 'Agua, EnergÃ­a, Gas', 2, 'Ocupado', 0, 80.5, '2024-06-01', 'Apartamento con vista al mar');
+	(9, NULL, NULL, 1, 'kjlkjl', 1, 'kkjl', 'jhkjhk', 'Oficina', NULL, 2000, 2, 'cgkjkj', NULL, NULL, NULL, NULL, '2024-03-01', 'uiuku'),
+	(2, 2, 2, 67890, 'Avenida 789', 5, 'Ciudad B', 'Barrio Y', 'Apartamento', 1, 2000000, 1, 'Agua, EnergÃ­a, Gas', 2, 'Ocupado', 0, 80.5, '2024-06-01', 'Apartamento con vista al mar'),
+	(12, NULL, NULL, 900, 'fgff', 1, 'fdgfdg', 'dfgfdg', 'Apartamento', 9, 8000, 3, 'fgfgfdgfdfdfgfdg', NULL, NULL, 9, NULL, '2024-02-12', 'dfgfgfgf'),
+	(13, NULL, NULL, 900, 'fgff', 8, 'fgfg', 'fhfh', 'Apartamento', 9, 700, 2, 'sd', NULL, NULL, 6, NULL, '2024-02-12', 'dfdfdf'),
+	(14, NULL, NULL, 2, 'fdfd', 1, 'palmira', 'fhfh', 'Apartamento', 2, 1000000, 2, 'fgffgf', NULL, NULL, 1, NULL, '2024-02-12', '  n n n nvbvbbvbvvb'),
+	(15, NULL, NULL, 896, 'calle #2 cr33', 3, 'palmira', 'dfdfd', 'Apartamento', 2, 2000, 9, 'jiisgsdjsdjdjss', NULL, NULL, 1, NULL, '2024-02-12', 'vgygg'),
+	(16, NULL, NULL, 55, 'kj,k,kj,jk,', 4, 'fgfgfd', 'dfgfgfdg', 'Bodega', NULL, 20000, 5, 'gfgfgf', NULL, NULL, NULL, NULL, NULL, ',k.kl.jk.');
 /*!40000 ALTER TABLE `inmueble` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.pagos_arrendatario

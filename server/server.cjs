@@ -19,7 +19,7 @@ const connection = mysql.createConnection({
 connection.connect();
 
 app.get('/Vpropietarios', (req, res) => {
-  connection.query('SELECT * FROM propietario', (error, results) => {
+  connection.query('SELECT * FROM propietario ORDER BY Id_Propietario ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -29,7 +29,7 @@ app.get('/Vpropietarios', (req, res) => {
   });
 });
 app.get('/Varrendatario', (req, res) => {
-  connection.query('SELECT * FROM arrendatario', (error, results) => {
+  connection.query('SELECT * FROM arrendatario ORDER BY Id_Arrendatario ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -39,7 +39,7 @@ app.get('/Varrendatario', (req, res) => {
   });
 });
 app.get('/Vinmueble', (req, res) => {
-  connection.query('SELECT * FROM inmueble', (error, results) => {
+  connection.query('SELECT * FROM inmueble ORDER BY Id_Inmueble ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -49,7 +49,7 @@ app.get('/Vinmueble', (req, res) => {
   });
 });
 app.get('/Vcodeudor', (req, res) => {
-  connection.query('SELECT * FROM codeudor', (error, results) => {
+  connection.query('SELECT * FROM codeudor ORDER BY Id_Codeudor ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -59,7 +59,7 @@ app.get('/Vcodeudor', (req, res) => {
   });
 });
 app.get('/VPagoArren', (req, res) => {
-  connection.query('SELECT * FROM pagos_arrendatario', (error, results) => {
+  connection.query('SELECT * FROM propietario ORDER BY Id_Propietario ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -69,7 +69,7 @@ app.get('/VPagoArren', (req, res) => {
   });
 });
 app.get('/VReciboPropie', (req, res) => {
-  connection.query('SELECT * FROM recibo_propietario', (error, results) => {
+  connection.query('SELECT * FROM propietario ORDER BY Id_Propietario ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
