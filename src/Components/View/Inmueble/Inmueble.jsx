@@ -1,6 +1,15 @@
 import "./inmuebles.css";
 import { useEffect, useState } from "react";
 import { Table, Button, Modal } from "react-bootstrap";
+import Pagination from 'react-bootstrap/Pagination'
+import {
+  faEye,
+  faUserPlus,
+  faTrash,
+  faPenToSquare,
+  faHouseChimneyMedical,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Inmueble = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -47,7 +56,7 @@ export const Inmueble = () => {
           <th>Barrio</th>
           <th>Tipo</th>
           <th>Ver más</th>
-          <th>Agregar nuevo</th>
+          <th>Asignar arrendatario</th>
         </tr>
       );
     } else {
@@ -60,9 +69,9 @@ export const Inmueble = () => {
           <th>Ciudad</th>
           <th>Barrio</th>
           <th>Tipo</th>
-          <th>Editar</th>
           <th>Ver más</th>
-          <th>Agregar nuevo</th>
+          <th>Asignar arrendatario</th>
+          <th>Opciones</th>
         </tr>
       );
     }
@@ -81,34 +90,12 @@ export const Inmueble = () => {
             <td>{Inmuebles.Tipo}</td>
             <td>
               <Button variant="primary" onClick={handleMostrarModalClick}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  widths="20"
-                  viewBox="0 0 576 512"
-                >
-                  <path
-                    fill="#ffffff"
-                    d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"
-                  />
-                </svg>
-                Ver más
+                <FontAwesomeIcon icon={faEye} />{" "}
               </Button>
             </td>
             <td>
               <Button disabled variant="success">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  width="20"
-                  viewBox="0 0 320 512"
-                >
-                  <path
-                    fill="#ffffff"
-                    d="M112 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm40 304V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V256.9L59.4 304.5c-9.1 15.1-28.8 20-43.9 10.9s-20-28.8-10.9-43.9l58.3-97c17.4-28.9 48.6-46.6 82.3-46.6h29.7c33.7 0 64.9 17.7 82.3 46.6l58.3 97c9.1 15.1 4.2 34.8-10.9 43.9s-34.8 4.2-43.9-10.9L232 256.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V352H152z"
-                  />
-                </svg>
-                Arrendador
+                <FontAwesomeIcon icon={faUserPlus}  /> 
               </Button>
             </td>
           </tr>
@@ -124,35 +111,11 @@ export const Inmueble = () => {
           <td>{Inmuebles.Tipo}</td>
           <td>
             <Button variant="primary" onClick={handleMostrarModalClick}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="20"
-                widths="20"
-                viewBox="0 0 576 512"
-              >
-                <path
-                  fill="#ffffff"
-                  d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"
-                />
-              </svg>
-              Ver más
+              <FontAwesomeIcon icon={faEye} />{" "}
             </Button>
           </td>
           <td>
-            <Button variant="success">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="20"
-                width="20"
-                viewBox="0 0 320 512"
-              >
-                <path
-                  fill="#ffffff"
-                  d="M112 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm40 304V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V256.9L59.4 304.5c-9.1 15.1-28.8 20-43.9 10.9s-20-28.8-10.9-43.9l58.3-97c17.4-28.9 48.6-46.6 82.3-46.6h29.7c33.7 0 64.9 17.7 82.3 46.6l58.3 97c9.1 15.1 4.2 34.8-10.9 43.9s-34.8 4.2-43.9-10.9L232 256.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V352H152z"
-                />
-              </svg>
-              Arrendador
-            </Button>
+            <Button variant="success"><FontAwesomeIcon icon={faUserPlus}  /> </Button>
           </td>
         </tr>;
       }
@@ -167,52 +130,19 @@ export const Inmueble = () => {
           <td>{Inmuebles.Barrio}</td>
           <td>{Inmuebles.Tipo}</td>
           <td>
-            <Button variant="warning">
-              <svg
-                className="editar"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                height="20"
-                width="20"
-              >
-                <path
-                  fill="#ffffff"
-                  d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"
-                />
-              </svg>
-              Editar
-            </Button>
-          </td>
-          <td>
             <Button variant="primary" onClick={handleMostrarModalClick}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="20"
-                widths="20"
-                viewBox="0 0 576 512"
-              >
-                <path
-                  fill="#ffffff"
-                  d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"
-                />
-              </svg>
-              Ver más
+              <FontAwesomeIcon icon={faEye} />
             </Button>
           </td>
           <td>
-            <Button variant="success">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="20"
-                width="20"
-                viewBox="0 0 320 512"
-              >
-                <path
-                  fill="#ffffff"
-                  d="M112 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm40 304V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V256.9L59.4 304.5c-9.1 15.1-28.8 20-43.9 10.9s-20-28.8-10.9-43.9l58.3-97c17.4-28.9 48.6-46.6 82.3-46.6h29.7c33.7 0 64.9 17.7 82.3 46.6l58.3 97c9.1 15.1 4.2 34.8-10.9 43.9s-34.8 4.2-43.9-10.9L232 256.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V352H152z"
-                />
-              </svg>
-              Arrendador
+            <Button variant="success"><FontAwesomeIcon icon={faUserPlus}  /> </Button>
+          </td>
+          <td>
+            <Button className="btn-opciones" variant="danger">
+              <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
+            </Button>
+            <Button className="btn-opciones" variant="warning">
+              <FontAwesomeIcon icon={faPenToSquare} />
             </Button>
           </td>
         </tr>
@@ -222,6 +152,37 @@ export const Inmueble = () => {
   return (
     <>
       <div className="contener-home">
+      <div className="conten-filtro">
+          <div className="conten-inputs">
+        <label className="l1" >Tipo Inmueble </label>
+        <select className="input-filtroRe" name="" id="">
+          <option value="Apartamento">Apartamento</option>
+          <option value="Bodega">Bodega</option>
+          <option value="Casa">Casa</option>
+          <option value="Oficina">Oficina</option>
+          <option value="Local">Local</option>
+        </select>
+        
+        <label className="l1" >Estrato </label>
+        <select className="input-filtroRe" name="" id="">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+
+        <label className="l1" >Estado </label>
+        <select className="input-filtroRe" name="" id="">
+          <option value="Ocupado">Ocupado</option>
+          <option value="Disponible">Disponible</option>          
+        </select>
+        
+          </div>
+        
+      <Button variant="success" className="btn-add" ><FontAwesomeIcon icon={faHouseChimneyMedical} style={{color: "#ffffff",}} />  Agregar Inmueble</Button>{' '}
+        </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Inmuebles</h1>
         </div>
@@ -235,13 +196,33 @@ export const Inmueble = () => {
             </Table>
           </div>
         </div>
+        <div className="paginador">
+
+        <Pagination>
+      <Pagination.First />
+      <Pagination.Prev />
+      <Pagination.Item>{1}</Pagination.Item>
+      <Pagination.Ellipsis />
+
+      <Pagination.Item>{10}</Pagination.Item>
+      <Pagination.Item>{11}</Pagination.Item>
+      <Pagination.Item active>{12}</Pagination.Item>
+      <Pagination.Item>{13}</Pagination.Item>
+      <Pagination.Item disabled>{14}</Pagination.Item>
+
+      <Pagination.Ellipsis />
+      <Pagination.Item>{20}</Pagination.Item>
+      <Pagination.Next />
+      <Pagination.Last />
+    </Pagination>
+        </div>
         {/* Modal */}
         <Modal
           size="lg" // Agregar la propiedad size="lg" para el modal largo
           show={mostrarModal}
           onHide={handleCloseModal}
           aria-labelledby="example-modal-sizes-title-lg"
-        >
+          >
           <Modal.Header closeButton>
             <Modal.Title>Detalles del inmueble</Modal.Title>
           </Modal.Header>
@@ -263,7 +244,10 @@ export const Inmueble = () => {
             </Table>
           </Modal.Body>
         </Modal>
+
+        
       </div>
+      
     </>
   );
 };

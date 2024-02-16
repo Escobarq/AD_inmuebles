@@ -12,7 +12,7 @@ import { userLogin } from "../Hooks/Userlogin";
 
 export const Login = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
-  localStorage.clear
+  
   const [showPassword, setShowPassword] = useState(false);
 
   const notify = () => toast.success("Se Registro correctamente", {
@@ -125,6 +125,7 @@ export const Login = () => {
                           Correo
                         </label>
                         <input
+                        required
                           type="email"
                           id="correousuario"
                           name="correousuario"
@@ -139,6 +140,7 @@ export const Login = () => {
                         </label>
                         <div className="input-group">
                           <input
+                          required
                             type={showPassword ? "text" : "password"}
                             id="contrausuario"
                             name="contrausuario"
