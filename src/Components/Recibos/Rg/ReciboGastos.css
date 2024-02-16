@@ -9,7 +9,6 @@
 }
 
 .btn-success {
-    background-color: #1e4495;
     color: #fff;
     padding: 9px;
     border: none;
@@ -18,9 +17,6 @@
     margin-right: 10px;
 }
 
-.btn-success:hover {
-    background-color: rgb(0, 5, 93);
-}
 
 .btn-cancelar {
     background-color: #d40000;
