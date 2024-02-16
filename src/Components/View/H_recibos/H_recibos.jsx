@@ -4,47 +4,7 @@ export const H_recibos = () => {
   return (
     <>
       <div className="contener-home">
-        <div className="filtros_propetario">
-          <div className="custom-input">
-            <label htmlFor="email">Cedula Ciudadania </label>
-            <input
-              type="number"
-              id="cedula-cuidadania"
-              placeholder="Cedula Cuidadania"
-            />
-          </div>
 
-          <div className="custom-input">
-            <label htmlFor="email">Fecha de Ingreso</label>
-            <input type="date" id="fecha-ingreso" />
-          </div>
-
-          <div className="custom-input">
-            <label htmlFor="email">Nombre del Cliente</label>
-            <input
-              type="text"
-              id="nombre-cliente"
-              placeholder="Nombre del Cliente"
-            />
-          </div>
-
-          <div className="custom-input">
-            <label htmlFor="email">Ciudad</label>
-            <input type="text" id="ciudad" placeholder="Cuidad" />
-          </div>
-
-          <div className="custom-input">
-            <label htmlFor="metodo-pago">Metodo de Pago</label>
-            <select id="metodo-pago">
-              <option value="" disabled selected>
-                Seleccione un Metodo de pago
-              </option>
-              <option value="efectivo">Efectivo</option>
-              <option value="transferencia">Transferencia</option>
-              <option value="cheque">Cheque</option>
-            </select>
-          </div>
-        </div>
 
         <div className="title_view">
           <h1 className="tittle_propetario">

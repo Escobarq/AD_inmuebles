@@ -9,13 +9,6 @@
   width: 50%;
 }
 
-.tittle_relative {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 3rem; /* Ajusta el margen según sea necesario */
-  z-index: 1;
-}
 
 .contener-home{
     width: 100%;
