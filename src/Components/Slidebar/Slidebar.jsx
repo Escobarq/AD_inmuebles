@@ -16,19 +16,44 @@ import {
 import { Nav, Modal, Button } from "react-bootstrap";
 import { useEffect } from "react";
 
-export const Slidebar = () => {
-  const nombre = localStorage.getItem("user");
-  const apellido = localStorage.getItem("apellido");
-  const Rol = localStorage.getItem("Rol");
-  const [TTiporol, setTTiporol] = useState("");
 
+export const Slidebar = () => {
+
+  const correousuario = localStorage.getItem('items')
+  const [nombre, setnombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [Rol, setRol] = useState("");
+  
+  const [TTiporol, setTTiporol] = useState("");
   useEffect(() => {
-    if (Rol == 1) {
-      setTTiporol("Admin");
-    } else if (Rol == 2) {
-      setTTiporol("Empleado");
-    }
-  }, []);
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`http://localhost:3006/Infouser?correousuario=${correousuario}`);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          localStorage.setItem('Rol',(data[0].idrol));
+          localStorage.setItem('user',(data[0].nombre));
+          localStorage.setItem('apellido',(data[0].apellido));
+          setnombre(data[0].nombre)
+          setApellido(data[0].apellido)
+          setRol(data[0].idrol)
+          if (data[0].idrol == 1) {
+            setTTiporol("Admin");
+          } else if (data[0].idrol== 2) {
+            setTTiporol("Empleado");
+          }
+        } catch (error) {
+          console.error('Error fetching products:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+
+
+
 
   const [showConfirmation, setShowConfirmation] = useState(false);
 
