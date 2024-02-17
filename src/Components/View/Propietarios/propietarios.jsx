@@ -8,6 +8,7 @@ import {
   faTrash,
   faPenToSquare
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 export const Propietarios = () => {
   const [infopropietario, setinfopropietario] = useState([]);
@@ -35,26 +36,10 @@ export const Propietarios = () => {
   }, []);
   const createheader = () => {
     
-      if (Rol == 2){
-        return(
-          <tr>
-          <th>Id Propietario</th>
-          <th>Nombre</th>
-          <th>Dirección</th>
-          <th>Teléfono</th>
-          <th>Correo</th>
-          <th>Fecha de ingreso</th>
-          <th>Banco</th>
-          <th>Tipo de cuenta</th>
-          <th>Número de cuenta</th>          
-          </tr>
-          )
-        }
-        else{
           
           return(
             <tr>
-            <th>Id Propietario</th>
+            <th>No. Documento</th>
             <th>Nombre</th>
             <th>Dirección</th>
             <th>Teléfono</th>
@@ -65,33 +50,15 @@ export const Propietarios = () => {
             <th>Número de cuenta</th>
             <th>Opciones</th>
             </tr>
-            )
-        }
+         )
+        
           
   };
   const createrow = (Propietario) => {
-    if (Rol == 2) {
-      return (
-        <tr key={Propietario.Id_Propietario}>
-          <td>{Propietario.Id_Propietario}</td>
-          <td>{Propietario.Nombre_Completo}</td>
-          <td>{Propietario.Direccion}</td>
-          <td>{Propietario.Telefono}</td>
-          <td>{Propietario.Correo}</td>
-          <td>pendiente</td>
-          <td>{Propietario.Banco}</td>
-          <td>{Propietario.Tipo_Cuenta}</td>
-          <td>{Propietario.Numero_Cuenta}</td>
 
-          
-        </tr>
-  
-      );
-    }
-    else {
       return (
         <tr key={Propietario.Id_Propietario}>
-          <td>{Propietario.Id_Propietario}</td>
+          <td>{Propietario.Documento_Identidad}</td>
           <td>{Propietario.Nombre_Completo}</td>
           <td>{Propietario.Direccion}</td>
           <td>{Propietario.Telefono}</td>
@@ -112,7 +79,6 @@ export const Propietarios = () => {
         </tr>
   
       );
-    }
   };
 
   return (
@@ -125,9 +91,12 @@ export const Propietarios = () => {
         <label className="l1" >Fecha Ingreso: </label>
         <input className="input-filtroRe" type="date" name="" id="" />
           </div>
+      <Button variant="success" className="btn-add" >
+        <Link to= "/RPropietario">
+        <FontAwesomeIcon className="icon" icon={faUserPlus} />  Agregar Propietario
         
-          
-      <Button variant="success" className="btn-add" ><FontAwesomeIcon icon={faUserPlus}  />  Agregar Propietario</Button>{' '}
+        </Link>
+        </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Propetarios</h1>

@@ -70,7 +70,7 @@ export const Slidebar = () => {
     <>
       <div
         className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
-        style={{ width: "280px", marginRight: "3%", height: "100vh" }}
+        style={{ width: "280px", marginRight: "3%", minHeight: "100vh" }}
       >
         <span className="fs-4">
           {nombre} {apellido}
@@ -229,7 +229,7 @@ export const Slidebar = () => {
             style={{ color: "#ffffff" }}
             icon={faRightFromBracket}
           />
-          <strong>Salir Sesión</strong>
+          <strong>Cerrar Sesión</strong>
         </Button>
         <Modal
           show={showConfirmation}
