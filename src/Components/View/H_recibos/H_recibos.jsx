@@ -66,6 +66,7 @@ export const H_recibos = () => {
           <td>{PArrendamiento.Forma_Pago}</td>
           <td>{PArrendamiento.Estado}</td>
           <td>{PArrendamiento.Dias_De_Mora}</td>
+          <td>{PArrendamiento.Dias_De_Mora}</td>
           <td>
       <Button className="btn-opciones" variant="danger">
       <FontAwesomeIcon icon={faTrash} style={{color: "#ffffff",}} />
