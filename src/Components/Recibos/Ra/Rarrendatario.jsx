@@ -128,7 +128,7 @@ export const Rarrendatario = () => {
         </div>
         <div className='botones'>
           <button type='button' className='guardar' onClick={handleGuardarClick}>
-            Guardar recibo
+           Generar recibo
           </button>
           <button type='button' className='cancelar' onClick={handleCancelarClick}>
             Cancelar

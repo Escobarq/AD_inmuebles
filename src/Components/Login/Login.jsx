@@ -12,12 +12,17 @@ import { userLogin } from "../Hooks/Userlogin";
 
 export const Login = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
-  localStorage.clear
+  
   const [showPassword, setShowPassword] = useState(false);
 
   const notify = () => toast.success("Se Registro correctamente", {
     theme: "dark",
   });
+
+  const a = () => toast.success("Se inicio correctamente", {
+    theme: "dark",
+  });
+
   const notifi = () => toast.success("Ya existes en la base de datos", {
     theme: "dark",
 
@@ -44,11 +49,11 @@ export const Login = () => {
   const onsubmitLoginUser = async (data) => {
 
     try {
-      notify()
       await userLogin(data);
+      a();
     } catch (error) {
       if (error.message.includes("Cliente ya registrado")) {
-        notifi();
+        notifi()
       } else {
         falla()
         throw error; // Re-lanza el error para que pueda ser manejado en el componente
@@ -75,7 +80,7 @@ export const Login = () => {
       reset()
     } catch (error) {
       if (error.message.includes("Cliente ya registrado")) {
-        console.log("El cliente ya está registrado");
+        notifi();
       } else {
         falla()
         console.error("Error al crear usuario:", error);
@@ -125,11 +130,13 @@ export const Login = () => {
                           Correo
                         </label>
                         <input
+                        required
                           type="email"
                           id="correousuario"
                           name="correousuario"
                           className="form-control form-control-lg"
                           {...register("correousuario")}
+                          required
                         />
                       </div>
 
@@ -144,6 +151,8 @@ export const Login = () => {
                             name="contrausuario"
                             className="form-control form-control-lg"
                             {...register("contrausuario")}
+                            required
+                          
                           />
                           <button
                             className="btn btn-outline-secondary"
@@ -210,14 +219,14 @@ export const Login = () => {
           <form method="post" onSubmit={handleSubmit(onsubmitNewUser)}>
             <div className="row">
               <div className="col">
-                <input type="text" className="form-control border border-dark" placeholder="Ingresa Nombre"  {...register("nombre")} />
-                <input type="text" className="form-control border border-dark" placeholder="Ingresa Apellido"  {...register("apellido")} />
-                <input type="email" className="form-control border border-dark" placeholder="Ingresa Correo"  {...register("correo")} />
+                <input type="text" className="form-control border border-dark" placeholder="Ingresa Nombre"  {...register("nombre")} required/>
+                <input type="text" className="form-control border border-dark" placeholder="Ingresa Apellido"  {...register("apellido")}required/>
+                <input type="email" className="form-control border border-dark" placeholder="Ingresa Correo"  {...register("correo")}required/>
 
               </div>
               <div className="col">
 
-                <input type="number" className="form-control border border-dark" placeholder="Ingresa Telefono celular"  {...register("telefono")} />
+                <input type="number" className="form-control border border-dark" placeholder="Ingresa Telefono celular"  {...register("telefono" ,)}required />
                 <div className="input-group">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -227,6 +236,7 @@ export const Login = () => {
                     placeholder="Ingresa Contraseña"
                     maxLength={9999999999}
                     max={15}
+                    required
                     {...register("contrasena")}
                   />
                   <button
