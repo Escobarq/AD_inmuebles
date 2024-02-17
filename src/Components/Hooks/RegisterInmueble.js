@@ -17,7 +17,7 @@ export const crearInmueble = async (data) => {
 
     } catch (error) {
         if (error.message.includes('correo ya registrado')) {
-            
+            console.log('XD')
         } else {
             console.error('Error al crear usuario:', error);
             throw error; // Re-lanza el error para que pueda ser manejado en el componente

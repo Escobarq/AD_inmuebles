@@ -1,11 +1,12 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button,Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useState } from "react";
 
 export const RInmuebleB = () => {
 
@@ -21,7 +22,6 @@ export const RInmuebleB = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
   } = useForm();
 
   const onsubmitRegistro = async (data) => {
@@ -46,6 +46,22 @@ export const RInmuebleB = () => {
     if (selectedOption) {
       window.location.assign(`/${selectedOption}`);
     }
+  };
+
+  // Redireccion en caso de confirmar o cancelar
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+
+  const Confirmacion = () => {
+    setShowConfirmation(true);
+  };
+
+  const Delete = () => {
+    setShowDelete(true);
+  };
+
+  const confirmSeccion = () => {
+    window.location.href = "/Inmueble";
   };
   return (
     
@@ -145,16 +161,60 @@ export const RInmuebleB = () => {
 
             <div className="col-md-12">
               <div className="save_deleter">
-                <Button type="submit" variant="success m-2">
+                <Button type="button" variant="success m-2" onClick={Confirmacion}>
                   <FontAwesomeIcon icon={faSave} />
                   <span className="text_button ms-2">Guardar</span>
                 </Button>
-                <Button type="reset" variant="danger m-2">
+                <Button type="reset" variant="danger m-2" onClick={Delete}>
                   <FontAwesomeIcon icon={faTimes} />
                   <span className="text_button ms-2">Cancelar</span>
                 </Button>
               </div>
             </div>
+                {/* Modal confirmacion si */}
+                <Modal
+              show={showConfirmation}
+              onHide={() => setShowConfirmation(false)}
+            >
+              <Modal.Header closeButton={false}>
+                <Modal.Title>Confirmación</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¿Estás seguro de que los datos son correctos?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                type="button"
+                  variant="secondary"
+                  onClick={() => setShowConfirmation(false)}
+                >
+                  No
+                </Button>
+                <Button variant="danger" type="submit">
+                  Sí
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
+            {/* Modal Cancelacion si */}
+            <Modal show={showDelete} onHide={() => setShowDelete(false)}>
+              <Modal.Header closeButton={false}>
+                <Modal.Title>Confirmación</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¿Estás seguro de que deseas cancelar la operacion?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                type="button"
+                  variant="secondary"
+                  onClick={() => setShowDelete(false)}
+                >
+                  No
+                </Button>
+                <Button variant="danger" onClick={confirmSeccion}>Sí</Button>
+              </Modal.Footer>
+            </Modal>
 
           </Form>
           <ToastContainer />
