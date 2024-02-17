@@ -1,7 +1,6 @@
-import "./inmuebles.css";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button, Modal } from "react-bootstrap";
-import Pagination from 'react-bootstrap/Pagination'
+import Pagination from "react-bootstrap/Pagination";
 import {
   faEye,
   faUserPlus,
@@ -11,18 +10,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import "./inmuebles.css";
+
 export const Inmueble = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
-
-  const handleMostrarModalClick = () => {
-    setMostrarModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setMostrarModal(false);
-  };
   const [infoinmueble, setinfoinmueble] = useState([]);
   const [Rol, setRol] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   useEffect(() => {
     let a = localStorage.getItem("Rol");
@@ -35,7 +30,6 @@ export const Inmueble = () => {
         }
         const data = await response.json();
         setinfoinmueble(data);
-
         console.log(data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -44,8 +38,9 @@ export const Inmueble = () => {
 
     fetchData();
   }, []);
+
   const createheader = () => {
-    if (Rol == 2) {
+    if (Rol === "2") {
       return (
         <tr>
           <th>Id propietario</th>
@@ -76,66 +71,73 @@ export const Inmueble = () => {
       );
     }
   };
-  const createrow = (Inmuebles) => {
-    if (Rol == 2) {
-      if (Inmuebles.Estado == "Ocupado") {
+
+  const createrow = (inmueble) => {
+    if (Rol === "2") {
+      if (inmueble.Estado === "Ocupado") {
         return (
-          <tr>
-            <td>{Inmuebles.Id_Propietario}</td>
-            <td>{Inmuebles.Id_Inmueble}</td>
-            <td>{Inmuebles.Direccion}</td>
-            <td>{Inmuebles.Estrato}</td>
-            <td>{Inmuebles.Ciudad}</td>
-            <td>{Inmuebles.Barrio}</td>
-            <td>{Inmuebles.Tipo}</td>
+          <tr key={inmueble.Id_Inmueble}>
+            <td>{inmueble.Id_Propietario}</td>
+            <td>{inmueble.Id_Inmueble}</td>
+            <td>{inmueble.Direccion}</td>
+            <td>{inmueble.Estrato}</td>
+            <td>{inmueble.Ciudad}</td>
+            <td>{inmueble.Barrio}</td>
+            <td>{inmueble.Tipo}</td>
             <td>
               <Button variant="primary" onClick={handleMostrarModalClick}>
-                <FontAwesomeIcon icon={faEye} />{" "}
+                <FontAwesomeIcon icon={faEye} />
               </Button>
             </td>
             <td>
               <Button disabled variant="success">
-                <FontAwesomeIcon icon={faUserPlus}  /> 
+                <FontAwesomeIcon icon={faUserPlus} />
               </Button>
             </td>
           </tr>
         );
       } else {
-        <tr>
-          <td>{Inmuebles.Id_Propietario}</td>
-          <td>{Inmuebles.Id_Inmueble}</td>
-          <td>{Inmuebles.Direccion}</td>
-          <td>{Inmuebles.Estrato}</td>
-          <td>{Inmuebles.Ciudad}</td>
-          <td>{Inmuebles.Barrio}</td>
-          <td>{Inmuebles.Tipo}</td>
-          <td>
-            <Button variant="primary" onClick={handleMostrarModalClick}>
-              <FontAwesomeIcon icon={faEye} />{" "}
-            </Button>
-          </td>
-          <td>
-            <Button variant="success"><FontAwesomeIcon icon={faUserPlus}  /> </Button>
-          </td>
-        </tr>;
+        return (
+          <tr key={inmueble.Id_Inmueble}>
+            <td>{inmueble.Id_Propietario}</td>
+            <td>{inmueble.Id_Inmueble}</td>
+            <td>{inmueble.Direccion}</td>
+            <td>{inmueble.Estrato}</td>
+            <td>{inmueble.Ciudad}</td>
+            <td>{inmueble.Barrio}</td>
+            <td>{inmueble.Tipo}</td>
+            <td>
+              <Button variant="primary" onClick={handleMostrarModalClick}>
+                <FontAwesomeIcon icon={faEye} />
+              </Button>
+            </td>
+            <td>
+              <Button variant="success">
+                <FontAwesomeIcon icon={faUserPlus} />
+              </Button>
+            </td>
+          </tr>
+        );
       }
     } else {
       return (
-        <tr>
-          <td>{Inmuebles.Id_Propietario}</td>
-          <td>{Inmuebles.Id_Inmueble}</td>
-          <td>{Inmuebles.Direccion}</td>
-          <td>{Inmuebles.Estrato}</td>
-          <td>{Inmuebles.Ciudad}</td>
-          <td>{Inmuebles.Barrio}</td>
-          <td>{Inmuebles.Tipo}</td>
+        <tr key={inmueble.Id_Inmueble}>
+          <td>{inmueble.Id_Propietario}</td>
+          <td>{inmueble.Id_Inmueble}</td>
+          <td>{inmueble.Direccion}</td>
+          <td>{inmueble.Estrato}</td>
+          <td>{inmueble.Ciudad}</td>
+          <td>{inmueble.Barrio}</td>
+          <td>{inmueble.Tipo}</td>
           <td>
             <Button variant="primary" onClick={handleMostrarModalClick}>
               <FontAwesomeIcon icon={faEye} />
             </Button>
           </td>
           <td>
-            <Button variant="success"><FontAwesomeIcon icon={faUserPlus}  /> </Button>
+            <Button variant="success">
+              <FontAwesomeIcon icon={faUserPlus} />
+            </Button>
           </td>
           <td>
             <Button className="btn-opciones" variant="danger">
@@ -149,39 +151,59 @@ export const Inmueble = () => {
       );
     }
   };
+
+  const handleMostrarModalClick = () => {
+    setMostrarModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setMostrarModal(false);
+  };
+
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = infoinmueble.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <>
       <div className="contener-home">
-      <div className="conten-filtro">
+        <div className="conten-filtro">
           <div className="conten-inputs">
-        <label className="l1" >Tipo Inmueble </label>
-        <select className="input-filtroRe" name="" id="">
-          <option value="Apartamento">Apartamento</option>
-          <option value="Bodega">Bodega</option>
-          <option value="Casa">Casa</option>
-          <option value="Oficina">Oficina</option>
-          <option value="Local">Local</option>
-        </select>
-        
-        <label className="l1" >Estrato </label>
-        <select className="input-filtroRe" name="" id="">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-        </select>
+            <label className="l1">Tipo Inmueble</label>
+            <select className="input-filtroRe" name="" id="">
+              <option value="Apartamento">Apartamento</option>
+              <option value="Bodega">Bodega</option>
+              <option value="Casa">Casa</option>
+              <option value="Oficina">Oficina</option>
+              <option value="Local">Local</option>
+            </select>
 
-        <label className="l1" >Estado </label>
-        <select className="input-filtroRe" name="" id="">
-          <option value="Ocupado">Ocupado</option>
-          <option value="Disponible">Disponible</option>          
-        </select>
-        
+            <label className="l1">Estrato</label>
+            <select className="input-filtroRe" name="" id="">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
+
+            <label className="l1">Estado</label>
+            <select className="input-filtroRe" name="" id="">
+              <option value="Ocupado">Ocupado</option>
+              <option value="Disponible">Disponible</option>
+            </select>
           </div>
-        
-      <Button variant="success" className="btn-add" ><FontAwesomeIcon icon={faHouseChimneyMedical} style={{color: "#ffffff",}} />  Agregar Inmueble</Button>{' '}
+          <Button variant="success" className="btn-add">
+            <FontAwesomeIcon
+              icon={faHouseChimneyMedical}
+              style={{ color: "#ffffff" }}
+            />{" "}
+            Agregar Inmueble
+          </Button>{" "}
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Inmuebles</h1>
@@ -191,38 +213,43 @@ export const Inmueble = () => {
             <Table striped bordered hover>
               <thead>{createheader()}</thead>
               <tbody>
-                {infoinmueble.map((Inmuebles) => createrow(Inmuebles))}
+                {currentItems.map((inmueble) => createrow(inmueble))}
               </tbody>
             </Table>
           </div>
         </div>
         <div className="paginador">
-
-        <Pagination>
-      <Pagination.First />
-      <Pagination.Prev />
-      <Pagination.Item>{1}</Pagination.Item>
-      <Pagination.Ellipsis />
-
-      <Pagination.Item>{10}</Pagination.Item>
-      <Pagination.Item>{11}</Pagination.Item>
-      <Pagination.Item active>{12}</Pagination.Item>
-      <Pagination.Item>{13}</Pagination.Item>
-      <Pagination.Item disabled>{14}</Pagination.Item>
-
-      <Pagination.Ellipsis />
-      <Pagination.Item>{20}</Pagination.Item>
-      <Pagination.Next />
-      <Pagination.Last />
-    </Pagination>
+          <Pagination>
+            <Pagination.Prev
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            {[...Array(Math.ceil(infoinmueble.length / itemsPerPage))].map(
+              (item, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === currentPage}
+                  onClick={() => paginate(index + 1)}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              )
+            )}
+            <Pagination.Next
+              onClick={() => paginate(currentPage + 1)}
+              disabled={
+                currentPage === Math.ceil(infoinmueble.length / itemsPerPage)
+              }
+            />
+          </Pagination>
         </div>
         {/* Modal */}
         <Modal
-          size="lg" // Agregar la propiedad size="lg" para el modal largo
+          size="lg" 
           show={mostrarModal}
           onHide={handleCloseModal}
           aria-labelledby="example-modal-sizes-title-lg"
-          >
+        >
           <Modal.Header closeButton>
             <Modal.Title>Detalles del inmueble</Modal.Title>
           </Modal.Header>
@@ -244,10 +271,7 @@ export const Inmueble = () => {
             </Table>
           </Modal.Body>
         </Modal>
-
-        
       </div>
-      
     </>
   );
 };

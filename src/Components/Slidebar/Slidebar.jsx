@@ -62,6 +62,7 @@ export const Slidebar = () => {
   };
 
   const confirmLogout = () => {
+    localStorage.clear
     window.location.href = "/";
   };
 
@@ -87,6 +88,7 @@ export const Slidebar = () => {
               exact={false}
             >
               <FontAwesomeIcon
+              className="icons_sliderbard"
                 width="32"
                 height="32"
                 style={{ color: "#ffffff" }}
@@ -194,7 +196,7 @@ export const Slidebar = () => {
                 style={{ color: "#ffffff" }}
                 icon={faTable}
               />
-              Historial Arrendamiento
+              Informe Arrendamiento
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
@@ -211,7 +213,7 @@ export const Slidebar = () => {
                 style={{ color: "#ffffff" }}
                 icon={faTableList}
               />
-              Historial Comision Propetario
+              Comisiones Propetario
             </Nav.Link>
           </Nav.Item>
         </Nav>
