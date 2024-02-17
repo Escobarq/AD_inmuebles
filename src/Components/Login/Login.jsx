@@ -146,7 +146,6 @@ export const Login = () => {
                         </label>
                         <div className="input-group">
                           <input
-                          required
                             type={showPassword ? "text" : "password"}
                             id="contrausuario"
                             name="contrausuario"
