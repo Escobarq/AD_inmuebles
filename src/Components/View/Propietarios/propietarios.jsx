@@ -4,6 +4,8 @@ import { Table, Button } from "react-bootstrap";
 import "./propietarios.css";
 
 export const Propietarios = () => {
+
+
   const [infopropietario, setinfopropietario] = useState([]);
   const [Rol, setRol] = useState("");
   useEffect(() => {
@@ -40,7 +42,17 @@ export const Propietarios = () => {
           <th>Fecha de ingreso</th>
           <th>Banco</th>
           <th>Tipo de cuenta</th>
-          <th>Número de cuenta</th>          
+          <th>Número de cuenta</th>   
+
+
+
+          <th>Nombre Arrendatario</th>
+              <th>Meses de Alquiler</th>
+              <th>Cuotas Pendientes</th>
+              <th>Fecha Inicio Contrato</th>
+              <th>Fecha Fin Contrato</th>
+              <th>Estado</th>
+
           </tr>
           )
         }
@@ -95,6 +107,9 @@ export const Propietarios = () => {
           <td>{Propietario.Tipo_Cuenta}</td>
           <td>{Propietario.Numero_Cuenta}</td>
           <td>
+
+
+
       <Button variant="warning">
         <svg
           className="editar"

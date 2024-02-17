@@ -1,44 +1,37 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './GastosyContrato.css';
-import { Table, Dropdown } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilePdf, faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 export const GastosIn = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [tableData] = useState([
-    { id: 1, name: 'Nombre 1', months: 6, pendingPayments: 2 },
-    { id: 2, name: 'Nombre 2', months: 12, pendingPayments: 0 },
 
-  ]);
 
-  const itemsPerPage = 10;
+
+  const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [scrollPosition, setScrollPosition] = useState(0);
-
+  const itemsPerPage = 10;
   const tableRef = useRef(null);
 
-  const handlePageChange = (direction) => {
-    if (direction === 'prev') {
-      setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage);
-    } else if (direction === 'next') {
-      setCurrentPage(currentPage < Math.ceil(tableData.length / itemsPerPage) ? currentPage + 1 : currentPage);
-    }
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3006/VReciboPropie');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setTableData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-  const handleHorizontalScroll = (direction) => {
-    const tableContainer = tableRef.current;
-    if (tableContainer) {
-      const containerWidth = tableContainer.offsetWidth;
-      const newPosition = direction === 'prev' ? scrollPosition - containerWidth : scrollPosition + containerWidth;
-      setScrollPosition(Math.max(0, Math.min(newPosition, tableContainer.scrollWidth - containerWidth)));
-      tableContainer.scrollTo({
-        left: newPosition,
-        behavior: 'smooth'
-      });
-    }
-  }
+    fetchData();
+  }, []);
 
+ 
   return (
     <>
       <div className="contener-home">
@@ -60,16 +53,14 @@ export const GastosIn = () => {
                 </tr>
               </thead>
               <tbody>
-                {tableData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item, index) => (
-                  <tr key={item.id}>
+                {tableData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((propiedad, index) => (
+                  <tr key={propiedad.Id_Propietario}>
                     <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                    <td>
-                     a
-                    </td>
-                    <td>{item.months}</td>
-                    <td>{item.pendingPayments}</td>
-                    <td>a</td>
-                    <td>a</td>
+                    <td>{propiedad.Nombre_Completo}</td>
+                    <td></td>
+                    <td></td> 
+                    <td></td>
+                    <td></td>
                   </tr>
                 ))}
               </tbody>
@@ -77,15 +68,7 @@ export const GastosIn = () => {
           </div>
         </div>
 
-        <div className="pagination-container">
-          <button onClick={() => handlePageChange('prev')} className='btnpag'>
-            <FontAwesomeIcon icon={faArrowLeft} />
-          </button>
-          <span className="page-info">Página {currentPage} de {Math.ceil(tableData.length / itemsPerPage)}</span>
-          <button onClick={() => handlePageChange('next')} className='btnpag'>
-            <FontAwesomeIcon icon={faArrowRight} />
-          </button>
-        </div>
+      
 
         <button className="bottom-button">
           <FontAwesomeIcon icon={faFilePdf} />
