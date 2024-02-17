@@ -401,7 +401,7 @@ export const Slidebar = () => {
             style={{ color: "#ffffff" }}
             icon={faRightFromBracket}
           />
-          <strong>Salir Sesión</strong>
+          <strong>Cerrar Sesión</strong>
         </Button>
         {/* Modal para confirmacion */}
         <Modal

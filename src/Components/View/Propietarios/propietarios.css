@@ -94,9 +94,12 @@ td {
   width: 20%;
   background-color: green !important;
 }
+.btn-add a {
+  color: white !important;
+}
 
-.btn-add :hover {
-  background-color: rgb(86, 57, 2) !important;
+.btn-add:hover {
+  background-color: rgb(0, 94, 24) !important;
 }
 .conten-filtro {
   justify-content: flex-end;

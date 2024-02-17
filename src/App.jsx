@@ -25,11 +25,26 @@ import { Slidebar } from './Components/Slidebar/Slidebar';
 import { RegistroCodeudor } from './Components/Register/Codeudor/Registrocodeudor';
 import { ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useEffect, useState } from 'react';
 
 function App() {
   const location = useLocation();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+  }, []);
   
+
+  if (loading) {
+    return (
+      <div className='contener-carga'>
+        <Home/>
+      </div>
+    );
+  } else {
   return (
     <>
      <ToastContainer />
@@ -61,6 +76,7 @@ function App() {
     </div>
   </>
   )
+  }
 }
 
 export default App
