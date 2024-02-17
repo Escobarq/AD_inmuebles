@@ -15,13 +15,10 @@ import "./inmuebles.css";
 export const Inmueble = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [infoinmueble, setinfoinmueble] = useState([]);
-  const [Rol, setRol] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
   useEffect(() => {
-    let a = localStorage.getItem("Rol");
-    setRol(a);
     const fetchData = async () => {
       try {
         const response = await fetch("http://localhost:3006/Vinmueble");
@@ -40,21 +37,7 @@ export const Inmueble = () => {
   }, []);
 
   const createheader = () => {
-    if (Rol === "2") {
-      return (
-        <tr>
-          <th>Id propietario</th>
-          <th>Id inmueble</th>
-          <th>Dirección</th>
-          <th>Estrato</th>
-          <th>Ciudad</th>
-          <th>Barrio</th>
-          <th>Tipo</th>
-          <th>Ver más</th>
-          <th>Asignar arrendatario</th>
-        </tr>
-      );
-    } else {
+
       return (
         <tr>
           <th>Id propietario</th>
@@ -69,57 +52,10 @@ export const Inmueble = () => {
           <th>Opciones</th>
         </tr>
       );
-    }
   };
 
   const createrow = (inmueble) => {
-    if (Rol === "2") {
       if (inmueble.Estado === "Ocupado") {
-        return (
-          <tr key={inmueble.Id_Inmueble}>
-            <td>{inmueble.Id_Propietario}</td>
-            <td>{inmueble.Id_Inmueble}</td>
-            <td>{inmueble.Direccion}</td>
-            <td>{inmueble.Estrato}</td>
-            <td>{inmueble.Ciudad}</td>
-            <td>{inmueble.Barrio}</td>
-            <td>{inmueble.Tipo}</td>
-            <td>
-              <Button variant="primary" onClick={handleMostrarModalClick}>
-                <FontAwesomeIcon icon={faEye} />
-              </Button>
-            </td>
-            <td>
-              <Button disabled variant="success">
-                <FontAwesomeIcon icon={faUserPlus} />
-              </Button>
-            </td>
-          </tr>
-        );
-      } else {
-        return (
-          <tr key={inmueble.Id_Inmueble}>
-            <td>{inmueble.Id_Propietario}</td>
-            <td>{inmueble.Id_Inmueble}</td>
-            <td>{inmueble.Direccion}</td>
-            <td>{inmueble.Estrato}</td>
-            <td>{inmueble.Ciudad}</td>
-            <td>{inmueble.Barrio}</td>
-            <td>{inmueble.Tipo}</td>
-            <td>
-              <Button variant="primary" onClick={handleMostrarModalClick}>
-                <FontAwesomeIcon icon={faEye} />
-              </Button>
-            </td>
-            <td>
-              <Button variant="success">
-                <FontAwesomeIcon icon={faUserPlus} />
-              </Button>
-            </td>
-          </tr>
-        );
-      }
-    } else {
       return (
         <tr key={inmueble.Id_Inmueble}>
           <td>{inmueble.Id_Propietario}</td>
@@ -135,7 +71,7 @@ export const Inmueble = () => {
             </Button>
           </td>
           <td>
-            <Button variant="success">
+            <Button disabled variant="success">
               <FontAwesomeIcon icon={faUserPlus} />
             </Button>
           </td>
@@ -149,6 +85,38 @@ export const Inmueble = () => {
           </td>
         </tr>
       );
+    }
+    else{
+      return (
+        <tr key={inmueble.Id_Inmueble}>
+          <td>{inmueble.Id_Propietario}</td>
+          <td>{inmueble.Id_Inmueble}</td>
+          <td>{inmueble.Direccion}</td>
+          <td>{inmueble.Estrato}</td>
+          <td>{inmueble.Ciudad}</td>
+          <td>{inmueble.Barrio}</td>
+          <td>{inmueble.Tipo}</td>
+          <td>
+            <Button variant="primary" onClick={handleMostrarModalClick}>
+              <FontAwesomeIcon icon={faEye} />
+            </Button>
+          </td>
+          <td>
+            <Button  variant="success">
+              <FontAwesomeIcon icon={faUserPlus} />
+            </Button>
+          </td>
+          <td>
+            <Button className="btn-opciones" variant="danger">
+              <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
+            </Button>
+            <Button className="btn-opciones" variant="warning">
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </Button>
+          </td>
+        </tr>
+      );
+
     }
   };
 

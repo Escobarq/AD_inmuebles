@@ -59,7 +59,7 @@ app.get('/Vcodeudor', (req, res) => {
   });
 });
 app.get('/VPagoArren', (req, res) => {
-  connection.query('SELECT * FROM propietario ORDER BY Id_Propietario ASC', (error, results) => {
+  connection.query('SELECT * FROM pagos_arrendatario ORDER BY Id_Pago_Arrendatario ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
