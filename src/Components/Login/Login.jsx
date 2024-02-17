@@ -129,7 +129,6 @@ export const Login = () => {
                           Correo
                         </label>
                         <input
-                        required
                           type="email"
                           id="correousuario"
                           name="correousuario"

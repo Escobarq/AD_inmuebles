@@ -9,8 +9,8 @@ import {
   faHouseChimneyMedical,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import "./inmuebles.css";
+import { Link } from "react-router-dom";
 
 export const Inmueble = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -166,12 +166,14 @@ export const Inmueble = () => {
             </select>
           </div>
           <Button variant="success" className="btn-add">
+          <Link to = "/RInmuebleA">
             <FontAwesomeIcon
               icon={faHouseChimneyMedical}
               style={{ color: "#ffffff" }}
-            />{" "}
+            />
             Agregar Inmueble
-          </Button>{" "}
+          </Link>
+          </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Inmuebles</h1>
