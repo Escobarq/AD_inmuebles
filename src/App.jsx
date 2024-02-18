@@ -26,6 +26,7 @@ import { RegistroCodeudor } from './Components/Register/Codeudor/Registrocodeudo
 import { ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
+import { AsignarRol } from './Components/View/AsignarRol/AsignarRol';
 
 function App() {
   const location = useLocation();
@@ -71,6 +72,7 @@ function App() {
         <Route path="/Carrendatario" element={<ContratoA />} />
         <Route path="/Ginmuebles" element={<GastosIn />} />
         <Route path="/Registrocodeudor" element={<RegistroCodeudor/>} />
+        <Route path="/AsignarRol" element={<AsignarRol/>} />
       </Routes>
 
     </div>

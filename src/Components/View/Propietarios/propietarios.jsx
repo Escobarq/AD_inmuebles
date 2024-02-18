@@ -14,7 +14,7 @@ export const Propietarios = () => {
   const [infopropietario, setinfopropietario] = useState([]);
   const [Rol, setRol] = useState("");
   useEffect(() => {
-   var a = localStorage.getItem("Rol")
+   let a = localStorage.getItem("Rol")
     setRol(a)
     const fetchData = async () => {
       
