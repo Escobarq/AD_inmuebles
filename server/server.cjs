@@ -60,7 +60,7 @@ app.get('/Vcodeudor', (req, res) => {
   });
 });
 app.get('/VPagoArren', (req, res) => {
-  connection.query('SELECT * FROM pagos_arrendatario ORDER BY Id_Pago_Arrendatario ASC', (error, results) => {
+  connection.query('SELECT * FROM pagos_arrendamiento ORDER BY Id_Pago_Arrendamiento ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -69,8 +69,8 @@ app.get('/VPagoArren', (req, res) => {
     }
   });
 });
-app.get('/VReciboPropie', (req, res) => {
-  connection.query('SELECT * FROM propietario ORDER BY Id_Propietario ASC', (error, results) => {
+app.get('/VComisionPropie', (req, res) => {
+  connection.query('SELECT * FROM comision_propietario ORDER BY Id_comision_Propietario ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -128,7 +128,6 @@ app.post('/RPropietario', async (req, res) => {
 
 
 // Ruta para registrar un Inmueble
-
   app.post('/Reinmueble', async (req,res) => { 
 
     const { Nmatricula,
@@ -419,6 +418,8 @@ app.get('/Vroles', (req, res) => {
     }
   });
 });
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

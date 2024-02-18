@@ -61,8 +61,8 @@ function App() {
         <Route path="/H_gastos" element={<H_gastos />} />
         <Route path="/H_recibos" element={<H_recibos />} />
         <Route path="/RPropietario" element={<RPropietario />} />
-        <Route path="/RGastos" element={<ReciboGastos />} />
-        <Route path="/Reciboarrendatario" element={<Rarrendatario />} />
+        <Route path="/Rcomision" element={<ReciboGastos />} />
+        <Route path="/ReArrendamiento" element={<Rarrendatario />} />
         <Route path="/ReArrendatario" element={<ReArrendatario />} />
         <Route path="/RInmuebleA" element={<RInmuebleA />} />
         <Route path="/RInmuebleB" element={<RInmuebleB />} />
