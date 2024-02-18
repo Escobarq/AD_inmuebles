@@ -81,6 +81,7 @@ app.get('/VReciboPropie', (req, res) => {
 });
 
 
+
 // Ruta para registrar un propietario
 app.post('/RPropietario', async (req, res) => {
   const {
