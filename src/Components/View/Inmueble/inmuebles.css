@@ -58,3 +58,15 @@
    .noselect:active .icon svg {
     transform: scale(0.8);
    }
+   .paginador{
+    position: fixed;
+    bottom: 3.5%;
+    
+   }
+   a{
+    text-decoration: none !important;
+   }
+   a:hover{
+    background-color: transparent !important;
+   }
+

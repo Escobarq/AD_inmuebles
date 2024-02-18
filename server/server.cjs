@@ -28,6 +28,7 @@ app.get('/Vpropietarios', (req, res) => {
     }
   });
 });
+
 app.get('/Varrendatario', (req, res) => {
   connection.query('SELECT * FROM arrendatario ORDER BY Id_Arrendatario ASC', (error, results) => {
     if (error) {
@@ -59,7 +60,7 @@ app.get('/Vcodeudor', (req, res) => {
   });
 });
 app.get('/VPagoArren', (req, res) => {
-  connection.query('SELECT * FROM propietario ORDER BY Id_Propietario ASC', (error, results) => {
+  connection.query('SELECT * FROM pagos_arrendatario ORDER BY Id_Pago_Arrendatario ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -406,6 +407,17 @@ app.post('/Rarrendatario', async (req, res) => {
   console.error('Error al añadir propietario:', error);
   res.status(500).json({ error: 'Error al añadir propietario' });
 }
+});
+//Ruta para Traer Empleados
+app.get('/Vroles', (req, res) => {
+  connection.query('SELECT * FROM trabajador', (error, results) => {
+    if (error) {
+      console.error('Error al obtener datos de la base de datos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
 });
 
 app.listen(port, () => {

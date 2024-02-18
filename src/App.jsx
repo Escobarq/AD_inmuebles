@@ -25,11 +25,27 @@ import { Slidebar } from './Components/Slidebar/Slidebar';
 import { RegistroCodeudor } from './Components/Register/Codeudor/Registrocodeudor';
 import { ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useEffect, useState } from 'react';
+import { AsignarRol } from './Components/View/AsignarRol/AsignarRol';
 
 function App() {
   const location = useLocation();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+  }, []);
   
+
+  if (loading) {
+    return (
+      <div className='contener-carga'>
+        <Home/>
+      </div>
+    );
+  } else {
   return (
     <>
      <ToastContainer />
@@ -56,11 +72,13 @@ function App() {
         <Route path="/Carrendatario" element={<ContratoA />} />
         <Route path="/Ginmuebles" element={<GastosIn />} />
         <Route path="/Registrocodeudor" element={<RegistroCodeudor/>} />
+        <Route path="/AsignarRol" element={<AsignarRol/>} />
       </Routes>
 
     </div>
   </>
   )
+  }
 }
 
 export default App
