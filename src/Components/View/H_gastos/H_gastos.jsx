@@ -1,4 +1,12 @@
 import { Table, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUserPlus,
+  faTrash,
+  faPenToSquare
+} from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 
 export const H_gastos = () => {
@@ -15,19 +23,17 @@ export const H_gastos = () => {
         <div className="table-container">
         <Table striped bordered hover>
             <thead>
-              <tr>
-              <th>ID pago arrendatario</th>
-              <th>ID arrendatario</th>
-              <th>Fecha  pago</th>
-              <th>Fecha inicio</th>
-              <th>Fecha final</th>
-              <th>Valor pago</th>
-              <th>Forma pago</th>
-              <th>Estado pago</th>
-              <th>Dias mora</th>
-              <th>Editar</th>
-              <th>Generar Recibo</th>
-              </tr>
+            <tr>
+            <th>ID recibo propetario</th>
+            <th>ID propetario</th>
+            <th>Periodo_Pagado</th>
+            <th>Elaborado_Por</th>
+            <th>Valor Arriendo</th>
+            <th>Forma_Pago</th>
+            <th>Observaciones</th>
+            <th>Editar</th>
+            <th>Generar</th>
+          </tr>
             </thead>
             <tbody>
               <tr>

@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import { crearUser } from "../Hooks/RegisterUser";
 import { userLogin } from "../Hooks/Userlogin";
 
-
 export const Login = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   
@@ -130,13 +129,11 @@ export const Login = () => {
                           Correo
                         </label>
                         <input
-                        required
                           type="email"
                           id="correousuario"
                           name="correousuario"
                           className="form-control form-control-lg"
                           {...register("correousuario")}
-                          required
                         />
                       </div>
 

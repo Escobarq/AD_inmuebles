@@ -9,7 +9,7 @@
 }
 
 .btn-success {
-    color: #fff;
+    color: #fff !important;
     padding: 9px;
     border: none;
     border-radius: 4px;
