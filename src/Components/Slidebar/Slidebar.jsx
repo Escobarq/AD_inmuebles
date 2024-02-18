@@ -10,7 +10,8 @@ import {
   faReceipt,
   faTable,
   faTableList,
-  faRightFromBracket
+  faRightFromBracket,
+  faUserShield
 } from "@fortawesome/free-solid-svg-icons";
 import { Nav, Modal, Button } from "react-bootstrap";
 import { useEffect } from "react";
@@ -214,6 +215,23 @@ export const Slidebar = () => {
           icon={faTableList}
         />
         Comisiones Propetario
+      </Nav.Link>
+    </Nav.Item>
+    <Nav.Item>
+      <Nav.Link
+        as={NavLink}
+        to="/AsignarRol"
+        className="nav-link text-white"
+        aria-current="page"
+        exact={false}
+      >
+        <FontAwesomeIcon
+          width="32"
+          height="32"
+          style={{ color: "#ffffff" }}
+          icon={faUserShield}
+        />
+        Asignar Rol Empleados 
       </Nav.Link>
     </Nav.Item>
     </>
