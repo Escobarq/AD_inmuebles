@@ -7,6 +7,57 @@ import { Link } from "react-router-dom";
 
 
 export const H_gastos = () => {
+  const [infoComision, setinfoComision] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3006/VComisionPropie");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setinfoComision(data);
+
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  const createheader = () => {
+    return (
+      <tr>
+        <th>ID Comision Propietario</th>
+        <th>ID Propietario</th>
+        <th>Periodo de pago</th>
+        <th>Fecha Elaboracion</th>
+        <th>Fecha final</th>
+        <th>Forma pago</th>
+        <th>Valor pago</th>
+        <th>Observaciones</th>
+        
+      </tr>
+    );
+  };
+  const createrow = (CPropietario) => {
+    return (
+      <tr key={CPropietario.Id_comision_Propietario}>
+        <td>{CPropietario.Id_comision_Propietario}</td>
+        <td>{CPropietario.Id_Propietario}</td>
+        <td>{CPropietario.Periodo_Pagado}</td>
+        <td>{CPropietario.Fecha_Elaboracion}</td>
+        <td>{CPropietario.Elaborado_por}</td>
+        <td>{CPropietario.Forma_Pago}</td>
+        <td>${CPropietario.Valor_Arriendo}</td>     
+        <td>{CPropietario.Observaciones}</td>     
+        
+      </tr>
+    );
+  };
+
   return (
     <>
       <div className="contener-home">
@@ -30,11 +81,9 @@ export const H_gastos = () => {
             </Link>
           </Button>
         </div>
-
         <div className="title_view">
-          <h1 className="tittle_propetario">Historial de gastos arrendatario</h1>
+          <h1 className="tittle_propetario">Historial de comisiones propietario</h1>
         </div>
-
         <div className="view_esp">
         <div className="table-container">
         <Table striped bordered hover>
@@ -79,9 +128,17 @@ export const H_gastos = () => {
               </tr>
             </tbody>
           </Table>
+          <div className="table-container">
+            <Table striped bordered hover>
+              <thead> {createheader()} </thead>
+              <tbody>
+                {infoComision.map((CPropietarios) =>
+                  createrow(CPropietarios)
+                )}
+              </tbody>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -11,6 +11,8 @@ import {
 import { Link } from "react-router-dom";
 
 export const Propietarios = () => {
+
+
   const [infopropietario, setinfopropietario] = useState([]);
   const [Rol, setRol] = useState("");
   useEffect(() => {
@@ -35,7 +37,10 @@ export const Propietarios = () => {
     fetchData();
   }, []);
   const createheader = () => {
-    
+
+        
+
+
           
           return(
             <tr>
@@ -68,11 +73,14 @@ export const Propietarios = () => {
           <td>{Propietario.Tipo_Cuenta}</td>
           <td>{Propietario.Numero_Cuenta}</td>
           <td>
+
+
       <Button className="btn-opciones" variant="danger">
       <FontAwesomeIcon icon={faTrash} style={{color: "#ffffff",}} />
       </Button>
       <Button className="btn-opciones" variant="warning">
       <FontAwesomeIcon icon={faPenToSquare} />
+
       </Button>
     </td>
           

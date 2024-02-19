@@ -10,10 +10,8 @@ import { Link } from "react-router-dom";
 
 export const H_recibos = () => {
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
-  const [Rol, setRol] = useState("");
+
   useEffect(() => {
-    var a = localStorage.getItem("Rol");
-    setRol(a);
     const fetchData = async () => {
       try {
         const response = await fetch("http://localhost:3006/VPagoArren");
@@ -49,8 +47,8 @@ export const H_recibos = () => {
   };
   const createrow = (PArrendamiento) => {
     return (
-      <tr key={PArrendamiento.Id_Pago_Arrendatario}>
-        <td>{PArrendamiento.Id_Pago_Arrendatario}</td>
+      <tr key={PArrendamiento.Id_Pago_Arrendamiento}>
+        <td>{PArrendamiento.Id_Pago_Arrendamiento}</td>
         <td>{PArrendamiento.Id_Arrendatario}</td>
         <td>{PArrendamiento.Fecha_Pago}</td>
         <td>{PArrendamiento.Fecha_Inicio}</td>
@@ -58,8 +56,7 @@ export const H_recibos = () => {
         <td>{PArrendamiento.Valor_Pago}</td>
         <td>{PArrendamiento.Forma_Pago}</td>
         <td>{PArrendamiento.Estado}</td>
-        <td>{PArrendamiento.Dias_De_Mora}</td>
-        <td>{PArrendamiento.Dias_De_Mora}</td>
+        <td>{PArrendamiento.Dias_De_Mora}</td>        
         <td>
           <Button className="btn-opciones" variant="danger">
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
@@ -96,7 +93,7 @@ export const H_recibos = () => {
           </Button>
         </div>
         <div className="title_view">
-          <h1 className="tittle_propetario">Propetarios</h1>
+          <h1 className="tittle_propetario">Historial de Pago Arrendamiento</h1>
         </div>
 
         <div className="view_esp">
