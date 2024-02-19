@@ -60,7 +60,7 @@ app.get('/Vcodeudor', (req, res) => {
   });
 });
 app.get('/VPagoArren', (req, res) => {
-  connection.query('SELECT * FROM pagos_arrendatario ORDER BY Id_Pago_Arrendatario ASC', (error, results) => {
+  connection.query('SELECT * FROM pagos_arrendamiento ORDER BY Id_Pago_Arrendamiento ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -69,8 +69,8 @@ app.get('/VPagoArren', (req, res) => {
     }
   });
 });
-app.get('/VReciboPropie', (req, res) => {
-  connection.query('SELECT * FROM propietario ORDER BY Id_Propietario ASC', (error, results) => {
+app.get('/VComisionPropie', (req, res) => {
+  connection.query('SELECT * FROM comision_propietario ORDER BY Id_comision_Propietario ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -128,7 +128,6 @@ app.post('/RPropietario', async (req, res) => {
 
 
 // Ruta para registrar un Inmueble
-
   app.post('/Reinmueble', async (req,res) => { 
 
     const { Nmatricula,
@@ -379,18 +378,18 @@ app.post('/Rarrendatario', async (req, res) => {
 
   
   connection.query(
-    'INSERT INTO arrendatario (Nombre_Completo, Documento_Identidad, Telefono, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    'INSERT INTO arrendatario (Nombre_Completo,Tipo_Documento, Documento_Identidad, Telefono, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado, Valor_Deposito,Meses_Alquiler) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
     [
+      nombrearrendatario,
       tipodocumento,
       numerodocumento,
-      nombrearrendatario,
       telefono,
       correo,
-      estado_contrato,
-      meses_alquiler,
       fecha_inicio,
       fecha_final,
-      valor_deposito
+      estado_contrato,
+      valor_deposito,
+      meses_alquiler
     ],
     (error, results,) => {
       if (error) {
@@ -420,6 +419,22 @@ app.get('/Vroles', (req, res) => {
   });
 });
 
+
+app.put('/actualizarInmueble', (req, res) => {
+  const { Id_Inmueble} = req.query; // Datos del formulario
+  const Estado = "Ocupado"
+  const { Id_Arrendatario} = req.body; // Datos del formulario
+  const sql = `UPDATE inmueble SET Id_Arrendatario = ?, Estado = ?  WHERE Id_Inmueble = ?`;
+
+  connection.query(sql, [ Id_Arrendatario, Estado, Id_Inmueble], (error, results) => {
+    if (error) {
+      console.error('Error al realizar la consulta:', error);
+      res.status(500).json({ message: 'Error del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  })
+})
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 })
