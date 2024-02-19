@@ -89,7 +89,7 @@ export const H_recibos = () => {
             <input className="input-filtroRe" type="date" name="" id="" />
           </div>
           <Button variant="success" className="btn-add">
-            <Link to="/RegistroPArrendamiento">
+            <Link to="/Reciboarrendatario">
               <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
               PArrendamiento
             </Link>

@@ -359,7 +359,7 @@ app.get('/Infouser', (req, res) => {
   })
 });
 
-// Ruta para registrar un propietario
+// Ruta para registrar un arrendatario
 app.post('/Rarrendatario', async (req, res) => {
   const {
     tipodocumento,
@@ -375,38 +375,39 @@ app.post('/Rarrendatario', async (req, res) => {
   } = req.body;
 
   try {
-
   
-  connection.query(
-    'INSERT INTO arrendatario (Nombre_Completo, Documento_Identidad, Telefono, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [
-      tipodocumento,
-      numerodocumento,
-      nombrearrendatario,
-      telefono,
-      correo,
-      estado_contrato,
-      meses_alquiler,
-      fecha_inicio,
-      fecha_final,
-      valor_deposito
-    ],
-    (error, results,) => {
-      if (error) {
-        console.error('Error al añadir propietario:', error);
-        res.status(500).json({ error: 'Error al añadir arrendatario' });
-      } else {
-        console.log('Propietario agregado:', results);
-        res.status(201).json({ message: 'Arrendatario registrado exitosamente' });
+    connection.query(
+      'INSERT INTO arrendatario (Nombre_Completo, Tipo_Documento, Documento_Identidad, Telefono, Meses_Alquiler, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado,Valor_Deposito) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,?)',
+      [
+        nombrearrendatario,
+        tipodocumento,
+        numerodocumento,
+        telefono,
+        meses_alquiler,
+        correo,
+        fecha_inicio,
+        fecha_final,
+        estado_contrato,
+        valor_deposito
+      ],
+      (error, results) => {
+        if (error) {
+          console.error('Error al añadir arrendatario:', error);
+          res.status(500).json({ error: 'Error al añadir arrendatario' });
+        } else {
+          console.log('arrendatario agregado:', results);
+          res.status(201).json({ message: 'Arrendatario registrado exitosamente' });
+        }
       }
-    }
-  );
+    );
 
-} catch (error) {
-  console.error('Error al añadir propietario:', error);
-  res.status(500).json({ error: 'Error al añadir propietario' });
-}
+  } catch (error) {
+    console.error('Error al añadir propietario:', error);
+    res.status(500).json({ error: 'Error al añadir propietario' });
+  }
 });
+
+
 //Ruta para Traer Empleados
 app.get('/Vroles', (req, res) => {
   connection.query('SELECT * FROM trabajador', (error, results) => {
