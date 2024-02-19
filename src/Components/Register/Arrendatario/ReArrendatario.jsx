@@ -14,7 +14,7 @@ export const ReArrendatario = () => {
     });
 
   const falla = () =>
-    toast.error("Hubo un error al ingresar los datos, intente nuevamente", {
+    toast.error("Error al ingresar los datos, complete todos los campos e intente nuevamente.", {
       theme: "colored",
     });
 
@@ -50,6 +50,7 @@ export const ReArrendatario = () => {
     // Lógica para confirmar el guardado
     handleSubmit(onsubmitArrendatario)(); // Envia los datos
     setShowSaveModal(false); // Cierra el modal
+    reset();
   };
 
   const handleConfirmCancel = () => {
@@ -59,15 +60,15 @@ export const ReArrendatario = () => {
 
   return (
     <>
-      <h2>Registro Arrendatario</h2>
       <div className="izq RA d-flex justify-content-center align-items-center">
         <Form
           className="form-propietario row"
           onSubmit={handleSubmit(onsubmitArrendatario)}
-        >
+>
+      <h2 >Registro Arrendatario</h2>
           <Col md={6}>
             <Form.Group controlId="tipodocumento">
-              <Form.Label>Tipo de Documento</Form.Label>
+              <Form.Label>Tipo de Documento:</Form.Label>
               <Form.Control
                 className="input-form"
                 type="text"
@@ -115,8 +116,8 @@ export const ReArrendatario = () => {
                 Correo Arrendatario:
               </Form.Label>
               <Form.Control
-                className="input-form"
-                type="email"
+                className="correo"
+                type="text"
                 {...register("correo")}
               />
             </Form.Group>
@@ -168,7 +169,7 @@ export const ReArrendatario = () => {
             </Form.Group>
 
             <Form.Group controlId="valor_deposito">
-              <Form.Label className="text_normal">Valor Deposito:</Form.Label>
+              <Form.Label className="text_deposito">Valor Deposito:</Form.Label>
               <Form.Control
                 className="input-form"
                 type="number"

@@ -5,8 +5,10 @@
     justify-content: center;
 
   }
-  #correoin{
-    margin-bottom: 12px;
+  .correoin{
+    margin-bottom: 0px;
+    width: 100px;
+    padding: 8px;
   }
   .contener-buttons {
     margin-top: 20px;
@@ -18,15 +20,16 @@
     width: 100px;
     padding: 0px;
     border-radius: 5px;
-    margin-bottom: 15px;
+    margin-bottom: 0px;
     height: 40px;
   }
-}
+  .text_deposito{
+    margin-top: 1.2rem;
+    
+  }
+
 
 .input-form{
     height: 10%;
-}
-#correoin{
-    margin-bottom: 12px;
 }
 

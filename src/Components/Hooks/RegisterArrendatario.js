@@ -9,9 +9,8 @@ export const registerArrendatario = async (data) => {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Error al crear usuario. Código de estado: ${response.status}`
-      );
+      throw new Error(`Error al crear usuario. Código de estado: ${response.status}`  );
+      
     }else {
       const responseData = await response.json();
       return responseData;

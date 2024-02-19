@@ -143,7 +143,6 @@ export const Inmueble = () => {
         </tr>
       );
     }
-  };
 
   const createrowA = (Arrendatarios) => {
     return (

@@ -95,7 +95,6 @@ export const H_gastos = () => {
           <h1 className="tittle_propetario">Historial de comisiones propietario</h1>
         </div>
         <div className="view_esp">
-      
           <div className="table-container">
             <Table striped bordered hover>
               <thead> {createheader()} </thead>

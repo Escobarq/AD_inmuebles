@@ -30,6 +30,7 @@ app.get('/Vpropietarios', (req, res) => {
 });
 
 app.get('/Varrendatario', (req, res) => {
+
   connection.query('SELECT * FROM arrendatario ORDER BY Id_Arrendatario ASC', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
@@ -397,13 +398,13 @@ app.post('/Rarrendatario', async (req, res) => {
     meses_alquiler,
     fecha_inicio,
     fecha_final,
-    valor_deposito
+    valor_deposito,
   } = req.body;
 
   try {
  
     connection.query(
-      'INSERT INTO arrendatario (Nombre_Completo, Tipo_Documento, Documento_Identidad, Telefono, Meses_Alquiler, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado,Valor_Deposito) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,?)',
+      'INSERT INTO arrendatario (Nombre_Completo, Tipo_Documento, Documento_Identidad, Telefono, Meses_Alquiler, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado,Valor_Deposito) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,?,?)',
       [
         nombrearrendatario,
         tipodocumento,
@@ -414,7 +415,7 @@ app.post('/Rarrendatario', async (req, res) => {
         fecha_inicio,
         fecha_final,
         estado_contrato,
-        valor_deposito
+        valor_deposito,
       ],
       (error, results) => {
         if (error) {
