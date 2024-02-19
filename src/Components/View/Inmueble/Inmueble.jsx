@@ -11,13 +11,18 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const Inmueble = () => {
+  const notify = () =>
+    toast.success("Se Asigno el arrendatario Exitosamente", {
+      theme: "dark",
+    });
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [infoinmueble, setinfoinmueble] = useState([]);
   const [infoarrendatario, setinfoarrendatario] = useState([]);
-  const [arrendatarioSeleccionado, setArrendatarioSeleccionado] = useState(null);
+  const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
@@ -30,7 +35,6 @@ export const Inmueble = () => {
         }
         const data = await response.json();
         setinfoinmueble(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -43,7 +47,6 @@ export const Inmueble = () => {
         }
         const data = await response.json();
         setinfoarrendatario(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -121,7 +124,7 @@ export const Inmueble = () => {
             </Button>
           </td>
           <td>
-            <Button onClick={handleMostrarAClick} variant="success">
+            <Button onClick={() => handleMostrarAClick(inmueble)} variant="success">
               <FontAwesomeIcon icon={faUserPlus} />
             </Button>
           </td>
@@ -155,25 +158,26 @@ export const Inmueble = () => {
   };
   
   const handleRowClickAndUpdate = async (Arrendatarios) => {
+    console.log(Arrendatarios);
+    console.log(inmuebleseleccion);
     try {
-      setArrendatarioSeleccionado(Arrendatarios);
-  
-      const { Id_Inmueble, Estado } = Arrendatarios;
-  
-      const response = await fetch(`http://localhost:3006/actualizarInmueble/${Id_Inmueble}`, {
+      const Id_Inmueble = inmuebleseleccion.Id_Inmueble;
+      const { Id_Arrendatario } = Arrendatarios;
+      const response = await fetch(`http://localhost:3006/actualizarInmueble?Id_Inmueble=${Id_Inmueble}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          estado: Estado,
+          Id_Arrendatario: Id_Arrendatario,
         }),
       });
   
       if (!response.ok) {
         throw new Error('Error al actualizar el inmueble');
       }
-  
+      
+      notify(),
       // Agrega cualquier lógica adicional o actualizaciones de estado según sea necesario
       console.log('Inmueble actualizado correctamente');
     } catch (error) {
@@ -188,11 +192,12 @@ export const Inmueble = () => {
   const handleCloseModal = () => {
     setMostrarModal(false);
   };
-  const handleMostrarAClick = () => {
+  const handleMostrarAClick = (inmueble) => {
     setMostrarModalA(true);
+    setinmuebleseleccion(inmueble)
   };
 
-  const handleCloseModalA = () => {
+  const handleCloseModalA = (inmueble) => {
     setMostrarModalA(false);
   };
 

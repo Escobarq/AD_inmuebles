@@ -378,18 +378,18 @@ app.post('/Rarrendatario', async (req, res) => {
 
   
   connection.query(
-    'INSERT INTO arrendatario (Nombre_Completo, Documento_Identidad, Telefono, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    'INSERT INTO arrendatario (Nombre_Completo,Tipo_Documento, Documento_Identidad, Telefono, Correo, Fecha_Inicio_Contrato, Fecha_Fin_Contrato, Estado, Valor_Deposito,Meses_Alquiler) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
     [
+      nombrearrendatario,
       tipodocumento,
       numerodocumento,
-      nombrearrendatario,
       telefono,
       correo,
-      estado_contrato,
-      meses_alquiler,
       fecha_inicio,
       fecha_final,
-      valor_deposito
+      estado_contrato,
+      valor_deposito,
+      meses_alquiler
     ],
     (error, results,) => {
       if (error) {
@@ -420,7 +420,21 @@ app.get('/Vroles', (req, res) => {
 });
 
 
+app.put('/actualizarInmueble', (req, res) => {
+  const { Id_Inmueble} = req.query; // Datos del formulario
+  const Estado = "Ocupado"
+  const { Id_Arrendatario} = req.body; // Datos del formulario
+  const sql = `UPDATE inmueble SET Id_Arrendatario = ?, Estado = ?  WHERE Id_Inmueble = ?`;
 
+  connection.query(sql, [ Id_Arrendatario, Estado, Id_Inmueble], (error, results) => {
+    if (error) {
+      console.error('Error al realizar la consulta:', error);
+      res.status(500).json({ message: 'Error del servidor' });
+    } else {
+      res.status(200).json(results);
+    }
+  })
+})
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 })
