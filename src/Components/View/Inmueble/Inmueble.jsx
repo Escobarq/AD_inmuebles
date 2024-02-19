@@ -77,38 +77,7 @@ export const Inmueble = () => {
   };
 
   const createrow = (inmueble) => {
-    if (inmueble.Estado === "Ocupado") {
-      return (
-        <tr key={inmueble.Id_Inmueble}>
-          <td>{inmueble.Id_Propietario}</td>
-          <td>{inmueble.Id_Inmueble}</td>
-          <td>{inmueble.Direccion}</td>
-          <td>{inmueble.Estrato}</td>
-          <td>{inmueble.Ciudad}</td>
-          <td>{inmueble.Barrio}</td>
-          <td>{inmueble.Tipo}</td>
-          <td>
-            <Button variant="primary" onClick={handleMostrarModalClick}>
-              <FontAwesomeIcon icon={faEye} />
-            </Button>
-          </td>
-          <td>
-            <Button disabled variant="success">
-              <FontAwesomeIcon icon={faUserPlus} />
-            </Button>
-          </td>
-          <td>
-            <Button className="btn-opciones" variant="danger">
-              <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
-            </Button>
-            <Button className="btn-opciones" variant="warning">
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </Button>
-          </td>
-        </tr>
-      );
-    }
-    else {
+
       return (
         <tr key={inmueble.Id_Inmueble}>
           <td>{inmueble.Id_Propietario}</td>
@@ -138,9 +107,7 @@ export const Inmueble = () => {
           </td>
         </tr>
       );
-
     }
-  };
 
 
   const createrowA = (Arrendatarios) => {
