@@ -51,7 +51,22 @@ app.get('/Vinmueble', (req, res) => {
   });
 });
 
-//Traer codeudor
+
+app.get('/Vinmu_Arren', (req, res) => {
+  const { Id_Inmueble} = req.query;
+
+  connection.query('SELECT * FROM inmueble INNER JOIN arrendatario USING(Id_Arrendatario) WHERE Id_Inmueble = ?',  [ Id_Inmueble], (error, results) => {
+    if (error) {
+      console.error('Error al obtener datos de la base de datos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.status(200).json(results);
+      console.log(results)
+    }
+  });
+});
+
+
 app.get('/Vcodeudor', (req, res) => {
   // Consulta SQL sin filtrar por booleanos
   connection.query('SELECT * FROM codeudor', (error, results) => {
