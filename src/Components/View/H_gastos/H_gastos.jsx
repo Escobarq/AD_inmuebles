@@ -136,9 +136,11 @@ export const H_gastos = () => {
                   createrow(CPropietarios)
                 )}
               </tbody>
+              </Table>
           </div>
         </div>
       </div>
+      </div>
     </>
-  );
+  )
 }
