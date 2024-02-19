@@ -19,7 +19,7 @@ export const Arrendatario = () => {
         }
         const data = await response.json();
         setinfoarrendatario(data);
-        console.log(data);
+        
       } catch (error) {
         console.error("Error fetching products:", error);
       }

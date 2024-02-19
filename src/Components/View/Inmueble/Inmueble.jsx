@@ -25,6 +25,7 @@ export const Inmueble = () => {
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [existe, setExiste] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,10 +126,9 @@ export const Inmueble = () => {
   };
   
   const handleRowClickAndUpdate = async (Arrendatarios) => {
-    console.log(Arrendatarios);
-    console.log(inmuebleseleccion);
+    
     try {
-      const Id_Inmueble = inmuebleseleccion.Id_Inmueble;
+      const Id_Inmueble = inmuebleseleccion[0].Id_Inmueble;
       const { Id_Arrendatario } = Arrendatarios;
       const response = await fetch(`http://localhost:3006/actualizarInmueble?Id_Inmueble=${Id_Inmueble}`, {
         method: 'PUT',
@@ -159,12 +159,38 @@ export const Inmueble = () => {
   const handleCloseModal = () => {
     setMostrarModal(false);
   };
-  const handleMostrarAClick = (inmueble) => {
-    setMostrarModalA(true);
-    setinmuebleseleccion(inmueble)
+  const handleMostrarAClick = async (inmueble) => {
+    const Id_Inmueble = inmueble.Id_Inmueble
+
+    if (inmueble.Estado == "Ocupado"){
+      const ValidarInmArr = async () => {
+        setExiste(true)
+        try {
+            const response = await fetch(`http://localhost:3006/Vinmu_Arren?Id_Inmueble=${Id_Inmueble}`);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const data = await response.json();
+            setinmuebleseleccion(data)
+            
+            setMostrarModalA(true);
+          } catch (error) {
+            console.error("Error fetching products:", error);
+          }
+        };
+        ValidarInmArr()
+        
+    }
+    else{
+      setMostrarModalA(true);
+      setExiste(false)
+      setinmuebleseleccion(inmueble)
+
+    }
+    
   };
 
-  const handleCloseModalA = (inmueble) => {
+  const handleCloseModalA = () => {
     setMostrarModalA(false);
   };
 
@@ -288,8 +314,15 @@ export const Inmueble = () => {
           onHide={handleCloseModalA}
           aria-labelledby="example-modal-sizes-title-lg"
         >
+          
           <Modal.Header closeButton>
             <Modal.Title>Arrendatarios Disponibles</Modal.Title>
+            {existe ? ( 
+              <p>existe</p>
+        
+      ) : (
+        <p></p>
+      )}
           </Modal.Header>
           <Modal.Body>
             <Table striped bordered hover>
