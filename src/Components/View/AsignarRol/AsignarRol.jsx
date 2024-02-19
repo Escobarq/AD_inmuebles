@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { Table, Button } from "react-bootstrap";
+import Pagination from "react-bootstrap/Pagination";
+
 
 export const AsignarRol = () => {
   const [infoRol, setInfoRol] = useState([]);
@@ -72,6 +74,15 @@ export const AsignarRol = () => {
       </tr>
     );
   };
+      //Variables Paginacion
+      const [currentPage, setCurrentPage] = useState(1);
+      const [itemsPerPage] = useState(10);
+      // Paginación
+      const indexOfLastItem = currentPage * itemsPerPage;
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+      const currentItems = infoRol.slice(indexOfFirstItem, indexOfLastItem);
+    
+      const paginate = (pageNumber) => setCurrentPage(pageNumber);
   return (
     <div className="contener-home">
       <div className="title_view">
@@ -85,11 +96,36 @@ export const AsignarRol = () => {
             {createHeaderRol()}
             </thead>
             <tbody>
-            {infoRol.map((roles) => createRowRol(roles))}
+            {currentItems.map((roles) => createRowRol(roles))}
             </tbody>
           </Table>
         </div>
       </div>
+      <div className="paginador">
+          <Pagination >
+            <Pagination.Prev
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            {[...Array(Math.ceil(infoRol.length / itemsPerPage))].map(
+              (item, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === currentPage}
+                  onClick={() => paginate(index + 1)}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              )
+            )}
+            <Pagination.Next
+              onClick={() => paginate(currentPage + 1)}
+              disabled={
+                currentPage === Math.ceil(infoRol.length / itemsPerPage)
+              }
+            />
+          </Pagination>
+        </div>
     </div>
   );
 };

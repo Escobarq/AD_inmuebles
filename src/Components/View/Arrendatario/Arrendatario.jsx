@@ -7,9 +7,12 @@ import {
   faTrash,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import Pagination from "react-bootstrap/Pagination";
 
 export const Arrendatario = () => {
+
   const [infoarrendatario, setinfoarrendatario] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,6 +30,7 @@ export const Arrendatario = () => {
 
     fetchData();
   }, []);
+  
   const createheader = () => {
     return (
       <tr>
@@ -60,6 +64,15 @@ export const Arrendatario = () => {
       </tr>
     );
   };
+    //Variables Paginacion
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+   // Paginación
+   const indexOfLastItem = currentPage * itemsPerPage;
+   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+   const currentItems = infoarrendatario.slice(indexOfFirstItem, indexOfLastItem);
+ 
+   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <>
@@ -93,12 +106,37 @@ export const Arrendatario = () => {
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
               <tbody>
-                {infoarrendatario.map((Arrendatarios) =>
+                {currentItems.map((Arrendatarios) =>
                   createrow(Arrendatarios)
                 )}
               </tbody>
             </Table>
           </div>
+        </div>
+        <div className="paginador">
+          <Pagination >
+            <Pagination.Prev
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            {[...Array(Math.ceil(infoarrendatario.length / itemsPerPage))].map(
+              (item, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === currentPage}
+                  onClick={() => paginate(index + 1)}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              )
+            )}
+            <Pagination.Next
+              onClick={() => paginate(currentPage + 1)}
+              disabled={
+                currentPage === Math.ceil(infoarrendatario.length / itemsPerPage)
+              }
+            />
+          </Pagination>
         </div>
       </div>
     </>
