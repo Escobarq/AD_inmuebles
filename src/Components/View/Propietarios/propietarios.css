@@ -94,6 +94,12 @@ td {
   width: 20%;
   background-color: green !important;
 }
+btn-add-info {
+  background-color: #000000 !important;
+}
+.linkes{
+  color: #ffffff;
+}
 .btn-add a {
   color: white !important;
 }

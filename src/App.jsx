@@ -11,6 +11,7 @@ import { H_gastos } from './Components/View/H_gastos/H_gastos';
 import { H_recibos } from './Components/View/H_recibos/H_recibos';
 import { RPropietario } from './Components/Register/Propietario/RPropietario';
 import { ReArrendatario } from './Components/Register/Arrendatario/ReArrendatario';
+import { Registrocodeudor } from './Components/Register/Codeudor/Registrocodeudor';
 import { RInmuebleB } from './Components/Register/Inmueble/RInmuebleB';
 import { RInmuebleA } from './Components/Register/Inmueble/RInmuebleA';
 import { RInmuebleC } from './Components/Register/Inmueble/RInmuebleC';
@@ -22,11 +23,12 @@ import { Rarrendatario } from './Components/Recibos/Ra/Rarrendatario';
 import { ReciboGastos } from './Components/Recibos/Rg/ReciboGastos';
 import { Login } from './Components/Login/Login';
 import { Slidebar } from './Components/Slidebar/Slidebar';
-import { RegistroCodeudor } from './Components/Register/Codeudor/Registrocodeudor';
 import { ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
 import { AsignarRol } from './Components/View/AsignarRol/AsignarRol';
+import { CodeudorInha } from './Components/View/Codeudor/CodeudorInha';
+
 
 function App() {
   const location = useLocation();
@@ -58,12 +60,14 @@ function App() {
         <Route path="/Arrendatario" element={<Arrendatario />} />
         <Route path="/Inmueble" element={<Inmueble />} />
         <Route path="/Codeudor" element={<Codeudor />} />
+        <Route path="/Codeudores" element={<CodeudorInha />} />
         <Route path="/H_gastos" element={<H_gastos />} />
         <Route path="/H_recibos" element={<H_recibos />} />
         <Route path="/RPropietario" element={<RPropietario />} />
         <Route path="/Rcomision" element={<ReciboGastos />} />
         <Route path="/ReArrendamiento" element={<Rarrendatario />} />
         <Route path="/ReArrendatario" element={<ReArrendatario />} />
+        <Route path="/Registrocodeudor" element={<Registrocodeudor/>} />
         <Route path="/RInmuebleA" element={<RInmuebleA />} />
         <Route path="/RInmuebleB" element={<RInmuebleB />} />
         <Route path="/RInmuebleC" element={<RInmuebleC />} />
@@ -71,7 +75,6 @@ function App() {
         <Route path="/RInmuebleO" element={<RInmuebleO />} />
         <Route path="/Carrendatario" element={<ContratoA />} />
         <Route path="/Ginmuebles" element={<GastosIn />} />
-        <Route path="/Registrocodeudor" element={<RegistroCodeudor/>} />
         <Route path="/AsignarRol" element={<AsignarRol/>} />
       </Routes>
 

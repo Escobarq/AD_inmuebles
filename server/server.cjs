@@ -51,6 +51,7 @@ app.get('/Vinmueble', (req, res) => {
   });
 });
 
+
 app.get('/Vinmu_Arren', (req, res) => {
   const { Id_Inmueble} = req.query;
 
@@ -65,8 +66,10 @@ app.get('/Vinmu_Arren', (req, res) => {
   });
 });
 
+
 app.get('/Vcodeudor', (req, res) => {
-  connection.query('SELECT * FROM codeudor ORDER BY Id_Codeudor ASC', (error, results) => {
+  // Consulta SQL sin filtrar por booleanos
+  connection.query('SELECT * FROM codeudor', (error, results) => {
     if (error) {
       console.error('Error al obtener datos de la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -75,6 +78,29 @@ app.get('/Vcodeudor', (req, res) => {
     }
   });
 });
+
+//actualizar Estado Codeudor
+app.put('/Vcodeudor/:id', (req, res) => {
+  const id = req.params.id;
+  const nuevoEstado = req.body.estado;
+
+  // Verificar si el estado es 'true' o 'false'
+  if (nuevoEstado !== 'true' && nuevoEstado !== 'false') {
+    res.status(400).json({ error: 'El estado debe ser "true" o "false"' });
+    return;
+  }
+
+  // Actualizar el estado del codeudor en la base de datos
+  connection.query('UPDATE codeudor SET booleanos = ? WHERE Id_Codeudor = ?', [nuevoEstado, id], (error, results) => {
+    if (error) {
+      console.error('Error al actualizar el estado del codeudor:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.status(200).json({ message: 'Estado del codeudor actualizado exitosamente' });
+    }
+  });
+});
+
 app.get('/VPagoArren', (req, res) => {
   connection.query('SELECT * FROM pagos_arrendamiento ORDER BY Id_Pago_Arrendamiento ASC', (error, results) => {
     if (error) {
@@ -437,6 +463,7 @@ app.get('/Vroles', (req, res) => {
 });
 
 
+//Aactualizar inmueble
 app.put('/actualizarInmueble', (req, res) => {
   const { Id_Inmueble} = req.query; // Datos del formulario
   const Estado = "Ocupado"
@@ -452,6 +479,7 @@ app.put('/actualizarInmueble', (req, res) => {
     }
   })
 })
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 })

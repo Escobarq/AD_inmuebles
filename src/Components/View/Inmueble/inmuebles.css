@@ -1,3 +1,7 @@
+.paginador{
+    position: relative !important;
+    bottom: 0 !important;
+}
 .noselect {
     width: 120px;
     height: 50px;

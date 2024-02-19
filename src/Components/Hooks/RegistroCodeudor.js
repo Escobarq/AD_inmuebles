@@ -1,6 +1,6 @@
 export const Registrocodeudor = async (data ) =>{
     try {
-        const response = await fetch('http://localhost:3006/Registrocodeudor', {
+        const response = await fetch('http://localhost:3006/RegistroCodeudor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -26,16 +26,3 @@ export const Registrocodeudor = async (data ) =>{
 };
 
 
-app.post('/registro-codeudor', (req, res) => {
-    const formData = req.body;
-    const query = 'INSERT INTO tabla (campo1, campo2, campo3) VALUES (?, ?, ?)';
-    connection.query(query, [formData.campo1, formData.campo2, formData.campo3], (err, results) => {
-      if (err) {
-        console.error('Error al insertar en la base de datos:', err);
-        res.status(500).json({ error: 'Error al insertar en la base de datos', details: err.message });
-      } else {
-        console.log('Datos insertados en la base de datos:', results);
-        res.json({ message: 'Datos insertados correctamente' });
-      }
-    });
-  });

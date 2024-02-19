@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, Button, Modal } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import {
@@ -19,14 +19,20 @@ export const Inmueble = () => {
     toast.success("Se Asigno el arrendatario Exitosamente", {
       theme: "dark",
     });
+    // Mostrar Modal
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalA, setMostrarModalA] = useState(false);
-  const [infoinmueble, setinfoinmueble] = useState([]);
+  //Motrar informacion arrendatario
   const [infoarrendatario, setinfoarrendatario] = useState([]);
-  const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
+  //Paginacion
+  const [infoinmueble, setinfoinmueble] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+
   const [existe, setExiste] = useState(false)
+
+  //Actualizar INmueble
+  const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +65,6 @@ export const Inmueble = () => {
     fetchDataArren();
 
     fetchData();
-
   }, []);
 
   const createheader = () => {
@@ -78,7 +83,37 @@ export const Inmueble = () => {
   };
 
   const createrow = (inmueble) => {
-
+    if (inmueble.Estado === "Ocupado") {
+      return (
+        <tr key={inmueble.Id_Inmueble}>
+          <td>{inmueble.Id_Propietario}</td>
+          <td>{inmueble.Id_Inmueble}</td>
+          <td>{inmueble.Direccion}</td>
+          <td>{inmueble.Estrato}</td>
+          <td>{inmueble.Ciudad}</td>
+          <td>{inmueble.Barrio}</td>
+          <td>{inmueble.Tipo}</td>
+          <td>
+            <Button variant="primary" onClick={handleMostrarModalClick}>
+              <FontAwesomeIcon icon={faEye} />
+            </Button>
+          </td>
+          <td>
+            <Button disabled variant="success">
+              <FontAwesomeIcon icon={faUserPlus} />
+            </Button>
+          </td>
+          <td>
+            <Button className="btn-opciones" variant="danger">
+              <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
+            </Button>
+            <Button className="btn-opciones" variant="warning">
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </Button>
+          </td>
+        </tr>
+      );
+    } else {
       return (
         <tr key={inmueble.Id_Inmueble}>
           <td>{inmueble.Id_Propietario}</td>
@@ -92,7 +127,11 @@ export const Inmueble = () => {
             <Button className="btn-opciones" variant="primary" onClick={() =>handleMostrarModalClick(inmueble)}>
               <FontAwesomeIcon icon={faEye} />
             </Button>
+
             <Button className="btn-opciones" onClick={() => handleMostrarAClick(inmueble)} variant="success">
+
+
+          
               <FontAwesomeIcon icon={faUserPlus} />
             </Button>
             <Button className="btn-opciones" variant="danger">
@@ -119,45 +158,49 @@ export const Inmueble = () => {
       );
     }
 
-
   const createrowA = (Arrendatarios) => {
-
     return (
-      <tr onClick={() => handleRowClickAndUpdate(Arrendatarios)} key={Arrendatarios.Id_Arrendatario}>
-      <td>{Arrendatarios.Tipo_Documento}</td>
-      <td>{Arrendatarios.Documento_Identidad}</td>
-      <td>{Arrendatarios.Nombre_Completo}</td>
-      <td>{Arrendatarios.Estado}</td>
-      <td>{Arrendatarios.Telefono}</td>
-      <td>{Arrendatarios.Correo}</td>
-    </tr>
+      <tr
+        onClick={() => handleRowClickAndUpdate(Arrendatarios)}
+        key={Arrendatarios.Id_Arrendatario}
+      >
+        <td>{Arrendatarios.Tipo_Documento}</td>
+        <td>{Arrendatarios.Documento_Identidad}</td>
+        <td>{Arrendatarios.Nombre_Completo}</td>
+        <td>{Arrendatarios.Estado}</td>
+        <td>{Arrendatarios.Telefono}</td>
+        <td>{Arrendatarios.Correo}</td>
+      </tr>
     );
   };
-  
+
   const handleRowClickAndUpdate = async (Arrendatarios) => {
-    
+
     try {
       const Id_Inmueble = inmuebleseleccion[0].Id_Inmueble;
       const { Id_Arrendatario } = Arrendatarios;
-      const response = await fetch(`http://localhost:3006/actualizarInmueble?Id_Inmueble=${Id_Inmueble}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Id_Arrendatario: Id_Arrendatario,
-        }),
-      });
-  
+      const response = await fetch(
+        `http://localhost:3006/actualizarInmueble?Id_Inmueble=${Id_Inmueble}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Id_Arrendatario: Id_Arrendatario,
+          }),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Error al actualizar el inmueble');
+        throw new Error("Error al actualizar el inmueble");
       }
-      
+
       notify(),
-      // Agrega cualquier lógica adicional o actualizaciones de estado según sea necesario
-      console.log('Inmueble actualizado correctamente');
+        // Agrega cualquier lógica adicional o actualizaciones de estado según sea necesario
+        console.log("Inmueble actualizado correctamente");
     } catch (error) {
-      console.error('Error al actualizar el inmueble:', error);
+      console.error("Error al actualizar el inmueble:", error);
     }
   };
 
@@ -169,6 +212,7 @@ export const Inmueble = () => {
   const handleCloseModal = () => {
     setMostrarModal(false);
   };
+
   const handleMostrarAClick = async (inmueble) => {
     const Id_Inmueble = inmueble.Id_Inmueble
 
@@ -198,6 +242,7 @@ export const Inmueble = () => {
 
     }
     
+
   };
 
   const handleCloseModalA = () => {
@@ -266,7 +311,7 @@ export const Inmueble = () => {
           </div>
         </div>
         <div className="paginador">
-          <Pagination>
+          <Pagination >
             <Pagination.Prev
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
@@ -339,7 +384,6 @@ export const Inmueble = () => {
             <Table striped bordered hover>
               <thead>
                 <tr>
-
                   <th>Tipo de Documento</th>
                   <th>No. Documento</th>
                   <th>Nombre</th>
@@ -347,7 +391,6 @@ export const Inmueble = () => {
                   <th>Teléfono</th>
                   <th>Correo</th>
                 </tr>
-
               </thead>
               <tbody>
                 {infoarrendatario.map((Arrendatarios) =>

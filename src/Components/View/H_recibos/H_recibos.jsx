@@ -1,5 +1,5 @@
 import { Table, Button } from "react-bootstrap";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
@@ -7,6 +7,7 @@ import {
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import Pagination from "react-bootstrap/Pagination";
 
 export const H_recibos = () => {
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
@@ -56,7 +57,7 @@ export const H_recibos = () => {
         <td>{PArrendamiento.Valor_Pago}</td>
         <td>{PArrendamiento.Forma_Pago}</td>
         <td>{PArrendamiento.Estado}</td>
-        <td>{PArrendamiento.Dias_De_Mora}</td>        
+        <td>{PArrendamiento.Dias_De_Mora}</td>
         <td>
           <Button className="btn-opciones" variant="danger">
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
@@ -68,6 +69,15 @@ export const H_recibos = () => {
       </tr>
     );
   };
+    //Variables Paginacion
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    // Paginación
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = infoPArrendamiento.slice(indexOfFirstItem, indexOfLastItem);
+  
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <>
@@ -101,12 +111,37 @@ export const H_recibos = () => {
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
               <tbody>
-                {infoPArrendamiento.map((PArrendamientos) =>
+                {currentItems.map((PArrendamientos) =>
                   createrow(PArrendamientos)
                 )}
               </tbody>
             </Table>
           </div>
+        </div>
+        <div className="paginador">
+          <Pagination >
+            <Pagination.Prev
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            {[...Array(Math.ceil(infoPArrendamiento.length / itemsPerPage))].map(
+              (item, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === currentPage}
+                  onClick={() => paginate(index + 1)}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              )
+            )}
+            <Pagination.Next
+              onClick={() => paginate(currentPage + 1)}
+              disabled={
+                currentPage === Math.ceil(infoPArrendamiento.length / itemsPerPage)
+              }
+            />
+          </Pagination>
         </div>
       </div>
     </>

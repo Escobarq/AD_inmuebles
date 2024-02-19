@@ -6,7 +6,7 @@ import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-export const RegistroCodeudor = () => {
+export const Registrocodeudor = () => {
   const notify = () =>
     toast.success("Se Registro correctamente", {
       theme: "dark",
@@ -29,9 +29,9 @@ export const RegistroCodeudor = () => {
     formState: { errors },
   } = useForm();
 
-  const onsubmitRegistro = async (data) => {
+  const onsubmitcodeudor = async (data) => {
     try {
-      const response = await fetch("http://localhost:3006/Rcodeudor", {
+      const response = await fetch("http://localhost:3006/Registrocodeudor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export const RegistroCodeudor = () => {
 
   const handleConfirmSave = () => {
     // Lógica para confirmar el guardado
-    handleSubmit(onsubmitRegistro)(); // Envia los datos
+    handleSubmit(onsubmitcodeudor)(); // Envia los datos
     setShowSaveModal(false); // Cierra el modal
   };
 
@@ -64,11 +64,13 @@ export const RegistroCodeudor = () => {
   };
 
   return (
-    <Container>
-      <Form className="formu" onSubmit={handleSubmit(onsubmitRegistro)}>
-        <div className="titulo">
-          <h2>Registro Codeudor</h2>
-        </div>
+    <>
+            <div className="izq RA d-flex justify-content-center align-items-center">
+            <form onSubmit={onsubmitcodeudor}>
+       
+
+
+          <h1>Registro Codeudor</h1>
 
         <Row className="contener-co">
           <Col md={6}>
@@ -78,7 +80,7 @@ export const RegistroCodeudor = () => {
                 type="text"
                 name="nombrecompleto"
                 {...register("nombrecompleto")}
-              />
+                />
             </Form.Group>
 
             <Form.Group controlId="numeroIdentidad">
@@ -88,7 +90,7 @@ export const RegistroCodeudor = () => {
                 name="documentoidentidad"
                 {...register("documentoidentidad")}
                 max={9999999999}
-              />
+                />
             </Form.Group>
 
             <Form.Group controlId="telefono">
@@ -98,7 +100,7 @@ export const RegistroCodeudor = () => {
                 name="telefono"
                 {...register("telefono")}
                 max={9999999999}
-              />
+                />
             </Form.Group>
 
             <Form.Group controlId="correoElectronico">
@@ -107,7 +109,7 @@ export const RegistroCodeudor = () => {
                 type="email"
                 name="correoelectronico"
                 {...register("correoelectronico")}
-              />
+                />
             </Form.Group>
             <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
@@ -115,17 +117,19 @@ export const RegistroCodeudor = () => {
                 type="text"
                 name="direccion"
                 {...register("direccion")}
-              />
+                />
             </Form.Group>
+            
           </Col>
         </Row>
+            </form>
         <div className="contener-buttons d-flex justify-content-center">
           <div className="save_deleter">
             <Button
               type="button"
               variant="success m-2"
               onClick={() => setShowSaveModal(true)}
-            >
+              >
               <FontAwesomeIcon icon={faSave} />
               <span className="text_button ms-2">Guardar</span>
             </Button>
@@ -135,13 +139,14 @@ export const RegistroCodeudor = () => {
               type="button"
               variant="danger m-2"
               onClick={() => setShowCancelModal(true)}
-            >
+              >
               <FontAwesomeIcon icon={faTimes} />
               <span className="text_button ms-2">Cancelar</span>
             </Button>
           </div>
         </div>
-      </Form>
+      
+              </div>
       {/* Modales */}
       {/* Modal de confirmación de guardar */}
       <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
@@ -178,6 +183,6 @@ export const RegistroCodeudor = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </>
   );
 };
