@@ -1,20 +1,22 @@
-/* eslint-disable react/prop-types */
+import  { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Form, Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import { toast } from "react-toastify";
-import { useState } from "react";
 
 export const RInmuebleA = () => {
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+
   const notify = () =>
-    toast.success("Se Registro correctamente", {
+    toast.success("Se Registró correctamente", {
       theme: "dark",
     });
 
   const falla = () =>
-    toast.error("Hubo un error al ingresar los datos , itente nuevamente", {
+    toast.error("Hubo un error al ingresar los datos, intenta nuevamente", {
       theme: "colored",
     });
 
@@ -45,19 +47,15 @@ export const RInmuebleA = () => {
   };
 
   // Redireccion en caso de confirmar o cancelar
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
-
-  const Confirmacion = () => {
-    setShowConfirmation(true);
+  const handleConfirmSave = () => {
+    // Lógica para confirmar el guardado
+    handleSubmit(onsubmitRegistro)(); // Envia los datos
+    setShowSaveModal(false); // Cierra el modal
   };
 
-  const Delete = () => {
-    setShowDelete(true);
-  };
-
-  const confirmSeccion = () => {
+  const handleConfirmCancel = () => {
     window.location.href = "/Inmueble";
+    setShowCancelModal(false); // Cierra el modal
   };
 
   return (
@@ -172,62 +170,68 @@ export const RInmuebleA = () => {
             {/*Botones para guardar y cancelar*/}
             <div className="col-md-12">
               <div className="save_deleter">
-                <Button
-                type="button"
+              <Button
+                  type="button"
                   variant="success m-2"
-                  onClick={Confirmacion}
+                  onClick={() => setShowSaveModal(true)}
                 >
                   <FontAwesomeIcon icon={faSave} />
                   <span className="text_button ms-2">Guardar</span>
                 </Button>
-                <Button type="button" variant="danger m-2" onClick={Delete}>
+
+                {/* Botón de cancelar */}
+                <Button
+                  type="button"
+                  variant="danger m-2"
+                  onClick={() => setShowCancelModal(true)}
+                >
                   <FontAwesomeIcon icon={faTimes} />
                   <span className="text_button ms-2">Cancelar</span>
                 </Button>
               </div>
             </div>
-               {/* Modal confirmacion si */}
-               <Modal
-              show={showConfirmation}
-              onHide={() => setShowConfirmation(false)}
-            >
-              <Modal.Header closeButton={false}>
+            {/* Modal de confirmación de guardar */}
+            <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+              <Modal.Header closeButton>
                 <Modal.Title>Confirmación</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                ¿Estás seguro de que los datos son correctos?
+                ¿Estás seguro de que deseas guardar los cambios?
               </Modal.Body>
               <Modal.Footer>
                 <Button
-                type="button"
                   variant="secondary"
-                  onClick={() => setShowConfirmation(false)}
+                  onClick={() => setShowSaveModal(false)}
                 >
                   No
                 </Button>
-                <Button variant="danger" type="submit">
+                <Button variant="primary" onClick={handleConfirmSave}>
                   Sí
                 </Button>
               </Modal.Footer>
             </Modal>
 
-            {/* Modal Cancelacion si */}
-            <Modal show={showDelete} onHide={() => setShowDelete(false)}>
-              <Modal.Header closeButton={false}>
+            {/* Modal de confirmación de cancelar */}
+            <Modal
+              show={showCancelModal}
+              onHide={() => setShowCancelModal(false)}
+            >
+              <Modal.Header closeButton>
                 <Modal.Title>Confirmación</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                ¿Estás seguro de que deseas cancelar la operacion?
+                ¿Estás seguro de que deseas cancelar la operación?
               </Modal.Body>
               <Modal.Footer>
                 <Button
-                type="button"
                   variant="secondary"
-                  onClick={() => setShowDelete(false)}
+                  onClick={() => setShowCancelModal(false)}
                 >
                   No
                 </Button>
-                <Button variant="danger" onClick={confirmSeccion}>Sí</Button>
+                <Button variant="primary" onClick={handleConfirmCancel}>
+                  Sí
+                </Button>
               </Modal.Footer>
             </Modal>
           </Form>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Table, Button, Modal } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import {
@@ -11,10 +11,18 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const Inmueble = () => {
+  const notify = () =>
+    toast.success("Se Asigno el arrendatario Exitosamente", {
+      theme: "dark",
+    });
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarModalA, setMostrarModalA] = useState(false);
   const [infoinmueble, setinfoinmueble] = useState([]);
+  const [infoarrendatario, setinfoarrendatario] = useState([]);
+  const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
@@ -27,35 +35,49 @@ export const Inmueble = () => {
         }
         const data = await response.json();
         setinfoinmueble(data);
-        console.log(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    const fetchDataArren = async () => {
+      try {
+        const response = await fetch("http://localhost:3006/Varrendatario");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setinfoarrendatario(data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
 
+    fetchDataArren();
+
     fetchData();
+
   }, []);
 
   const createheader = () => {
 
-      return (
-        <tr>
-          <th>Id propietario</th>
-          <th>Id inmueble</th>
-          <th>Dirección</th>
-          <th>Estrato</th>
-          <th>Ciudad</th>
-          <th>Barrio</th>
-          <th>Tipo</th>
-          <th>Ver más</th>
-          <th>Asignar arrendatario</th>
-          <th>Opciones</th>
-        </tr>
-      );
+    return (
+      <tr>
+        <th>Id propietario</th>
+        <th>Id inmueble</th>
+        <th>Dirección</th>
+        <th>Estrato</th>
+        <th>Ciudad</th>
+        <th>Barrio</th>
+        <th>Tipo</th>
+        <th>Ver más</th>
+        <th>Asignar arrendatario</th>
+        <th>Opciones</th>
+      </tr>
+    );
   };
 
   const createrow = (inmueble) => {
-      if (inmueble.Estado === "Ocupado") {
+    if (inmueble.Estado === "Ocupado") {
       return (
         <tr key={inmueble.Id_Inmueble}>
           <td>{inmueble.Id_Propietario}</td>
@@ -86,7 +108,7 @@ export const Inmueble = () => {
         </tr>
       );
     }
-    else{
+    else {
       return (
         <tr key={inmueble.Id_Inmueble}>
           <td>{inmueble.Id_Propietario}</td>
@@ -102,7 +124,7 @@ export const Inmueble = () => {
             </Button>
           </td>
           <td>
-            <Button  variant="success">
+            <Button onClick={() => handleMostrarAClick(inmueble)} variant="success">
               <FontAwesomeIcon icon={faUserPlus} />
             </Button>
           </td>
@@ -120,12 +142,63 @@ export const Inmueble = () => {
     }
   };
 
+
+  const createrowA = (Arrendatarios) => {
+
+    return (
+      <tr onClick={() => handleRowClickAndUpdate(Arrendatarios)} key={Arrendatarios.Id_Arrendatario}>
+      <td>{Arrendatarios.Tipo_Documento}</td>
+      <td>{Arrendatarios.Documento_Identidad}</td>
+      <td>{Arrendatarios.Nombre_Completo}</td>
+      <td>{Arrendatarios.Estado}</td>
+      <td>{Arrendatarios.Telefono}</td>
+      <td>{Arrendatarios.Correo}</td>
+    </tr>
+    );
+  };
+  
+  const handleRowClickAndUpdate = async (Arrendatarios) => {
+    console.log(Arrendatarios);
+    console.log(inmuebleseleccion);
+    try {
+      const Id_Inmueble = inmuebleseleccion.Id_Inmueble;
+      const { Id_Arrendatario } = Arrendatarios;
+      const response = await fetch(`http://localhost:3006/actualizarInmueble?Id_Inmueble=${Id_Inmueble}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          Id_Arrendatario: Id_Arrendatario,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al actualizar el inmueble');
+      }
+      
+      notify(),
+      // Agrega cualquier lógica adicional o actualizaciones de estado según sea necesario
+      console.log('Inmueble actualizado correctamente');
+    } catch (error) {
+      console.error('Error al actualizar el inmueble:', error);
+    }
+  };
+
   const handleMostrarModalClick = () => {
     setMostrarModal(true);
   };
 
   const handleCloseModal = () => {
     setMostrarModal(false);
+  };
+  const handleMostrarAClick = (inmueble) => {
+    setMostrarModalA(true);
+    setinmuebleseleccion(inmueble)
+  };
+
+  const handleCloseModalA = (inmueble) => {
+    setMostrarModalA(false);
   };
 
   // Paginación
@@ -166,13 +239,13 @@ export const Inmueble = () => {
             </select>
           </div>
           <Button variant="success" className="btn-add">
-          <Link to = "/RInmuebleA">
-            <FontAwesomeIcon
-              icon={faHouseChimneyMedical}
-              style={{ color: "#ffffff" }}
-            />
-            Agregar Inmueble
-          </Link>
+            <Link to="/RInmuebleA">
+              <FontAwesomeIcon
+                icon={faHouseChimneyMedical}
+                style={{ color: "#ffffff" }}
+              />
+              Agregar Inmueble
+            </Link>
           </Button>
         </div>
         <div className="title_view">
@@ -215,7 +288,7 @@ export const Inmueble = () => {
         </div>
         {/* Modal */}
         <Modal
-          size="lg" 
+          size="lg"
           show={mostrarModal}
           onHide={handleCloseModal}
           aria-labelledby="example-modal-sizes-title-lg"
@@ -238,6 +311,38 @@ export const Inmueble = () => {
                 </tr>
               </thead>
               <tbody></tbody>
+            </Table>
+          </Modal.Body>
+        </Modal>
+
+        <Modal
+          size="lg"
+          show={mostrarModalA}
+          onHide={handleCloseModalA}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Arrendatarios Disponibles</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+
+                  <th>Tipo de Documento</th>
+                  <th>No. Documento</th>
+                  <th>Nombre</th>
+                  <th>Estado</th>
+                  <th>Teléfono</th>
+                  <th>Correo</th>
+                </tr>
+
+              </thead>
+              <tbody>
+                {infoarrendatario.map((Arrendatarios) =>
+                  createrowA(Arrendatarios)
+                )}
+              </tbody>
             </Table>
           </Modal.Body>
         </Modal>
