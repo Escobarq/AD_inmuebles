@@ -8,6 +8,7 @@ import {
   faPenToSquare,
   faHouseChimneyMedical,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
 import { Link } from "react-router-dom";
@@ -36,6 +37,8 @@ export const Inmueble = () => {
         }
         const data = await response.json();
         setinfoinmueble(data);
+        console.log(data)
+        setinmuebleseleccion(data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -60,7 +63,6 @@ export const Inmueble = () => {
   }, []);
 
   const createheader = () => {
-
     return (
       <tr>
         <th>Id propietario</th>
@@ -69,9 +71,7 @@ export const Inmueble = () => {
         <th>Estrato</th>
         <th>Ciudad</th>
         <th>Barrio</th>
-        <th>Tipo</th>
-        <th>Ver más</th>
-        <th>Asignar arrendatario</th>
+        <th>Tipo</th>    
         <th>Opciones</th>
       </tr>
     );
@@ -89,16 +89,12 @@ export const Inmueble = () => {
           <td>{inmueble.Barrio}</td>
           <td>{inmueble.Tipo}</td>
           <td>
-            <Button variant="primary" onClick={handleMostrarModalClick}>
+            <Button className="btn-opciones" variant="primary" onClick={() =>handleMostrarModalClick(inmueble)}>
               <FontAwesomeIcon icon={faEye} />
             </Button>
-          </td>
-          <td>
-            <Button onClick={() => handleMostrarAClick(inmueble)} variant="success">
+            <Button className="btn-opciones" onClick={() => handleMostrarAClick(inmueble)} variant="success">
               <FontAwesomeIcon icon={faUserPlus} />
             </Button>
-          </td>
-          <td>
             <Button className="btn-opciones" variant="danger">
               <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
             </Button>
@@ -106,6 +102,19 @@ export const Inmueble = () => {
               <FontAwesomeIcon icon={faPenToSquare} />
             </Button>
           </td>
+        </tr>
+      );
+    }
+  const createrowDetalles = () => {
+      return (
+        <tr >
+          <td>{ inmuebleseleccion.No_Niveles}</td>
+          <td>${ inmuebleseleccion.Valor_Inmueble}</td>
+          <td>{ inmuebleseleccion.No_Banos}</td>
+          <td>{ inmuebleseleccion.Servicios_Publicos}</td>
+          <td>{ inmuebleseleccion.No_Habitaciones}</td>
+          <td>{ inmuebleseleccion.Estado}</td>
+          <td>{ inmuebleseleccion.No_Terraza}</td>
         </tr>
       );
     }
@@ -152,7 +161,8 @@ export const Inmueble = () => {
     }
   };
 
-  const handleMostrarModalClick = () => {
+  const handleMostrarModalClick = async (inmueble) => {
+    setinmuebleseleccion(inmueble)
     setMostrarModal(true);
   };
 
@@ -193,6 +203,7 @@ export const Inmueble = () => {
   const handleCloseModalA = () => {
     setMostrarModalA(false);
   };
+
 
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -300,10 +311,10 @@ export const Inmueble = () => {
                   <th>Numero Habitaciones</th>
                   <th>Estado</th>
                   <th>Numero Terrazas</th>
-                  <th>Area Construida</th>
+                  
                 </tr>
               </thead>
-              <tbody></tbody>
+              <tbody>{createrowDetalles()}</tbody>
             </Table>
           </Modal.Body>
         </Modal>
@@ -318,7 +329,7 @@ export const Inmueble = () => {
           <Modal.Header closeButton>
             <Modal.Title>Arrendatarios Disponibles</Modal.Title>
             {existe ? ( 
-              <p>existe</p>
+              <p>hola</p>
         
       ) : (
         <p></p>
