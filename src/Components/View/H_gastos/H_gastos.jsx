@@ -4,8 +4,8 @@ import {
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-
+import { useState ,useEffect } from "react";
+import Pagination from "react-bootstrap/Pagination";
 
 export const H_gastos = () => {
   const [infoComision, setinfoComision] = useState([]);
@@ -58,6 +58,15 @@ export const H_gastos = () => {
       </tr>
     );
   };
+      //Variables Paginacion
+      const [currentPage, setCurrentPage] = useState(1);
+      const [itemsPerPage] = useState(10);
+      // Paginación
+      const indexOfLastItem = currentPage * itemsPerPage;
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+      const currentItems = infoComision.slice(indexOfFirstItem, indexOfLastItem);
+    
+      const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <>
@@ -86,17 +95,41 @@ export const H_gastos = () => {
           <h1 className="tittle_propetario">Historial de comisiones propietario</h1>
         </div>
         <div className="view_esp">
-       
           <div className="table-container">
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
               <tbody>
-                {infoComision.map((CPropietarios) =>
+                {currentItems.map((CPropietarios) =>
                   createrow(CPropietarios)
                 )}
               </tbody>
               </Table>
           </div>
+        </div>
+        <div className="paginador">
+          <Pagination >
+            <Pagination.Prev
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            {[...Array(Math.ceil(infoComision.length / itemsPerPage))].map(
+              (item, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === currentPage}
+                  onClick={() => paginate(index + 1)}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              )
+            )}
+            <Pagination.Next
+              onClick={() => paginate(currentPage + 1)}
+              disabled={
+                currentPage === Math.ceil(infoComision.length / itemsPerPage)
+              }
+            />
+          </Pagination>
         </div>
       </div>
     </>
