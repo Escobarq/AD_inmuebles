@@ -85,12 +85,12 @@ export const H_recibos = () => {
             <label className="l1">Fecha Ingreso: </label>
             <input className="input-filtroRe" type="date" name="" id="" />
           </div>
-          <Button variant="success" className="btn-add" >
-        <Link to= "/ReArrendamiento">
-        <FontAwesomeIcon className="icon" icon={faUserPlus} />Nuevo Pago Arrendamiento
-        
-        </Link>
-        </Button>
+          <Button variant="success" className="btn-add">
+            <Link to="/Reciboarrendatario">
+              <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
+              PArrendamiento
+            </Link>
+          </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Historial de Pago Arrendamiento</h1>

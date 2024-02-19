@@ -1,45 +1,43 @@
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Form, Button,Modal } from "react-bootstrap";
+import { Form, Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
-import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
 
 export const RInmuebleB = () => {
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
-  const notify = () => toast.success("Se Registro correctamente", {
-    theme: "dark"
-  });
-    
-  const falla = () => toast.error("Hubo un error al ingresar los datos , itente nuevamente", {
-    theme: "colored"
-  });
+  const notify = () =>
+    toast.success("Se Registro correctamente", {
+      theme: "dark",
+    });
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-  } = useForm();
+  const falla = () =>
+    toast.error("Hubo un error al ingresar los datos , itente nuevamente", {
+      theme: "colored",
+    });
+
+  const { register, handleSubmit, reset } = useForm();
 
   const onsubmitRegistro = async (data) => {
     data.Tipo = "Bodega";
     try {
       await crearInmueble(data);
-      notify()
-      reset()
+      notify();
+      reset();
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
         alert("El correo ya está registrado");
       } else {
-        falla()
+        falla();
         console.error("Error al crear usuario:", error);
         throw error; // Re-lanza el error para que pueda ser manejado en el componente
       }
     }
-  }
+  };
 
   const handleSelectChange = (event) => {
     const selectedOption = event.target.value;
@@ -49,37 +47,38 @@ export const RInmuebleB = () => {
   };
 
   // Redireccion en caso de confirmar o cancelar
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
-
-  const Confirmacion = () => {
-    setShowConfirmation(true);
+  const handleConfirmSave = () => {
+    // Lógica para confirmar el guardado
+    handleSubmit(onsubmitRegistro)(); // Envia los datos
+    setShowSaveModal(false); // Cierra el modal
   };
 
-  const Delete = () => {
-    setShowDelete(true);
-  };
-
-  const confirmSeccion = () => {
+  const handleConfirmCancel = () => {
     window.location.href = "/Inmueble";
+    setShowCancelModal(false); // Cierra el modal
   };
   return (
-    
     <div className="contener-home contener-rpropietario">
       <h2>Registro Inmueble</h2>
       <div className="container">
         <div className="row">
-            <Form className="form-propietario row" style={{ marginTop: "0" }}
-             onSubmit={handleSubmit(onsubmitRegistro)}
-             method="post">
-          <div className="col-md-6">
+          <Form
+            className="form-propietario row"
+            style={{ marginTop: "0" }}
+            onSubmit={handleSubmit(onsubmitRegistro)}
+            method="post"
+          >
+            <div className="col-md-6">
               <Form.Group controlId="formTipoInmueble">
                 <Form.Label>Tipo Inmueble</Form.Label>
-                <Form.Select className="formSelect"
+                <Form.Select
+                  className="formSelect"
                   aria-label="Default select example"
                   onChange={handleSelectChange}
                 >
-                  <option value="" selected   >Bodega</option>
+                  <option value="" selected>
+                    Bodega
+                  </option>
                   <option value="RInmuebleA">Apartamento</option>
                   <option value="RinmuebleO">Oficina</option>
                   <option value="RInmuebleL">Local</option>
@@ -89,7 +88,11 @@ export const RInmuebleB = () => {
 
               <Form.Group controlId="formNoMatricula">
                 <Form.Label>No. Matricula</Form.Label>
-                <Form.Control required {...register("Nmatricula")} type="number" />
+                <Form.Control
+                  required
+                  {...register("Nmatricula")}
+                  type="number"
+                />
               </Form.Group>
 
               <Form.Group controlId="formDireccion">
@@ -111,18 +114,20 @@ export const RInmuebleB = () => {
                 <Form.Label>Valor</Form.Label>
                 <Form.Control required {...register("ValorIn")} type="number" />
               </Form.Group>
+            </div>
 
-            
-          </div>
-
-          <div className="col-md-6">
-            <Form.Group controlId="formEstrato">
-              <Form.Label>Estrato</Form.Label>
-              <Form.Select className="formSelect"
-              required {...register("Estrato")}
+            <div className="col-md-6">
+              <Form.Group controlId="formEstrato">
+                <Form.Label>Estrato</Form.Label>
+                <Form.Select
+                  className="formSelect"
+                  required
+                  {...register("Estrato")}
                   aria-label="Default select example"
                 >
-                  <option value="" selected   >Seleccione estrato</option>
+                  <option value="" selected>
+                    Seleccione estrato
+                  </option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -130,97 +135,113 @@ export const RInmuebleB = () => {
                   <option value="5">5</option>
                   <option value="6">6</option>
                 </Form.Select>
-            </Form.Group>
+              </Form.Group>
 
-            <Form.Group controlId="formNoBanos">
-              <Form.Label>No. Baños</Form.Label>
-              <Form.Control required {...register("Nbanos")} type="number" />
-            </Form.Group>
+              <Form.Group controlId="formNoBanos">
+                <Form.Label>No. Baños</Form.Label>
+                <Form.Control required {...register("Nbanos")} type="number" />
+              </Form.Group>
 
-            <Form.Group controlId="formNoHabitaciones">
-              <Form.Label>Servicios Publicos</Form.Label>
-              <Form.Control required {...register("Spublicos")} type="text" />
-            </Form.Group>
+              <Form.Group controlId="formNoHabitaciones">
+                <Form.Label>Servicios Publicos</Form.Label>
+                <Form.Control required {...register("Spublicos")} type="text" />
+              </Form.Group>
 
-            
               <Form.Group controlId="formNoNiveles">
                 <Form.Label>Aseguramiento</Form.Label>
-                <Form.Control required {...register("aseguraiento")} type="date" />
+                <Form.Control
+                  required
+                  {...register("aseguraiento")}
+                  type="date"
+                />
               </Form.Group>
 
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>No. Identidad Propietario</Form.Label>
-                <Form.Control  type="number" />
+                <Form.Control type="number" />
               </Form.Group>
 
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Descripción</Form.Label>
-                <Form.Control required {...register("Descripcion")} as="textarea" rows={2} style={{ width: '100%', resize: 'none' }} />
+                <Form.Control
+                  required
+                  {...register("Descripcion")}
+                  as="textarea"
+                  rows={2}
+                  style={{ width: "100%", resize: "none" }}
+                />
               </Form.Group>
-          </div>
+            </div>
 
             <div className="col-md-12">
               <div className="save_deleter">
-                <Button type="button" variant="success m-2" onClick={Confirmacion}>
+              <Button
+                  type="button"
+                  variant="success m-2"
+                  onClick={() => setShowSaveModal(true)}
+                >
                   <FontAwesomeIcon icon={faSave} />
                   <span className="text_button ms-2">Guardar</span>
                 </Button>
-                <Button type="reset" variant="danger m-2" onClick={Delete}>
+
+                {/* Botón de cancelar */}
+                <Button
+                  type="button"
+                  variant="danger m-2"
+                  onClick={() => setShowCancelModal(true)}
+                >
                   <FontAwesomeIcon icon={faTimes} />
                   <span className="text_button ms-2">Cancelar</span>
                 </Button>
               </div>
             </div>
-                {/* Modal confirmacion si */}
-                <Modal
-              show={showConfirmation}
-              onHide={() => setShowConfirmation(false)}
-            >
-              <Modal.Header closeButton={false}>
+              {/* Modal de confirmación de guardar */}
+              <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+              <Modal.Header closeButton>
                 <Modal.Title>Confirmación</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                ¿Estás seguro de que los datos son correctos?
+                ¿Estás seguro de que deseas guardar los cambios?
               </Modal.Body>
               <Modal.Footer>
                 <Button
-                type="button"
                   variant="secondary"
-                  onClick={() => setShowConfirmation(false)}
+                  onClick={() => setShowSaveModal(false)}
                 >
                   No
                 </Button>
-                <Button variant="danger" type="submit">
+                <Button variant="primary" onClick={handleConfirmSave}>
                   Sí
                 </Button>
               </Modal.Footer>
             </Modal>
 
-            {/* Modal Cancelacion si */}
-            <Modal show={showDelete} onHide={() => setShowDelete(false)}>
-              <Modal.Header closeButton={false}>
+            {/* Modal de confirmación de cancelar */}
+            <Modal
+              show={showCancelModal}
+              onHide={() => setShowCancelModal(false)}
+            >
+              <Modal.Header closeButton>
                 <Modal.Title>Confirmación</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                ¿Estás seguro de que deseas cancelar la operacion?
+                ¿Estás seguro de que deseas cancelar la operación?
               </Modal.Body>
               <Modal.Footer>
                 <Button
-                type="button"
                   variant="secondary"
-                  onClick={() => setShowDelete(false)}
+                  onClick={() => setShowCancelModal(false)}
                 >
                   No
                 </Button>
-                <Button variant="danger" onClick={confirmSeccion}>Sí</Button>
+                <Button variant="primary" onClick={handleConfirmCancel}>
+                  Sí
+                </Button>
               </Modal.Footer>
             </Modal>
-
           </Form>
-          <ToastContainer />
         </div>
       </div>
     </div>
   );
 };
-

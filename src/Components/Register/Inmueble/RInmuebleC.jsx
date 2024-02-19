@@ -1,12 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button ,Modal} from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
-import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import { useState } from "react";
 
 export const RInmuebleC = () => {
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  
   const notify = () => toast.success("Se Registro correctamente", {
     theme: "dark"
   });
@@ -45,6 +48,19 @@ export const RInmuebleC = () => {
       window.location.assign(`/${selectedOption}`);
     }
   };
+
+    // Redireccion en caso de confirmar o cancelar
+    const handleConfirmSave = () => {
+      // Lógica para confirmar el guardado
+      handleSubmit(onsubmitRegistro)(); // Envia los datos
+      setShowSaveModal(false); // Cierra el modal
+    };
+  
+    const handleConfirmCancel = () => {
+      window.location.href = "/Inmueble";
+      setShowCancelModal(false); // Cierra el modal
+    };
+  
   return (
     <div className="contener-home contener-rpropietario">
       <h2>Registro Inmueble</h2>
@@ -128,18 +144,71 @@ export const RInmuebleC = () => {
           </div>
           <div className="col-md-12">
               <div className="save_deleter">
-                <Button type="submit" variant="success m-2">
+              <Button
+                  type="button"
+                  variant="success m-2"
+                  onClick={() => setShowSaveModal(true)}
+                >
                   <FontAwesomeIcon icon={faSave} />
                   <span className="text_button ms-2">Guardar</span>
                 </Button>
-                <Button type="reset" variant="danger m-2">
+
+                {/* Botón de cancelar */}
+                <Button
+                  type="button"
+                  variant="danger m-2"
+                  onClick={() => setShowCancelModal(true)}
+                >
                   <FontAwesomeIcon icon={faTimes} />
                   <span className="text_button ms-2">Cancelar</span>
                 </Button>
               </div>
             </div>
+             {/* Modal de confirmación de guardar */}
+             <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirmación</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¿Estás seguro de que deseas guardar los cambios?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowSaveModal(false)}
+                >
+                  No
+                </Button>
+                <Button variant="primary" onClick={handleConfirmSave}>
+                  Sí
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
+            {/* Modal de confirmación de cancelar */}
+            <Modal
+              show={showCancelModal}
+              onHide={() => setShowCancelModal(false)}
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Confirmación</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¿Estás seguro de que deseas cancelar la operación?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowCancelModal(false)}
+                >
+                  No
+                </Button>
+                <Button variant="primary" onClick={handleConfirmCancel}>
+                  Sí
+                </Button>
+              </Modal.Footer>
+            </Modal>
             </Form>
-            <ToastContainer />
         </div>
       </div>
     </div>
