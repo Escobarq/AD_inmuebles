@@ -1,20 +1,63 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import { Table, Button } from "react-bootstrap";
+import { Table, Button , Modal } from "react-bootstrap";
 import "./propietarios.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
+  faUserSlash,
   faTrash,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
+import { toast } from "react-toastify";
+import InhabilitarPropetario from "../../Hooks/InhabilitarPropetarios";
 
 export const Propietarios = () => {
   const [infopropietario, setinfopropietario] = useState([]);
   const [Rol, setRol] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [PropetarioIdToDelete, setPropetarioIdToDelete] = useState(null);
 
+  const notify = () =>
+    toast.success("Se Inabilito Correctamente ", {
+      theme: "dark",
+    });
+  const errores = () =>
+    toast.error("Hubo algun error  ", {
+      theme: "dark",
+    });
+
+  //Modal para Inhabilitacion
+  const handleOpenModal = (PropetarioId) => {
+    setPropetarioIdToDelete(PropetarioId);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+  // Hook para actualizar el estado del arrendatario
+  const { actualizarEstadoPropetario } = InhabilitarPropetario();
+
+  //Actualizar Estado Coduedor
+  const handleInhabilitarPropetario = async (PropetarioId) => {
+    try {
+      await actualizarEstadoPropetario(PropetarioId, "false");
+      const updatedpropetario = infopropietario.filter(
+        (Propetarios) => Propetarios.Id_Propietario !== PropetarioId
+      );
+      setinfopropietario(updatedpropetario);
+      notify();
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error al inhabilitar Propetario:", error);
+      errores();
+    }
+  };
+
+  //Visualizar Datos tabla
   useEffect(() => {
     let a = localStorage.getItem("Rol");
     setRol(a);
@@ -25,9 +68,12 @@ export const Propietarios = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setinfopropietario(data);
 
-        console.log(data);
+        const PropetarioActivos = data.filter(
+          (Propetarios) => Propetarios.booleanos === "true"
+        );
+
+        setinfopropietario(PropetarioActivos);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -64,7 +110,11 @@ export const Propietarios = () => {
         <td>{Propietario.Tipo_Cuenta}</td>
         <td>{Propietario.Numero_Cuenta}</td>
         <td>
-          <Button className="btn-opciones" variant="danger">
+          <Button
+            className="btn-opciones"
+            variant="danger"
+            onClick={() => handleOpenModal(Propietario.Id_Propietario)}
+          >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
           <Button className="btn-opciones" variant="warning">
@@ -74,15 +124,15 @@ export const Propietarios = () => {
       </tr>
     );
   };
-     //Variables Paginacion
-     const [currentPage, setCurrentPage] = useState(1);
-     const [itemsPerPage] = useState(10);
-    // Paginación
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = infopropietario.slice(indexOfFirstItem, indexOfLastItem);
-  
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  //Variables Paginacion
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = infopropietario.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   return (
     <>
       <div className="contener-home">
@@ -105,6 +155,12 @@ export const Propietarios = () => {
               Propietario
             </Link>
           </Button>
+          <Button variant="dark" className="btn-add-info ">
+            <Link to="/InhaPropietarios" className="linkes">
+              <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
+              Inabilitados
+            </Link>
+          </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Propetarios</h1>
@@ -121,7 +177,7 @@ export const Propietarios = () => {
           </div>
         </div>
         <div className="paginador">
-          <Pagination >
+          <Pagination>
             <Pagination.Prev
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
@@ -146,6 +202,25 @@ export const Propietarios = () => {
           </Pagination>
         </div>
       </div>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ¿Está seguro de que desea inhabilitar este Arrendatario?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancelar
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => handleInhabilitarPropetario (PropetarioIdToDelete)} 
+          >
+            Confirmar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

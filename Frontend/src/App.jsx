@@ -28,6 +28,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
 import { AsignarRol } from './Components/View/AsignarRol/AsignarRol';
 import { CodeudorInha } from './Components/View/Codeudor/CodeudorInha';
+import { InhabilitarArren } from './Components/View/Arrendatario/InhabilitarArren';
+import { InhabilitarPropetario } from './Components/View/Propietarios/InhabilitarPropetario';
+import { InhabilitarInmuebles } from './Components/View/Inmueble/InhabilitarInmuebles';
 
 
 function App() {
@@ -57,8 +60,11 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/inicio" element={<Home />} />
         <Route path="/Propietario" element={<Propietarios />} />
+        <Route path="/InhaPropietarios" element={<InhabilitarPropetario />} />
         <Route path="/Arrendatario" element={<Arrendatario />} />
+        <Route path="/Inharrendatario" element={<InhabilitarArren />} />
         <Route path="/Inmueble" element={<Inmueble />} />
+        <Route path="/InhaInmueble" element={<InhabilitarInmuebles />} />
         <Route path="/Codeudor" element={<Codeudor />} />
         <Route path="/Codeudores" element={<CodeudorInha />} />
         <Route path="/H_gastos" element={<H_gastos />} />
