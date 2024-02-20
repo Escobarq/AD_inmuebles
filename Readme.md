@@ -1,44 +1,232 @@
-## Ad_inmuebles
 
-**Descripción breve:** Este proyecto es para graduarnos en el sena 
+![Logo](https://drive.google.com/file/d/1hfKMctu47WxmcKI-y-HZFnphfQ5URkrM/view?usp=sharing)
 
-**Palabras clave:** plantilla, README, markdown, proyecto
 
-**Descripción del proyecto:**
+# Tauri - Adminmuebles
 
-* **Objetivo:** El objetivo de este proyecto es proporcionar una plantilla fácil de usar para crear archivos README.md.
-* **Problema que resuelve:** Este proyecto resuelve el problema de tener que crear un archivo README.md desde cero.
-* **Público objetivo:** El público objetivo de este proyecto son los desarrolladores que quieren crear archivos README.md para sus proyectos.
+Guia para rapida para correr el proyecto y ejecutarlo de manera correcta
 
-**Funcionalidades:**
 
-* Esta plantilla te ayuda a crear un archivo README.md completo y atractivo.
-* Puedes modificar y adaptar la información según las necesidades de tu proyecto.
-* La plantilla incluye una tabla de contenido para facilitar la navegación.
 
-**Requisitos:**
+## Autores
 
-* No se requieren requisitos especiales para usar esta plantilla.
+- [@Arenasssss](https://github.com/Arenasssss)
+- [@Jeison](https://github.com/jeisonwaldir)
+- [@IngSg](https://github.com/IngSg)
+## Ejecutar
+Notas:
+Por favor tener instalado el lenguaje de rust y librerias de c++ de visual studio 2019 el 2022 no funcionan 
 
-**Instalación:**
+1.Clonar con git el repositrio e instala las dependencias en la ruta del proyecto 
 
-* Para usar esta plantilla, simplemente copia y pega el contenido en un archivo README.md nuevo.
+```bash
+  git clone https://github.com/Escobarq/AD_inmuebles.git
+  cd frontend
+```
 
-**Uso:**
+2.Ya en la carpeta Instalar las dependencias en la ruta del proyecto 
 
-* Puedes modificar y adaptar la información en la plantilla según las necesidades de tu proyecto.
-* Asegúrate de incluir toda la información relevante sobre tu proyecto.
+```bash
+  npm install
+```
+2.Despues de instalar las dependencias solo ejecutas el sigueinte comando
 
-**Contribuciones:**
+```bash
+  npm run tauri dev
+```
+Gracias a este comando primero ejecuta el proyecto en web en segundo plano y despues ejecuta la ventana de tauri la primera vez demorara bastante ten paciencia
 
-* Puedes contribuir a este proyecto enviando pull requests con mejoras o correcciones.
+3.Ya que estas terminando de ejecutar el poryecto en frontend ahora es turno de l backend es casi el mismo proceso del paso 1 con la unica diferencia que te moveras a backend de la siguiente forma
 
-**Licencia:**
+```bash
+  cd backend
+```
+4.Instala las dependencias en esa misma carpeta con
 
-* Este proyecto está licenciado bajo la licencia MIT.
+```bash
+  npm install
+```
 
-**Contacto:**
+5.Ahora para ejecutar solo necesitas este comando ya que esta configurado con nodemon
 
-* Si tienes alguna pregunta o comentario sobre este proyecto, puedes contactarme a través de la página web del proyecto.
+```bash
+  nodemon src/index.js 
+```
+## Imagenes
 
-**Enlace a la página web del proyecto:** https://www.ejemplo.com
+![App Screenshot](https://github.com/Escobarq/AD_inmuebles/blob/31e65ddafb518b803cd43699fd03e58747c3dd40/public/Home.png)
+
+
+![Logo](https://drive.google.com/file/d/1hfKMctu47WxmcKI-y-HZFnphfQ5URkrM/view?usp=sharing)
+
+
+# Tauri - Adminmuebles
+
+Guia para rapida para correr el proyecto y ejecutarlo de manera correcta
+
+
+
+## Autores
+
+- [@Arenasssss](https://github.com/Arenasssss)
+- [@Jeison](https://github.com/jeisonwaldir)
+- [@IngSg](https://github.com/IngSg)
+## Ejecutar
+Notas:
+Por favor tener instalado el lenguaje de rust y librerias de c++ de visual studio 2019 el 2022 no funcionan 
+
+1.Clonar con git el repositrio e instala las dependencias en la ruta del proyecto 
+
+```bash
+  git clone https://github.com/Escobarq/AD_inmuebles.git
+  cd frontend
+```
+
+2.Ya en la carpeta Instalar las dependencias en la ruta del proyecto 
+
+```bash
+  npm install
+```
+2.Despues de instalar las dependencias solo ejecutas el sigueinte comando
+
+```bash
+  npm run tauri dev
+```
+Gracias a este comando primero ejecuta el proyecto en web en segundo plano y despues ejecuta la ventana de tauri la primera vez demorara bastante ten paciencia
+
+3.Ya que estas terminando de ejecutar el poryecto en frontend ahora es turno de l backend es casi el mismo proceso del paso 1 con la unica diferencia que te moveras a backend de la siguiente forma
+
+```bash
+  cd backend
+```
+4.Instala las dependencias en esa misma carpeta con
+
+```bash
+  npm install
+```
+
+5.Ahora para ejecutar solo necesitas este comando ya que esta configurado con nodemon
+
+```bash
+  nodemon src/index.js 
+```
+## Imagenes
+
+![App Screenshot](https://github.com/Escobarq/AD_inmuebles/blob/31e65ddafb518b803cd43699fd03e58747c3dd40/public/Home.png)
+
+
+![Logo](https://drive.google.com/file/d/1hfKMctu47WxmcKI-y-HZFnphfQ5URkrM/view?usp=sharing)
+
+
+# Tauri - Adminmuebles
+
+Guia para rapida para correr el proyecto y ejecutarlo de manera correcta
+
+
+
+## Autores
+
+- [@Arenasssss](https://github.com/Arenasssss)
+- [@Jeison](https://github.com/jeisonwaldir)
+- [@IngSg](https://github.com/IngSg)
+## Ejecutar
+Notas:
+Por favor tener instalado el lenguaje de rust y librerias de c++ de visual studio 2019 el 2022 no funcionan 
+
+1.Clonar con git el repositrio e instala las dependencias en la ruta del proyecto 
+
+```bash
+  git clone https://github.com/Escobarq/AD_inmuebles.git
+  cd frontend
+```
+
+2.Ya en la carpeta Instalar las dependencias en la ruta del proyecto 
+
+```bash
+  npm install
+```
+2.Despues de instalar las dependencias solo ejecutas el sigueinte comando
+
+```bash
+  npm run tauri dev
+```
+Gracias a este comando primero ejecuta el proyecto en web en segundo plano y despues ejecuta la ventana de tauri la primera vez demorara bastante ten paciencia
+
+3.Ya que estas terminando de ejecutar el poryecto en frontend ahora es turno de l backend es casi el mismo proceso del paso 1 con la unica diferencia que te moveras a backend de la siguiente forma
+
+```bash
+  cd backend
+```
+4.Instala las dependencias en esa misma carpeta con
+
+```bash
+  npm install
+```
+
+5.Ahora para ejecutar solo necesitas este comando ya que esta configurado con nodemon
+
+```bash
+  nodemon src/index.js 
+```
+## Imagenes
+
+![App Screenshot](https://github.com/Escobarq/AD_inmuebles/blob/31e65ddafb518b803cd43699fd03e58747c3dd40/public/Home.png)
+
+
+![Logo](https://drive.google.com/file/d/1hfKMctu47WxmcKI-y-HZFnphfQ5URkrM/view?usp=sharing)
+
+
+# Tauri - Adminmuebles
+
+Guia para rapida para correr el proyecto y ejecutarlo de manera correcta
+
+
+
+## Autores
+
+- [@Arenasssss](https://github.com/Arenasssss)
+- [@Jeison](https://github.com/jeisonwaldir)
+- [@IngSg](https://github.com/IngSg)
+## Ejecutar
+Notas:
+Por favor tener instalado el lenguaje de rust y librerias de c++ de visual studio 2019 el 2022 no funcionan 
+
+1.Clonar con git el repositrio e instala las dependencias en la ruta del proyecto 
+
+```bash
+  git clone https://github.com/Escobarq/AD_inmuebles.git
+  cd frontend
+```
+
+2.Ya en la carpeta Instalar las dependencias en la ruta del proyecto 
+
+```bash
+  npm install
+```
+2.Despues de instalar las dependencias solo ejecutas el sigueinte comando
+
+```bash
+  npm run tauri dev
+```
+Gracias a este comando primero ejecuta el proyecto en web en segundo plano y despues ejecuta la ventana de tauri la primera vez demorara bastante ten paciencia
+
+3.Ya que estas terminando de ejecutar el poryecto en frontend ahora es turno de l backend es casi el mismo proceso del paso 1 con la unica diferencia que te moveras a backend de la siguiente forma
+
+```bash
+  cd backend
+```
+4.Instala las dependencias en esa misma carpeta con
+
+```bash
+  npm install
+```
+
+5.Ahora para ejecutar solo necesitas este comando ya que esta configurado con nodemon
+
+```bash
+  nodemon src/index.js 
+```
+## Imagenes
+
+![App Screenshot](https://github.com/Escobarq/AD_inmuebles/blob/31e65ddafb518b803cd43699fd03e58747c3dd40/public/Home.png)
+
