@@ -1,0 +1,124 @@
+
+
+/*ESTILOS PARA HISTORIAL DE ARRENDAMIENTO*/
+   
+.contenerhom{
+  width: 100%;
+  padding: 2%;
+  background-color: #ffffff;
+  margin: 2% 2% 2% 0;
+  border-radius: 2%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.20) 0px 5px 15px;
+}
+
+.title_views {
+  display: flex;
+  width: 100%;
+  padding: 2%;
+  justify-content: flex-start;
+}
+
+.total_general{
+    width: 100%;
+}
+.ContArrendatario {
+  margin-bottom: 40px; /* Agrega margen inferior al título */
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination-container button {
+  margin: 0 10px;
+  padding: 5px 10px;
+}
+
+.pagination-container span {
+  margin: 0 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f2f2f2;
+  border-top: none;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table tbody tr:hover {
+  background-color: #ddd;
+}
+.table td {
+  background-color: #f6f6f6; 
+}
+
+.bottom-button {
+  position: fixed;
+  top: 20px; 
+  right: 20px;
+  background-color: #0d7f08; 
+  color: #fff;
+  border: none;
+  border-radius: 3px; 
+  padding: 10px 20px; 
+  font-size: 16px;
+  cursor: pointer;
+ 
+  display: flex;
+  align-items: center; 
+  margin: 3%;
+
+}
+.bottom-button:hover {
+  background-color: #006810; 
+}
+
+.bottom-button:focus {
+  outline: none; 
+}
+
+.receipt-icon {
+  margin-right: 10px; 
+}
+
+
+.btnpag {
+  background-color: #a4a4a4; /* Color de fondo */
+  color: #fff; /* Color del texto */
+  border: none;
+  border-radius: 5px; /* Radio de borde */
+  padding: 8px 16px; /* Relleno interno */
+  margin: 0 5px; /* Margen entre botones */
+  cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
+  transition: background-color 0.3s ease; /* Efecto de transición */
+}
+
+.btnpag:hover {
+  background-color: #7b7b7b; /* Cambio de color al pasar el cursor */
+}
+
+
+
+
+/*ESTILOS PARA HISTORIAL DE COMISION DE PROPIETARIO*/
+
+
