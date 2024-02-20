@@ -11,11 +11,53 @@ import {
   faTrash,
   faPenToSquare,
   faHouseChimneyMedical,
+  faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
+import useActualizarEstadoInmueble  from "../../Hooks/InhabilitarInmueble";
 
 export const Inmueble = () => {
+  const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
+
+  const [inmuebleIdBoolean, setInmueblesBoolean] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  //Actualizar Estado Inmueble
+  const InhabilitarInmueble = async (InmuebleId) => {
+    try {
+      await actualizarEstadoInmueble(InmuebleId, "false"); // Cambiado aquí
+
+      const updatedInmueble = infoinmueble.filter(
+        (inmueble) => inmueble.Id_Codeudor !== InmuebleId
+      );
+      
+      setinfoinmueble(updatedInmueble);
+      notifi();
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error al inhabilitar Inmueble:", error);
+      errores();
+    }
+  };
+  //Modal para Inhabilitacion
+  const handleOpenModal = (InmuebleId) => {
+    setInmueblesBoolean(InmuebleId);
+    setShowModal(true);
+  };
+
+  const handleCloseModals = () => {
+    setShowModal(false);
+  };
+
+  const errores = () =>
+    toast.error("Hubo algun error  ", {
+      theme: "dark",
+    });
   const notify = () =>
     toast.success("Se Asigno el arrendatario Exitosamente", {
+      theme: "dark",
+    });
+  const notifi = () =>
+    toast.success("Se Inabilito Correctamente ", {
       theme: "dark",
     });
   // Mostrar Modal
@@ -41,8 +83,13 @@ export const Inmueble = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setinfoinmueble(data);
-        console.log(data);
+
+        const INmueblesActivos = data.filter(
+          (inmueble) => inmueble.booleanos === "true"
+        );
+
+        setinfoinmueble(INmueblesActivos);
+
         setinmuebleseleccion(data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -96,14 +143,16 @@ export const Inmueble = () => {
             <Button variant="primary" onClick={handleMostrarModalClick}>
               <FontAwesomeIcon icon={faEye} />
             </Button>
-          </td>
-          <td>
+
             <Button disabled variant="success">
               <FontAwesomeIcon icon={faUserPlus} />
             </Button>
-          </td>
-          <td>
-            <Button className="btn-opciones" variant="danger">
+
+            <Button
+              className="btn-opciones"
+              variant="danger"
+              onClick={() => handleOpenModal(inmueble.Id_Inmueble)}
+            >
               <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
             </Button>
             <Button className="btn-opciones" variant="warning">
@@ -137,7 +186,11 @@ export const Inmueble = () => {
             >
               <FontAwesomeIcon icon={faUserPlus} />
             </Button>
-            <Button className="btn-opciones" variant="danger">
+            <Button
+              className="btn-opciones"
+              variant="danger"
+              onClick={() => handleOpenModal(inmueble.Id_Inmueble)}
+            >
               <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
             </Button>
             <Button className="btn-opciones" variant="warning">
@@ -150,17 +203,21 @@ export const Inmueble = () => {
   };
 
   const createrowDetalles = () => {
-    return (
-      <tr>
-        <td>{inmuebleseleccion.No_Niveles}</td>
-        <td>${inmuebleseleccion.Valor_Inmueble}</td>
-        <td>{inmuebleseleccion.No_Banos}</td>
-        <td>{inmuebleseleccion.Servicios_Publicos}</td>
-        <td>{inmuebleseleccion.No_Habitaciones}</td>
-        <td>{inmuebleseleccion.Estado}</td>
-        <td>{inmuebleseleccion.No_Terraza}</td>
-      </tr>
-    );
+    if (inmuebleseleccion) {
+      return (
+        <tr>
+          <td>{inmuebleseleccion.No_Niveles}</td>
+          <td>${inmuebleseleccion.Valor_Inmueble}</td>
+          <td>{inmuebleseleccion.No_Banos}</td>
+          <td>{inmuebleseleccion.Servicios_Publicos}</td>
+          <td>{inmuebleseleccion.No_Habitaciones}</td>
+          <td>{inmuebleseleccion.Estado}</td>
+          <td>{inmuebleseleccion.No_Terraza}</td>
+        </tr>
+      );
+    } else {
+      return null; // Otra opción es retornar un mensaje de carga o cualquier otro contenido que desees mostrar mientras se carga la información
+    }
   };
 
   const createrowA = (Arrendatarios) => {
@@ -258,7 +315,7 @@ export const Inmueble = () => {
 
   return (
     <>
-          <div className="contener-home">
+      <div className="contener-home">
         <div className="conten-filtro">
           <div className="conten-inputs">
             <label className="l1">Tipo Inmueble</label>
@@ -295,6 +352,12 @@ export const Inmueble = () => {
               Agregar Inmueble
             </Link>
           </Button>
+          <Button variant="dark" className="btn-add-info ">
+            <Link to="/InhaInmueble" className="linkes">
+              <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
+              Inabilitados
+            </Link>
+          </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Inmuebles</h1>
@@ -310,7 +373,7 @@ export const Inmueble = () => {
           </div>
         </div>
         <div className="paginador">
-          <Pagination >
+          <Pagination>
             <Pagination.Prev
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
@@ -355,7 +418,6 @@ export const Inmueble = () => {
                   <th>Numero Habitaciones</th>
                   <th>Estado</th>
                   <th>Numero Terrazas</th>
-                  
                 </tr>
               </thead>
               <tbody>{createrowDetalles()}</tbody>
@@ -369,15 +431,9 @@ export const Inmueble = () => {
           onHide={handleCloseModalA}
           aria-labelledby="example-modal-sizes-title-lg"
         >
-          
           <Modal.Header closeButton>
             <Modal.Title>Arrendatarios Disponibles</Modal.Title>
-            {existe ? ( 
-              <p>hola</p>
-        
-      ) : (
-        <p></p>
-      )}
+            {existe ? <p>hola</p> : <p></p>}
           </Modal.Header>
           <Modal.Body>
             <Table striped bordered hover>
@@ -400,6 +456,25 @@ export const Inmueble = () => {
           </Modal.Body>
         </Modal>
       </div>
+      <Modal show={showModal} onHide={handleCloseModals}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ¿Está seguro de que desea inhabilitar este inmueble?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModals}>
+            Cancelar
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => InhabilitarInmueble(inmuebleIdBoolean)}
+          >
+            Confirmar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
-  )
+  );
 };

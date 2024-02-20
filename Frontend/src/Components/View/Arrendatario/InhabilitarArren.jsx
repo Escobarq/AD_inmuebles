@@ -1,5 +1,6 @@
-import { Table, Button, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
+import { Table, Button ,Modal } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
@@ -7,63 +8,68 @@ import {
   faPenToSquare,
   faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
-import ActualizarCodeudor from "../../Hooks/Inhabilitarcodeudor";
+import ActualizarArrendatario from "../../Hooks/InhabilitarArren";
 import { toast } from "react-toastify";
 
-export const Codeudor = () => {
-  const [infoCodeudor, setinfoCodeudor] = useState([]);
+export const InhabilitarArren = () => {
+  const [infoarrendatario, setinfoarrendatario] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const { actualizarEstadoCodeudor } = ActualizarCodeudor();
-  const [codeudorIdToDelete, setCodeudorIdToDelete] = useState(null);
-  
+  const [arrendatarioIdToDelete, setarrendatarioIdToDelete] = useState(null);
+
   const notify = () =>
-  toast.success("Se Inabilito Correctamente ", {
-    theme: "dark",
-  });
+    toast.success("Se Habilito Correctamente ", {
+      theme: "dark",
+    });
   const errores = () =>
-  toast.error("Hubo algun error  ", {
-    theme: "dark",
-  });
-  
-  //Actualizar Estado Coduedor
-  const handleInhabilitarCodeudor = async (codeudorId) => {
-    try {
-      await actualizarEstadoCodeudor(codeudorId, "false");
-      const updatedCodeudores = infoCodeudor.filter(codeudor => codeudor.Id_Codeudor !== codeudorId);
-      setinfoCodeudor(updatedCodeudores);
-      notify();
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error al inhabilitar codeudor:", error);
-      errores();
-    }
-  };
+    toast.error("Hubo algun error  ", {
+      theme: "dark",
+    });
+
   //Modal para Inhabilitacion
-  const handleOpenModal = (codeudorId) => {
-    setCodeudorIdToDelete(codeudorId);
+  const handleOpenModal = (ArrendatarioId) => {
+    setarrendatarioIdToDelete(ArrendatarioId);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
+  // Hook para actualizar el estado del arrendatario
+  const { actualizarEstadoArrendatario } = ActualizarArrendatario();
+
+  //Actualizar Estado Coduedor
+  const handleHabilitarArrendatario = async (ArrendatarioId) => {
+    try {
+      await actualizarEstadoArrendatario(ArrendatarioId, "true");
+      const updatedArrendatario = infoarrendatario.map((arrendatarios) =>
+        arrendatarios.Id_Arrendatario === arrendatarios
+          ? { ...arrendatarios, booleanos: "true" }
+          : arrendatarios
+      );
+      setinfoarrendatario(updatedArrendatario);
+      notify();
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error al inhabilitar arrendatario:", error);
+      errores();
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3006/Vcodeudor");
+        const response = await fetch("http://localhost:3006/Varrendatario");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
 
-        // Filtrar los datos para incluir solo aquellos con booleanos=true
-        const codeudoresActivos = data.filter(
-          (codeudor) => codeudor.booleanos === "true"
+        const arrendatarioActivos = data.filter(
+          (Arrendatarios) => Arrendatarios.booleanos === "false"
         );
-        setinfoCodeudor(codeudoresActivos);
+
+        setinfoarrendatario(arrendatarioActivos);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -76,33 +82,34 @@ export const Codeudor = () => {
     return (
       <tr>
         <th>ID</th>
+        <th>Tipo de Documento</th>
         <th>No. Documento</th>
         <th>Nombre</th>
-        <th>Dirección</th>
+        <th>Estado</th>
         <th>Teléfono</th>
         <th>Correo</th>
         <th>Opciones</th>
       </tr>
     );
   };
-  const createrow = (Codeudor) => {
+  const createrow = (Arrendatarios) => {
     return (
-      <tr key={Codeudor.Id_Codeudor}>
-        <td>{Codeudor.Id_Codeudor}</td>
-        <td>{Codeudor.Documento_Identidad}</td>
-        <td>{Codeudor.Nombre_Completo}</td>
-        <td>{Codeudor.Direccion}</td>
-        <td>{Codeudor.Telefono}</td>
-        <td>{Codeudor.Correo}</td>
+      <tr key={Arrendatarios.Id_Arrendatario}>
+        <td>{Arrendatarios.Id_Arrendatario}</td>
+        <td>{Arrendatarios.Tipo_Documento}</td>
+        <td>{Arrendatarios.Documento_Identidad}</td>
+        <td>{Arrendatarios.Nombre_Completo}</td>
+        <td>{Arrendatarios.Estado}</td>
+        <td>{Arrendatarios.Telefono}</td>
+        <td>{Arrendatarios.Correo}</td>
         <td>
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(Codeudor.Id_Codeudor)}
+            onClick={() => handleOpenModal(Arrendatarios.Id_Arrendatario)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
-
           <Button className="btn-opciones" variant="warning">
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
@@ -116,11 +123,13 @@ export const Codeudor = () => {
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = infoCodeudor.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = infoarrendatario.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
- 
   return (
     <>
       <div className="contener-home">
@@ -134,24 +143,24 @@ export const Codeudor = () => {
               max={9999999999}
               id=""
             />
-            <label className="l1">Fecha Ingreso: </label>
-            <input className="input-filtroRe" type="date" name="" id="" />
+            <label className="l1">Estado: </label>
+            <input className="input-filtroRe" type="text" name="" id="" />
           </div>
           <Button variant="success" className="btn-add">
-            <Link to="/Registrocodeudor">
+            <Link to="/ReArrendatario">
               <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
-              Codeudor
+              Arrendatario
             </Link>
           </Button>
           <Button variant="dark" className="btn-add-info ">
-            <Link to="/Codeudores" className="linkes">
+            <Link to="/Arrendatario" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inabilitados
+              Habilitados
             </Link>
           </Button>
         </div>
         <div className="title_view">
-          <h1 className="tittle_propetario">Codeudor</h1>
+          <h1 className="tittle_propetario">Arrendatario</h1>
         </div>
 
         <div className="view_esp">
@@ -159,7 +168,7 @@ export const Codeudor = () => {
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
               <tbody>
-                {currentItems.map((Codeudors) => createrow(Codeudors))}
+                {currentItems.map((Arrendatarios) => createrow(Arrendatarios))}
               </tbody>
             </Table>
           </div>
@@ -170,7 +179,7 @@ export const Codeudor = () => {
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
             />
-            {[...Array(Math.ceil(infoCodeudor.length / itemsPerPage))].map(
+            {[...Array(Math.ceil(infoarrendatario.length / itemsPerPage))].map(
               (item, index) => (
                 <Pagination.Item
                   key={index}
@@ -184,7 +193,8 @@ export const Codeudor = () => {
             <Pagination.Next
               onClick={() => paginate(currentPage + 1)}
               disabled={
-                currentPage === Math.ceil(infoCodeudor.length / itemsPerPage)
+                currentPage ===
+                Math.ceil(infoarrendatario.length / itemsPerPage)
               }
             />
           </Pagination>
@@ -195,7 +205,7 @@ export const Codeudor = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          ¿Está seguro de que desea inhabilitar este codeudor?
+          ¿Está seguro de que desea Habilitar este Arrendatario?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
@@ -203,7 +213,7 @@ export const Codeudor = () => {
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleInhabilitarCodeudor(codeudorIdToDelete)} 
+            onClick={() => handleHabilitarArrendatario (arrendatarioIdToDelete)} 
           >
             Confirmar
           </Button>
