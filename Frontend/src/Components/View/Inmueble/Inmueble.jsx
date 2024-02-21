@@ -466,6 +466,7 @@ export const Inmueble = () => {
                   <th>Estado</th>
                   <th>Teléfono</th>
                   <th>Correo</th>
+                  
                 </tr>
               </thead>
               <tbody>
