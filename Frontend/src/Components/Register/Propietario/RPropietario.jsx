@@ -1,10 +1,20 @@
-import { useState } from "react";
-import "./Rpropietario.css";
-import { Form, Button, Modal } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Form, Button, Modal, Container, Row, Col } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import Btn_inmueble from "../../../assets/btn_inmueble.png";
+import "./Rpropietario.css";
+
+// Función para obtener la fecha actual en formato YYYY-MM-DD
+function getCurrentDate() {
+  const date = new Date();
+  const year = date.getFullYear();
+  let month = (1 + date.getMonth()).toString();
+  month = month.length > 1 ? month : '0' + month;
+  let day = date.getDate().toString();
+  day = day.length > 1 ? day : '0' + day;
+  return `${year}-${month}-${day}`;
+}
 
 export const RPropietario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -16,6 +26,8 @@ export const RPropietario = () => {
     reset,
     formState: { errors },
   } = useForm();
+
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
 
   const onSubmitRegistro = async (data) => {
     try {
@@ -48,123 +60,101 @@ export const RPropietario = () => {
     setShowCancelModal(false); // Cierra el modal
   };
 
+  useEffect(() => {
+    setCurrentDate(getCurrentDate());
+  }, []);
+
   return (
-    <>
-      <div className="contener-home contener-rpropietario">
-        <div className="container">
-          <h1 className="m-5">Registro Propietario</h1>
-          <div className="row">
-            <Form
-              className="form-propietario row"
-              style={{ marginTop: "0" }}
-              onSubmit={handleSubmit(onSubmitRegistro)}
-              method="post"
+    <Container>
+      <h2>Registro Propietario</h2>
+      <Form className="form-propietario" onSubmit={handleSubmit(onSubmitRegistro)}>
+        <Row className="align-items-start">
+          <Col md={6}>
+            <Form.Group controlId="formNoMatricula" className="mb-3">
+              <Form.Label>Fecha de ingreso:</Form.Label>
+              <Form.Control {...register("fechaingreso")} type="date" value={currentDate} />
+            </Form.Group>
+  
+            <Form.Group controlId="formDireccion" className="mb-3">
+              <Form.Label>N° Documento Identidad:</Form.Label>
+              <Form.Control
+                {...register("numerodocumento")}
+                type="number"
+              />
+            </Form.Group>
+  
+            <Form.Group controlId="formCiudad" className="mb-3">
+              <Form.Label>Nombre de Propietario:</Form.Label>
+              <Form.Control
+                {...register("nombrepropietario")}
+                type="text"
+                maxLength={100}
+              />
+            </Form.Group>
+  
+            <Form.Group controlId="formBarrio" className="mb-3">
+              <Form.Label>Telefono:</Form.Label>
+              <Form.Control {...register("telefono")} type="number" />
+            </Form.Group>
+  
+            <Form.Group controlId="formEstrato" className="mb-3">
+              <Form.Label>Correo Electronico:</Form.Label>
+              <Form.Control
+                {...register("correoelectronico")}
+                type="email"
+              />
+            </Form.Group>
+  
+  
+          </Col>
+  
+          <Col md={6}>
+            <Form.Group controlId="formValor" className="mb-3">
+              <Form.Label>Banco</Form.Label>
+              <Form.Control {...register("banco")} type="Text" />
+            </Form.Group>
+            <Form.Group controlId="formNoHabitaciones" className="mb-3">
+              <Form.Label>Direccion Del Propetario</Form.Label>
+              <Form.Control {...register("direccion")} type="text" />
+            </Form.Group>
+            
+            <Form.Group controlId="documentoidentidad" className="mb-3">
+              <Form.Label>Número de cuenta:</Form.Label>
+              <Form.Control
+                type="number"
+                name="documento_cuenta"
+                {...register("documento_cuenta")}
+                max={9999999999}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+  
+        {/* Botones de guardar y cancelar */}
+        <div className="contener-buttons d-flex justify-content-center">
+          <div className="save_deleter">
+            <Button
+              type="button"
+              variant="success m-2"
+              onClick={() => setShowSaveModal(true)}
             >
-              <div className="col-md-6">
-                <div className="todoform" style={{ marginRight: "15px" }}>
-                  <div className="izquier">
-                    <Form.Group controlId="formNoMatricula">
-                      <Form.Label>Fecha de ingreso:</Form.Label>
-                      <Form.Control {...register("fechaingreso")} type="date" />
-                    </Form.Group>
-
-                    <Form.Group controlId="formDireccion">
-                      <Form.Label>Numero de Documento:</Form.Label>
-                      <Form.Control
-                        {...register("numerodocumento")}
-                        type="number"
-                      />
-                    </Form.Group>
-
-                    <Form.Group controlId="formCiudad">
-                      <Form.Label>Nombre de Propietario:</Form.Label>
-                      <Form.Control
-                        {...register("nombrepropietario")}
-                        type="text"
-                        maxLength={100}
-                      />
-                    </Form.Group>
-
-                    <Form.Group controlId="formBarrio">
-                      <Form.Label>Telefono:</Form.Label>
-                      <Form.Control {...register("telefono")} type="number" />
-                    </Form.Group>
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-md-6">
-                <div className="izqui">
-                  <Form.Group controlId="formEstrato">
-                    <Form.Label>Correo Electronico:</Form.Label>
-                    <Form.Control
-                      {...register("correoelectronico")}
-                      type="email"
-                    />
-                  </Form.Group>
-
-                  <Form.Group
-                    controlId="formTipoInmueble"
-                    className="col col-md.auto"
-                  >
-                    <Form.Label>Tipo De Cuenta</Form.Label>
-                    <Form.Select
-                      className="formSelect"
-                      {...register("tipocuenta")}
-                      aria-label="Default select example"
-                    >
-                      <option value="">Selecciona El tipo de Cuenta</option>
-                      <option value="ahorro de cuenta">Ahorro de Cuenta</option>
-                      <option value="cuenta corriente">Cuenta Corriente</option>
-                    </Form.Select>
-                  </Form.Group>
-
-                  <Form.Group controlId="formValor">
-                    <Form.Label>Banco</Form.Label>
-                    <Form.Control {...register("banco")} type="Text" />
-                  </Form.Group>
-
-                  <Form.Group controlId="formNoHabitaciones">
-                    <Form.Label>Direccion Del Propetario</Form.Label>
-                    <Form.Control {...register("direccion")} type="text" />
-                  </Form.Group>
-                </div>
-              </div>
-              <div className=" d-flex justify-content-end">
-                <button
-                  className="btn btn-primary btn-sm"
-                  style={{ background: "none", border: "none" }}
-                >
-                  <img src={Btn_inmueble} alt="Icono de Inmueble" />
-                </button>
-              </div>
-
-              <div className="contener-buttons d-flex justify-content-center">
-                <div className="save_deleter">
-                  <Button
-                    type="button"
-                    variant="success m-2"
-                    onClick={() => setShowSaveModal(true)}
-                  >
-                    <FontAwesomeIcon icon={faSave} />
-                    <span className="text_button ms-2">Guardar</span>
-                  </Button>
-
-                  {/* Botón de cancelar */}
-                  <Button
-                    type="button"
-                    variant="danger m-2"
-                    onClick={() => setShowCancelModal(true)}
-                  >
-                    <FontAwesomeIcon icon={faTimes} />
-                    <span className="text_button ms-2">Cancelar</span>
-                  </Button>
-                </div>
-              </div>
-            </Form>
+              <FontAwesomeIcon icon={faSave} />
+              <span className="text_button ms-2">Guardar</span>
+            </Button>
+  
+            {/* Botón de cancelar */}
+            <Button
+              type="button"
+              variant="danger m-2"
+              onClick={() => setShowCancelModal(true)}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+              <span className="text_button ms-2">Cancelar</span>
+            </Button>
           </div>
         </div>
-      </div>
+      </Form>
+  
       {/* Modales */}
       {/* Modal de confirmación de guardar */}
       <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
@@ -183,7 +173,7 @@ export const RPropietario = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
+  
       {/* Modal de confirmación de cancelar */}
       <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
         <Modal.Header closeButton>
@@ -201,6 +191,6 @@ export const RPropietario = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </Container>
   );
 };

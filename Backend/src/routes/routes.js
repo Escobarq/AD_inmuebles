@@ -230,20 +230,22 @@ router.post("/RPropietario", async (req, res) => {
     tipocuenta,
     banco,
     direccion,
+    numero_cuenta,
+    
   } = req.body;
 
   try {
     connection.query(
-      "INSERT INTO propietario (Nombre_Completo, Documento_Identidad, Direccion, Telefono, Correo, Banco, Tipo_Cuenta, Numero_Cuenta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO propietario (Nombre_Completo, Documento_Identidad, Direccion,  Correo, Banco, Tipo_Cuenta,Telefono, Numero_Cuenta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       [
         nombrepropietario,
         numerodocumento,
         direccion,
-        telefono,
         correoelectronico,
         banco,
         tipocuenta,
         telefono,
+        numero_cuenta,
       ],
       (error, results) => {
         if (error) {

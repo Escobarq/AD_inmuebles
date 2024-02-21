@@ -1,4 +1,4 @@
-import { Form, Button, Row, Col, Modal } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Modal } from "react-bootstrap";
 import "./Registrocodeudor.css";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,26 +12,25 @@ export const Registrocodeudor = () => {
       theme: "dark",
     });
     const error = () =>
-    toast.success("Hubo algun error al enviar los datos", {
+    toast.error("Hubo algun error al enviar los datos", {
       theme: "dark",
     });
     const errora = () =>
-    toast.success("Hubo algun error al enviar los datos al servidor", {
+    toast.error("Hubo algun error al enviar los datos al servidor", {
       theme: "dark",
     });
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
-
-  const onsubmitcodeudor = async (data) => {
+  } = useForm({ mode: "onChange" });
+  
+  const onsubmitRegistro = async (data) => {
     try {
-      const response = await fetch("http://localhost:3006/Registrocodeudor", {
+      const response = await fetch("http://localhost:3006/Rcodeudor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,26 +50,28 @@ export const Registrocodeudor = () => {
       console.error("Error al enviar datos al servidor:", error);
     }
   };
+  
 
   const handleConfirmSave = () => {
     // Lógica para confirmar el guardado
-    handleSubmit(onsubmitcodeudor)(); // Envia los datos
+    handleSubmit(onsubmitRegistro)(); // Envia los datos
     setShowSaveModal(false); // Cierra el modal
+    reset()
+
   };
 
   const handleConfirmCancel = () => {
     window.location.href = "/Codeudor";
     setShowCancelModal(false); // Cierra el modal
+    
   };
 
   return (
-    <>
-            <div className="izq RA d-flex justify-content-center align-items-center">
-            <form onSubmit={onsubmitcodeudor}>
-       
-
-
-          <h1>Registro Codeudor</h1>
+    <Container>
+      <Form className="formulariocodeudor" onSubmit={handleSubmit(onsubmitRegistro)}>
+      
+          <h2>Registro Codeudor</h2>
+        
 
         <Row className="contener-co">
           <Col md={6}>
@@ -80,17 +81,17 @@ export const Registrocodeudor = () => {
                 type="text"
                 name="nombrecompleto"
                 {...register("nombrecompleto")}
-                />
+              />
             </Form.Group>
 
-            <Form.Group controlId="numeroIdentidad">
+            <Form.Group controlId="documentoidentidad">
               <Form.Label>Número de identidad:</Form.Label>
               <Form.Control
                 type="number"
                 name="documentoidentidad"
                 {...register("documentoidentidad")}
                 max={9999999999}
-                />
+              />
             </Form.Group>
 
             <Form.Group controlId="telefono">
@@ -100,7 +101,7 @@ export const Registrocodeudor = () => {
                 name="telefono"
                 {...register("telefono")}
                 max={9999999999}
-                />
+              />
             </Form.Group>
 
             <Form.Group controlId="correoElectronico">
@@ -109,7 +110,7 @@ export const Registrocodeudor = () => {
                 type="email"
                 name="correoelectronico"
                 {...register("correoelectronico")}
-                />
+              />
             </Form.Group>
             <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
@@ -117,19 +118,17 @@ export const Registrocodeudor = () => {
                 type="text"
                 name="direccion"
                 {...register("direccion")}
-                />
+              />
             </Form.Group>
-            
           </Col>
         </Row>
-            </form>
         <div className="contener-buttons d-flex justify-content-center">
           <div className="save_deleter">
             <Button
               type="button"
               variant="success m-2"
               onClick={() => setShowSaveModal(true)}
-              >
+            >
               <FontAwesomeIcon icon={faSave} />
               <span className="text_button ms-2">Guardar</span>
             </Button>
@@ -139,14 +138,13 @@ export const Registrocodeudor = () => {
               type="button"
               variant="danger m-2"
               onClick={() => setShowCancelModal(true)}
-              >
+            >
               <FontAwesomeIcon icon={faTimes} />
               <span className="text_button ms-2">Cancelar</span>
             </Button>
           </div>
         </div>
-      
-              </div>
+      </Form>
       {/* Modales */}
       {/* Modal de confirmación de guardar */}
       <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
@@ -183,6 +181,6 @@ export const Registrocodeudor = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </Container>
   );
 };
