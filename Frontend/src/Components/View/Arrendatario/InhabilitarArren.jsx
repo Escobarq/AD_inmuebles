@@ -3,7 +3,7 @@ import { Table, Button ,Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUserPlus,
+
   faTrash,
   faPenToSquare,
   faUserSlash,
@@ -146,12 +146,7 @@ export const InhabilitarArren = () => {
             <label className="l1">Estado: </label>
             <input className="input-filtroRe" type="text" name="" id="" />
           </div>
-          <Button variant="success" className="btn-add">
-            <Link to="/ReArrendatario">
-              <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
-              Arrendatario
-            </Link>
-          </Button>
+         
           <Button variant="dark" className="btn-add-info ">
             <Link to="/Arrendatario" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver

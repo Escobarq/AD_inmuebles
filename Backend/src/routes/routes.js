@@ -71,7 +71,7 @@ router.get("/Vinmu_Arren", (req, res) => {
         res.status(500).json({ error: "Error interno del servidor" });
       } else {
         res.status(200).json(results);
-        console.log(results);
+        
       }
     }
   );
@@ -557,8 +557,7 @@ router.get("/Vroles", (req, res) => {
 //Aactualizar inmueble
 router.put("/actualizarInmueble", (req, res) => {
   const { Id_Inmueble } = req.query; // Datos del formulario
-  const Estado = "Ocupado";
-  const { Id_Arrendatario } = req.body; // Datos del formulario
+  const { Id_Arrendatario, Estado } = req.body; // Datos del formulario
   const sql = `UPDATE inmueble SET Id_Arrendatario = ?, Estado = ?  WHERE Id_Inmueble = ?`;
 
   connection.query(
