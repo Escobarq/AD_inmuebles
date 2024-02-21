@@ -1,0 +1,5 @@
+# Ignorar directorios de dependencias npm
+/node_modules
+
+# Ignorar archivos de dependencias npm
+npm-debug.log
