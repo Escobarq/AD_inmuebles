@@ -79,9 +79,10 @@ export const ReArrendatario = () => {
             <Form.Group controlId="numerodocumento">
               <Form.Label className="text_normal">Número identidad:</Form.Label>
               <Form.Control
+              required
                 className="input-form"
                 type="number"
-                min={1}
+                min={20}
                 max={9999999999}
                 {...register("numerodocumento")}
               />
@@ -106,7 +107,7 @@ export const ReArrendatario = () => {
               <Form.Control
                 className="input-form"
                 type="number"
-                maxLength={100}
+                max={9999999999}
                 {...register("telefono")}
               />
             </Form.Group>
@@ -116,8 +117,9 @@ export const ReArrendatario = () => {
                 Correo Arrendatario:
               </Form.Label>
               <Form.Control
+              
                 className="correo"
-                type="text"
+                type="email"
                 {...register("correo")}
               />
             </Form.Group>
