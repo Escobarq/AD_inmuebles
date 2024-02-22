@@ -1,0 +1,28 @@
+.container {
+    background-color:white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+/* Estilos para el título */
+.h2{
+    text-align: left;
+
+}
+  
+  
+  
+  /* Estilos para el contenedor de columnas */
+  .contener-co {
+    margin-bottom: 20px;
+  }
+  
+  /* Estilos para los botones */
+  .save_deleter {
+    text-align: left;
+  }
+  
+  .text_button {
+    vertical-align: middle;
+  }

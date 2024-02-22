@@ -71,7 +71,7 @@ router.get("/Vinmu_Arren", (req, res) => {
         res.status(500).json({ error: "Error interno del servidor" });
       } else {
         res.status(200).json(results);
-        console.log(results);
+        
       }
     }
   );
@@ -230,20 +230,22 @@ router.post("/RPropietario", async (req, res) => {
     tipocuenta,
     banco,
     direccion,
+    numero_cuenta,
+    
   } = req.body;
 
   try {
     connection.query(
-      "INSERT INTO propietario (Nombre_Completo, Documento_Identidad, Direccion, Telefono, Correo, Banco, Tipo_Cuenta, Numero_Cuenta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO propietario (Nombre_Completo, Documento_Identidad, Direccion,  Correo, Banco, Tipo_Cuenta,Telefono, Numero_Cuenta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       [
         nombrepropietario,
         numerodocumento,
         direccion,
-        telefono,
         correoelectronico,
         banco,
         tipocuenta,
         telefono,
+        numero_cuenta,
       ],
       (error, results) => {
         if (error) {
@@ -557,8 +559,7 @@ router.get("/Vroles", (req, res) => {
 //Aactualizar inmueble
 router.put("/actualizarInmueble", (req, res) => {
   const { Id_Inmueble } = req.query; // Datos del formulario
-  const Estado = "Ocupado";
-  const { Id_Arrendatario } = req.body; // Datos del formulario
+  const { Id_Arrendatario, Estado } = req.body; // Datos del formulario
   const sql = `UPDATE inmueble SET Id_Arrendatario = ?, Estado = ?  WHERE Id_Inmueble = ?`;
 
   connection.query(
