@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "react-bootstrap/Pagination";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import logo from "../../../assets/Logo.png"
+
 
 export const ContratoA = () => {
   const [infoarrendatario, setinfoarrendatario] = useState([]);
+  const pdfContentRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,7 +20,6 @@ export const ContratoA = () => {
         }
         const data = await response.json();
         setinfoarrendatario(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -37,12 +41,13 @@ export const ContratoA = () => {
       </tr>
     );
   };
+
   const createrow = (Arrendatarios) => {
     return (
       <tr key={Arrendatarios.Id_Arrendatario}>
         <td>{Arrendatarios.Documento_Identidad}</td>
         <td>{Arrendatarios.Nombre_Completo}</td>
-        <td>{Arrendatarios.Id_Propietario}</td>
+        <td>{Arrendatarios.Meses_Alquiler}</td>
         <td>{Arrendatarios.Cuotas_Pendientes}</td>
         <td>{Arrendatarios.Fecha_Inicio_Contrato}</td>
         <td>{Arrendatarios.Fecha_Fin_Contrato}</td>
@@ -50,9 +55,11 @@ export const ContratoA = () => {
       </tr>
     );
   };
-  //Variables Paginacion
+
+  // Variables Paginacion
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -62,6 +69,45 @@ export const ContratoA = () => {
   );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
+// Función para generar el PDF
+const generatePDF = () => {
+  html2canvas(pdfContentRef.current, { width: pdfContentRef.current.scrollWidth }).then(canvas => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgWidth = pdf.internal.pageSize.getWidth();
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    // Añadir un margen de 10mm a la izquierda y a la derecha
+    const marginLeft = 10;
+    const marginRight = 10;
+    const tableWidth = imgWidth - marginLeft - marginRight;
+
+    // Calcular la posición y el tamaño de la tabla en el PDF
+    const marginTop = 50; // Ajusta este valor según tus necesidades
+    const tableX = marginLeft;
+    const tableY = marginTop;
+    const tableHeight = (canvas.height * tableWidth) / canvas.width;
+
+    // Agregar el logo
+    const logoWidth = 35; // Ancho del logo
+    const logoHeight = 20; // Alto del logo
+    pdf.addImage(logo, 'PNG', marginLeft, 10, logoWidth, logoHeight);
+
+    // Agregar el título al lado del logo
+    pdf.setFontSize(16);
+    pdf.text("Contrato Arrendatario", marginLeft + logoWidth + 5, 20);
+
+    // Agregar la tabla
+    pdf.addImage(imgData, 'PNG', marginLeft, marginTop, tableWidth, tableHeight);
+    
+    pdf.save("contrato_arrendatario.pdf");
+  });
+};
+
+
+
   return (
     <div className="contenerhom">
       <div className="container">
@@ -69,7 +115,7 @@ export const ContratoA = () => {
           <h1>Contrato Arrendatario</h1>
         </div>
 
-        <div className="table-container">
+        <div className="table-container" ref={pdfContentRef}>
           <table className="table">
             <thead>{createheader()}</thead>
             <tbody>
@@ -103,7 +149,7 @@ export const ContratoA = () => {
           />
         </Pagination>
       </div>
-      <button className="bottom-button">
+      <button className="bottom-button" onClick={generatePDF}>
         <FontAwesomeIcon icon={faFilePdf} />
         Generar PDF
       </button>
