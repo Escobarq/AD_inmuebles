@@ -4,7 +4,9 @@ import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "react-bootstrap/Pagination";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import logo from "../../../assets/Logo.png"
+import logo from "../../../assets/Logo.png";
+import moment from 'moment';
+import 'moment/locale/es';
 
 
 export const ContratoA = () => {
@@ -27,6 +29,18 @@ export const ContratoA = () => {
 
     fetchData();
   }, []);
+    //formatear fecha 
+    function formatDate(fechaString) {
+      return moment(fechaString).format('MMMM , D , YYYY');
+    }
+  
+    moment.updateLocale('es', {
+      months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
+      monthsShort : 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
+      weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
+      weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
+      weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_')
+    });
 
   const createheader = () => {
     return (
@@ -49,8 +63,8 @@ export const ContratoA = () => {
         <td>{Arrendatarios.Nombre_Completo}</td>
         <td>{Arrendatarios.Meses_Alquiler}</td>
         <td>{Arrendatarios.Cuotas_Pendientes}</td>
-        <td>{Arrendatarios.Fecha_Inicio_Contrato}</td>
-        <td>{Arrendatarios.Fecha_Fin_Contrato}</td>
+        <td>{formatDate(Arrendatarios.Fecha_Inicio_Contrato)}</td>
+        <td>{formatDate(Arrendatarios.Fecha_Fin_Contrato)}</td>
         <td>{Arrendatarios.Estado}</td>
       </tr>
     );
@@ -110,7 +124,7 @@ const generatePDF = () => {
 
   return (
     <div className="contenerhom">
-      <div className="container">
+      <div className="container__arrendatario">
         <div className="ContArrendatario">
           <h1>Contrato Arrendatario</h1>
         </div>

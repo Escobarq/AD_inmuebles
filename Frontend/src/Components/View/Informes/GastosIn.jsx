@@ -6,7 +6,9 @@ import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "react-bootstrap/Pagination";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import logo from "../../../assets/Logo.png"
+import logo from "../../../assets/Logo.png";
+import moment from 'moment';
+import 'moment/locale/es';
 
 export const GastosIn = () => {
   const [tableData, setTableData] = useState([]);
@@ -28,6 +30,18 @@ export const GastosIn = () => {
 
     fetchData();
   }, []);
+      //formatear fecha 
+      function formatDate(fechaString) {
+        return moment(fechaString).format('MMMM , D , YYYY');
+      }
+    
+      moment.updateLocale('es', {
+        months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
+        monthsShort : 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
+        weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
+        weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
+        weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_')
+      });
 
   // Objeto javascript para hacer el tbody de la table
   const createRow = (Gastonin) => {
@@ -35,8 +49,8 @@ export const GastosIn = () => {
       <tr key={Gastonin.Id_comision_Propietario}>
         <td>{Gastonin.Id_comision_Propietario}</td>
         <td>{Gastonin.Id_Propietario}</td>
-        <td>{Gastonin.Fecha_Elaboracion}</td>
-        <td>{Gastonin.Periodo_Pagado}</td>
+        <td>{formatDate(Gastonin.Fecha_Elaboracion)}</td>
+        <td>{formatDate(Gastonin.Periodo_Pagado)}</td>
         <td>{Gastonin.Elaborado_por}</td>
         <td>{Gastonin.Forma_Pago}</td>
         <td>{Gastonin.Valor_Arriendo}</td>
@@ -117,7 +131,7 @@ const generatePDF = () => {
                   <th>N°</th>
                   <th>Nombre Propietario</th>
                   <th>Arrendamiento</th>
-                  <th>Comisión</th>
+                  <th>Periodo Pagado</th>
                   <th>Deposito</th>
                   <th>Forma de Pago</th>
                   <th>Total</th>

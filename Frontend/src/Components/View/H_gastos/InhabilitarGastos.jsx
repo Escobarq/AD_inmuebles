@@ -14,22 +14,28 @@ import 'moment/locale/es';
 import { toast } from "react-toastify";
 import useActualizarEstadoHistorialGasto  from "../../Hooks/InhabilitarHgastos";
 
-export const H_gastos = () => {
+export const InhabilitarGastos = () => {
   const [infoComision, setinfoComision] = useState([]);
   const { actualizarEstadoHgastos } = useActualizarEstadoHistorialGasto();
   const [Hgastos, setHgastos] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+   //Actualizar Estado Historial
   // Función para inhabilitar los gastos
   const handleInhabilitarHgastos = async (HgastosId) => {
     try {
-      await actualizarEstadoHgastos(HgastosId, "false"); // Utilizando la función correcta
-      const updatedHgastos = infoComision.filter(hgastos => hgastos.Id_comision_Propietario !== HgastosId);
-      setinfoComision(updatedHgastos); // Cambio en el nombre de la variable
+      await actualizarEstadoHgastos(HgastosId, "true"); // Llamando a la función correctamente
+
+      const updatedHgastos = infoComision.map((CPropietario) => // Corrigiendo el mapeo de infoComision
+        CPropietario.Id_comision_Propietario === HgastosId
+          ? { ...CPropietario, Estado: "true" } // Cambiando Estado en lugar de Hgastos
+          : CPropietario
+      );
+      setinfoComision(updatedHgastos);
       notify();
       setShowModal(false);
     } catch (error) {
-      console.error("Error al inhabilitar codeudor:", error);
+      console.error("Error al habilitar gasto:", error); // Corrigiendo mensaje de error
       errores();
     }
   };
@@ -44,13 +50,14 @@ export const H_gastos = () => {
   };
 
   const notify = () =>
-  toast.success("Se Inabilito Correctamente ", {
+  toast.success("Se Habilito Correctamente ", {
     theme: "dark",
   });
   const errores = () =>
   toast.error("Hubo algun error  ", {
     theme: "dark",
   });
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,10 +67,9 @@ export const H_gastos = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-
         const Historial = data.filter(
-          (Historial) => Historial.booleanos === "true"
-        );
+            (Historial) => Historial.booleanos === "false"
+          );
         setinfoComision(Historial);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -142,26 +148,8 @@ export const H_gastos = () => {
     <>
       <div className="contener-home">
       <div className="conten-filtro">
-          <div className="conten-inputs">
-            <label className="l1">No. Cedula: </label>
-            <input
-              className="input-filtroRe"
-              type="number"
-              name=""
-              max={9999999999}
-              id=""
-            />
-            <label className="l1">Fecha Ingreso: </label>
-            <input className="input-filtroRe" type="date" name="" id="" />
-          </div>
-          <Button variant="success" className="btn-add">
-            <Link to="/RGastos">
-              <FontAwesomeIcon className="icon" icon={faUserPlus} /> Generar
-              Recibo gastos
-            </Link>
-          </Button>
           <Button variant="dark" className="btn-add-info ">
-            <Link to="/Hgastos" className="linkes">
+            <Link to="/H_gastos" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
               Inabilitados
             </Link>
@@ -213,7 +201,7 @@ export const H_gastos = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          ¿Está seguro de que desea inhabilitar este codeudor?
+          ¿Está seguro de que desea habilitar?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
