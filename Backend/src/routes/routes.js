@@ -18,19 +18,7 @@ router.get("/Vpropietarios", (req, res) => {
   );
 });
 
-router.get("/Vpropietarios", (req, res) => {
-  connection.query(
-    "SELECT * FROM propietario ORDER BY Id_Propietario ASC",
-    (error, results) => {
-      if (error) {
-        console.error("Error al obtener datos de la base de datos:", error);
-        res.status(500).json({ error: "Error interno del servidor" });
-      } else {
-        res.status(200).json(results);
-      }
-    }
-  );
-});
+
 
 router.get("/Varrendatario", (req, res) => {
   connection.query(
@@ -46,17 +34,48 @@ router.get("/Varrendatario", (req, res) => {
   );
 });
 router.get("/Vinmueble", (req, res) => {
-  connection.query(
-    "SELECT * FROM inmueble ORDER BY Id_Inmueble ASC",
-    (error, results) => {
-      if (error) {
-        console.error("Error al obtener datos de la base de datos:", error);
-        res.status(500).json({ error: "Error interno del servidor" });
-      } else {
-        res.status(200).json(results);
-      }
+  const { tipo, estrato, estado } = req.query; 
+
+  try {
+    let query = 'SELECT * FROM inmueble WHERE 1 = 1'; // Inicializa la consulta con una condición verdadera
+
+    const queryParams = []; // Almacena los valores de los parámetros
+
+    if (estado) {
+      query += " AND Estado = ?"
+      queryParams.push(estado ); 
     }
-  );
+    if (tipo) {
+      
+      query += " AND Tipo = ?"
+      queryParams.push(tipo ); 
+    }
+    
+    if (estrato) {
+      query += " AND Estrato = ?"
+      queryParams.push(estrato ); 
+     
+    }
+    
+    connection.query(
+      query,queryParams,
+  
+      (error, results) => {
+        if (error) {
+          console.error("Error al obtener datos de la base de datos:", error);
+          res.status(500).json({ error: "Error interno del servidor" });
+        } else {
+          res.status(200).json(results);
+          
+        }
+      }
+    );
+  } catch (error) {
+    
+  }
+
+
+
 });
 
 router.get("/Vinmu_Arren", (req, res) => {
