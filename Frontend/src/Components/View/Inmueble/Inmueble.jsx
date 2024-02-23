@@ -14,10 +14,17 @@ import {
   faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import useActualizarEstadoInmueble  from "../../Hooks/InhabilitarInmueble";
+import NoResultImg from "../../../assets/NoResult.gif"
+
 
 export const Inmueble = () => {
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
-
+  const [NoResult, setNoResult]= useState(false)
+  const [filtroData, setFiltroData] = useState({
+    estado: '',
+    tipo: '',
+    estrato: '',
+  });
   const [inmuebleIdBoolean, setInmueblesBoolean] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -76,41 +83,54 @@ export const Inmueble = () => {
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Vinmueble");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-
-        const INmueblesActivos = data.filter(
-          (inmueble) => inmueble.booleanos === "true"
-        );
-
-        setinfoinmueble(INmueblesActivos);
-
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    const fetchDataArren = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Varrendatario");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setinfoarrendatario(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
     fetchDataArren();
-
     fetchData();
-  }, []);
+  }, [filtroData]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+    console.log(name,value);
+  };
+  
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(filtroData);
+      const response = await fetch(`http://localhost:3006/Vinmueble?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      const INmueblesActivos = data.filter(
+        (inmueble) => inmueble.booleanos === "true"
+      );
+
+      setinfoinmueble(INmueblesActivos);
+      if (INmueblesActivos.length == 0){
+        setNoResult(true)
+      }
+      else {
+        setNoResult(false)
+        
+      }
+
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+  const fetchDataArren = async () => {
+    try {
+      const response = await fetch("http://localhost:3006/Varrendatario");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setinfoarrendatario(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   const createheader = () => {
     return (
@@ -129,7 +149,6 @@ export const Inmueble = () => {
   };
 
   const createrow = (inmueble) => {
-   
       return (
         <tr key={inmueble.Id_Inmueble}>
           <td>{inmueble.Id_Propietario}</td>
@@ -311,6 +330,7 @@ export const Inmueble = () => {
           const data = await response.json();
           setinmuebleseleccion(data[0]);
           setMostrarModalA(true);
+          
         } catch (error) {
           console.error("Error fetching products:", error);
         }
@@ -340,8 +360,9 @@ export const Inmueble = () => {
         <div className="conten-filtro">
           <div className="conten-inputs">
             <label className="l1">Tipo Inmueble</label>
-            <select className="input-filtroRe" name="" id="">
-              <option value="Apartamento">Apartamento</option>
+            <select className="input-filtroRe"  value={filtroData.tipo} onChange={handleChange} name="tipo" id="">
+              <option selected value="">Seleccione el tipo</option>
+              <option  value="Apartamento">Apartamento</option>
               <option value="Bodega">Bodega</option>
               <option value="Casa">Casa</option>
               <option value="Oficina">Oficina</option>
@@ -349,7 +370,8 @@ export const Inmueble = () => {
             </select>
 
             <label className="l1">Estrato</label>
-            <select className="input-filtroRe" name="" id="">
+            <select className="input-filtroRe"   value={filtroData.estrato} onChange={handleChange} name="estrato" id="">
+              <option selected value="">Seleccione el estrato</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -359,7 +381,8 @@ export const Inmueble = () => {
             </select>
 
             <label className="l1">Estado</label>
-            <select className="input-filtroRe" name="" id="">
+            <select className="input-filtroRe"  value={filtroData.estado} onChange={handleChange} name="estado" id="">
+              <option selected value="">Seleccione estado</option>
               <option value="Ocupado">Ocupado</option>
               <option value="Disponible">Disponible</option>
             </select>
@@ -384,6 +407,12 @@ export const Inmueble = () => {
           <h1 className="tittle_propetario">Inmuebles</h1>
         </div>
         <div className="view_esp">
+        {NoResult == true ? (
+          <div>
+            <img src={NoResultImg} alt="" />
+          </div>
+        ):(
+
           <div className="table-container">
             <Table striped bordered hover>
               <thead>{createheader()}</thead>
@@ -392,6 +421,7 @@ export const Inmueble = () => {
               </tbody>
             </Table>
           </div>
+        )}
         </div>
         <div className="paginador">
           <Pagination>

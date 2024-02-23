@@ -54,35 +54,41 @@ export const AsignarRol = () => {
   };
 
   const createRowRol = (roles) => {
-    return (
-      <tr key={roles.idtrabajador}>
-        <td>{roles.idtrabajador}</td>
-        <td>{roles.nombre}</td>
-        <td>{roles.apellido}</td>
-        <td>{roles.correo}</td>
-        <td>{roles.contrasena}</td>
-        <td>{roles.telefono}</td>
-        <td>{convertirIdRolATexto(roles.idrol)}</td>
-        <td>
-          <Button className="btn-opciones" variant="danger">
-            <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
-          </Button>
-          <Button className="btn-opciones" variant="warning">
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </Button>
-        </td>
-      </tr>
-    );
+    if (roles.idrol !== 4) {
+
+      return (
+        <tr key={roles.idtrabajador}>
+          <td>{roles.idtrabajador}</td>
+          <td>{roles.nombre}</td>
+          <td>{roles.apellido}</td>
+          <td>{roles.correo}</td>
+          <td>{roles.contrasena}</td>
+          <td>{roles.telefono}</td>
+          <td>{convertirIdRolATexto(roles.idrol)}</td>
+          <td>
+            <Button className="btn-opciones" variant="danger">
+              <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
+            </Button>
+            <Button className="btn-opciones" variant="warning">
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </Button>
+          </td>
+        </tr>
+      );
+    } else {
+      return null;
+    }
   };
-      //Variables Paginacion
-      const [currentPage, setCurrentPage] = useState(1);
-      const [itemsPerPage] = useState(10);
-      // Paginación
-      const indexOfLastItem = currentPage * itemsPerPage;
-      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-      const currentItems = infoRol.slice(indexOfFirstItem, indexOfLastItem);
-    
-      const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  //Variables Paginacion
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = infoRol.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   return (
     <div className="contener-home">
       <div className="title_view">
@@ -93,39 +99,39 @@ export const AsignarRol = () => {
         <div className="table-container">
           <Table striped bordered hover>
             <thead>
-            {createHeaderRol()}
+              {createHeaderRol()}
             </thead>
             <tbody>
-            {currentItems.map((roles) => createRowRol(roles))}
+              {currentItems.map((roles) => createRowRol(roles))}
             </tbody>
           </Table>
         </div>
       </div>
       <div className="paginador">
-          <Pagination >
-            <Pagination.Prev
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-            />
-            {[...Array(Math.ceil(infoRol.length / itemsPerPage))].map(
-              (item, index) => (
-                <Pagination.Item
-                  key={index}
-                  active={index + 1 === currentPage}
-                  onClick={() => paginate(index + 1)}
-                >
-                  {index + 1}
-                </Pagination.Item>
-              )
-            )}
-            <Pagination.Next
-              onClick={() => paginate(currentPage + 1)}
-              disabled={
-                currentPage === Math.ceil(infoRol.length / itemsPerPage)
-              }
-            />
-          </Pagination>
-        </div>
+        <Pagination >
+          <Pagination.Prev
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+          />
+          {[...Array(Math.ceil(infoRol.length / itemsPerPage))].map(
+            (item, index) => (
+              <Pagination.Item
+                key={index}
+                active={index + 1 === currentPage}
+                onClick={() => paginate(index + 1)}
+              >
+                {index + 1}
+              </Pagination.Item>
+            )
+          )}
+          <Pagination.Next
+            onClick={() => paginate(currentPage + 1)}
+            disabled={
+              currentPage === Math.ceil(infoRol.length / itemsPerPage)
+            }
+          />
+        </Pagination>
+      </div>
     </div>
   );
 };
