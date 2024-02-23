@@ -54,17 +54,17 @@ export const AsignarRol = () => {
   };
 
   const createRowRol = (roles) => {
-    if (roles.idrol !== 4) {
+    if (roles.Idrol !== 4) {
 
       return (
-        <tr key={roles.idtrabajador}>
-          <td>{roles.idtrabajador}</td>
-          <td>{roles.nombre}</td>
-          <td>{roles.apellido}</td>
-          <td>{roles.correo}</td>
-          <td>{roles.contrasena}</td>
-          <td>{roles.telefono}</td>
-          <td>{convertirIdRolATexto(roles.idrol)}</td>
+        <tr key={roles.IdTrabajador}>
+          <td>{roles.IdTrabajador}</td>
+          <td>{roles.Nombre}</td>
+          <td>{roles.Apellido}</td>
+          <td>{roles.Correo}</td>
+          <td>{roles.Contrasena}</td>
+          <td>{roles.Telefono}</td>
+          <td>{convertirIdRolATexto(roles.Idrol)}</td>
           <td>
             <Button className="btn-opciones" variant="danger">
               <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />

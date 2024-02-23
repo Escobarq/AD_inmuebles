@@ -33,19 +33,19 @@ export const Slidebar = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        localStorage.setItem("Rol", data[0].idrol);
-        localStorage.setItem("user", data[0].nombre);
-        localStorage.setItem("apellido", data[0].apellido);
-        setnombre(data[0].nombre);
-        setApellido(data[0].apellido);
-        setRol(data[0].idrol);
-        if (data[0].idrol == 1) {
+        localStorage.setItem("Rol", data[0].Idrol);
+        localStorage.setItem("user", data[0].Nombre);
+        localStorage.setItem("apellido", data[0].Apellido);
+        setnombre(data[0].Nombre);
+        setApellido(data[0].Apellido);
+        setRol(data[0].Idrol);
+        if (data[0].Idrol == 1) {
           setTTiporol("Admin");
-        } else if (data[0].idrol == 2) {
+        } else if (data[0].Idrol == 2) {
           setTTiporol("Empleado");
-        } else if (data[0].idrol == 3) {
+        } else if (data[0].Idrol == 3) {
           setTTiporol("Asesor Comercial");
-        } else if (data[0].idrol == 4) {
+        } else if (data[0].Idrol == 4) {
           setTTiporol("SuperUsuario");
         }
       } catch (error) {

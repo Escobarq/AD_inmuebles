@@ -34,7 +34,7 @@ export const Inmueble = () => {
       await actualizarEstadoInmueble(InmuebleId, "false"); // Cambiado aquí
 
       const updatedInmueble = infoinmueble.filter(
-        (inmueble) => inmueble.Id_Codeudor !== InmuebleId
+        (inmueble) => inmueble.IdCodeudor !== InmuebleId
       );
       
       setinfoinmueble(updatedInmueble);
@@ -90,7 +90,6 @@ export const Inmueble = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
-    console.log(name,value);
   };
   
   const fetchData = async () => {
@@ -150,9 +149,9 @@ export const Inmueble = () => {
 
   const createrow = (inmueble) => {
       return (
-        <tr key={inmueble.Id_Inmueble}>
-          <td>{inmueble.Id_Propietario}</td>
-          <td>{inmueble.Id_Inmueble}</td>
+        <tr key={inmueble.IdInmueble}>
+          <td>{inmueble.IdPropietario}</td>
+          <td>{inmueble.IdInmueble}</td>
           <td>{inmueble.Direccion}</td>
           <td>{inmueble.Estrato}</td>
           <td>{inmueble.Ciudad}</td>
@@ -177,7 +176,7 @@ export const Inmueble = () => {
             <Button
               className="btn-opciones"
               variant="danger"
-              onClick={() => handleOpenModal(inmueble.Id_Inmueble)}
+              onClick={() => handleOpenModal(inmueble.IdInmueble)}
             >
               <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
             </Button>
@@ -194,13 +193,13 @@ export const Inmueble = () => {
     if (inmuebleseleccion) {
       return (
         <tr>
-          <td>{inmuebleseleccion.No_Niveles}</td>
-          <td>${inmuebleseleccion.Valor_Inmueble}</td>
-          <td>{inmuebleseleccion.No_Banos}</td>
-          <td>{inmuebleseleccion.Servicios_Publicos}</td>
-          <td>{inmuebleseleccion.No_Habitaciones}</td>
+          <td>{inmuebleseleccion.NoNiveles}</td>
+          <td>${inmuebleseleccion.ValorInmueble}</td>
+          <td>{inmuebleseleccion.NoBanos}</td>
+          <td>{inmuebleseleccion.ServiciosPublicos}</td>
+          <td>{inmuebleseleccion.NoHabitaciones}</td>
           <td>{inmuebleseleccion.Estado}</td>
-          <td>{inmuebleseleccion.No_Terraza}</td>
+          <td>{inmuebleseleccion.NoTerraza}</td>
         </tr>
       );
     } else {
@@ -209,11 +208,11 @@ export const Inmueble = () => {
   };
   const existe = () => {
     if (inmuebleseleccion) {
-      if(inmuebleseleccion.Id_Arrendatario >= 1) {
+      if(inmuebleseleccion.IdArrendatario >= 1) {
         return (
           <>
           <p>Alerta Ya se encuentra un arrendador asignado</p>
-          <p>Su nombre es {inmuebleseleccion.Nombre_Completo}, con No de identidad : {inmuebleseleccion.Documento_Identidad}</p>
+          <p>Su nombre es {inmuebleseleccion.NombreCompleto}, con No de identidad : {inmuebleseleccion.DocumentoIdentidad}</p>
           <p>Para cambiar de arrendatario solo seleccionelo en la siguiente lista:</p>
           </>
         );
@@ -231,11 +230,11 @@ export const Inmueble = () => {
     return (
       <tr
         onClick={() => handleRowClickAndUpdate(Arrendatarios)}
-        key={Arrendatarios.Id_Arrendatario}
+        key={Arrendatarios.IdArrendatario}
       >
-        <td>{Arrendatarios.Tipo_Documento}</td>
-        <td>{Arrendatarios.Documento_Identidad}</td>
-        <td>{Arrendatarios.Nombre_Completo}</td>
+        <td>{Arrendatarios.TipoDocumento}</td>
+        <td>{Arrendatarios.DocumentoIdentidad}</td>
+        <td>{Arrendatarios.NombreCompleto}</td>
         <td>{Arrendatarios.Estado}</td>
         <td>{Arrendatarios.Telefono}</td>
         <td>{Arrendatarios.Correo}</td>
@@ -246,18 +245,18 @@ export const Inmueble = () => {
   const handleRowClickAndUpdate = async (Arrendatarios) => {
     try {
       console.log(inmuebleseleccion)
-      const Id_Inmueble = inmuebleseleccion.Id_Inmueble;
-      const { Id_Arrendatario } = Arrendatarios;
+      const IdInmueble = inmuebleseleccion.IdInmueble;
+      const { IdArrendatario } = Arrendatarios;
 
       const response = await fetch(
-        `http://localhost:3006/actualizarInmueble?Id_Inmueble=${Id_Inmueble}`,
+        `http://localhost:3006/actualizarInmueble?IdInmueble=${IdInmueble}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            Id_Arrendatario: Id_Arrendatario,
+            IdArrendatario: IdArrendatario,
             Estado:"Ocupado",
           }),
         }
@@ -276,19 +275,19 @@ export const Inmueble = () => {
   const handleRowClickAndDelete = async () => {
     try {
       console.log(inmuebleseleccion)
-      const Id_Inmueble = inmuebleseleccion.Id_Inmueble;
-      const { Id_Arrendatario } = 0;
+      const IdInmueble = inmuebleseleccion.IdInmueble;
+      const { IdArrendatario } = 0;
       
 
       const response = await fetch(
-        `http://localhost:3006/actualizarInmueble?Id_Inmueble=${Id_Inmueble}`,
+        `http://localhost:3006/actualizarInmueble?IdInmueble=${IdInmueble}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            Id_Arrendatario: Id_Arrendatario,
+            IdArrendatario: IdArrendatario,
             Estado:"Disponible",
           }),
         }
@@ -315,14 +314,14 @@ export const Inmueble = () => {
   };
 
   const handleMostrarAClick = async (inmueble) => {
-    const Id_Inmueble = inmueble.Id_Inmueble;
+    const IdInmueble = inmueble.IdInmueble;
 
     if (inmueble.Estado === "Ocupado") {
       const ValidarInmArr = async () => {
         
         try {
           const response = await fetch(
-            `http://localhost:3006/Vinmu_Arren?Id_Inmueble=${Id_Inmueble}`
+            `http://localhost:3006/VinmuArren?IdInmueble=${IdInmueble}`
           );
           if (!response.ok) {
             throw new Error("Network response was not ok");

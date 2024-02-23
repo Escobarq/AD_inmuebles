@@ -27,7 +27,7 @@ export const InhabilitarGastos = () => {
       await actualizarEstadoHgastos(HgastosId, "true"); // Llamando a la función correctamente
 
       const updatedHgastos = infoComision.map((CPropietario) => // Corrigiendo el mapeo de infoComision
-        CPropietario.Id_comision_Propietario === HgastosId
+        CPropietario.IdComisionPropietario === HgastosId
           ? { ...CPropietario, Estado: "true" } // Cambiando Estado en lugar de Hgastos
           : CPropietario
       );
@@ -109,20 +109,20 @@ export const InhabilitarGastos = () => {
   });
   const createrow = (CPropietario) => {
     return (
-      <tr key={CPropietario.Id_comision_Propietario}>
-        <td>{CPropietario.Id_comision_Propietario}</td>
-        <td>{CPropietario.Id_Propietario}</td>
-        <td>{formatDate(CPropietario.Periodo_Pagado)}</td>
-        <td>{formatDate(CPropietario.Fecha_Elaboracion)}</td>
-        <td>{CPropietario.Elaborado_por}</td>
-        <td>{CPropietario.Forma_Pago}</td>
-        <td>${CPropietario.Valor_Arriendo}</td>     
+      <tr key={CPropietario.IdComisionPropietario}>
+        <td>{CPropietario.IdComisionPropietario}</td>
+        <td>{CPropietario.IdPropietario}</td>
+        <td>{formatDate(CPropietario.PeriodoPagado)}</td>
+        <td>{formatDate(CPropietario.FechaElaboracion)}</td>
+        <td>{CPropietario.ElaboradoPor}</td>
+        <td>{CPropietario.FormaPago}</td>
+        <td>${CPropietario.ValorArriendo}</td>     
         <td>{CPropietario.Observaciones}</td>     
         <td>
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(CPropietario.Id_comision_Propietario)}
+            onClick={() => handleOpenModal(CPropietario.IdComisionPropietario)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
