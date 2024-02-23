@@ -14,10 +14,17 @@ import {
   faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import useActualizarEstadoInmueble  from "../../Hooks/InhabilitarInmueble";
+import NoResultImg from "../../../assets/NoResult.gif"
+
 
 export const Inmueble = () => {
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
-
+  const [NoResult, setNoResult]= useState(false)
+  const [filtroData, setFiltroData] = useState({
+    estado: '',
+    tipo: '',
+    estrato: '',
+  });
   const [inmuebleIdBoolean, setInmueblesBoolean] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -68,50 +75,62 @@ export const Inmueble = () => {
   // Paginacion
   const [infoinmueble, setinfoinmueble] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(8);
 
-  const [existe, setExiste] = useState(false);
+  
 
   // Actualizar Inmueble
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Vinmueble");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-
-        const INmueblesActivos = data.filter(
-          (inmueble) => inmueble.booleanos === "true"
-        );
-
-        setinfoinmueble(INmueblesActivos);
-
-        setinmuebleseleccion(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    const fetchDataArren = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Varrendatario");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setinfoarrendatario(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
     fetchDataArren();
-
     fetchData();
-  }, []);
+  }, [filtroData]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+    console.log(name,value);
+  };
+  
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(filtroData);
+      const response = await fetch(`http://localhost:3006/Vinmueble?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      const INmueblesActivos = data.filter(
+        (inmueble) => inmueble.booleanos === "true"
+      );
+
+      setinfoinmueble(INmueblesActivos);
+      if (INmueblesActivos.length == 0){
+        setNoResult(true)
+      }
+      else {
+        setNoResult(false)
+        
+      }
+
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+  const fetchDataArren = async () => {
+    try {
+      const response = await fetch("http://localhost:3006/Varrendatario");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setinfoarrendatario(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   const createheader = () => {
     return (
@@ -123,13 +142,13 @@ export const Inmueble = () => {
         <th>Ciudad</th>
         <th>Barrio</th>
         <th>Tipo</th>
+        <th>Estado</th>
         <th>Opciones</th>
       </tr>
     );
   };
 
   const createrow = (inmueble) => {
-    if (inmueble.Estado === "Ocupado") {
       return (
         <tr key={inmueble.Id_Inmueble}>
           <td>{inmueble.Id_Propietario}</td>
@@ -139,38 +158,7 @@ export const Inmueble = () => {
           <td>{inmueble.Ciudad}</td>
           <td>{inmueble.Barrio}</td>
           <td>{inmueble.Tipo}</td>
-          <td>
-            <Button variant="primary" onClick={handleMostrarModalClick}>
-              <FontAwesomeIcon icon={faEye} />
-            </Button>
-
-            <Button disabled variant="success">
-              <FontAwesomeIcon icon={faUserPlus} />
-            </Button>
-
-            <Button
-              className="btn-opciones"
-              variant="danger"
-              onClick={() => handleOpenModal(inmueble.Id_Inmueble)}
-            >
-              <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
-            </Button>
-            <Button className="btn-opciones" variant="warning">
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </Button>
-          </td>
-        </tr>
-      );
-    } else {
-      return (
-        <tr key={inmueble.Id_Inmueble}>
-          <td>{inmueble.Id_Propietario}</td>
-          <td>{inmueble.Id_Inmueble}</td>
-          <td>{inmueble.Direccion}</td>
-          <td>{inmueble.Estrato}</td>
-          <td>{inmueble.Ciudad}</td>
-          <td>{inmueble.Barrio}</td>
-          <td>{inmueble.Tipo}</td>
+          <td>{inmueble.Estado}</td>
           <td>
             <Button
               className="btn-opciones"
@@ -200,7 +188,7 @@ export const Inmueble = () => {
         </tr>
       );
     }
-  };
+  
 
   const createrowDetalles = () => {
     if (inmuebleseleccion) {
@@ -215,6 +203,25 @@ export const Inmueble = () => {
           <td>{inmuebleseleccion.No_Terraza}</td>
         </tr>
       );
+    } else {
+      return null; // Otra opción es retornar un mensaje de carga o cualquier otro contenido que desees mostrar mientras se carga la información
+    }
+  };
+  const existe = () => {
+    if (inmuebleseleccion) {
+      if(inmuebleseleccion.Id_Arrendatario >= 1) {
+        return (
+          <>
+          <p>Alerta Ya se encuentra un arrendador asignado</p>
+          <p>Su nombre es {inmuebleseleccion.Nombre_Completo}, con No de identidad : {inmuebleseleccion.Documento_Identidad}</p>
+          <p>Para cambiar de arrendatario solo seleccionelo en la siguiente lista:</p>
+          </>
+        );
+        
+      }
+      else {
+        return null
+      }
     } else {
       return null; // Otra opción es retornar un mensaje de carga o cualquier otro contenido que desees mostrar mientras se carga la información
     }
@@ -238,8 +245,10 @@ export const Inmueble = () => {
 
   const handleRowClickAndUpdate = async (Arrendatarios) => {
     try {
-      const Id_Inmueble = inmuebleseleccion[0].Id_Inmueble;
+      console.log(inmuebleseleccion)
+      const Id_Inmueble = inmuebleseleccion.Id_Inmueble;
       const { Id_Arrendatario } = Arrendatarios;
+
       const response = await fetch(
         `http://localhost:3006/actualizarInmueble?Id_Inmueble=${Id_Inmueble}`,
         {
@@ -249,6 +258,38 @@ export const Inmueble = () => {
           },
           body: JSON.stringify({
             Id_Arrendatario: Id_Arrendatario,
+            Estado:"Ocupado",
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el inmueble");
+      }
+
+      notify();
+      console.log("Inmueble actualizado correctamente");
+    } catch (error) {
+      console.error("Error al actualizar el inmueble:", error);
+    }
+  };
+  const handleRowClickAndDelete = async () => {
+    try {
+      console.log(inmuebleseleccion)
+      const Id_Inmueble = inmuebleseleccion.Id_Inmueble;
+      const { Id_Arrendatario } = 0;
+      
+
+      const response = await fetch(
+        `http://localhost:3006/actualizarInmueble?Id_Inmueble=${Id_Inmueble}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Id_Arrendatario: Id_Arrendatario,
+            Estado:"Disponible",
           }),
         }
       );
@@ -278,7 +319,7 @@ export const Inmueble = () => {
 
     if (inmueble.Estado === "Ocupado") {
       const ValidarInmArr = async () => {
-        setExiste(true);
+        
         try {
           const response = await fetch(
             `http://localhost:3006/Vinmu_Arren?Id_Inmueble=${Id_Inmueble}`
@@ -287,9 +328,9 @@ export const Inmueble = () => {
             throw new Error("Network response was not ok");
           }
           const data = await response.json();
-          setinmuebleseleccion(data);
-
+          setinmuebleseleccion(data[0]);
           setMostrarModalA(true);
+          
         } catch (error) {
           console.error("Error fetching products:", error);
         }
@@ -297,7 +338,7 @@ export const Inmueble = () => {
       ValidarInmArr();
     } else {
       setMostrarModalA(true);
-      setExiste(false);
+      
       setinmuebleseleccion(inmueble);
     }
   };
@@ -319,8 +360,9 @@ export const Inmueble = () => {
         <div className="conten-filtro">
           <div className="conten-inputs">
             <label className="l1">Tipo Inmueble</label>
-            <select className="input-filtroRe" name="" id="">
-              <option value="Apartamento">Apartamento</option>
+            <select className="input-filtroRe"  value={filtroData.tipo} onChange={handleChange} name="tipo" id="">
+              <option selected value="">Seleccione el tipo</option>
+              <option  value="Apartamento">Apartamento</option>
               <option value="Bodega">Bodega</option>
               <option value="Casa">Casa</option>
               <option value="Oficina">Oficina</option>
@@ -328,7 +370,8 @@ export const Inmueble = () => {
             </select>
 
             <label className="l1">Estrato</label>
-            <select className="input-filtroRe" name="" id="">
+            <select className="input-filtroRe"   value={filtroData.estrato} onChange={handleChange} name="estrato" id="">
+              <option selected value="">Seleccione el estrato</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -338,7 +381,8 @@ export const Inmueble = () => {
             </select>
 
             <label className="l1">Estado</label>
-            <select className="input-filtroRe" name="" id="">
+            <select className="input-filtroRe"  value={filtroData.estado} onChange={handleChange} name="estado" id="">
+              <option selected value="">Seleccione estado</option>
               <option value="Ocupado">Ocupado</option>
               <option value="Disponible">Disponible</option>
             </select>
@@ -363,6 +407,12 @@ export const Inmueble = () => {
           <h1 className="tittle_propetario">Inmuebles</h1>
         </div>
         <div className="view_esp">
+        {NoResult == true ? (
+          <div>
+            <img src={NoResultImg} alt="" />
+          </div>
+        ):(
+
           <div className="table-container">
             <Table striped bordered hover>
               <thead>{createheader()}</thead>
@@ -371,6 +421,7 @@ export const Inmueble = () => {
               </tbody>
             </Table>
           </div>
+        )}
         </div>
         <div className="paginador">
           <Pagination>
@@ -433,9 +484,9 @@ export const Inmueble = () => {
         >
           <Modal.Header closeButton>
             <Modal.Title>Arrendatarios Disponibles</Modal.Title>
-            {existe ? <p>hola</p> : <p></p>}
           </Modal.Header>
           <Modal.Body>
+            {existe()}
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -445,12 +496,19 @@ export const Inmueble = () => {
                   <th>Estado</th>
                   <th>Teléfono</th>
                   <th>Correo</th>
+                  
                 </tr>
               </thead>
               <tbody>
                 {infoarrendatario.map((Arrendatarios) =>
                   createrowA(Arrendatarios)
                 )}
+                <Link to="/ReArrendatario">                  
+                <Button variant="primary">Otro</Button>
+                </Link>
+                <Button variant="danger" onClick={() => handleRowClickAndDelete()}>
+                Quitar Arrendatario
+                </Button>
               </tbody>
             </Table>
           </Modal.Body>

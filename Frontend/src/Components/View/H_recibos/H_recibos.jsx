@@ -8,6 +8,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
+import moment from 'moment';
+import 'moment/locale/es';
 
 export const H_recibos = () => {
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
@@ -46,14 +48,21 @@ export const H_recibos = () => {
       </tr>
     );
   };
+  moment.updateLocale('es', {
+    months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
+    monthsShort : 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
+    weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
+    weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
+    weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_')
+  });
   const createrow = (PArrendamiento) => {
     return (
       <tr key={PArrendamiento.Id_Pago_Arrendamiento}>
         <td>{PArrendamiento.Id_Pago_Arrendamiento}</td>
         <td>{PArrendamiento.Id_Arrendatario}</td>
-        <td>{PArrendamiento.Fecha_Pago}</td>
-        <td>{PArrendamiento.Fecha_Inicio}</td>
-        <td>{PArrendamiento.Fecha_Fin}</td>
+        <td>{formatDate(PArrendamiento.Fecha_Pago)}</td>
+        <td>{formatDate(PArrendamiento.Fecha_Inicio)}</td>
+        <td>{formatDate(PArrendamiento.Fecha_Fin)}</td>
         <td>{PArrendamiento.Valor_Pago}</td>
         <td>{PArrendamiento.Forma_Pago}</td>
         <td>{PArrendamiento.Estado}</td>
@@ -78,7 +87,10 @@ export const H_recibos = () => {
     const currentItems = infoPArrendamiento.slice(indexOfFirstItem, indexOfLastItem);
   
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+  //formatear fecha 
+  function formatDate(fechaString) {
+    return moment(fechaString).format('MMMM , D , YYYY');
+  }
   return (
     <>
       <div className="contener-home">

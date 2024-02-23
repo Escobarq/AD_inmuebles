@@ -31,6 +31,8 @@ import { CodeudorInha } from './Components/View/Codeudor/CodeudorInha';
 import { InhabilitarArren } from './Components/View/Arrendatario/InhabilitarArren';
 import { InhabilitarPropetario } from './Components/View/Propietarios/InhabilitarPropetario';
 import { InhabilitarInmuebles } from './Components/View/Inmueble/InhabilitarInmuebles';
+import { InhabilitarGastos } from './Components/View/H_gastos/InhabilitarGastos';
+
 
 
 function App() {
@@ -68,6 +70,7 @@ function App() {
         <Route path="/Codeudor" element={<Codeudor />} />
         <Route path="/Codeudores" element={<CodeudorInha />} />
         <Route path="/H_gastos" element={<H_gastos />} />
+        <Route path="/Hgastos" element={<InhabilitarGastos />} />
         <Route path="/H_recibos" element={<H_recibos />} />
         <Route path="/RPropietario" element={<RPropietario />} />
         <Route path="/Rcomision" element={<ReciboGastos />} />
