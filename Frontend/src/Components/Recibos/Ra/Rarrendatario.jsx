@@ -110,8 +110,8 @@ export const Rarrendatario = () => {
     setShowCancelModal(false); // Cierra el modal
   };
   return (
-    <div className="container">
-      <form className="formu">
+    <div className="contener-home">
+      <form className="form-propietario">
         <div className="titulo">
           <span>RECIBO DE ARRENDATARIO </span>
         </div>

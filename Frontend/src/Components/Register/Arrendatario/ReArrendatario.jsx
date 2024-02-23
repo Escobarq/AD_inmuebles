@@ -133,7 +133,7 @@ export const ReArrendatario = () => {
                 className="input-form"
                 type="text"
                 maxLength={100}
-                {...register("estado_contrato")}
+                {...register("estadocontrato")}
               />
             </Form.Group>
 
@@ -144,7 +144,7 @@ export const ReArrendatario = () => {
               <Form.Control
                 className="input-form"
                 type="number"
-                {...register("meses_alquiler")}
+                {...register("mesesalquiler")}
               />
             </Form.Group>
 
@@ -155,7 +155,7 @@ export const ReArrendatario = () => {
               <Form.Control
                 className="input-form"
                 type="date"
-                {...register("fecha_inicio")}
+                {...register("fechainicio")}
               />
             </Form.Group>
 
@@ -166,7 +166,7 @@ export const ReArrendatario = () => {
               <Form.Control
                 className="input-form"
                 type="date"
-                {...register("fecha_final")}
+                {...register("fechafinal")}
               />
             </Form.Group>
 
@@ -175,7 +175,7 @@ export const ReArrendatario = () => {
               <Form.Control
                 className="input-form"
                 type="number"
-                {...register("valor_deposito")}
+                {...register("valordeposito")}
               />
             </Form.Group>
           </Col>

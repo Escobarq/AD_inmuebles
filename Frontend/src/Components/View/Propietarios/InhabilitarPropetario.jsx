@@ -46,7 +46,7 @@ export const InhabilitarPropetario = () => {
     try {
       await actualizarEstadoPropetario(PropetarioId, "true");
       const updatedpropetario = infopropietario.map((Propetario) =>
-        Propetario.Id_Propietario === Propetario
+        Propetario.IdPropietario === Propetario
           ? { ...Propetario, booleanos: "true" }
           : Propetario
       );
@@ -101,21 +101,21 @@ export const InhabilitarPropetario = () => {
   };
   const createrow = (Propietario) => {
     return (
-      <tr key={Propietario.Id_Propietario}>
-        <td>{Propietario.Documento_Identidad}</td>
-        <td>{Propietario.Nombre_Completo}</td>
+      <tr key={Propietario.IdPropietario}>
+        <td>{Propietario.DocumentoIdentidad}</td>
+        <td>{Propietario.NombreCompleto}</td>
         <td>{Propietario.Direccion}</td>
         <td>{Propietario.Telefono}</td>
         <td>{Propietario.Correo}</td>
-        <td>pendiente</td>
+        <td>{Propietario.FechaIngreso}</td>
         <td>{Propietario.Banco}</td>
-        <td>{Propietario.Tipo_Cuenta}</td>
-        <td>{Propietario.Numero_Cuenta}</td>
+        <td>{Propietario.TipoCuenta}</td>
+        <td>{Propietario.NumeroCuenta}</td>
         <td>
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(Propietario.Id_Propietario)}
+            onClick={() => handleOpenModal(Propietario.IdPropietario)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>

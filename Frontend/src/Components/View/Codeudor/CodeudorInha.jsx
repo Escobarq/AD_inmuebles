@@ -32,7 +32,7 @@ export const CodeudorInha = () => {
       await actualizarEstadoCodeudor(codeudorId, "true");
       
       const updatedCodeudores = infoCodeudor.map((codeudor) =>
-        codeudor.Id_Codeudor === codeudorId
+        codeudor.IdCodeudor === codeudorId
           ? { ...codeudor, booleanos: "true" }
           : codeudor
       );
@@ -95,10 +95,10 @@ export const CodeudorInha = () => {
 
   const createrow = (Codeudor) => {
     return (
-      <tr key={Codeudor.Id_Codeudor}>
-        <td>{Codeudor.Id_Codeudor}</td>
-        <td>{Codeudor.Documento_Identidad}</td>
-        <td>{Codeudor.Nombre_Completo}</td>
+      <tr key={Codeudor.IdCodeudor}>
+        <td>{Codeudor.IdCodeudor}</td>
+        <td>{Codeudor.DocumentoIdentidad}</td>
+        <td>{Codeudor.NombreCompleto}</td>
         <td>{Codeudor.Direccion}</td>
         <td>{Codeudor.Telefono}</td>
         <td>{Codeudor.Correo}</td>
@@ -106,7 +106,7 @@ export const CodeudorInha = () => {
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(Codeudor.Id_Codeudor)}
+            onClick={() => handleOpenModal(Codeudor.IdCodeudor)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>

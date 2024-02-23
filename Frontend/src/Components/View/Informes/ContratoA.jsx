@@ -58,13 +58,13 @@ export const ContratoA = () => {
 
   const createrow = (Arrendatarios) => {
     return (
-      <tr key={Arrendatarios.Id_Arrendatario}>
-        <td>{Arrendatarios.Documento_Identidad}</td>
-        <td>{Arrendatarios.Nombre_Completo}</td>
-        <td>{Arrendatarios.Meses_Alquiler}</td>
-        <td>{Arrendatarios.Cuotas_Pendientes}</td>
-        <td>{formatDate(Arrendatarios.Fecha_Inicio_Contrato)}</td>
-        <td>{formatDate(Arrendatarios.Fecha_Fin_Contrato)}</td>
+      <tr key={Arrendatarios.IdArrendatario}>
+        <td>{Arrendatarios.DocumentoIdentidad}</td>
+        <td>{Arrendatarios.NombreCompleto}</td>
+        <td>{Arrendatarios.MesesAlquiler}</td>
+        <td>{Arrendatarios.CuotasPendientes}</td>
+        <td>{formatDate(Arrendatarios.FechaInicioContrato)}</td>
+        <td>{formatDate(Arrendatarios.FechaFinContrato)}</td>
         <td>{Arrendatarios.Estado}</td>
       </tr>
     );

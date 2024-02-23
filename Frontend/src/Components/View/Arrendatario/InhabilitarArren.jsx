@@ -43,7 +43,7 @@ export const InhabilitarArren = () => {
     try {
       await actualizarEstadoArrendatario(ArrendatarioId, "true");
       const updatedArrendatario = infoarrendatario.map((arrendatarios) =>
-        arrendatarios.Id_Arrendatario === arrendatarios
+        arrendatarios.IdArrendatario === arrendatarios
           ? { ...arrendatarios, booleanos: "true" }
           : arrendatarios
       );
@@ -94,11 +94,11 @@ export const InhabilitarArren = () => {
   };
   const createrow = (Arrendatarios) => {
     return (
-      <tr key={Arrendatarios.Id_Arrendatario}>
-        <td>{Arrendatarios.Id_Arrendatario}</td>
-        <td>{Arrendatarios.Tipo_Documento}</td>
-        <td>{Arrendatarios.Documento_Identidad}</td>
-        <td>{Arrendatarios.Nombre_Completo}</td>
+      <tr key={Arrendatarios.IdArrendatario}>
+        <td>{Arrendatarios.IdArrendatario}</td>
+        <td>{Arrendatarios.TipoDocumento}</td>
+        <td>{Arrendatarios.DocumentoIdentidad}</td>
+        <td>{Arrendatarios.NombreCompleto}</td>
         <td>{Arrendatarios.Estado}</td>
         <td>{Arrendatarios.Telefono}</td>
         <td>{Arrendatarios.Correo}</td>
@@ -106,7 +106,7 @@ export const InhabilitarArren = () => {
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(Arrendatarios.Id_Arrendatario)}
+            onClick={() => handleOpenModal(Arrendatarios.IdArrendatario)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
