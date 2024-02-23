@@ -466,23 +466,32 @@ router.post("/Rcodeudor", async (req, res) => {
       }
     });
   });
-
-/*Registrar usuario*/
+  
+// Registrar Usuario
 router.post("/RegistrarUsuario", async (req, res) => {
   const { nombre, apellido, correo, contrasena, telefono } = req.body;
-  const idrol = 2;
 
   // Validación básica de entrada
   if (!nombre || !apellido || !correo || !contrasena || !telefono) {
-    return res
-      .status(400)
-      .json({ message: "Todos los campos son obligatorios" });
+    return res.status(400).json({ message: "Todos los campos son obligatorios" });
   }
 
   try {
+    // Verificar si el correo electrónico ya existe en la base de datos
+    const existingUser = await connection.query(
+      "SELECT * FROM trabajador WHERE correo = ?",
+      [correo]
+    );
+
+    if (existingUser.length > 0) {
+      // Si se encuentra un usuario con el mismo correo electrónico, responder con un error
+      return res.status(409).json({ message: "El correo electrónico ya está en uso" });
+    }
+
+    // Insertar usuario en la base de datos
     await connection.query(
-      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, idrol) VALUES (?, ?, ?, ?, ?, ?)",
-      [nombre, apellido, correo, contrasena, telefono, idrol] // El ID del rol '2' se debe reemplazar por el ID real del rol 'Usuario' en tu base de datos.
+      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono) VALUES (?, ?, ?, ?, ?)",
+      [nombre, apellido, correo, contrasena, telefono]
     );
 
     res.status(201).json({ message: "Usuario registrado exitosamente" });
@@ -490,14 +499,15 @@ router.post("/RegistrarUsuario", async (req, res) => {
     console.error("Error al registrar usuario:", error);
 
     if (error.code === "ER_DUP_ENTRY") {
-      return res
-        .status(409)
-        .json({ message: "Ya existe un usuario con ese correo electrónico" });
+      return res.status(409).json({ message: "Ya existe un usuario con ese correo electrónico" });
     }
 
     res.status(500).json({ message: "Error al registrar usuario" });
   }
 });
+
+
+
 
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
@@ -633,6 +643,31 @@ router.put("/Vharrendamiento/:id", (req, res) => {
   // Consulta SQL para actualizar el estado del inmueble
   connection.query(
     "UPDATE pagos_arrendamiento SET booleanos = ? WHERE Id_Pago_Arrendamiento = ?",
+    [nuevoEstado, id],
+    (error, results) => {
+      if (error) {
+        console.error("Error al actualizar el estado ", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      } else {
+        res.status(200).json({ message: "Estado actualizado exitosamente" });
+      }
+    }
+  );
+});
+//Actualizar Estado Historial Arrendamiento
+router.put("/Vempleados/:id", (req, res) => {
+  const id = req.params.id;
+  const nuevoEstado = req.body.estado;
+
+  // Verificar si el estado es 'true' o 'false'
+  if (nuevoEstado !== "true" && nuevoEstado !== "false") {
+    res.status(400).json({ error: 'El estado debe ser "true" o "false"' });
+    return;
+  }
+
+  // Consulta SQL para actualizar el estado del inmueble
+  connection.query(
+    "UPDATE trabajador SET booleanos = ? WHERE idtrabajador = ?",
     [nuevoEstado, id],
     (error, results) => {
       if (error) {

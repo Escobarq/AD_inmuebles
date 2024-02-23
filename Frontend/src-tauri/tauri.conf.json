@@ -23,11 +23,11 @@
       },
       "externalBin": [],
       "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
+        "icons/mi_icono_32.png",
+        "icons/icon128px_128px.png",
         "icons/128x128@2x.png",
         "icons/icon.icns",
-        "icons/icon.ico"
+        "icons/original.ico"
       ],
       "identifier": "com.tuempresa.nombreunico",
       "longDescription": "",
@@ -56,10 +56,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 900,
         "resizable": true,
         "title": "AD_inmuebles",
-        "width": 800
+        "width": 1440
       }
     ]
   }

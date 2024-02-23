@@ -2,7 +2,6 @@ import { Table, Button , Modal} from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUserPlus,
   faTrash,
   faPenToSquare,
   faUserSlash
@@ -14,7 +13,7 @@ import 'moment/locale/es';
 import { toast } from "react-toastify";
 import useActualizarEstadoHistorialArrendamiento from "../../Hooks/InhabilitarHarrendamiento";
 
-export const H_recibos = () => {
+export const H_recibosInha = () => {
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
   const { actualizarEstadoHarrendamiento } = useActualizarEstadoHistorialArrendamiento();
   const [Harrendamiento, setHarrenndamiento] = useState(null);
@@ -23,8 +22,12 @@ export const H_recibos = () => {
   // Función para inhabilitar los gastos
   const handleInhabilitarHarrendamiento = async (arrendamientoID) => {
     try {
-      await actualizarEstadoHarrendamiento(arrendamientoID, "false"); // Utilizando la función correcta
-      const updatedHarrendamiento = infoPArrendamiento.filter(harrendamiento => harrendamiento.Id_Pago_Arrendamiento !== arrendamientoID);
+      await actualizarEstadoHarrendamiento(arrendamientoID, "true"); // Utilizando la función correcta
+      const updatedHarrendamiento = infoPArrendamiento.map((Harrendamiento) => // Corrigiendo el mapeo de infoComision
+      Harrendamiento.Id_Pago_Arrendamiento === arrendamientoID
+        ? { ...Harrendamiento, Estado: "true" } // Cambiando Estado en lugar de Hgastos
+        : Harrendamiento
+    );
       setinfoPArrendamiento(updatedHarrendamiento); // Cambio en el nombre de la variable
       notify();
       setShowModal(false);
@@ -61,7 +64,7 @@ export const H_recibos = () => {
         }
         const data = await response.json();
         const Harrendamiento =data.filter(
-            (Harrendamiento) => Harrendamiento.booleanos === "true"
+            (Harrendamiento) => Harrendamiento.booleanos === "false"
         )
         setinfoPArrendamiento(Harrendamiento);
 
@@ -138,28 +141,11 @@ export const H_recibos = () => {
     <>
       <div className="contener-home">
         <div className="conten-filtro">
-          <div className="conten-inputs">
-            <label className="l1">No. Cedula: </label>
-            <input
-              className="input-filtroRe"
-              type="number"
-              name=""
-              max={9999999999}
-              id=""
-            />
-            <label className="l1">Fecha Ingreso: </label>
-            <input className="input-filtroRe" type="date" name="" id="" />
-          </div>
-          <Button variant="success" className="btn-add">
-            <Link to="/Reciboarrendatario">
-              <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
-              PArrendamiento
-            </Link>
-          </Button>
+
           <Button variant="dark" className="btn-add-info ">
-            <Link to="/Hrecibos" className="linkes">
+            <Link to="/H_recibos" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-               Historial Inhabilitados
+               Historial Habilitados
             </Link>
           </Button>
         </div>
@@ -210,7 +196,7 @@ export const H_recibos = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          ¿Está seguro de que desea inhabilitar este codeudor?
+          ¿Está seguro de que desea Habilitar este Historial?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>

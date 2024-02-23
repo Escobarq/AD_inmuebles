@@ -399,7 +399,7 @@ export const Inmueble = () => {
           <Button variant="dark" className="btn-add-info ">
             <Link to="/InhaInmueble" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inabilitados
+              Inhabilitados
             </Link>
           </Button>
         </div>
