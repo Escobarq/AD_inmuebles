@@ -32,8 +32,8 @@ import { InhabilitarArren } from './Components/View/Arrendatario/InhabilitarArre
 import { InhabilitarPropetario } from './Components/View/Propietarios/InhabilitarPropetario';
 import { InhabilitarInmuebles } from './Components/View/Inmueble/InhabilitarInmuebles';
 import { InhabilitarGastos } from './Components/View/H_gastos/InhabilitarGastos';
-
-
+import { H_recibosInha } from './Components/View/H_recibos/H_recibosInha';
+import { InhabilitarRol } from './Components/View/AsignarRol/InhabilitarRol';
 
 function App() {
   const location = useLocation();
@@ -72,6 +72,7 @@ function App() {
         <Route path="/H_gastos" element={<H_gastos />} />
         <Route path="/Hgastos" element={<InhabilitarGastos />} />
         <Route path="/H_recibos" element={<H_recibos />} />
+        <Route path="/Hrecibos" element={<H_recibosInha />} />
         <Route path="/RPropietario" element={<RPropietario />} />
         <Route path="/Rcomision" element={<ReciboGastos />} />
         <Route path="/ReArrendamiento" element={<Rarrendatario />} />
@@ -85,6 +86,7 @@ function App() {
         <Route path="/Carrendatario" element={<ContratoA />} />
         <Route path="/Ginmuebles" element={<GastosIn />} />
         <Route path="/AsignarRol" element={<AsignarRol/>} />
+        <Route path="/InhabilitarRol" element={<InhabilitarRol/>} />
       </Routes>
 
     </div>

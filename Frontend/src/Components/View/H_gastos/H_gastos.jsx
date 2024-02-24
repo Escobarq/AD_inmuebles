@@ -163,7 +163,7 @@ export const H_gastos = () => {
           <Button variant="dark" className="btn-add-info ">
             <Link to="/Hgastos" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inabilitados
+              Inhabilitados
             </Link>
           </Button>
         </div>

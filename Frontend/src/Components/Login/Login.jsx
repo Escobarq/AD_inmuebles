@@ -4,8 +4,6 @@ import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
-  faEye,
-  faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -37,9 +35,7 @@ export const Login = () => {
       theme: "colored",
     });
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+
 
   const {
     register,
@@ -52,7 +48,7 @@ export const Login = () => {
   const onsubmitLoginUser = async (data) => {
     try {
       await userLogin(data);
-      
+      reset
       a();
     } catch (error) {
       if (error.message.includes("Cliente ya registrado")) {
@@ -73,22 +69,29 @@ export const Login = () => {
     setMostrarModal(false);
   };
 
-  //Registro Usuario //
-  const onsubmitNewUser = async (data) => {
-    try {
+
+//Registro Usuario //
+const onsubmitNewUser = async (data) => {
+  try {
       await crearUser(data);
-      notify("Registro Exioso");
-      reset();
-    } catch (error) {
-      if (error.message.includes("Cliente ya registrado")) {
-        notifi();
+      setMostrarModal(false);
+      notify("Registro Exitoso");
+      reset 
+  } catch (error) {
+      if (error.message === 'El correo electrónico o la contraseña ya están en uso') {
+          toast.error('El correo electrónico o la contraseña ya están en uso', {
+              theme: 'colored',
+          });
       } else {
-        falla();
-        console.error("Error al crear usuario:", error);
-        throw error; // Re-lanza el error para que pueda ser manejado en el componente
+          falla();
+          console.error('Error al crear usuario:', error);
       }
-    }
-  };
+  }
+};
+
+
+
+  
   return (
     <>
       <section className="vh-100 login login-section">
@@ -136,6 +139,7 @@ export const Login = () => {
                           name="correousuario"
                           className="form-control form-control-lg"
                           {...register("correousuario")}
+                          required
                         />
                       </div>
 
@@ -165,23 +169,14 @@ export const Login = () => {
                       </div>
 
                       <div className="footer_login d-flex justify-content-between mt-3 p-auto">
-                        <a className="small text-muted" href="#!">
-                          Olvidar Contraseña?
-                        </a>
                         <div className="d-flex align-items-center">
-                          <p
-                            className="text_footer mb-0 me-2"
-                            style={{ color: "#393f81" }}
-                          >
-                            No tienes cuenta?
-                          </p>
                           <a
                             href="#!"
                             onClick={handleMostrarModalClick}
                             className="btn btn-link"
                             style={{ color: "#393f81" }}
                           >
-                            Regístrate{" "}
+                             ¿No tienes Cuenta? Regístrate{" "}
                             <FontAwesomeIcon
                               icon={faUserPlus}
                               className="ms-1"
@@ -240,6 +235,7 @@ export const Login = () => {
                   placeholder="Ingresa Telefono celular"
                   {...register("telefono")}
                   required
+                  maxLength={12}
                 />
                 <div className="input-group">
                   <div className="input-group">
@@ -247,10 +243,11 @@ export const Login = () => {
                       type={showPassword ? "text" : "password"}
                       id="contrausuario"
                       name="contrausuario"
-                      className="form-control form-control-lg"
+                      className="form-control form-control-lg border border-dark"
                       {...register("contrasena")}
                       required
                       placeholder="Ingresa una Contraseña"
+                      max={12}
                     />
                   </div>
                 </div>

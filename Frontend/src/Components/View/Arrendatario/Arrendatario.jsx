@@ -181,7 +181,7 @@ export const Arrendatario = () => {
           <Button variant="dark" className="btn-add-info ">
             <Link to="/Inharrendatario" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inabilitados
+              Inhabilitados
             </Link>
           </Button>
         </div>
