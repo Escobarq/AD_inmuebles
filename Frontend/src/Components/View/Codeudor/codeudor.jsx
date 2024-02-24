@@ -11,13 +11,18 @@ import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import ActualizarCodeudor from "../../Hooks/Inhabilitarcodeudor";
 import { toast } from "react-toastify";
+import NoResultImg from "../../../assets/NoResult.gif"
 
 export const Codeudor = () => {
   const [infoCodeudor, setinfoCodeudor] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const { actualizarEstadoCodeudor } = ActualizarCodeudor();
   const [codeudorIdToDelete, setCodeudorIdToDelete] = useState(null);
-  
+  const [filtroData, setFiltroData] = useState({
+    Cedula: '',
+
+  });
+  const [NoResult, setNoResult]= useState(false)
   const notify = () =>
   toast.success("Se Inabilito Correctamente ", {
     theme: "dark",
@@ -31,7 +36,7 @@ export const Codeudor = () => {
   const handleInhabilitarCodeudor = async (codeudorId) => {
     try {
       await actualizarEstadoCodeudor(codeudorId, "false");
-      const updatedCodeudores = infoCodeudor.filter(codeudor => codeudor.Id_Codeudor !== codeudorId);
+      const updatedCodeudores = infoCodeudor.filter(codeudor => codeudor.IdCodeudor !== codeudorId);
       setinfoCodeudor(updatedCodeudores);
       notify();
       setShowModal(false);
@@ -51,26 +56,42 @@ export const Codeudor = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Vcodeudor");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-
-        // Filtrar los datos para incluir solo aquellos con booleanos=true
-        const codeudoresActivos = data.filter(
-          (codeudor) => codeudor.booleanos === "true"
-        );
-        setinfoCodeudor(codeudoresActivos);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
+    
     fetchData();
-  }, []);
+  }, [filtroData]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+    
+  };
+
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(filtroData);
+      const response = await fetch(`http://localhost:3006/Vcodeudor?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      // Filtrar los datos para incluir solo aquellos con booleanos=true
+      const codeudoresActivos = data.filter(
+        (codeudor) => codeudor.booleanos === "true"
+      );
+      setinfoCodeudor(codeudoresActivos);
+
+      if (codeudoresActivos.length == 0){
+        setNoResult(true)
+      }
+      else {
+        setNoResult(false)
+        
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   const createheader = () => {
     return (
@@ -87,10 +108,10 @@ export const Codeudor = () => {
   };
   const createrow = (Codeudor) => {
     return (
-      <tr key={Codeudor.Id_Codeudor}>
-        <td>{Codeudor.Id_Codeudor}</td>
-        <td>{Codeudor.Documento_Identidad}</td>
-        <td>{Codeudor.Nombre_Completo}</td>
+      <tr key={Codeudor.IdCodeudor}>
+        <td>{Codeudor.IdCodeudor}</td>
+        <td>{Codeudor.DocumentoIdentidad}</td>
+        <td>{Codeudor.NombreCompleto}</td>
         <td>{Codeudor.Direccion}</td>
         <td>{Codeudor.Telefono}</td>
         <td>{Codeudor.Correo}</td>
@@ -98,7 +119,7 @@ export const Codeudor = () => {
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(Codeudor.Id_Codeudor)}
+            onClick={() => handleOpenModal(Codeudor.IdCodeudor)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
@@ -128,14 +149,13 @@ export const Codeudor = () => {
           <div className="conten-inputs">
             <label className="l1">No. Cedula: </label>
             <input
+             value={filtroData.Cedula} onChange={handleChange}
               className="input-filtroRe"
               type="number"
-              name=""
+              name="Cedula"
               max={9999999999}
               id=""
             />
-            <label className="l1">Fecha Ingreso: </label>
-            <input className="input-filtroRe" type="date" name="" id="" />
           </div>
           <Button variant="success" className="btn-add">
             <Link to="/Registrocodeudor">
@@ -155,6 +175,11 @@ export const Codeudor = () => {
         </div>
 
         <div className="view_esp">
+        {NoResult == true ? (
+          <div>
+            <img src={NoResultImg} alt="" />
+          </div>
+        ):(
           <div className="table-container">
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
@@ -163,6 +188,7 @@ export const Codeudor = () => {
               </tbody>
             </Table>
           </div>
+        )}
         </div>
         <div className="paginador">
           <Pagination>

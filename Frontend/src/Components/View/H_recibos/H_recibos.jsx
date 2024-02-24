@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import moment from 'moment';
 import 'moment/locale/es';
+import NoResultImg from "../../../assets/NoResult.gif"
 import { toast } from "react-toastify";
 import useActualizarEstadoHistorialArrendamiento from "../../Hooks/InhabilitarHarrendamiento";
 
@@ -19,6 +20,14 @@ export const H_recibos = () => {
   const { actualizarEstadoHarrendamiento } = useActualizarEstadoHistorialArrendamiento();
   const [Harrendamiento, setHarrenndamiento] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [filtroData, setFiltroData] = useState({
+    estado: '',
+    FechaPagoIni: '',
+    FechaPagoFin: '',
+    FormaPago: '',
+  });
+  const [NoResult, setNoResult]= useState(false)
+
 
   // Función para inhabilitar los gastos
   const handleInhabilitarHarrendamiento = async (arrendamientoID) => {
@@ -64,15 +73,36 @@ export const H_recibos = () => {
             (Harrendamiento) => Harrendamiento.booleanos === "true"
         )
         setinfoPArrendamiento(Harrendamiento);
+        fetchData();
+       }, [filtroData]);
 
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+  };
+
+
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(filtroData);
+      const response = await fetch(`http://localhost:3006/VPagoArren?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    };
+      const data = await response.json();
+      setinfoPArrendamiento(data);
 
-    fetchData();
-  }, []);
+      if (data.length == 0){
+        setNoResult(true)
+      }
+      else {
+        setNoResult(false)
+        
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
   const createheader = () => {
     return (
       <tr>
@@ -98,16 +128,16 @@ export const H_recibos = () => {
   });
   const createrow = (PArrendamiento) => {
     return (
-      <tr key={PArrendamiento.Id_Pago_Arrendamiento}>
-        <td>{PArrendamiento.Id_Pago_Arrendamiento}</td>
-        <td>{PArrendamiento.Id_Arrendatario}</td>
-        <td>{formatDate(PArrendamiento.Fecha_Pago)}</td>
-        <td>{formatDate(PArrendamiento.Fecha_Inicio)}</td>
-        <td>{formatDate(PArrendamiento.Fecha_Fin)}</td>
-        <td>{PArrendamiento.Valor_Pago}</td>
-        <td>{PArrendamiento.Forma_Pago}</td>
+      <tr key={PArrendamiento.IdPagoArrendamiento}>
+        <td>{PArrendamiento.IdPagoArrendamiento}</td>
+        <td>{PArrendamiento.IdArrendatario}</td>
+        <td>{formatDate(PArrendamiento.FechaPago)}</td>
+        <td>{formatDate(PArrendamiento.FechaInicio)}</td>
+        <td>{formatDate(PArrendamiento.FechaFin)}</td>
+        <td>{PArrendamiento.ValorPago}</td>
+        <td>{PArrendamiento.FormaPago}</td>
         <td>{PArrendamiento.Estado}</td>
-        <td>{PArrendamiento.Dias_De_Mora}</td>
+        <td>{PArrendamiento.DiasDMora}</td>
         <td>
           <Button className="btn-opciones"
             variant="danger"
@@ -139,19 +169,26 @@ export const H_recibos = () => {
       <div className="contener-home">
         <div className="conten-filtro">
           <div className="conten-inputs">
-            <label className="l1">No. Cedula: </label>
-            <input
-              className="input-filtroRe"
-              type="number"
-              name=""
-              max={9999999999}
-              id=""
-            />
-            <label className="l1">Fecha Ingreso: </label>
-            <input className="input-filtroRe" type="date" name="" id="" />
+            <label className="l1">Estado:  </label>
+            <select className="input-filtroRe" name="estado" value={filtroData.estado} onChange={handleChange} id="">
+              <option value="">Seleccione el estado</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Pagado">Pagado</option>              
+            </select>
+
+            <label className="l1">Forma de Pago: </label>
+            <select className="input-filtroRe" name="FormaPago" value={filtroData.FormaPago} onChange={handleChange} id="">
+              <option selected value="">Seleccion forma de pago</option>
+              <option value="Transferencia">Transferencia</option>
+              <option value="Efectivo">Efectivo</option>              
+            </select>
+            <label className="l1">Fecha Pago Minima: </label>
+            <input className="input-filtroRe" type="date" value={filtroData.FechaPagoIni} onChange={handleChange} name="FechaPagoIni" id="" />
+            <label className="l1">Fecha Pago Maxima: </label>
+            <input className="input-filtroRe" type="date" value={filtroData.FechaPagoFin} onChange={handleChange} name="FechaPagoFin" id="" />
           </div>
           <Button variant="success" className="btn-add">
-            <Link to="/Reciboarrendatario">
+            <Link to="/ReArrendamiento">
               <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
               PArrendamiento
             </Link>
@@ -168,6 +205,11 @@ export const H_recibos = () => {
         </div>
 
         <div className="view_esp">
+        {NoResult == true ? (
+          <div>
+            <img src={NoResultImg} alt="" />
+          </div>
+        ):(
           <div className="table-container">
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
@@ -178,6 +220,7 @@ export const H_recibos = () => {
               </tbody>
             </Table>
           </div>
+        )}
         </div>
         <div className="paginador">
           <Pagination >
