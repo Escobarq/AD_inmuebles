@@ -96,6 +96,7 @@ export const Codeudor = () => {
     return (
       <tr>
         <th>ID</th>
+        <th>Tipo Documento</th>
         <th>No. Documento</th>
         <th>Nombre</th>
         <th>Dirección</th>
@@ -110,13 +111,15 @@ export const Codeudor = () => {
     const codeudor = infoCodeudor.find(
       (codeudor) => codeudor.IdCodeudor === codeudorId
     );
-    // Redirige a la página de Registrocodeudor con los datos del codeudor como parámetros de consulta
+    
     window.location.href = `/Registrocodeudor?IdCodeudor=${codeudor.IdCodeudor}&DocumentoIdentidad=${codeudor.DocumentoIdentidad}&NombreCompleto=${codeudor.NombreCompleto}&Direccion=${codeudor.Direccion}&Telefono=${codeudor.Telefono}&Correo=${codeudor.Correo}`;
   };
+
   const createrow = (Codeudor) => {
     return (
       <tr key={Codeudor.IdCodeudor}>
         <td>{Codeudor.IdCodeudor}</td>
+        <td>{Codeudor.TipoDocumento}</td>
         <td>{Codeudor.DocumentoIdentidad}</td>
         <td>{Codeudor.NombreCompleto}</td>
         <td>{Codeudor.Direccion}</td>
