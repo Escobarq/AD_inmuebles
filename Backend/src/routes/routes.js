@@ -649,7 +649,23 @@ router.put("/Vcodeudor/:id", (req, res) => {
     }
   );
 });
+// Ruta para actualizar la información de un codeudor por su ID
+router.put('/Vcodeudores/:id', (req, res) => {
+  const { id } = req.params;
+  const newData = req.body; // Los nuevos datos del codeudor
 
+  // Generar la consulta SQL para actualizar los datos del codeudor
+  const sql = 'UPDATE codeudor SET ? WHERE IdCodeudor = ?';
+
+  connection.query(sql, [newData, id], (error, results) => {
+    if (error) {
+      console.error('Error al actualizar la información del codeudor:', error);
+      res.status(500).json({ error: 'Hubo un error al actualizar la información del codeudor' });
+    } else {
+      res.status(200).json({ message: 'Información del codeudor actualizada exitosamente' });
+    }
+  });
+});
 //actualizar Estado Arrendatario
 router.put("/Varrendatario/:id", (req, res) => {
   const id = req.params.id;

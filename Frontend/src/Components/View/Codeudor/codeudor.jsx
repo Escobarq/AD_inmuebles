@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import ActualizarCodeudor from "../../Hooks/Inhabilitarcodeudor";
 import { toast } from "react-toastify";
-import NoResultImg from "../../../assets/NoResult.gif"
+import NoResultImg from "../../../assets/NoResult.gif";
 
 export const Codeudor = () => {
   const [infoCodeudor, setinfoCodeudor] = useState([]);
@@ -19,24 +19,25 @@ export const Codeudor = () => {
   const { actualizarEstadoCodeudor } = ActualizarCodeudor();
   const [codeudorIdToDelete, setCodeudorIdToDelete] = useState(null);
   const [filtroData, setFiltroData] = useState({
-    Cedula: '',
-
+    Cedula: "",
   });
-  const [NoResult, setNoResult]= useState(false)
+  const [NoResult, setNoResult] = useState(false);
   const notify = () =>
-  toast.success("Se Inabilito Correctamente ", {
-    theme: "dark",
-  });
+    toast.success("Se Inabilito Correctamente ", {
+      theme: "dark",
+    });
   const errores = () =>
-  toast.error("Hubo algun error  ", {
-    theme: "dark",
-  });
-  
+    toast.error("Hubo algun error  ", {
+      theme: "dark",
+    });
+
   //Actualizar Estado Coduedor
   const handleInhabilitarCodeudor = async (codeudorId) => {
     try {
       await actualizarEstadoCodeudor(codeudorId, "false");
-      const updatedCodeudores = infoCodeudor.filter(codeudor => codeudor.IdCodeudor !== codeudorId);
+      const updatedCodeudores = infoCodeudor.filter(
+        (codeudor) => codeudor.IdCodeudor !== codeudorId
+      );
       setinfoCodeudor(updatedCodeudores);
       notify();
       setShowModal(false);
@@ -56,20 +57,20 @@ export const Codeudor = () => {
   };
 
   useEffect(() => {
-    
     fetchData();
   }, [filtroData]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
-    
   };
 
   const fetchData = async () => {
     try {
       const queryParams = new URLSearchParams(filtroData);
-      const response = await fetch(`http://localhost:3006/Vcodeudor?${queryParams.toString()}`);
+      const response = await fetch(
+        `http://localhost:3006/Vcodeudor?${queryParams.toString()}`
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -81,12 +82,10 @@ export const Codeudor = () => {
       );
       setinfoCodeudor(codeudoresActivos);
 
-      if (codeudoresActivos.length == 0){
-        setNoResult(true)
-      }
-      else {
-        setNoResult(false)
-        
+      if (codeudoresActivos.length == 0) {
+        setNoResult(true);
+      } else {
+        setNoResult(false);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -106,6 +105,14 @@ export const Codeudor = () => {
       </tr>
     );
   };
+  const handleEditCodeudor = (codeudorId) => {
+    // Encuentra el codeudor seleccionado
+    const codeudor = infoCodeudor.find(
+      (codeudor) => codeudor.IdCodeudor === codeudorId
+    );
+    // Redirige a la página de Registrocodeudor con los datos del codeudor como parámetros de consulta
+    window.location.href = `/Registrocodeudor?IdCodeudor=${codeudor.IdCodeudor}&DocumentoIdentidad=${codeudor.DocumentoIdentidad}&NombreCompleto=${codeudor.NombreCompleto}&Direccion=${codeudor.Direccion}&Telefono=${codeudor.Telefono}&Correo=${codeudor.Correo}`;
+  };
   const createrow = (Codeudor) => {
     return (
       <tr key={Codeudor.IdCodeudor}>
@@ -124,7 +131,11 @@ export const Codeudor = () => {
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
 
-          <Button className="btn-opciones" variant="warning">
+          <Button
+            className="btn-opciones"
+            variant="warning"
+            onClick={() => handleEditCodeudor(Codeudor.IdCodeudor)}
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
@@ -141,7 +152,6 @@ export const Codeudor = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
- 
   return (
     <>
       <div className="contener-home">
@@ -149,7 +159,8 @@ export const Codeudor = () => {
           <div className="conten-inputs">
             <label className="l1">No. Cedula: </label>
             <input
-             value={filtroData.Cedula} onChange={handleChange}
+              value={filtroData.Cedula}
+              onChange={handleChange}
               className="input-filtroRe"
               type="number"
               name="Cedula"
@@ -175,20 +186,20 @@ export const Codeudor = () => {
         </div>
 
         <div className="view_esp">
-        {NoResult == true ? (
-          <div>
-            <img src={NoResultImg} alt="" />
-          </div>
-        ):(
-          <div className="table-container">
-            <Table striped bordered hover>
-              <thead> {createheader()} </thead>
-              <tbody>
-                {currentItems.map((Codeudors) => createrow(Codeudors))}
-              </tbody>
-            </Table>
-          </div>
-        )}
+          {NoResult == true ? (
+            <div>
+              <img src={NoResultImg} alt="" />
+            </div>
+          ) : (
+            <div className="table-container">
+              <Table striped bordered hover>
+                <thead> {createheader()} </thead>
+                <tbody>
+                  {currentItems.map((Codeudors) => createrow(Codeudors))}
+                </tbody>
+              </Table>
+            </div>
+          )}
         </div>
         <div className="paginador">
           <Pagination>
@@ -229,7 +240,7 @@ export const Codeudor = () => {
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleInhabilitarCodeudor(codeudorIdToDelete)} 
+            onClick={() => handleInhabilitarCodeudor(codeudorIdToDelete)}
           >
             Confirmar
           </Button>

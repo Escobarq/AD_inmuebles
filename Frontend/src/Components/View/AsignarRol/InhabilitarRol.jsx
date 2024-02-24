@@ -17,20 +17,21 @@ export const InhabilitarRol = () => {
     // Función para inhabilitar los gastos
     const handleInhabilitarEmpleados = async (EmpleadosID) => {
         try {
-            await actualizarEstadoempleados(EmpleadosID, "true"); // Utilizando la función correcta
-            const updatedEmpleados = infoRol.map((Empleados) => // Corrigiendo el mapeo de infoComision
-                Empleados.idtrabajador === EmpleadosID
-                    ? { ...Empleados, Estado: "true" } // Cambiando Estado en lugar de Hgastos
-                    : Empleados
+            await actualizarEstadoempleados(EmpleadosID, "true");
+            const updatedEmpleados = infoRol.map((empleado) =>
+                empleado.IdTrabajador === EmpleadosID
+                    ? { ...empleado, Estado: "true" } // Actualizar el Estado del empleado habilitado
+                    : empleado
             );
-            setInfoRol(updatedEmpleados); // Cambio en el nombre de la variable
+            setInfoRol(updatedEmpleados); // Actualizar el estado con los nuevos empleados
             notify();
             setShowModal(false);
         } catch (error) {
-            console.error("Error al inhabilitar Historial Arrendamiento:", error);
+            console.error("Error al habilitar empleado:", error);
             errores();
         }
     };
+    
     //Modal para Inhabilitacion
     const handleOpenModal = (EmpleadosID) => {
         setHarrenndamiento(EmpleadosID);
@@ -59,7 +60,7 @@ export const InhabilitarRol = () => {
                 }
                 const data = await response.json();
                 const Empleados = data.filter(
-                    (Empleados) => Empleados.booleanos === "false"
+                    (Empleados) => Empleados.Booleanos === "false"
                 )
                 setInfoRol(Empleados);
 
@@ -101,18 +102,18 @@ export const InhabilitarRol = () => {
         if (roles.idrol !== 4) {
 
             return (
-                <tr key={roles.idtrabajador}>
-                    <td>{roles.idtrabajador}</td>
-                    <td>{roles.nombre}</td>
-                    <td>{roles.apellido}</td>
-                    <td>{roles.correo}</td>
-                    <td>{roles.contrasena}</td>
-                    <td>{roles.telefono}</td>
-                    <td>{convertirIdRolATexto(roles.idrol)}</td>
+                <tr key={roles.IdTrabajador}>
+                    <td>{roles.IdTrabajador}</td>
+                    <td>{roles.Nombre}</td>
+                    <td>{roles.Apellido}</td>
+                    <td>{roles.Correo}</td>
+                    <td>{roles.Contrasena}</td>
+                    <td>{roles.Telefono}</td>
+                    <td>{convertirIdRolATexto(roles.Idrol)}</td>
                     <td>
                         <Button className="btn-opciones"
                             variant="danger"
-                            onClick={() => handleOpenModal(roles.idtrabajador)}>
+                            onClick={() => handleOpenModal(roles.IdTrabajador)}>
                             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
                         </Button>
                         <Button className="btn-opciones" variant="warning">

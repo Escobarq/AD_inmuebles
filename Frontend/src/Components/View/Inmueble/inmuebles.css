@@ -1,6 +1,6 @@
 .paginador{
-    position: absolute !important;
-    bottom: 1 !important;
+    display: block;
+    gap:10px;
 }
 .noselect {
     width: 120px;
@@ -61,11 +61,6 @@
    
    .noselect:active .icon svg {
     transform: scale(0.8);
-   }
-   .paginador{
-    position: fixed;
-    bottom: 3.5%;
-    
    }
    a{
     text-decoration: none !important;
