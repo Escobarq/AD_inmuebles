@@ -69,12 +69,17 @@ export const H_recibos = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        const Harrendamiento =data.filter(
-            (Harrendamiento) => Harrendamiento.booleanos === "true"
-        )
+        const Harrendamiento = data.filter(
+          (item) => item.booleanos === "true"
+        );
         setinfoPArrendamiento(Harrendamiento);
-        fetchData();
-       }, [filtroData]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [filtroData]);
+  
 
   const handleChange = (event) => {
     const { name, value } = event.target;

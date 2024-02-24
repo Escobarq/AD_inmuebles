@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare, faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import { Table, Button, Modal } from "react-bootstrap";
@@ -17,9 +17,11 @@ export const AsignarRol = () => {
   // Función para inhabilitar los gastos
   const handleInhabilitarEmpleados = async (EmpleadosID) => {
     try {
-      await actualizarEstadoempleados(EmpleadosID, "false"); // Utilizando la función correcta
-      const updatedEmpleados = infoRol.filter(Empleados => Empleados.idtrabajador !== EmpleadosID);
-      setInfoRol(updatedEmpleados); // Cambio en el nombre de la variable
+      await actualizarEstadoempleados(EmpleadosID, "false");
+      // Filtrar los empleados activos excluyendo el empleado que se inhabilitó
+      const updatedEmpleados = infoRol.filter(empleado => empleado.IdTrabajador !== EmpleadosID);
+      // Actualizar el estado con los nuevos empleados
+      setInfoRol(updatedEmpleados);
       notify();
       setShowModal(false);
     } catch (error) {
@@ -27,6 +29,8 @@ export const AsignarRol = () => {
       errores();
     }
   };
+  
+  
   //Modal para Inhabilitacion
   const handleOpenModal = (EmpleadosID) => {
     setHarrenndamiento(EmpleadosID);
@@ -55,7 +59,7 @@ export const AsignarRol = () => {
         }
         const data = await response.json();
         const Empleados = data.filter(
-          (Empleados) => Empleados.booleanos === "true"
+          (Empleados) => Empleados.Booleanos === "true"
         )
         setInfoRol(Empleados);
 
@@ -108,7 +112,7 @@ export const AsignarRol = () => {
           <td>
             <Button className="btn-opciones"
               variant="danger"
-              onClick={() => handleOpenModal(roles.idtrabajador)}>
+              onClick={() => handleOpenModal(roles.IdTrabajador)}>
               <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
             </Button>
             <Button className="btn-opciones" variant="warning">
@@ -124,7 +128,7 @@ export const AsignarRol = () => {
 
   //Variables Paginacion
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

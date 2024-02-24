@@ -5,8 +5,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useLocation } from 'react-router-dom';
+import useActualizarCodeudor from '../../Hooks/useActualizarCodeudor';
 
 export const Registrocodeudor = () => {
+  //Editar
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const { actualizarCodeudor } = useActualizarCodeudor();
+
+  // Obtener los datos del codeudor de los parámetros de consulta y almacenarlos en un objeto
+  const codeudorData = {
+    IdCodeudor: searchParams.get('IdCodeudor'),
+    DocumentoIdentidad: searchParams.get('DocumentoIdentidad'),
+    NombreCompleto: searchParams.get('NombreCompleto'),
+    Direccion: searchParams.get('Direccion'),
+    Telefono: searchParams.get('Telefono'),
+    Correo: searchParams.get('Correo')
+  };
+  //
   const notify = () =>
     toast.success("Se Registro correctamente", {
       theme: "dark",
