@@ -62,21 +62,22 @@ export const RInmuebleA = () => {
     <div className="contener-home contener-rpropietario">
       <h2>Registro Inmueble</h2>
       <div className="container">
-        <div className="row">
           <Form
-            className="form-propietario row"
+            className=""
             style={{ marginTop: "0" }}
             onSubmit={handleSubmit(onsubmitRegistro)}
             method="post"
           >
-            <div className="col-md-6">
+            <div className="form-propietario">
+
+            
               <Form.Group
                 controlId="formTipoInmueble"
                 className="col col-md.auto"
               >
                 <Form.Label>Tipo Inmueble</Form.Label>
                 <Form.Select
-                  className="formSelect"
+                  className="formSelect InputsRegistros"
                   aria-label="Default select example"
                   onChange={handleSelectChange}
                 >
@@ -92,81 +93,79 @@ export const RInmuebleA = () => {
 
               <Form.Group controlId="formNoMatricula">
                 <Form.Label>No. Matricula</Form.Label>
-                <Form.Control {...register("Nmatricula")} type="number" />
+                <Form.Control  className="InputsRegistros" {...register("Nmatricula")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formDireccion">
                 <Form.Label>Dirección</Form.Label>
-                <Form.Control {...register("Direccion")} type="text" />
+                <Form.Control  className="InputsRegistros" {...register("Direccion")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formCiudad">
                 <Form.Label>Ciudad</Form.Label>
-                <Form.Control {...register("Ciudad")} type="text" />
+                <Form.Control  className="InputsRegistros" {...register("Ciudad")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formBarrio">
                 <Form.Label>Barrio</Form.Label>
-                <Form.Control {...register("Barrio")} type="text" />
+                <Form.Control  className="InputsRegistros" {...register("Barrio")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formEstrato">
                 <Form.Label>Estrato</Form.Label>
-                <Form.Control {...register("Estrato")} type="number" />
+                <Form.Control  className="InputsRegistros" {...register("Estrato")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formNoBanos">
                 <Form.Label>No. Baños</Form.Label>
-                <Form.Control {...register("Nbanos")} type="number" />
+                <Form.Control  className="InputsRegistros" {...register("Nbanos")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formNoBanos">
                 <Form.Label>Valor</Form.Label>
-                <Form.Control {...register("ValorIn")} type="number" />
+                <Form.Control  className="InputsRegistros" {...register("ValorIn")} type="number" />
               </Form.Group>
-            </div>
 
-            <div className="col-md-6">
               <Form.Group controlId="formNoHabitaciones">
                 <Form.Label>No. Habitaciones</Form.Label>
-                <Form.Control {...register("NHabita")} type="number" />
+                <Form.Control  className="InputsRegistros" {...register("NHabita")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formNoNiveles">
                 <Form.Label>No. Niveles</Form.Label>
-                <Form.Control {...register("NoNiveles")} type="number" />
+                <Form.Control  className="InputsRegistros" {...register("NoNiveles")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formTerraza">
                 <Form.Label>Terraza</Form.Label>
-                <Form.Control {...register("NoTerraza")} type="number" />
+                <Form.Control  className="InputsRegistros" {...register("NoTerraza")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formServiciosPublicos">
                 <Form.Label>Servicios Publicos</Form.Label>
-                <Form.Control {...register("Spublicos")} type="text" />
+                <Form.Control  className="InputsRegistros" {...register("Spublicos")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formAseguramiento">
                 <Form.Label>Aseguramiento</Form.Label>
-                <Form.Control {...register("aseguramiento")} type="date" />
+                <Form.Control  className="InputsRegistros" {...register("aseguramiento")} type="date" />
               </Form.Group>
 
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>No. Identidad Propietario</Form.Label>
-                <Form.Control type="number" />
+                <Form.Control  className="InputsRegistros" type="number" />
               </Form.Group>
 
+              </div>
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Descripción</Form.Label>
-                <Form.Control
+                <Form.Control  className="InputsRegistros"
                   {...register("Descripcion")}
                   as="textarea"
                   rows={2}
                   style={{ width: "100%", resize: "none" }}
                 />
               </Form.Group>
-            </div>
             {/*Botones para guardar y cancelar*/}
             <div className="col-md-12">
               <div className="save_deleter">
@@ -235,7 +234,6 @@ export const RInmuebleA = () => {
               </Modal.Footer>
             </Modal>
           </Form>
-        </div>
       </div>
     </div>
   );
