@@ -457,32 +457,58 @@ router.post("/Reinmueble", async (req, res) => {
   }
 });
 
-/*Registro Codeudor */
-router.post("/Rcodeudor", async (req, res) => {
+// Ruta para la creación de un nuevo codeudor
+router.post('/Rcodeudor', async (req, res) => {
   const {
     nombrecompleto,
     documentoidentidad,
     telefono,
     correoelectronico,
-    direccion,
+    direccion
   } = req.body;
 
   try {
-    connection.query(
+    await connection.query(
       "INSERT INTO codeudor (NombreCompleto, DocumentoIdentidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?)",
-      [
-        nombrecompleto,
-        documentoidentidad,
-        telefono,
-        correoelectronico,
-        direccion,
-      ]
+      [nombrecompleto, documentoidentidad, telefono, correoelectronico, direccion]
     );
+    res.status(200).json({ message: 'Codeudor registrado correctamente' });
   } catch (error) {
     console.error("Error al añadir codeudor:", error);
     res.status(500).json({ error: "Error al añadir codeudor" });
   }
-}),
+});
+
+// Ruta para la actualización de un codeudor existente
+router.put('/Rcodeudor/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { nombrecompleto, documentoidentidad, telefono, correoelectronico, direccion } = req.body;
+    const updatedFields = {};
+
+    if (nombrecompleto) updatedFields.NombreCompleto = nombrecompleto;
+    if (documentoidentidad) updatedFields.DocumentoIdentidad = documentoidentidad;
+    if (telefono) updatedFields.Telefono = telefono;
+    if (correoelectronico) updatedFields.Correo = correoelectronico;
+    if (direccion) updatedFields.Direccion = direccion;
+
+    if (Object.keys(updatedFields).length === 0) {
+      return res.status(400).json({ error: "No se proporcionaron campos para actualizar" });
+    }
+
+    const updateQuery = "UPDATE codeudor SET ? WHERE IdCodeudor = ?";
+    await connection.query(updateQuery, [updatedFields, id]);
+
+    res.status(200).json({ message: 'Codeudor actualizado correctamente' });
+  } catch (error) {
+    console.error("Error al actualizar codeudor:", error);
+    res.status(500).json({ error: "Error al actualizar codeudor" });
+  }
+});
+
+
+
   /*
   Funcion para logear
   */
@@ -649,23 +675,7 @@ router.put("/Vcodeudor/:id", (req, res) => {
     }
   );
 });
-// Ruta para actualizar la información de un codeudor por su ID
-router.put('/Vcodeudores/:id', (req, res) => {
-  const { id } = req.params;
-  const newData = req.body; // Los nuevos datos del codeudor
 
-  // Generar la consulta SQL para actualizar los datos del codeudor
-  const sql = 'UPDATE codeudor SET ? WHERE IdCodeudor = ?';
-
-  connection.query(sql, [newData, id], (error, results) => {
-    if (error) {
-      console.error('Error al actualizar la información del codeudor:', error);
-      res.status(500).json({ error: 'Hubo un error al actualizar la información del codeudor' });
-    } else {
-      res.status(200).json({ message: 'Información del codeudor actualizada exitosamente' });
-    }
-  });
-});
 //actualizar Estado Arrendatario
 router.put("/Varrendatario/:id", (req, res) => {
   const id = req.params.id;

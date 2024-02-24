@@ -1,39 +1,35 @@
 import { Form, Button, Container, Row, Col, Modal } from "react-bootstrap";
-import "./Registrocodeudor.css";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
 import { toast } from "react-toastify";
-import { useLocation } from 'react-router-dom';
-import useActualizarCodeudor from '../../Hooks/useActualizarCodeudor';
+import { useLocation } from "react-router-dom";
 
 export const Registrocodeudor = () => {
-  //Editar
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const { actualizarCodeudor } = useActualizarCodeudor();
 
-  // Obtener los datos del codeudor de los parámetros de consulta y almacenarlos en un objeto
-  const codeudorData = {
-    IdCodeudor: searchParams.get('IdCodeudor'),
-    DocumentoIdentidad: searchParams.get('DocumentoIdentidad'),
-    NombreCompleto: searchParams.get('NombreCompleto'),
-    Direccion: searchParams.get('Direccion'),
-    Telefono: searchParams.get('Telefono'),
-    Correo: searchParams.get('Correo')
-  };
-  //
+  // Estado para almacenar los datos del codeudor
+  const [codeudorData, setCodeudorData] = useState({
+    IdCodeudor: "",
+    DocumentoIdentidad: "",
+    NombreCompleto: "",
+    Direccion: "",
+    Telefono: "",
+    Correo: "",
+  });
+
   const notify = () =>
-    toast.success("Se Registro correctamente", {
+    toast.success("Se registró correctamente", {
       theme: "dark",
     });
-    const error = () =>
-    toast.error("Hubo algun error al enviar los datos", {
+  const error = () =>
+    toast.error("Hubo algún error al enviar los datos", {
       theme: "dark",
     });
-    const errora = () =>
-    toast.error("Hubo algun error al enviar los datos al servidor", {
+  const errora = () =>
+    toast.error("Hubo algún error al enviar los datos al servidor", {
       theme: "dark",
     });
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -44,21 +40,56 @@ export const Registrocodeudor = () => {
     reset,
     formState: { errors },
   } = useForm({ mode: "onChange" });
-  
+
+  useEffect(() => {
+    // Si hay parámetros de consulta en la URL, significa que se está editando un codeudor existente
+    if (location.search) {
+      setCodeudorData({
+        IdCodeudor: searchParams.get("IdCodeudor"),
+        DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
+        NombreCompleto: searchParams.get("NombreCompleto"),
+        Direccion: searchParams.get("Direccion"),
+        Telefono: searchParams.get("Telefono"),
+        Correo: searchParams.get("Correo"),
+      });
+    } else {
+      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo codeudor
+      setCodeudorData({
+        IdCodeudor: "",
+        DocumentoIdentidad: "",
+        NombreCompleto: "",
+        Direccion: "",
+        Telefono: "",
+        Correo: "",
+      });
+    }
+  }, [location.search]);
+
   const onsubmitRegistro = async (data) => {
+    // Convertir los campos documentoidentidad y telefono a números
+    data.documentoidentidad = parseInt(data.documentoidentidad);
+    data.telefono = parseInt(data.telefono);
     try {
-      const response = await fetch("http://localhost:3006/Rcodeudor", {
-        method: "POST",
+      const url = codeudorData.IdCodeudor
+        ? `http://localhost:3006/Rcodeudor/${codeudorData.IdCodeudor}`
+        : "http://localhost:3006/Rcodeudor";
+
+      const method = codeudorData.IdCodeudor ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
+      console.log(data);
 
       if (response.ok) {
-        setShowSaveModal(true); // Muestra el modal de confirmación
+        setShowSaveModal(true);
         notify();
-        reset(); // Reinicia el formulario si la solicitud es exitosa
+        reset();
+        window.location.href = "/Codeudor";
       } else {
         error();
       }
@@ -67,28 +98,25 @@ export const Registrocodeudor = () => {
       console.error("Error al enviar datos al servidor:", error);
     }
   };
-  
 
   const handleConfirmSave = () => {
-    // Lógica para confirmar el guardado
-    handleSubmit(onsubmitRegistro)(); // Envia los datos
-    setShowSaveModal(false); // Cierra el modal
-    reset()
-
+    handleSubmit(onsubmitRegistro)();
+    setShowSaveModal(false);
+    reset();
   };
 
   const handleConfirmCancel = () => {
     window.location.href = "/Codeudor";
-    setShowCancelModal(false); // Cierra el modal
-    
+    setShowCancelModal(false);
   };
 
   return (
     <Container>
-      <Form className="formulariocodeudor" onSubmit={handleSubmit(onsubmitRegistro)}>
-      
-          <h2>Registro Codeudor</h2>
-        
+      <Form
+        className="formulariocodeudor"
+        onSubmit={handleSubmit((data) => onsubmitRegistro(data))}
+      >
+        <h2>Registro Codeudor</h2>
 
         <Row className="contener-co">
           <Col md={6}>
@@ -97,6 +125,7 @@ export const Registrocodeudor = () => {
               <Form.Control
                 type="text"
                 name="nombrecompleto"
+                defaultValue={codeudorData.NombreCompleto}
                 {...register("nombrecompleto")}
               />
             </Form.Group>
@@ -106,39 +135,45 @@ export const Registrocodeudor = () => {
               <Form.Control
                 type="number"
                 name="documentoidentidad"
+                defaultValue={codeudorData.DocumentoIdentidad}
                 {...register("documentoidentidad")}
                 max={9999999999}
               />
             </Form.Group>
 
             <Form.Group controlId="telefono">
-              <Form.Label>Telefono:</Form.Label>
+              <Form.Label>Teléfono:</Form.Label>
               <Form.Control
                 type="number"
                 name="telefono"
+                defaultValue={codeudorData.Telefono}
                 {...register("telefono")}
                 max={9999999999}
               />
             </Form.Group>
 
             <Form.Group controlId="correoElectronico">
-              <Form.Label>Correo</Form.Label>
+              <Form.Label>Correo:</Form.Label>
               <Form.Control
                 type="email"
                 name="correoelectronico"
+                defaultValue={codeudorData.Correo}
                 {...register("correoelectronico")}
               />
             </Form.Group>
+
             <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
               <Form.Control
                 type="text"
                 name="direccion"
+                defaultValue={codeudorData.Direccion}
                 {...register("direccion")}
               />
             </Form.Group>
           </Col>
         </Row>
+
         <div className="contener-buttons d-flex justify-content-center">
           <div className="save_deleter">
             <Button
@@ -150,7 +185,6 @@ export const Registrocodeudor = () => {
               <span className="text_button ms-2">Guardar</span>
             </Button>
 
-            {/* Botón de cancelar */}
             <Button
               type="button"
               variant="danger m-2"
@@ -162,6 +196,7 @@ export const Registrocodeudor = () => {
           </div>
         </div>
       </Form>
+
       {/* Modales */}
       {/* Modal de confirmación de guardar */}
       <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
