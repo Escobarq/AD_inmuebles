@@ -107,7 +107,7 @@ export const Propietarios = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>No. Documento</th>
+        <th>NIT</th>
         <th>Nombre</th>
         <th>Dirección</th>
         <th>Teléfono</th>

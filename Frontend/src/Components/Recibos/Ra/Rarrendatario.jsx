@@ -21,6 +21,7 @@ export const Rarrendatario = () => {
   });
 
   const handleGuardarClick = async () => {
+    
     // Validar el formulario antes de generar el PDF
     for (const key in formData) {
       const element = formData[key];
