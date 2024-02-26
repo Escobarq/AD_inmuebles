@@ -90,6 +90,7 @@ export const Inmueble = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
+    console.log(filtroData)
   };
   
   const fetchData = async () => {

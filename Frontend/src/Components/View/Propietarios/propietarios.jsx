@@ -9,6 +9,8 @@ import {
   faTrash,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import moment from 'moment';
+import 'moment/locale/es';
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import { toast } from "react-toastify";
@@ -77,6 +79,21 @@ export const Propietarios = () => {
     console.log(name,value);
   };
 
+  function formatDate(fechaString) {
+    return moment(fechaString).format('MMMM , D , YYYY');
+  }
+
+  moment.updateLocale('es', {
+    months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
+    monthsShort : 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
+    weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
+    weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
+    weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_')
+  });
+
+
+
+
 
   const fetchData = async () => {
     try {
@@ -128,7 +145,7 @@ export const Propietarios = () => {
         <td>{Propietario.Direccion}</td>
         <td>{Propietario.Telefono}</td>
         <td>{Propietario.Correo}</td>
-        <td>{Propietario.FechaIngreso}</td>
+        <td>{formatDate(Propietario.FechaIngreso)}</td>
         <td>{Propietario.Banco}</td>
         <td>{Propietario.TipoCuenta}</td>
         <td>{Propietario.NumeroCuenta}</td>

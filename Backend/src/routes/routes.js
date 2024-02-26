@@ -298,14 +298,17 @@ router.post("/RPropietario", async (req, res) => {
     banco,
     direccion,
     numerocuenta,
+    fechaingreso,
+    TipoDocumento
     
   } = req.body;
 
   try {
     connection.query(
-      "INSERT INTO propietario (NombreCompleto, DocumentoIdentidad, Direccion,  Correo, Banco, TipoCuenta, Telefono, NumeroCuenta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO propietario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Direccion,  Correo, Banco, TipoCuenta, Telefono, NumeroCuenta, FechaIngreso) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?,?)",
       [
         nombrepropietario,
+        TipoDocumento,
         numerodocumento,
         direccion,
         correoelectronico,
@@ -313,6 +316,7 @@ router.post("/RPropietario", async (req, res) => {
         tipocuenta,
         telefono,
         numerocuenta,
+        fechaingreso
       ],
       (error, results) => {
         if (error) {
@@ -351,12 +355,13 @@ router.post("/Reinmueble", async (req, res) => {
     Nbanos,
     Spublicos,
     aseguramiento,
+    Id_Propietario
   } = req.body;
 
   try {
     if (Tipo == "Bodega") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           Nmatricula,
           Direccion,
@@ -392,9 +397,10 @@ router.post("/Reinmueble", async (req, res) => {
       );
     } else if (Tipo == "Apartamento") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula, Direccion, Estrato, Ciudad, Barrio, Tipo, NoHabitaciones, NoNiveles, NoTerraza, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoHabitaciones, NoNiveles, NoTerraza, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
         [
           Nmatricula,
+          Id_Propietario,
           Direccion,
           Estrato,
           Ciudad,
