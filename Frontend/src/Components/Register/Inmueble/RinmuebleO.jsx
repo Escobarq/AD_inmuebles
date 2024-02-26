@@ -59,13 +59,14 @@ export const RInmuebleO = () => {
   };
 
   const handleConfirmCancel = () => {
+    console.log("cancelar exitoso")
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
 
   return (
     <div className="contener-home contener-rpropietario">
-      <h2>Registro Inmueble</h2>
+      <h2>Registro Inmueble </h2>
       <div className="container">
         <div className="row">
           <Form

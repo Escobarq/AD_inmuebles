@@ -8,6 +8,8 @@
     width: 100% !important;
 }
 .save_deleter{
-    display: flex;
+    width: 100%;
+    display: grid;
     justify-content: center;
 }
+
