@@ -1,16 +1,16 @@
 import { useState } from 'react';
 
-const useActualizarEstadoHistorialArrendatario = () => {
+const useActualizarEstadoHistorialArrendamiento = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const actualizarEstadoHarrendatario = async (HarrendatarioID, nuevoEstado) => {
+  const actualizarEstadoHarrendamiento = async (arrendamientoID, nuevoEstado) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:3006/Vharrendamiento/${HarrendatarioID}`, {
+      const response = await fetch(`http://localhost:3006/Vharrendamiento/${arrendamientoID}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const useActualizarEstadoHistorialArrendatario = () => {
     }
   };
 
-  return { actualizarEstadoHarrendatario, loading, error, success };
+  return { actualizarEstadoHarrendamiento, loading, error, success };
 };
 
-export default useActualizarEstadoHistorialArrendatario;
+export default useActualizarEstadoHistorialArrendamiento;

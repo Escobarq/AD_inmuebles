@@ -46,14 +46,14 @@ export const GastosIn = () => {
   // Objeto javascript para hacer el tbody de la table
   const createRow = (Gastonin) => {
     return (
-      <tr key={Gastonin.Id_comision_Propietario}>
-        <td>{Gastonin.Id_comision_Propietario}</td>
-        <td>{Gastonin.Id_Propietario}</td>
-        <td>{formatDate(Gastonin.Fecha_Elaboracion)}</td>
-        <td>{formatDate(Gastonin.Periodo_Pagado)}</td>
-        <td>{Gastonin.Elaborado_por}</td>
-        <td>{Gastonin.Forma_Pago}</td>
-        <td>{Gastonin.Valor_Arriendo}</td>
+      <tr key={Gastonin.IdComisionPropietario}>
+        <td>{Gastonin.IdComisionPropietario}</td>
+        <td>{Gastonin.IdPropietario}</td>
+        <td>{formatDate(Gastonin.FechaElaboracion)}</td>
+        <td>{formatDate(Gastonin.PeriodoPagado)}</td>
+        <td>{Gastonin.ElaboradoPor}</td>
+        <td>{Gastonin.FormaPago}</td>
+        <td>{Gastonin.ValorArriendo}</td>
         <td>{Gastonin.Observaciones}</td>
       </tr>
     );

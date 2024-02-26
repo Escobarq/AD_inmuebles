@@ -11,27 +11,33 @@ import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import ActualizarCodeudor from "../../Hooks/Inhabilitarcodeudor";
 import { toast } from "react-toastify";
+import NoResultImg from "../../../assets/NoResult.gif";
 
 export const Codeudor = () => {
   const [infoCodeudor, setinfoCodeudor] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const { actualizarEstadoCodeudor } = ActualizarCodeudor();
   const [codeudorIdToDelete, setCodeudorIdToDelete] = useState(null);
-  
+  const [filtroData, setFiltroData] = useState({
+    Cedula: "",
+  });
+  const [NoResult, setNoResult] = useState(false);
   const notify = () =>
-  toast.success("Se Inabilito Correctamente ", {
-    theme: "dark",
-  });
+    toast.success("Se Inabilito Correctamente ", {
+      theme: "dark",
+    });
   const errores = () =>
-  toast.error("Hubo algun error  ", {
-    theme: "dark",
-  });
-  
+    toast.error("Hubo algun error  ", {
+      theme: "dark",
+    });
+
   //Actualizar Estado Coduedor
   const handleInhabilitarCodeudor = async (codeudorId) => {
     try {
       await actualizarEstadoCodeudor(codeudorId, "false");
-      const updatedCodeudores = infoCodeudor.filter(codeudor => codeudor.Id_Codeudor !== codeudorId);
+      const updatedCodeudores = infoCodeudor.filter(
+        (codeudor) => codeudor.IdCodeudor !== codeudorId
+      );
       setinfoCodeudor(updatedCodeudores);
       notify();
       setShowModal(false);
@@ -51,31 +57,46 @@ export const Codeudor = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Vcodeudor");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-
-        // Filtrar los datos para incluir solo aquellos con booleanos=true
-        const codeudoresActivos = data.filter(
-          (codeudor) => codeudor.booleanos === "true"
-        );
-        setinfoCodeudor(codeudoresActivos);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [filtroData]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+  };
+
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(filtroData);
+      const response = await fetch(
+        `http://localhost:3006/Vcodeudor?${queryParams.toString()}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      // Filtrar los datos para incluir solo aquellos con booleanos=true
+      const codeudoresActivos = data.filter(
+        (codeudor) => codeudor.booleanos === "true"
+      );
+      setinfoCodeudor(codeudoresActivos);
+
+      if (codeudoresActivos.length == 0) {
+        setNoResult(true);
+      } else {
+        setNoResult(false);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   const createheader = () => {
     return (
       <tr>
         <th>ID</th>
+        <th>Tipo Documento</th>
         <th>No. Documento</th>
         <th>Nombre</th>
         <th>Dirección</th>
@@ -85,12 +106,22 @@ export const Codeudor = () => {
       </tr>
     );
   };
+  const handleEditCodeudor = (codeudorId) => {
+    // Encuentra el codeudor seleccionado
+    const codeudor = infoCodeudor.find(
+      (codeudor) => codeudor.IdCodeudor === codeudorId
+    );
+    
+    window.location.href = `/Registrocodeudor?IdCodeudor=${codeudor.IdCodeudor}&DocumentoIdentidad=${codeudor.DocumentoIdentidad}&NombreCompleto=${codeudor.NombreCompleto}&Direccion=${codeudor.Direccion}&Telefono=${codeudor.Telefono}&Correo=${codeudor.Correo}`;
+  };
+
   const createrow = (Codeudor) => {
     return (
-      <tr key={Codeudor.Id_Codeudor}>
-        <td>{Codeudor.Id_Codeudor}</td>
-        <td>{Codeudor.Documento_Identidad}</td>
-        <td>{Codeudor.Nombre_Completo}</td>
+      <tr key={Codeudor.IdCodeudor}>
+        <td>{Codeudor.IdCodeudor}</td>
+        <td>{Codeudor.TipoDocumento}</td>
+        <td>{Codeudor.DocumentoIdentidad}</td>
+        <td>{Codeudor.NombreCompleto}</td>
         <td>{Codeudor.Direccion}</td>
         <td>{Codeudor.Telefono}</td>
         <td>{Codeudor.Correo}</td>
@@ -98,12 +129,16 @@ export const Codeudor = () => {
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(Codeudor.Id_Codeudor)}
+            onClick={() => handleOpenModal(Codeudor.IdCodeudor)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
 
-          <Button className="btn-opciones" variant="warning">
+          <Button
+            className="btn-opciones"
+            variant="warning"
+            onClick={() => handleEditCodeudor(Codeudor.IdCodeudor)}
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
@@ -120,7 +155,6 @@ export const Codeudor = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
- 
   return (
     <>
       <div className="contener-home">
@@ -128,14 +162,14 @@ export const Codeudor = () => {
           <div className="conten-inputs">
             <label className="l1">No. Cedula: </label>
             <input
+              value={filtroData.Cedula}
+              onChange={handleChange}
               className="input-filtroRe"
               type="number"
-              name=""
+              name="Cedula"
               max={9999999999}
               id=""
             />
-            <label className="l1">Fecha Ingreso: </label>
-            <input className="input-filtroRe" type="date" name="" id="" />
           </div>
           <Button variant="success" className="btn-add">
             <Link to="/Registrocodeudor">
@@ -146,7 +180,7 @@ export const Codeudor = () => {
           <Button variant="dark" className="btn-add-info ">
             <Link to="/Codeudores" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inabilitados
+              Inhabilitados
             </Link>
           </Button>
         </div>
@@ -155,14 +189,20 @@ export const Codeudor = () => {
         </div>
 
         <div className="view_esp">
-          <div className="table-container">
-            <Table striped bordered hover>
-              <thead> {createheader()} </thead>
-              <tbody>
-                {currentItems.map((Codeudors) => createrow(Codeudors))}
-              </tbody>
-            </Table>
-          </div>
+          {NoResult == true ? (
+            <div>
+              <img src={NoResultImg} alt="" />
+            </div>
+          ) : (
+            <div className="table-container">
+              <Table striped bordered hover>
+                <thead> {createheader()} </thead>
+                <tbody>
+                  {currentItems.map((Codeudors) => createrow(Codeudors))}
+                </tbody>
+              </Table>
+            </div>
+          )}
         </div>
         <div className="paginador">
           <Pagination>
@@ -203,7 +243,7 @@ export const Codeudor = () => {
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleInhabilitarCodeudor(codeudorIdToDelete)} 
+            onClick={() => handleInhabilitarCodeudor(codeudorIdToDelete)}
           >
             Confirmar
           </Button>

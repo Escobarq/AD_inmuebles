@@ -13,12 +13,19 @@ import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import { toast } from "react-toastify";
 import InhabilitarPropetario from "../../Hooks/InhabilitarPropetarios";
+import NoResultImg from "../../../assets/NoResult.gif"
 
 export const Propietarios = () => {
   const [infopropietario, setinfopropietario] = useState([]);
   const [Rol, setRol] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [PropetarioIdToDelete, setPropetarioIdToDelete] = useState(null);
+  const [filtroData, setFiltroData] = useState({
+    FechaIngresoMIN: '',
+    FechaIngresoMAX: '',
+    Cedula: '',
+  });
+  const [NoResult, setNoResult]= useState(false)
 
   const notify = () =>
     toast.success("Se Inabilito Correctamente ", {
@@ -46,7 +53,7 @@ export const Propietarios = () => {
     try {
       await actualizarEstadoPropetario(PropetarioId, "false");
       const updatedpropetario = infopropietario.filter(
-        (Propetarios) => Propetarios.Id_Propietario !== PropetarioId
+        (Propetarios) => Propetarios.IdPropietario !== PropetarioId
       );
       setinfopropietario(updatedpropetario);
       notify();
@@ -61,26 +68,42 @@ export const Propietarios = () => {
   useEffect(() => {
     let a = localStorage.getItem("Rol");
     setRol(a);
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Vpropietarios");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-
-        const PropetarioActivos = data.filter(
-          (Propetarios) => Propetarios.booleanos === "true"
-        );
-
-        setinfopropietario(PropetarioActivos);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [filtroData]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+    console.log(name,value);
+  };
+
+
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(filtroData);
+      const response = await fetch(`http://localhost:3006/Vpropietarios?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      const PropetarioActivos = data.filter(
+        (Propetarios) => Propetarios.booleanos === "true"
+      );
+
+      setinfopropietario(PropetarioActivos);
+
+      if (PropetarioActivos.length == 0){
+        setNoResult(true)
+      }
+      else {
+        setNoResult(false)
+        
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
   const createheader = () => {
     return (
       <tr>
@@ -99,21 +122,21 @@ export const Propietarios = () => {
   };
   const createrow = (Propietario) => {
     return (
-      <tr key={Propietario.Id_Propietario}>
-        <td>{Propietario.Documento_Identidad}</td>
-        <td>{Propietario.Nombre_Completo}</td>
+      <tr key={Propietario.IdPropietario}>
+        <td>{Propietario.DocumentoIdentidad}</td>
+        <td>{Propietario.NombreCompleto}</td>
         <td>{Propietario.Direccion}</td>
         <td>{Propietario.Telefono}</td>
         <td>{Propietario.Correo}</td>
-        <td>pendiente</td>
+        <td>{Propietario.FechaIngreso}</td>
         <td>{Propietario.Banco}</td>
-        <td>{Propietario.Tipo_Cuenta}</td>
-        <td>{Propietario.Numero_Cuenta}</td>
+        <td>{Propietario.TipoCuenta}</td>
+        <td>{Propietario.NumeroCuenta}</td>
         <td>
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(Propietario.Id_Propietario)}
+            onClick={() => handleOpenModal(Propietario.IdPropietario)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
@@ -140,14 +163,18 @@ export const Propietarios = () => {
           <div className="conten-inputs">
             <label className="l1">No. Cedula: </label>
             <input
+             value={filtroData.Cedula} onChange={handleChange}
               className="input-filtroRe"
               type="number"
-              name=""
+              name="Cedula"
               max={9999999999}
               id=""
             />
-            <label className="l1">Fecha Ingreso: </label>
-            <input className="input-filtroRe" type="date" name="" id="" />
+            <label className="l1">Fecha Ingreso Minimo: </label>
+            <input className="input-filtroRe"  value={filtroData.FechaIngresoMIN} onChange={handleChange} type="date" name="FechaIngresoMIN" id="" />
+
+            <label className="l1">Fecha Ingreso Maxima: </label>
+            <input className="input-filtroRe"  value={filtroData.FechaIngresoMAX} onChange={handleChange} type="date" name="FechaIngresoMAX" id="" />
           </div>
           <Button variant="success" className="btn-add">
             <Link to="/RPropietario">
@@ -158,7 +185,7 @@ export const Propietarios = () => {
           <Button variant="dark" className="btn-add-info ">
             <Link to="/InhaPropietarios" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inabilitados
+              Inhabilitados
             </Link>
           </Button>
         </div>
@@ -167,6 +194,11 @@ export const Propietarios = () => {
         </div>
 
         <div className="view_esp">
+        {NoResult == true ? (
+          <div>
+            <img src={NoResultImg} alt="" />
+          </div>
+        ):(
           <div className="table-container">
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
@@ -175,6 +207,7 @@ export const Propietarios = () => {
               </tbody>
             </Table>
           </div>
+        )}
         </div>
         <div className="paginador">
           <Pagination>

@@ -11,13 +11,18 @@ import {
 import Pagination from "react-bootstrap/Pagination";
 import ActualizarArrendatario from "../../Hooks/InhabilitarArren";
 import { toast } from "react-toastify";
-
+import NoResultImg from "../../../assets/NoResult.gif"
 
 export const Arrendatario = () => {
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [arrendatarioIdToDelete, setarrendatarioIdToDelete] = useState(null);
+  const [filtroData, setFiltroData] = useState({
+    Cedula: '',
+    Estado: '',
+  });
   
+  const [NoResult, setNoResult]= useState(false)
   const notify = () =>
   toast.success("Se Inabilito Correctamente ", {
     theme: "dark",
@@ -43,7 +48,7 @@ export const Arrendatario = () => {
    const handleInhabilitarArrendatario  = async (ArrendatarioId) => {
     try {
       await actualizarEstadoArrendatario(ArrendatarioId, "false");
-      const updatedArrendatario = infoarrendatario.filter(arrendatarios => arrendatarios.Id_Arrendatario !== ArrendatarioId);
+      const updatedArrendatario = infoarrendatario.filter(arrendatarios => arrendatarios.IdArrendatario !== ArrendatarioId);
       setinfoarrendatario(updatedArrendatario);
       notify();
       setShowModal(false);
@@ -54,26 +59,42 @@ export const Arrendatario = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Varrendatario");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-
-        const arrendatarioActivos = data.filter(
-          (Arrendatarios) => Arrendatarios.booleanos === "true"
-        );
-
-        setinfoarrendatario(arrendatarioActivos);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
+    
     fetchData();
-  }, []);
+  }, [filtroData]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+    
+  };
+
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(filtroData);
+      const response = await fetch(`http://localhost:3006/Varrendatario?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      const arrendatarioActivos = data.filter(
+        (Arrendatarios) => Arrendatarios.booleanos === "true"
+      );
+
+      setinfoarrendatario(arrendatarioActivos);
+
+      if (arrendatarioActivos.length == 0){
+        setNoResult(true)
+      }
+      else {
+        setNoResult(false)
+        
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   const createheader = () => {
     return (
@@ -91,11 +112,11 @@ export const Arrendatario = () => {
   };
   const createrow = (Arrendatarios) => {
     return (
-      <tr key={Arrendatarios.Id_Arrendatario}>
-        <td>{Arrendatarios.Id_Arrendatario}</td>
-        <td>{Arrendatarios.Tipo_Documento}</td>
-        <td>{Arrendatarios.Documento_Identidad}</td>
-        <td>{Arrendatarios.Nombre_Completo}</td>
+      <tr key={Arrendatarios.IdArrendatario}>
+        <td>{Arrendatarios.IdArrendatario}</td>
+        <td>{Arrendatarios.TipoDocumento}</td>
+        <td>{Arrendatarios.DocumentoIdentidad}</td>
+        <td>{Arrendatarios.NombreCompleto}</td>
         <td>{Arrendatarios.Estado}</td>
         <td>{Arrendatarios.Telefono}</td>
         <td>{Arrendatarios.Correo}</td>
@@ -103,7 +124,7 @@ export const Arrendatario = () => {
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(Arrendatarios.Id_Arrendatario)}
+            onClick={() => handleOpenModal(Arrendatarios.IdArrendatario)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
@@ -131,6 +152,26 @@ export const Arrendatario = () => {
     <>
       <div className="contener-home">
         <div className="conten-filtro">
+        <div className="conten-inputs">
+            <label className="l1">No. Cedula: </label>
+            <input
+             value={filtroData.Cedula} onChange={handleChange}
+              className="input-filtroRe"
+              type="number"
+              name="Cedula"
+              max={9999999999}
+              id=""
+            />
+            <label className="l1">Estado: </label>
+
+            <select className="input-filtroRe"   value={filtroData.Estado} onChange={handleChange} type="date" name="Estado" id="" >
+              <option selected value="">Seleccione el Estado</option>
+              <option value="Libre">Libre</option>
+              <option value="Ocupado">Ocupado</option>
+            </select>
+            
+            
+          </div>
         <Button variant="success" className="btn-add">
             <Link to="/ReArrendatario">
               <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
@@ -140,7 +181,7 @@ export const Arrendatario = () => {
           <Button variant="dark" className="btn-add-info ">
             <Link to="/Inharrendatario" className="linkes">
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inabilitados
+              Inhabilitados
             </Link>
           </Button>
         </div>
@@ -149,6 +190,11 @@ export const Arrendatario = () => {
         </div>
 
         <div className="view_esp">
+        {NoResult == true ? (
+          <div>
+            <img src={NoResultImg} alt="" />
+          </div>
+        ):(
           <div className="table-container">
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
@@ -157,6 +203,7 @@ export const Arrendatario = () => {
               </tbody>
             </Table>
           </div>
+        )}
         </div>
         <div className="paginador">
           <Pagination>
