@@ -59,6 +59,7 @@ export const RInmuebleO = () => {
   };
 
   const handleConfirmCancel = () => {
+    console.log("cancelar exitoso")
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
