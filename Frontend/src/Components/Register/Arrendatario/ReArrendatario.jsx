@@ -59,28 +59,32 @@ export const ReArrendatario = () => {
   };
 
   return (
-    <>
-      <div className="izq RA d-flex justify-content-center align-items-center">
+    
+      <div className="contener-home contener-ReArrendatario">
+        <h2 >Registro Arrendatario</h2>
+        <div className="container">
         <Form
-          className="form-propietario row"
+          className=""
           onSubmit={handleSubmit(onsubmitArrendatario)}
 >
-      <h2 >Registro Arrendatario</h2>
-          <Col md={6}>
-            <Form.Group controlId="tipodocumento">
+         <div className="form-propietario">
+            <Form.Group controlId="tipodocumento"
+            className="col col-md.auto">
+              
               <Form.Label>Tipo de Documento:</Form.Label>
               <Form.Control
-                className="input-form"
+                className="InputsRegistros"
                 type="text"
                 {...register("tipodocumento")}
               />
             </Form.Group>
-
+            
+          
             <Form.Group controlId="numerodocumento">
               <Form.Label className="text_normal">Número identidad:</Form.Label>
               <Form.Control
               required
-                className="input-form"
+                className="InputsRegistros"
                 type="number"
                 min={20}
                 max={9999999999}
@@ -88,24 +92,13 @@ export const ReArrendatario = () => {
               />
             </Form.Group>
 
-            <Form.Group controlId="nombrearrendatario">
-              <Form.Label className="text_normal">
-                Nombre Arrendatario:
-              </Form.Label>
-              <Form.Control
-                className="input-form"
-                type="text"
-                maxLength={50}
-                {...register("nombrearrendatario")}
-              />
-            </Form.Group>
 
             <Form.Group controlId="telefono">
               <Form.Label className="text_normal">
                 Teléfono Arrendatario:
               </Form.Label>
               <Form.Control
-                className="input-form"
+                className="InputsRegistros"
                 type="number"
                 max={9999999999}
                 {...register("telefono")}
@@ -116,69 +109,59 @@ export const ReArrendatario = () => {
               <Form.Label className="text_normal">
                 Correo Arrendatario:
               </Form.Label>
-              <Form.Control
-              
-                className="correo"
+              <Form.Control controlId="correo"
+                className="InputsRegistros"
                 type="email"
                 {...register("correo")}
               />
             </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="estado_contrato">
+          
+          
+            <Form.Group controlId="nombrearrendatario">
               <Form.Label className="text_normal">
-                Estado del Contrato:
+                Nombre Arrendatario:
               </Form.Label>
               <Form.Control
-                className="input-form"
+                className="InputsRegistros"
                 type="text"
-                maxLength={100}
-                {...register("estadocontrato")}
+                maxLength={50}
+                {...register("nombrearrendatario")}
               />
             </Form.Group>
 
-            <Form.Group controlId="meses_alquiler">
-              <Form.Label className="text_normal">
-                Meses de Alquiler:
-              </Form.Label>
-              <Form.Control
-                className="input-form"
-                type="number"
-                {...register("mesesalquiler")}
-              />
-            </Form.Group>
 
             <Form.Group controlId="fecha_inicio">
               <Form.Label className="text_normal">
                 Fecha Inicio Contrato:
               </Form.Label>
               <Form.Control
-                className="input-form"
+                className="InputsRegistros"
                 type="date"
                 {...register("fechainicio")}
               />
             </Form.Group>
 
+
+            <Form.Group controlId="valor_deposito">
+              <Form.Label className="text_deposito">Valor Deposito:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                type="number"
+                {...register("valordeposito")}
+              />
+            </Form.Group>
+         
             <Form.Group controlId="fecha_final">
               <Form.Label className="text_normal">
                 Fecha Termino Contrato:
               </Form.Label>
               <Form.Control
-                className="input-form"
+                className="InputsRegistros"
                 type="date"
                 {...register("fechafinal")}
               />
             </Form.Group>
-
-            <Form.Group controlId="valor_deposito">
-              <Form.Label className="text_deposito">Valor Deposito:</Form.Label>
-              <Form.Control
-                className="input-form"
-                type="number"
-                {...register("valordeposito")}
-              />
-            </Form.Group>
-          </Col>
+            </div>
 
           <div className="contener-buttons d-flex justify-content-center">
             <div className="save_deleter">
@@ -243,6 +226,6 @@ export const ReArrendatario = () => {
           </Modal.Footer>
         </Modal>
       </div>
-    </>
-  );
+      </div>
+      );
 };

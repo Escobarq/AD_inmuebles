@@ -59,16 +59,11 @@ export const RInmuebleB = () => {
   };
   return (
     <div className="contener-home contener-rpropietario">
-      <h2>Registro Inmueble</h2>
+      <h2>Registro Inmueble </h2>
       <div className="container">
-        <div className="row">
-          <Form
-            className="form-propietario row"
-            style={{ marginTop: "0" }}
-            onSubmit={handleSubmit(onsubmitRegistro)}
-            method="post"
-          >
-            <div className="col-md-6">
+      <Form className="form-propietario" onSubmit={handleSubmit(onsubmitRegistro)}>
+       
+           
               <Form.Group controlId="formTipoInmueble">
                 <Form.Label>Tipo Inmueble</Form.Label>
                 <Form.Select
@@ -114,6 +109,8 @@ export const RInmuebleB = () => {
                 <Form.Label>Valor</Form.Label>
                 <Form.Control required {...register("ValorIn")} type="number" />
               </Form.Group>
+
+              </Form>
             </div>
 
             <div className="col-md-6">
@@ -171,30 +168,32 @@ export const RInmuebleB = () => {
                   style={{ width: "100%", resize: "none" }}
                 />
               </Form.Group>
+              
             </div>
 
-            <div className="col-md-12">
-              <div className="save_deleter">
-              <Button
-                  type="button"
-                  variant="success m-2"
-                  onClick={() => setShowSaveModal(true)}
-                >
-                  <FontAwesomeIcon icon={faSave} />
-                  <span className="text_button ms-2">Guardar</span>
-                </Button>
+            <div className="contener-buttons d-flex justify-content-center">
+          <div className="save_deleter">
+            <Button
+              type="button"
+              variant="success m-2"
+              onClick={() => setShowSaveModal(true)}
+            >
+              <FontAwesomeIcon icon={faSave} />
+              <span className="text_button ms-2">Guardar</span>
+            </Button>
 
-                {/* Botón de cancelar */}
-                <Button
-                  type="button"
-                  variant="danger m-2"
-                  onClick={() => setShowCancelModal(true)}
-                >
-                  <FontAwesomeIcon icon={faTimes} />
-                  <span className="text_button ms-2">Cancelar</span>
-                </Button>
-              </div>
-            </div>
+            <Button
+              type="button"
+              variant="danger m-2"
+              onClick={() => setShowCancelModal(true)}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+              <span className="text_button ms-2">Cancelar</span>
+            </Button>
+          </div>
+        </div>
+
+
               {/* Modal de confirmación de guardar */}
               <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
               <Modal.Header closeButton>
@@ -239,9 +238,8 @@ export const RInmuebleB = () => {
                 </Button>
               </Modal.Footer>
             </Modal>
-          </Form>
+          
         </div>
-      </div>
-    </div>
+      
   );
 };

@@ -65,7 +65,7 @@ export const RInmuebleO = () => {
 
   return (
     <div className="contener-home contener-rpropietario">
-      <h2>Registro Inmueble</h2>
+      <h2>Registro Inmueble </h2>
       <div className="container">
         <div className="row">
           <Form
