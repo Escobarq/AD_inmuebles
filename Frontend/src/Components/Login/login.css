@@ -2,9 +2,7 @@
   .card-body {
     padding: 1rem !important;
   }
-  .text_footer{
-    display: none;
-  }
+
   .footer_login{
     display: flex !important;
     justify-content: center !important;
