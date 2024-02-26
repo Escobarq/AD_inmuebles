@@ -67,7 +67,7 @@ export const RInmuebleA = () => {
             style={{ marginTop: "0" }}
             onSubmit={handleSubmit(onsubmitRegistro)}
             method="post"
-          >
+             >
             <div className="form-propietario">
 
             
@@ -166,8 +166,8 @@ export const RInmuebleA = () => {
                   style={{ width: "100%", resize: "none" }}
                 />
               </Form.Group>
-            {/*Botones para guardar y cancelar*/}
-            <div className="col-md-12">
+             {/*Botones para guardar y cancelar*/}
+             <div className="col-md-12">
               <div className="save_deleter">
               <Button
                   type="button"

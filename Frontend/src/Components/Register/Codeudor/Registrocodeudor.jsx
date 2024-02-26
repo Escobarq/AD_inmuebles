@@ -1,10 +1,11 @@
 import { Form, Button, Container, Row, Col, Modal } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
+
 
 export const Registrocodeudor = () => {
   const location = useLocation();
@@ -12,9 +13,10 @@ export const Registrocodeudor = () => {
 
   // Estado para almacenar los datos del codeudor
   const [codeudorData, setCodeudorData] = useState({
-    IdCodeudor: "",
-    DocumentoIdentidad: "",
+   
     NombreCompleto: "",
+    TipoDocumento:"",
+    DocumentoIdentidad: "",
     Direccion: "",
     Telefono: "",
     Correo: "",
@@ -55,9 +57,9 @@ export const Registrocodeudor = () => {
     } else {
       // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo codeudor
       setCodeudorData({
-        IdCodeudor: "",
-        DocumentoIdentidad: "",
         NombreCompleto: "",
+        TipoDocumento:"",
+        DocumentoIdentidad: "",
         Direccion: "",
         Telefono: "",
         Correo: "",
@@ -111,91 +113,67 @@ export const Registrocodeudor = () => {
   };
 
   return (
-    <Container>
-      <Form
-        className="formulariocodeudor"
-        onSubmit={handleSubmit((data) => onsubmitRegistro(data))}
-      >
-        <h2>Registro Codeudor</h2>
+    <div className="contener-home contener-rpropietario">
+      <h2>Registro Codeudor</h2>
+      <div className="container">
+      <Form className="form-propietario" onSubmit={handleSubmit(onsubmitRegistro)}>
 
-        <Row className="contener-co">
-          <Col md={6}>
-            <Form.Group controlId="nombre">
+          
+            <Form.Group controlId="nombre"className="mb-3">
               <Form.Label>Nombre:</Form.Label>
-              <Form.Control
-                type="text"
-                name="nombrecompleto"
-                defaultValue={codeudorData.NombreCompleto}
-                {...register("nombrecompleto")}
-              />
+              <Form.Control type="text" {...register("nombrecompleto")}  />
+            </Form.Group>
+
+            <Form.Group controlId="TipoDocumento">
+              <Form.Label>Tipo Documento:</Form.Label>
+              <Form.Control type="text" {...register("TipoDocumento")} />
             </Form.Group>
 
             <Form.Group controlId="documentoidentidad">
               <Form.Label>Número de identidad:</Form.Label>
-              <Form.Control
-                type="number"
-                name="documentoidentidad"
-                defaultValue={codeudorData.DocumentoIdentidad}
-                {...register("documentoidentidad")}
-                max={9999999999}
-              />
+              <Form.Control type="number"{...register("documentoidentidad")} max={9999999999} />
             </Form.Group>
 
             <Form.Group controlId="telefono">
               <Form.Label>Teléfono:</Form.Label>
-              <Form.Control
-                type="number"
-                name="telefono"
-                defaultValue={codeudorData.Telefono}
-                {...register("telefono")}
-                max={9999999999}
-              />
+              <Form.Control type="number" {...register("telefono")} max={9999999999} />
             </Form.Group>
 
             <Form.Group controlId="correoElectronico">
               <Form.Label>Correo:</Form.Label>
-              <Form.Control
-                type="email"
-                name="correoelectronico"
-                defaultValue={codeudorData.Correo}
-                {...register("correoelectronico")}
-              />
+              <Form.Control type="email" {...register("correoelectronico")} />
             </Form.Group>
 
             <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
-              <Form.Control
-                type="text"
-                name="direccion"
-                defaultValue={codeudorData.Direccion}
-                {...register("direccion")}
-              />
+              <Form.Control type="text"{...register("direccion")} />
             </Form.Group>
-          </Col>
-        </Row>
+          
+       </Form>
+       </div>
 
-        <div className="contener-buttons d-flex justify-content-center">
-          <div className="save_deleter">
-            <Button
-              type="button"
-              variant="success m-2"
-              onClick={() => setShowSaveModal(true)}
-            >
-              <FontAwesomeIcon icon={faSave} />
-              <span className="text_button ms-2">Guardar</span>
-            </Button>
+          <div className="contener-buttons d-flex justify-content-center">
+            <div className="save_deleter">
+              <Button
+                type="button"
+                variant="success m-2"
+                onClick={() => setShowSaveModal(true)}
+              >
+                <FontAwesomeIcon icon={faSave} />
+                <span className="text_button ms-2">Guardar</span>
+              </Button>
 
-            <Button
-              type="button"
-              variant="danger m-2"
-              onClick={() => setShowCancelModal(true)}
-            >
-              <FontAwesomeIcon icon={faTimes} />
-              <span className="text_button ms-2">Cancelar</span>
-            </Button>
+              <Button
+                type="button"
+                variant="danger m-2"
+                onClick={() => setShowCancelModal(true)}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+                <span className="text_button ms-2">Cancelar</span>
+              </Button>
+            </div>
           </div>
-        </div>
-      </Form>
+      
 
       {/* Modales */}
       {/* Modal de confirmación de guardar */}
@@ -233,6 +211,7 @@ export const Registrocodeudor = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </div>
+    
   );
 };
