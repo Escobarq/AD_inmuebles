@@ -75,7 +75,7 @@ export const Inmueble = () => {
   // Paginacion
   const [infoinmueble, setinfoinmueble] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage] = useState(9);
 
   
 
@@ -135,8 +135,8 @@ export const Inmueble = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>Id propietario</th>
-        <th>Id inmueble</th>
+        <th>NIT Pro</th>
+        <th>NIT</th>
         <th>Dirección</th>
         <th>Estrato</th>
         <th>Ciudad</th>
@@ -152,7 +152,7 @@ export const Inmueble = () => {
       return (
         <tr key={inmueble.IdInmueble}>
           <td>{inmueble.IdPropietario}</td>
-          <td>{inmueble.IdInmueble}</td>
+          <td>{inmueble.NoMatricula}</td>
           <td>{inmueble.Direccion}</td>
           <td>{inmueble.Estrato}</td>
           <td>{inmueble.Ciudad}</td>
