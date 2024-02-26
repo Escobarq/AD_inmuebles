@@ -117,8 +117,7 @@ export const Registrocodeudor = () => {
       <h2>Registro Codeudor</h2>
       <div className="container">
       <Form className="form-propietario" onSubmit={handleSubmit(onsubmitRegistro)}>
-
-          
+        
             <Form.Group controlId="nombre"className="mb-3">
               <Form.Label>Nombre:</Form.Label>
               <Form.Control type="text" {...register("nombrecompleto")}  />
