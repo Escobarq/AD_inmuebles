@@ -91,12 +91,12 @@ export const RInmuebleB = () => {
               </Form.Group>
 
               <Form.Group controlId="formDireccion">
-                <Form.Label>Dirección</Form.Label>
+                <Form.Label>Dirección:</Form.Label>
                 <Form.Control required {...register("Direccion")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formCiudad">
-                <Form.Label>Ciudad</Form.Label>
+                <Form.Label>Ciudad:</Form.Label>
                 <Form.Control required {...register("Ciudad")} type="text" />
               </Form.Group>
 

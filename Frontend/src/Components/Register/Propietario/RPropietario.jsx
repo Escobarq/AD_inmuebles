@@ -88,22 +88,22 @@ export const RPropietario = () => {
             </Form.Group>
   
             <Form.Group controlId="formtelefono" className="mb-3">
-              <Form.Label>Telefono:</Form.Label>
+              <Form.Label>Teléfono:</Form.Label>
               <Form.Control {...register("telefono")} type="number" />
             </Form.Group>
   
             <Form.Group controlId="formcorreoelectronico" className="mb-3">
-              <Form.Label>Correo Electronico:</Form.Label>
+              <Form.Label>Correo Eléctronico:</Form.Label>
               <Form.Control {...register("correoelectronico")}type="email"/>
             </Form.Group>         
   
             <Form.Group controlId="formbanco" className="mb-3">
-              <Form.Label>Banco</Form.Label>
+              <Form.Label>Banco:</Form.Label>
               <Form.Control {...register("banco")} type="Text" />
             </Form.Group>
 
             <Form.Group controlId="formdireccion" className="mb-3">
-              <Form.Label>Direccion Del Propetario</Form.Label>
+              <Form.Label>Dirección Del Propietario:</Form.Label>
               <Form.Control {...register("direccion")} type="text" />
             </Form.Group>
             

@@ -68,10 +68,9 @@ export const ReArrendatario = () => {
           onSubmit={handleSubmit(onsubmitArrendatario)}
 >
          <div className="form-propietario">
-            <Form.Group controlId="tipodocumento"
-            className="col col-md.auto">
-              
-              <Form.Label>Tipo de Documento:</Form.Label>
+
+            <Form.Group controlId="tipodocumento">
+           <Form.Label  className="text_normal">Tipo de Documento:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 type="text"
@@ -143,7 +142,7 @@ export const ReArrendatario = () => {
 
 
             <Form.Group controlId="valor_deposito">
-              <Form.Label className="text_deposito">Valor Deposito:</Form.Label>
+              <Form.Label className="text_normal">Valor Deposito:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 type="number"
