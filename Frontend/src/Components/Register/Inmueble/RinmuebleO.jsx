@@ -59,24 +59,20 @@ export const RInmuebleO = () => {
   };
 
   const handleConfirmCancel = () => {
+    console.log("cancelar exitoso")
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
 
   return (
     <div className="contener-home contener-rpropietario">
-      <h2>Registro Inmueble</h2>
+      <h2>Registro Inmueble </h2>
       <div className="container">
-        <div className="row">
-          <Form
-            className="form-propietario row"
-            style={{ marginTop: "0" }}
-            onSubmit={handleSubmit(onsubmitRegistro)}
-            method="post"
-          >
-            <div className="col-md-6">
+      <Form className="form-propietario" onSubmit={handleSubmit(onsubmitRegistro)}>
+         
+          
               <Form.Group controlId="formTipoInmueble">
-                <Form.Label>Tipo Inmueble</Form.Label>
+                <Form.Label>Tipo Inmueble:</Form.Label>
                 <Form.Select
                   className="formSelect"
                   aria-label="Default select example"
@@ -116,9 +112,9 @@ export const RInmuebleO = () => {
                 <Form.Label>Valor</Form.Label>
                 <Form.Control {...register("ValorIn")} type="number" />
               </Form.Group>
-            </div>
+           
 
-            <div className="col-md-6">
+            
               <Form.Group controlId="formEstrato">
                 <Form.Label>Estrato</Form.Label>
                 <Form.Control {...register("Estrato")} type="number" />
@@ -154,6 +150,8 @@ export const RInmuebleO = () => {
                   style={{ width: "100%", resize: "none" }}
                 />
               </Form.Group>
+              </Form>
+              
             </div>
             <div className="col-md-12">
               <div className="save_deleter">
@@ -221,9 +219,8 @@ export const RInmuebleO = () => {
                 </Button>
               </Modal.Footer>
             </Modal>
-          </Form>
-        </div>
+          
       </div>
-    </div>
+    
   );
 };

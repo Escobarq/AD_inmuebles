@@ -67,12 +67,14 @@ export const RPropietario = () => {
   }, []);
 
   return (
-    <Container>
+    
+      <div className="contener-home contener-rpropietario">
       <h2>Registro Propietario</h2>
+      <div className="container">
       <Form className="form-propietario" onSubmit={handleSubmit(onSubmitRegistro)}>
-        <Row className="align-items-start">
-          <Col md={6}>
-            <Form.Group controlId="formNoMatricula" className="mb-3">
+       
+          
+            <Form.Group controlId="formfechaingreso" className="mb-3">
               <Form.Label>Fecha de ingreso:</Form.Label>
               <Form.Control {...register("fechaingreso")} type="date" disabled value={currentDate} />
             </Form.Group>
@@ -94,46 +96,35 @@ export const RPropietario = () => {
                 </Form.Select>
               </Form.Group>
   
-            <Form.Group controlId="formDireccion" className="mb-3">
+            <Form.Group controlId="formnumerodocumento" className="mb-3">
               <Form.Label>N° Documento Identidad:</Form.Label>
-              <Form.Control
-                {...register("numerodocumento")}
-                type="number"
-              />
+                <Form.Control {...register("numerodocumento")}type="number"/>
             </Form.Group>
   
-            <Form.Group controlId="formCiudad" className="mb-3">
+            <Form.Group controlId="formnombrepropietario" className="mb-3">
               <Form.Label>Nombre de Propietario:</Form.Label>
-              <Form.Control
-                {...register("nombrepropietario")}
-                type="text"
-                maxLength={100}
-              />
+              <Form.Control {...register("nombrepropietario")} type="text" maxLength={100}/>
             </Form.Group>
   
+
             <Form.Group controlId="formBarrio" className="mb-3">
               <Form.Label>Telefono:</Form.Label>
               <Form.Control {...register("telefono")}  max={9999999999} type="number" />
+
             </Form.Group>
   
-            <Form.Group controlId="formEstrato" className="mb-3">
-              <Form.Label>Correo Electronico:</Form.Label>
-              <Form.Control
-                {...register("correoelectronico")}
-                type="email"
-              />
-            </Form.Group>
+            <Form.Group controlId="formcorreoelectronico" className="mb-3">
+              <Form.Label>Correo Eléctronico:</Form.Label>
+              <Form.Control {...register("correoelectronico")}type="email"/>
+            </Form.Group>         
   
-  
-          </Col>
-  
-          <Col md={6}>
-            <Form.Group controlId="formValor" className="mb-3">
-              <Form.Label>Banco</Form.Label>
+            <Form.Group controlId="formbanco" className="mb-3">
+              <Form.Label>Banco:</Form.Label>
               <Form.Control {...register("banco")} type="Text" />
             </Form.Group>
-            <Form.Group controlId="formNoHabitaciones" className="mb-3">
-              <Form.Label>Direccion Del Propetario</Form.Label>
+
+            <Form.Group controlId="formdireccion" className="mb-3">
+              <Form.Label>Dirección Del Propietario:</Form.Label>
               <Form.Control {...register("direccion")} type="text" />
             </Form.Group>
             <Form.Group
@@ -156,18 +147,20 @@ export const RPropietario = () => {
             <Form.Group controlId="numerocuenta" className="mb-3">
               <Form.Label>Número de cuenta:</Form.Label>
               <Form.Control
+
                 type="number"
                 name="numerocuenta"
                 {...register("numerocuenta")}
                 max={9999999999}
               />
+
             </Form.Group>
-          </Col>
-        </Row>
-  
+
+            </Form>
+            </div>
         {/* Botones de guardar y cancelar */}
-        <div className="contener-buttons d-flex justify-content-center">
-          <div className="save_deleter">
+        <div className="col-md-12">
+              <div className="save_deleter">
             <Button
               type="button"
               variant="success m-2"
@@ -187,8 +180,11 @@ export const RPropietario = () => {
               <span className="text_button ms-2">Cancelar</span>
             </Button>
           </div>
-        </div>
-      </Form>
+     
+          
+        
+  
+      
   
       {/* Modales */}
       {/* Modal de confirmación de guardar */}
@@ -226,6 +222,7 @@ export const RPropietario = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </div>
+    </div>
   );
 };

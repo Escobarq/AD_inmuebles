@@ -13,7 +13,7 @@ import {
   faRightFromBracket,
   faUserShield,
 } from "@fortawesome/free-solid-svg-icons";
-import { Nav, Modal, Button } from "react-bootstrap";
+import { Nav, Modal, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useEffect } from "react";
 
 export const Slidebar = () => {
@@ -40,13 +40,9 @@ export const Slidebar = () => {
         setApellido(data[0].Apellido);
         setRol(data[0].Idrol);
         if (data[0].Idrol == 1) {
-          setTTiporol("Admin");
+          setTTiporol("Administrador");
         } else if (data[0].Idrol == 2) {
           setTTiporol("Empleado");
-        } else if (data[0].Idrol == 3) {
-          setTTiporol("Asesor Comercial");
-        } else if (data[0].Idrol == 4) {
-          setTTiporol("SuperUsuario");
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -70,8 +66,222 @@ export const Slidebar = () => {
   const renderMenuItems = () => {
     const roleId = parseInt(Rol);
 
-    if (roleId === 4) {
-      //super usuario
+    if (roleId === 1) {
+      //Administrador
+      return (
+        <>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip id="tooltip-prop">Propietarios</Tooltip>}
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Propietario"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  className="icons_sliderbard"
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faUserTie}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>Propietarios</p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip id="tooltip-inm">Inmuebles</Tooltip>}
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Inmueble"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faHouseUser}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>Inmuebles</p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip id="tooltip-arr">Arrendatarios</Tooltip>}
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Arrendatario"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faPersonShelter}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>Arrendatarios</p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip id="tooltip-cod">Codeudores</Tooltip>}
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Codeudor"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faPeopleRoof}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>Codeudores</p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip id="tooltip-rec-arr">Recibo Arrendatarios</Tooltip>}
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/H_recibos"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faReceipt}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>Recibo Arrendatarios</p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip id="tooltip-rec-gas">Recibo Gastos</Tooltip>}
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/H_gastos"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faReceipt}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>Recibo Gastos</p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip id="tooltip-inf-arr">Informe Arrendamiento</Tooltip>}
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Carrendatario"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faTable}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>Informe Arrendamiento</p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip id="tooltip-com-prop">Comisiones Propietario</Tooltip>}
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Ginmuebles"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faTableList}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>Comisiones Propetario</p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip id="tooltip-asig-rol">Asignar Rol Empleados</Tooltip>}
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/AsignarRol"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faUserShield}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>Asignar Rol Empleados</p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+        </>
+      );
+    } else if (roleId === 2) {
+      // Empleado
       return (
         <>
           <Nav.Item>
@@ -231,177 +441,21 @@ export const Slidebar = () => {
           </Nav.Item>
         </>
       );
-    } else if (roleId === 2) {
-      // Empleado
-      return (
-        <>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Propietario"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                className="icons_sliderbard"
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faUserTie}
-              />
-              Propetarios
-            </Nav.Link>
-          </Nav.Item>
-
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Inmueble"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faHouseUser}
-              />
-              Inmuebles
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Arrendatario"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faPersonShelter}
-              />
-              Arrendatarios
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Codeudor"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faPeopleRoof}
-              />
-              Codeudores
-            </Nav.Link>
-          </Nav.Item>
-        </>
-      );
-    } else if (roleId === 3) {
-      //Asesor Comercial{
-      return (
-        <>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/H_recibos"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faReceipt}
-              />
-              Recibo Arrendatarios
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/H_gastos"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faReceipt}
-              />
-              Recibo Gastos
-            </Nav.Link>
-          </Nav.Item>
-        </>
-      );
-    } else if (roleId === 1) {
-      //Administrador
-      return (
-        <>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Carrendatario"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faTable}
-              />
-              Informe Arrendamiento
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Ginmuebles"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faTableList}
-              />
-              Comisiones Propetario
-            </Nav.Link>
-          </Nav.Item>
-        </>
-      );
     }
   };
   return (
     <>
       <div
-        className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
+        className=" sliderbard d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
         style={{ width: "280px", marginRight: "3%", minHeight: "100vh" }}
       >
-        <span className="fs-4">
+        <span className=" User fs-4">
           {nombre} {apellido}
         </span>
         <p className="text-start">{TTiporol}</p>
 
         <hr />
-        <Nav className="nav nav-pills flex-column mb-auto">
+        <Nav className="nav nav-pills d-flex flex-column align-items-stretch justify-content-evenly align-content-stretch mb-auto">
           {renderMenuItems()}
         </Nav>
         <hr />

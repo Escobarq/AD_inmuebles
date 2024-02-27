@@ -245,7 +245,7 @@ router.get("/VPagoArren", (req, res) => {
 
 router.get("/VComisionPropie", (req, res) => {
   connection.query(
-    "SELECT * FROM comision_propietario ORDER BY IdComisionPropietario ASC",
+    "SELECT * FROM comision_propietario INNER JOIN propietario USING(IdPropietario)",
     (error, results) => {
       if (error) {
         console.error("Error al obtener datos de la base de datos:", error);
