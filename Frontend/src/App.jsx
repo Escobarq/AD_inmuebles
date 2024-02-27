@@ -34,6 +34,8 @@ import { InhabilitarInmuebles } from './Components/View/Inmueble/InhabilitarInmu
 import { InhabilitarGastos } from './Components/View/H_gastos/InhabilitarGastos';
 import { H_recibosInha } from './Components/View/H_recibos/H_recibosInha';
 import { InhabilitarRol } from './Components/View/AsignarRol/InhabilitarRol';
+import ContactForm from './Components/Register/EditarPerfil/ContactForm';
+
 
 function App() {
   const location = useLocation();
@@ -57,7 +59,7 @@ function App() {
     <>
      <ToastContainer />
     <div className="Contener-todo">
-    {location.pathname !== '/' && <Slidebar/>}
+    {(location.pathname !== '/' && location.pathname !== '/EditarPerfil') && <Slidebar />}
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/inicio" element={<Home />} />
@@ -87,6 +89,7 @@ function App() {
         <Route path="/Ginmuebles" element={<GastosIn />} />
         <Route path="/AsignarRol" element={<AsignarRol/>} />
         <Route path="/InhabilitarRol" element={<InhabilitarRol/>} />
+        <Route path="/EditarPerfil" element={<ContactForm/>} />
       </Routes>
 
     </div>

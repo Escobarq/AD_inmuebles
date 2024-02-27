@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal } from "react-bootstrap";
+import { Table, Button, Modal ,OverlayTrigger ,Tooltip } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
@@ -13,17 +13,16 @@ import {
   faHouseChimneyMedical,
   faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import useActualizarEstadoInmueble  from "../../Hooks/InhabilitarInmueble";
-import NoResultImg from "../../../assets/NoResult.gif"
-
+import useActualizarEstadoInmueble from "../../Hooks/InhabilitarInmueble";
+import NoResultImg from "../../../assets/NoResult.gif";
 
 export const Inmueble = () => {
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
-  const [NoResult, setNoResult]= useState(false)
+  const [NoResult, setNoResult] = useState(false);
   const [filtroData, setFiltroData] = useState({
-    estado: '',
-    tipo: '',
-    estrato: '',
+    estado: "",
+    tipo: "",
+    estrato: "",
   });
   const [inmuebleIdBoolean, setInmueblesBoolean] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -36,7 +35,7 @@ export const Inmueble = () => {
       const updatedInmueble = infoinmueble.filter(
         (inmueble) => inmueble.IdCodeudor !== InmuebleId
       );
-      
+
       setinfoinmueble(updatedInmueble);
       notifi();
       setShowModal(false);
@@ -77,8 +76,6 @@ export const Inmueble = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(9);
 
-  
-
   // Actualizar Inmueble
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
 
@@ -90,13 +87,15 @@ export const Inmueble = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
-    console.log(filtroData)
+    console.log(filtroData);
   };
-  
+
   const fetchData = async () => {
     try {
       const queryParams = new URLSearchParams(filtroData);
-      const response = await fetch(`http://localhost:3006/Vinmueble?${queryParams.toString()}`);
+      const response = await fetch(
+        `http://localhost:3006/Vinmueble?${queryParams.toString()}`
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -107,14 +106,11 @@ export const Inmueble = () => {
       );
 
       setinfoinmueble(INmueblesActivos);
-      if (INmueblesActivos.length == 0){
-        setNoResult(true)
+      if (INmueblesActivos.length == 0) {
+        setNoResult(true);
+      } else {
+        setNoResult(false);
       }
-      else {
-        setNoResult(false)
-        
-      }
-
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -149,46 +145,45 @@ export const Inmueble = () => {
   };
 
   const createrow = (inmueble) => {
-      return (
-        <tr key={inmueble.IdInmueble}>
-          <td>{inmueble.IdPropietario}</td>
-          <td>{inmueble.NoMatricula}</td>
-          <td>{inmueble.Direccion}</td>
-          <td>{inmueble.Estrato}</td>
-          <td>{inmueble.Ciudad}</td>
-          <td>{inmueble.Barrio}</td>
-          <td>{inmueble.Tipo}</td>
-          <td>{inmueble.Estado}</td>
-          <td>
-            <Button
-              className="btn-opciones"
-              variant="primary"
-              onClick={() => handleMostrarModalClick(inmueble)}
-            >
-              <FontAwesomeIcon icon={faEye} />
-            </Button>
-            <Button
-              className="btn-opciones"
-              onClick={() => handleMostrarAClick(inmueble)}
-              variant="success"
-            >
-              <FontAwesomeIcon icon={faUserPlus} />
-            </Button>
-            <Button
-              className="btn-opciones"
-              variant="danger"
-              onClick={() => handleOpenModal(inmueble.IdInmueble)}
-            >
-              <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
-            </Button>
-            <Button className="btn-opciones" variant="warning">
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </Button>
-          </td>
-        </tr>
-      );
-    }
-  
+    return (
+      <tr key={inmueble.IdInmueble}>
+        <td>{inmueble.IdPropietario}</td>
+        <td>{inmueble.NoMatricula}</td>
+        <td>{inmueble.Direccion}</td>
+        <td>{inmueble.Estrato}</td>
+        <td>{inmueble.Ciudad}</td>
+        <td>{inmueble.Barrio}</td>
+        <td>{inmueble.Tipo}</td>
+        <td>{inmueble.Estado}</td>
+        <td>
+          <Button
+            className="btn-opciones"
+            variant="primary"
+            onClick={() => handleMostrarModalClick(inmueble)}
+          >
+            <FontAwesomeIcon icon={faEye} />
+          </Button>
+          <Button
+            className="btn-opciones"
+            onClick={() => handleMostrarAClick(inmueble)}
+            variant="success"
+          >
+            <FontAwesomeIcon icon={faUserPlus} />
+          </Button>
+          <Button
+            className="btn-opciones"
+            variant="danger"
+            onClick={() => handleOpenModal(inmueble.IdInmueble)}
+          >
+            <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
+          </Button>
+          <Button className="btn-opciones" variant="warning">
+            <FontAwesomeIcon icon={faPenToSquare} />
+          </Button>
+        </td>
+      </tr>
+    );
+  };
 
   const createrowDetalles = () => {
     if (inmuebleseleccion) {
@@ -209,18 +204,22 @@ export const Inmueble = () => {
   };
   const existe = () => {
     if (inmuebleseleccion) {
-      if(inmuebleseleccion.IdArrendatario >= 1) {
+      if (inmuebleseleccion.IdArrendatario >= 1) {
         return (
           <>
-          <p>Alerta Ya se encuentra un arrendador asignado</p>
-          <p>Su nombre es {inmuebleseleccion.NombreCompleto}, con No de identidad : {inmuebleseleccion.DocumentoIdentidad}</p>
-          <p>Para cambiar de arrendatario solo seleccionelo en la siguiente lista:</p>
+            <p>Alerta Ya se encuentra un arrendador asignado</p>
+            <p>
+              Su nombre es {inmuebleseleccion.NombreCompleto}, con No de
+              identidad : {inmuebleseleccion.DocumentoIdentidad}
+            </p>
+            <p>
+              Para cambiar de arrendatario solo seleccionelo en la siguiente
+              lista:
+            </p>
           </>
         );
-        
-      }
-      else {
-        return null
+      } else {
+        return null;
       }
     } else {
       return null; // Otra opción es retornar un mensaje de carga o cualquier otro contenido que desees mostrar mientras se carga la información
@@ -245,7 +244,7 @@ export const Inmueble = () => {
 
   const handleRowClickAndUpdate = async (Arrendatarios) => {
     try {
-      console.log(inmuebleseleccion)
+      console.log(inmuebleseleccion);
       const IdInmueble = inmuebleseleccion.IdInmueble;
       const { IdArrendatario } = Arrendatarios;
 
@@ -258,7 +257,7 @@ export const Inmueble = () => {
           },
           body: JSON.stringify({
             IdArrendatario: IdArrendatario,
-            Estado:"Ocupado",
+            Estado: "Ocupado",
           }),
         }
       );
@@ -275,10 +274,9 @@ export const Inmueble = () => {
   };
   const handleRowClickAndDelete = async () => {
     try {
-      console.log(inmuebleseleccion)
+      console.log(inmuebleseleccion);
       const IdInmueble = inmuebleseleccion.IdInmueble;
       const { IdArrendatario } = 0;
-      
 
       const response = await fetch(
         `http://localhost:3006/actualizarInmueble?IdInmueble=${IdInmueble}`,
@@ -289,7 +287,7 @@ export const Inmueble = () => {
           },
           body: JSON.stringify({
             IdArrendatario: IdArrendatario,
-            Estado:"Disponible",
+            Estado: "Disponible",
           }),
         }
       );
@@ -319,7 +317,6 @@ export const Inmueble = () => {
 
     if (inmueble.Estado === "Ocupado") {
       const ValidarInmArr = async () => {
-        
         try {
           const response = await fetch(
             `http://localhost:3006/VinmuArren?IdInmueble=${IdInmueble}`
@@ -330,7 +327,6 @@ export const Inmueble = () => {
           const data = await response.json();
           setinmuebleseleccion(data[0]);
           setMostrarModalA(true);
-          
         } catch (error) {
           console.error("Error fetching products:", error);
         }
@@ -338,7 +334,7 @@ export const Inmueble = () => {
       ValidarInmArr();
     } else {
       setMostrarModalA(true);
-      
+
       setinmuebleseleccion(inmueble);
     }
   };
@@ -360,9 +356,17 @@ export const Inmueble = () => {
         <div className="conten-filtro">
           <div className="conten-inputs">
             <label className="l1">Tipo Inmueble</label>
-            <select className="input-filtroRe"  value={filtroData.tipo} onChange={handleChange} name="tipo" id="">
-              <option selected value="">Seleccione el tipo</option>
-              <option  value="Apartamento">Apartamento</option>
+            <select
+              className="input-filtroRe"
+              value={filtroData.tipo}
+              onChange={handleChange}
+              name="tipo"
+              id=""
+            >
+              <option selected value="">
+                Seleccione el tipo
+              </option>
+              <option value="Apartamento">Apartamento</option>
               <option value="Bodega">Bodega</option>
               <option value="Casa">Casa</option>
               <option value="Oficina">Oficina</option>
@@ -370,8 +374,16 @@ export const Inmueble = () => {
             </select>
 
             <label className="l1">Estrato</label>
-            <select className="input-filtroRe"   value={filtroData.estrato} onChange={handleChange} name="estrato" id="">
-              <option selected value="">Seleccione el estrato</option>
+            <select
+              className="input-filtroRe"
+              value={filtroData.estrato}
+              onChange={handleChange}
+              name="estrato"
+              id=""
+            >
+              <option selected value="">
+                Seleccione el estrato
+              </option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -381,47 +393,73 @@ export const Inmueble = () => {
             </select>
 
             <label className="l1">Estado</label>
-            <select className="input-filtroRe"  value={filtroData.estado} onChange={handleChange} name="estado" id="">
-              <option selected value="">Seleccione estado</option>
+            <select
+              className="input-filtroRe"
+              value={filtroData.estado}
+              onChange={handleChange}
+              name="estado"
+              id=""
+            >
+              <option selected value="">
+                Seleccione estado
+              </option>
               <option value="Ocupado">Ocupado</option>
               <option value="Disponible">Disponible</option>
             </select>
           </div>
-          <Button variant="success" className="btn-add">
-            <Link to="/RInmuebleA">
-              <FontAwesomeIcon
-                icon={faHouseChimneyMedical}
-                style={{ color: "#ffffff" }}
-              />
-              Agregar Inmueble
-            </Link>
-          </Button>
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/InhaInmueble" className="linkes">
-              <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inhabilitados
-            </Link>
-          </Button>
+          <OverlayTrigger
+            key="tooltip-add-inmueble"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-add-inmueble">Agregar Inmueble</Tooltip>
+            }
+          >
+            <Button variant="success" className="btn-add">
+              <Link to="/RInmuebleA">
+                <FontAwesomeIcon
+                  icon={faHouseChimneyMedical}
+                  style={{ color: "#ffffff" }}
+                />
+                <p className="AgregarPA">Agregar Inmueble</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
+
+          <OverlayTrigger
+            key="tooltip-ver-inhabilitados"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-ver-inhabilitados">
+                Ver Inhabilitados
+              </Tooltip>
+            }
+          >
+            <Button variant="dark" className="btn-add-info">
+              <Link to="/InhaInmueble" className="linkes">
+                <FontAwesomeIcon className="icon" icon={faUserSlash} /> 
+                <p className="AgregarPA">Ver Inhabilitados</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Inmuebles</h1>
         </div>
         <div className="view_esp">
-        {NoResult == true ? (
-          <div>
-            <img src={NoResultImg} alt="" />
-          </div>
-        ):(
-
-          <div className="table-container">
-            <Table striped bordered hover>
-              <thead>{createheader()}</thead>
-              <tbody>
-                {currentItems.map((inmueble) => createrow(inmueble))}
-              </tbody>
-            </Table>
-          </div>
-        )}
+          {NoResult == true ? (
+            <div>
+              <img src={NoResultImg} alt="" />
+            </div>
+          ) : (
+            <div className="table-container">
+              <Table striped bordered hover>
+                <thead>{createheader()}</thead>
+                <tbody>
+                  {currentItems.map((inmueble) => createrow(inmueble))}
+                </tbody>
+              </Table>
+            </div>
+          )}
         </div>
         <div className="paginador">
           <Pagination>
@@ -496,18 +534,20 @@ export const Inmueble = () => {
                   <th>Estado</th>
                   <th>Teléfono</th>
                   <th>Correo</th>
-                  
                 </tr>
               </thead>
               <tbody>
                 {infoarrendatario.map((Arrendatarios) =>
                   createrowA(Arrendatarios)
                 )}
-                <Link to="/ReArrendatario">                  
-                <Button variant="primary">Otro</Button>
+                <Link to="/ReArrendatario">
+                  <Button variant="primary">Otro</Button>
                 </Link>
-                <Button variant="danger" onClick={() => handleRowClickAndDelete()}>
-                Quitar Arrendatario
+                <Button
+                  variant="danger"
+                  onClick={() => handleRowClickAndDelete()}
+                >
+                  Quitar Arrendatario
                 </Button>
               </tbody>
             </Table>

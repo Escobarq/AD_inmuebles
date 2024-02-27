@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import { Table, Button , Modal } from "react-bootstrap";
+import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import "./propietarios.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,13 +9,13 @@ import {
   faTrash,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
-import moment from 'moment';
-import 'moment/locale/es';
+import moment from "moment";
+import "moment/locale/es";
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import { toast } from "react-toastify";
 import InhabilitarPropetario from "../../Hooks/InhabilitarPropetarios";
-import NoResultImg from "../../../assets/NoResult.gif"
+import NoResultImg from "../../../assets/NoResult.gif";
 
 export const Propietarios = () => {
   const [infopropietario, setinfopropietario] = useState([]);
@@ -23,11 +23,11 @@ export const Propietarios = () => {
   const [showModal, setShowModal] = useState(false);
   const [PropetarioIdToDelete, setPropetarioIdToDelete] = useState(null);
   const [filtroData, setFiltroData] = useState({
-    FechaIngresoMIN: '',
-    FechaIngresoMAX: '',
-    Cedula: '',
+    FechaIngresoMIN: "",
+    FechaIngresoMAX: "",
+    Cedula: "",
   });
-  const [NoResult, setNoResult]= useState(false)
+  const [NoResult, setNoResult] = useState(false);
 
   const notify = () =>
     toast.success("Se Inabilito Correctamente ", {
@@ -76,29 +76,31 @@ export const Propietarios = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
-    console.log(name,value);
+    console.log(name, value);
   };
 
   function formatDate(fechaString) {
-    return moment(fechaString).format('MMMM , D , YYYY');
+    return moment(fechaString).format("MMMM , D , YYYY");
   }
 
-  moment.updateLocale('es', {
-    months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
-    monthsShort : 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
-    weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
-    weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
-    weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_')
+  moment.updateLocale("es", {
+    months:
+      "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split(
+        "_"
+      ),
+    monthsShort:
+      "ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),
+    weekdays: "domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),
+    weekdaysShort: "dom._lun._mar._mié._jue._vie._sáb.".split("_"),
+    weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
   });
-
-
-
-
 
   const fetchData = async () => {
     try {
       const queryParams = new URLSearchParams(filtroData);
-      const response = await fetch(`http://localhost:3006/Vpropietarios?${queryParams.toString()}`);
+      const response = await fetch(
+        `http://localhost:3006/Vpropietarios?${queryParams.toString()}`
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -110,12 +112,10 @@ export const Propietarios = () => {
 
       setinfopropietario(PropetarioActivos);
 
-      if (PropetarioActivos.length == 0){
-        setNoResult(true)
-      }
-      else {
-        setNoResult(false)
-        
+      if (PropetarioActivos.length == 0) {
+        setNoResult(true);
+      } else {
+        setNoResult(false);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -180,7 +180,8 @@ export const Propietarios = () => {
           <div className="conten-inputs">
             <label className="l1">No. Cedula: </label>
             <input
-             value={filtroData.Cedula} onChange={handleChange}
+              value={filtroData.Cedula}
+              onChange={handleChange}
               className="input-filtroRe"
               type="number"
               name="Cedula"
@@ -188,43 +189,78 @@ export const Propietarios = () => {
               id=""
             />
             <label className="l1">Fecha Ingreso Minimo: </label>
-            <input className="input-filtroRe"  value={filtroData.FechaIngresoMIN} onChange={handleChange} type="date" name="FechaIngresoMIN" id="" />
+            <input
+              className="input-filtroRe"
+              value={filtroData.FechaIngresoMIN}
+              onChange={handleChange}
+              type="date"
+              name="FechaIngresoMIN"
+              id=""
+            />
 
             <label className="l1">Fecha Ingreso Maxima: </label>
-            <input className="input-filtroRe"  value={filtroData.FechaIngresoMAX} onChange={handleChange} type="date" name="FechaIngresoMAX" id="" />
+            <input
+              className="input-filtroRe"
+              value={filtroData.FechaIngresoMAX}
+              onChange={handleChange}
+              type="date"
+              name="FechaIngresoMAX"
+              id=""
+            />
           </div>
-          <Button variant="success" className="btn-add">
-            <Link to="/RPropietario">
-              <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
-              Propietario
-            </Link>
-          </Button>
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/InhaPropietarios" className="linkes">
-              <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inhabilitados
-            </Link>
-          </Button>
+          <OverlayTrigger
+            key="tooltip-add-propietario"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-add-propietario">
+                Agregar Propietario
+              </Tooltip>
+            }
+          >
+            <Button variant="success" className="btn-add">
+              <Link to="/RPropietario">
+                <FontAwesomeIcon className="icon" icon={faUserPlus} /> 
+                <p className="AgregarPA">Agregar Propietario</p> 
+              </Link>
+            </Button>
+          </OverlayTrigger>
+
+          <OverlayTrigger
+            key="tooltip-ver-inhabilitados-propietarios"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-ver-inhabilitados-propietarios">
+                Ver Propietarios Inhabilitados
+              </Tooltip>
+            }
+          >
+            <Button variant="dark" className="btn-add-info">
+              <Link to="/InhaPropietarios" className="linkes">
+                <FontAwesomeIcon className="icon" icon={faUserSlash} /> 
+                <p className="AgregarPA">Ver Propietarios Inhabilitados</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Propetarios</h1>
         </div>
 
         <div className="view_esp">
-        {NoResult == true ? (
-          <div>
-            <img src={NoResultImg} alt="" />
-          </div>
-        ):(
-          <div className="table-container">
-            <Table striped bordered hover>
-              <thead> {createheader()} </thead>
-              <tbody>
-                {currentItems.map((Propietarios) => createrow(Propietarios))}
-              </tbody>
-            </Table>
-          </div>
-        )}
+          {NoResult == true ? (
+            <div>
+              <img src={NoResultImg} alt="" />
+            </div>
+          ) : (
+            <div className="table-container">
+              <Table striped bordered hover>
+                <thead> {createheader()} </thead>
+                <tbody>
+                  {currentItems.map((Propietarios) => createrow(Propietarios))}
+                </tbody>
+              </Table>
+            </div>
+          )}
         </div>
         <div className="paginador">
           <Pagination>
@@ -265,7 +301,7 @@ export const Propietarios = () => {
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleInhabilitarPropetario (PropetarioIdToDelete)} 
+            onClick={() => handleInhabilitarPropetario(PropetarioIdToDelete)}
           >
             Confirmar
           </Button>

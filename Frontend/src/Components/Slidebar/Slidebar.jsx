@@ -42,7 +42,7 @@ export const Slidebar = () => {
         if (data[0].Idrol == 1) {
           setTTiporol("Administrador");
         } else if (data[0].Idrol == 2) {
-          setTTiporol("Empleado");
+          setTTiporol("Asistente");
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -66,7 +66,7 @@ export const Slidebar = () => {
   const renderMenuItems = () => {
     const roleId = parseInt(Rol);
 
-    if (roleId === 1) {
+    if (roleId === 1 || roleId === 2) {
       //Administrador
       return (
         <>
@@ -280,167 +280,8 @@ export const Slidebar = () => {
           </Nav.Item>
         </>
       );
-    } else if (roleId === 2) {
-      // Empleado
-      return (
-        <>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Propietario"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                className="icons_sliderbard"
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faUserTie}
-              />
-              Propetarios
-            </Nav.Link>
-          </Nav.Item>
-
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Inmueble"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faHouseUser}
-              />
-              Inmuebles
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Arrendatario"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faPersonShelter}
-              />
-              Arrendatarios
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Codeudor"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faPeopleRoof}
-              />
-              Codeudores
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/H_recibos"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faReceipt}
-              />
-              Recibo Arrendatarios
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/H_gastos"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faReceipt}
-              />
-              Recibo Gastos
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Carrendatario"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faTable}
-              />
-              Informe Arrendamiento
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/Ginmuebles"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faTableList}
-              />
-              Comisiones Propetario
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={NavLink}
-              to="/AsignarRol"
-              className="nav-link text-white"
-              aria-current="page"
-              exact={undefined}
-            >
-              <FontAwesomeIcon
-                width="32"
-                height="32"
-                style={{ color: "#ffffff" }}
-                icon={faUserShield}
-              />
-              Asignar Rol Empleados
-            </Nav.Link>
-          </Nav.Item>
-        </>
-      );
+    } else {
+      return null;
     }
   };
   return (

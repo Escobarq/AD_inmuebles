@@ -1,4 +1,4 @@
-import { Table, Button, Modal } from "react-bootstrap";
+import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -111,8 +111,8 @@ export const Codeudor = () => {
     const codeudor = infoCodeudor.find(
       (codeudor) => codeudor.IdCodeudor === codeudorId
     );
-    
-    window.location.href = `/Registrocodeudor?IdCodeudor=${codeudor.IdCodeudor}&DocumentoIdentidad=${codeudor.DocumentoIdentidad}&NombreCompleto=${codeudor.NombreCompleto}&Direccion=${codeudor.Direccion}&Telefono=${codeudor.Telefono}&Correo=${codeudor.Correo}`;
+
+    window.location.href = `/Registrocodeudor?IdCodeudor=${codeudor.IdCodeudor}&TipoDocumento=${codeudor.TipoDocumento}&DocumentoIdentidad=${codeudor.DocumentoIdentidad}&NombreCompleto=${codeudor.NombreCompleto}&Direccion=${codeudor.Direccion}&Telefono=${codeudor.Telefono}&Correo=${codeudor.Correo}`;
   };
 
   const createrow = (Codeudor) => {
@@ -171,18 +171,37 @@ export const Codeudor = () => {
               id=""
             />
           </div>
-          <Button variant="success" className="btn-add">
-            <Link to="/Registrocodeudor">
-              <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
-              Codeudor
-            </Link>
-          </Button>
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/Codeudores" className="linkes">
-              <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inhabilitados
-            </Link>
-          </Button>
+          <OverlayTrigger
+            key="tooltip-add-codeudor"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-add-codeudor">Agregar Codeudor</Tooltip>
+            }
+          >
+            <Button variant="success" className="btn-add">
+              <Link to="/Registrocodeudor">
+                <FontAwesomeIcon className="icon" icon={faUserPlus} />
+                <p className="AgregarPA">Agregar Codeudor</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
+
+          <OverlayTrigger
+            key="tooltip-ver-inhabilitados-codeudores"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-ver-inhabilitados-codeudores">
+                Ver Codeudores Inhabilitados
+              </Tooltip>
+            }
+          >
+            <Button variant="dark" className="btn-add-info">
+              <Link to="/Codeudores" className="linkes">
+                <FontAwesomeIcon className="icon" icon={faUserSlash} />
+                <p className="AgregarPA">Ver Codeudores Inhabilitados</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Codeudor</h1>
