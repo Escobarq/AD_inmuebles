@@ -88,7 +88,7 @@ export const AsignarRol = () => {
   const convertirIdRolATexto = (idrol) => {
     const rolesTexto = {
       1: "Administrador",
-      2: "Empleado",
+      2: "Asistente",
     };
     return rolesTexto[idrol] || "Rol desconocido";
   };
@@ -136,16 +136,11 @@ export const AsignarRol = () => {
 
   const EditarPerfil = (EmpleadosID) => {
     const Empleados = infoRol.find(
-      (Empleados) => Empleados.IdTrabajador === EmpleadosID
+      (empleado) => empleado.IdTrabajador === EmpleadosID
     );
-    window.location.href = `/EditarPerfil?IdTrabajador=${Empleados.IdTrabajador}
-    &Nombre=${Empleados.Nombre}
-    &Apellido=${Empleados.Apellido}
-    &Correo=${Empleados.Correo}
-    &Contrasena=${Empleados.Contrasena}
-    &Telefono=${Empleados.Telefono}
-    `
-  }
+    window.location.href = `/EditarPerfil?IdTrabajador=${Empleados.IdTrabajador}&Idrol=${Empleados.Idrol}&Nombre=${Empleados.Nombre}&Apellido=${Empleados.Apellido}&Correo=${Empleados.Correo}&Contrasena=${Empleados.Contrasena}&Telefono=${Empleados.Telefono}`;
+  };
+  
   return (
     <div className="contener-home">
       <div className="title_view">
@@ -154,7 +149,7 @@ export const AsignarRol = () => {
           <label className="l1">Rol</label>
           <select className="input-filtroRe" value="" onChange="" name="rol" id="rol">
             <option selected value="">Seleccione el tipo</option>
-            <option value="empleado">Empleado</option>
+            <option value="Asistente">Asistente</option>
           </select>
         </div>
         <Button variant="dark" className="btn-add-info ">

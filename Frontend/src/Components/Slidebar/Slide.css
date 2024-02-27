@@ -1,30 +1,4 @@
-/* Estilos para el tooltip */
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
 
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -60px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
 
 .nav-link{
   padding-left: 0 !important;
@@ -47,9 +21,9 @@
   font-size: 1rem;
 }
 
-@media (width <= 1260px) {
+@media (width <= 1366px) {
   .sliderbard {
-    width: 80px !important; /* Ajusta el ancho automáticamente */
+    width: 70px !important; /* Ajusta el ancho automáticamente */
   }
   .Links_Icons{
     display: none;
@@ -63,7 +37,7 @@
   }
   .sliderbard .nav-link {
     padding: 10px; /* Ajusta el espacio alrededor de los iconos */
-    text-align: start; /* Centra el texto debajo de los iconos */
+    text-align: center; /* Centra el texto debajo de los iconos */
   }
   .sliderbard .nav-link strong {
     display: none; /* Oculta el texto "Cerrar Sesión" */

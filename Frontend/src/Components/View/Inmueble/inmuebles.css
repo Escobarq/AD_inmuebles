@@ -1,72 +1,77 @@
-.paginador{
-    display: block;
-    position: fixed;
-    bottom: 3%;
+.paginador {
+  display: block;
+  position: fixed;
+  bottom: 3%;
 }
 .noselect {
-    width: 120px;
-    height: 50px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    background: red;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
-    background: #e62222;
-   }
-   
-   .noselect, .noselect span {
-    transition: 200ms;
-   }
-   
-   .noselect .text {
-    transform: translateX(35px);
-    color: white;
-    font-weight: bold;
-   }
-   
-   .noselect .icon {
-    position: absolute;
-    border-left: 1px solid #c41b1b;
-    transform: translateX(110px);
-    height: 40px;
-    width: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-   }
-   
-   .noselect svg {
-    width: 15px;
-    fill: #eee;
-   }
-   
-   .noselect:hover {
-    background: #ff3636;
-   }
-   
-   .noselect:hover .text {
-    color: transparent;
-   }
-   
-   .noselect:hover .icon {
-    width: 150px;
-    border-left: none;
-    transform: translateX(0);
-   }
-   
-   .noselect:focus {
-    outline: none;
-   }
-   
-   .noselect:active .icon svg {
-    transform: scale(0.8);
-   }
-   a{
-    text-decoration: none !important;
-   }
-   a:hover{
-    background-color: transparent !important;
-   }
+  width: 120px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: red;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+  background: #e62222;
+}
 
+.noselect,
+.noselect span {
+  transition: 200ms;
+}
+
+.noselect .text {
+  transform: translateX(35px);
+  color: white;
+  font-weight: bold;
+}
+
+.noselect .icon {
+  position: absolute;
+  border-left: 1px solid #c41b1b;
+  transform: translateX(110px);
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.noselect svg {
+  width: 15px;
+  fill: #eee;
+}
+
+.noselect:hover {
+  background: #ff3636;
+}
+
+.noselect:hover .text {
+  color: transparent;
+}
+
+.noselect:hover .icon {
+  width: 150px;
+  border-left: none;
+  transform: translateX(0);
+}
+
+.noselect:focus {
+  outline: none;
+}
+
+.noselect:active .icon svg {
+  transform: scale(0.8);
+}
+a {
+  text-decoration: none !important;
+}
+a:hover {
+  background-color: transparent !important;
+}
+.view-small-screen {
+    max-height: 6 * 48px; /* Altura de 6 filas */
+    overflow-y: auto; /* Para habilitar el scroll si hay más de 6 filas */
+  }
+  

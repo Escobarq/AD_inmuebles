@@ -1,11 +1,10 @@
-import { Form, Button, Container, Row, Col, Modal } from "react-bootstrap";
-import React, { useState, useEffect } from "react";
+import { Form, Button, Modal } from "react-bootstrap";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
-
 
 export const Registrocodeudor = () => {
   const location = useLocation();
@@ -13,9 +12,8 @@ export const Registrocodeudor = () => {
 
   // Estado para almacenar los datos del codeudor
   const [codeudorData, setCodeudorData] = useState({
-   
     NombreCompleto: "",
-    TipoDocumento:"",
+    TipoDocumento: "",
     DocumentoIdentidad: "",
     Direccion: "",
     Telefono: "",
@@ -48,6 +46,7 @@ export const Registrocodeudor = () => {
     if (location.search) {
       setCodeudorData({
         IdCodeudor: searchParams.get("IdCodeudor"),
+        TipoDocumento: searchParams.get("TipoDocumento"),
         DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
         NombreCompleto: searchParams.get("NombreCompleto"),
         Direccion: searchParams.get("Direccion"),
@@ -58,7 +57,7 @@ export const Registrocodeudor = () => {
       // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo codeudor
       setCodeudorData({
         NombreCompleto: "",
-        TipoDocumento:"",
+        TipoDocumento: "",
         DocumentoIdentidad: "",
         Direccion: "",
         Telefono: "",
@@ -67,26 +66,27 @@ export const Registrocodeudor = () => {
     }
   }, [location.search]);
 
-  const onsubmitRegistro = async (data) => {
-    // Convertir los campos documentoidentidad y telefono a números
-    data.documentoidentidad = parseInt(data.documentoidentidad);
-    data.telefono = parseInt(data.telefono);
+  const onsubmitRegistro = async () => {
     try {
       const url = codeudorData.IdCodeudor
         ? `http://localhost:3006/Rcodeudor/${codeudorData.IdCodeudor}`
         : "http://localhost:3006/Rcodeudor";
-
+  
       const method = codeudorData.IdCodeudor ? "PUT" : "POST";
-
+  
+      const dataToSend = {
+        ...codeudorData,
+        TipoDocumento: codeudorData.TipoDocumento, // Este es el cambio para incluir el tipo de documento seleccionado
+      };
+  
       const response = await fetch(url, {
         method: method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(dataToSend),
       });
-      console.log(data);
-
+  
       if (response.ok) {
         setShowSaveModal(true);
         notify();
@@ -100,6 +100,7 @@ export const Registrocodeudor = () => {
       console.error("Error al enviar datos al servidor:", error);
     }
   };
+  
 
   const handleConfirmSave = () => {
     handleSubmit(onsubmitRegistro)();
@@ -116,63 +117,98 @@ export const Registrocodeudor = () => {
     <div className="contener-home contener-rpropietario">
       <h2>Registro Codeudor</h2>
       <div className="container">
-      <Form className="form-propietario" onSubmit={handleSubmit(onsubmitRegistro)}>
-        
-            <Form.Group controlId="nombre"className="mb-3">
-              <Form.Label>Nombre:</Form.Label>
-              <Form.Control type="text" {...register("nombrecompleto")}  />
-            </Form.Group>
+        <Form
+          className="form-propietario"
+          onSubmit={handleSubmit(onsubmitRegistro)}
+        >
+          <Form.Group controlId="nombre" className="mb-3">
+            <Form.Label>Nombre:</Form.Label>
+            <Form.Control
+              type="text"
+              {...register("nombrecompleto")}
+              defaultValue={codeudorData.NombreCompleto}
+            />
+          </Form.Group>
 
-            <Form.Group controlId="TipoDocumento">
-              <Form.Label>Tipo Documento:</Form.Label>
-              <Form.Control type="text" {...register("TipoDocumento")} />
-            </Form.Group>
+          <Form.Group controlId="TipoDocumento">
+            <Form.Label>Tipo Documento:</Form.Label>
+            <Form.Control
+              as="select"
+              {...register("TipoDocumento")}
+              value={codeudorData.TipoDocumento}
+              onChange={(e) =>
+                setCodeudorData({
+                  ...codeudorData,
+                  TipoDocumento: e.target.value,
+                })
+              }
+            >
+              <option value={'CC'}>Cédula de Ciudadanía</option>
+              <option value={'CE'}>Cédula de Extranjería</option>
+            </Form.Control>
+          </Form.Group>
 
-            <Form.Group controlId="documentoidentidad">
-              <Form.Label>Número de identidad:</Form.Label>
-              <Form.Control type="number"{...register("documentoidentidad")} max={9999999999} />
-            </Form.Group>
+          <Form.Group controlId="documentoidentidad">
+            <Form.Label>Número de identidad:</Form.Label>
+            <Form.Control
+              type="number"
+              {...register("documentoidentidad")}
+              max={9999999999}
+              defaultValue={codeudorData.DocumentoIdentidad}
+            />
+          </Form.Group>
 
-            <Form.Group controlId="telefono">
-              <Form.Label>Teléfono:</Form.Label>
-              <Form.Control type="number" {...register("telefono")} max={9999999999} />
-            </Form.Group>
+          <Form.Group controlId="telefono">
+            <Form.Label>Teléfono:</Form.Label>
+            <Form.Control
+              type="number"
+              {...register("telefono")}
+              max={9999999999}
+              defaultValue={codeudorData.Telefono}
+            />
+          </Form.Group>
 
-            <Form.Group controlId="correoElectronico">
-              <Form.Label>Correo:</Form.Label>
-              <Form.Control type="email" {...register("correoelectronico")} />
-            </Form.Group>
+          <Form.Group controlId="correoElectronico">
+            <Form.Label>Correo:</Form.Label>
+            <Form.Control
+              type="email"
+              {...register("correoelectronico")}
+              defaultValue={codeudorData.Correo}
+            />
+          </Form.Group>
 
-            <Form.Group controlId="direccion">
-              <Form.Label>Dirección:</Form.Label>
-              <Form.Control type="text"{...register("direccion")} />
-            </Form.Group>
-          
-       </Form>
-       </div>
+          <Form.Group controlId="direccion">
+            <Form.Label>Dirección:</Form.Label>
+            <Form.Control
+              type="text"
+              {...register("direccion")}
+              defaultValue={codeudorData.Direccion}
+            />
+          </Form.Group>
+        </Form>
+      </div>
 
-          <div className="contener-buttons d-flex justify-content-center">
-            <div className="save_deleter">
-              <Button
-                type="button"
-                variant="success m-2"
-                onClick={() => setShowSaveModal(true)}
-              >
-                <FontAwesomeIcon icon={faSave} />
-                <span className="text_button ms-2">Guardar</span>
-              </Button>
+      <div className="contener-buttons d-flex justify-content-center">
+        <div className="save_deleter">
+          <Button
+            type="button"
+            variant="success m-2"
+            onClick={() => setShowSaveModal(true)}
+          >
+            <FontAwesomeIcon icon={faSave} />
+            <span className="text_button ms-2">Guardar</span>
+          </Button>
 
-              <Button
-                type="button"
-                variant="danger m-2"
-                onClick={() => setShowCancelModal(true)}
-              >
-                <FontAwesomeIcon icon={faTimes} />
-                <span className="text_button ms-2">Cancelar</span>
-              </Button>
-            </div>
-          </div>
-      
+          <Button
+            type="button"
+            variant="danger m-2"
+            onClick={() => setShowCancelModal(true)}
+          >
+            <FontAwesomeIcon icon={faTimes} />
+            <span className="text_button ms-2">Cancelar</span>
+          </Button>
+        </div>
+      </div>
 
       {/* Modales */}
       {/* Modal de confirmación de guardar */}
@@ -211,6 +247,5 @@ export const Registrocodeudor = () => {
         </Modal.Footer>
       </Modal>
     </div>
-    
   );
 };

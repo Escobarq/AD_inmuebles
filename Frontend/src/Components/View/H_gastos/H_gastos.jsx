@@ -1,18 +1,18 @@
-import { Table, Button ,Modal } from "react-bootstrap";
+import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
   faTrash,
   faPenToSquare,
-  faUserSlash
+  faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { useState ,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Pagination from "react-bootstrap/Pagination";
-import moment from 'moment';
-import 'moment/locale/es';
+import moment from "moment";
+import "moment/locale/es";
 import { toast } from "react-toastify";
-import useActualizarEstadoHistorialGasto  from "../../Hooks/InhabilitarHgastos";
+import useActualizarEstadoHistorialGasto from "../../Hooks/InhabilitarHgastos";
 
 export const H_gastos = () => {
   const [infoComision, setinfoComision] = useState([]);
@@ -24,7 +24,9 @@ export const H_gastos = () => {
   const handleInhabilitarHgastos = async (HgastosId) => {
     try {
       await actualizarEstadoHgastos(HgastosId, "false"); // Utilizando la función correcta
-      const updatedHgastos = infoComision.filter(hgastos => hgastos.IdComisionPropietario !== HgastosId);
+      const updatedHgastos = infoComision.filter(
+        (hgastos) => hgastos.IdComisionPropietario !== HgastosId
+      );
       setinfoComision(updatedHgastos); // Cambio en el nombre de la variable
       notify();
       setShowModal(false);
@@ -44,13 +46,13 @@ export const H_gastos = () => {
   };
 
   const notify = () =>
-  toast.success("Se Inabilito Correctamente ", {
-    theme: "dark",
-  });
+    toast.success("Se Inabilito Correctamente ", {
+      theme: "dark",
+    });
   const errores = () =>
-  toast.error("Hubo algun error  ", {
-    theme: "dark",
-  });
+    toast.error("Hubo algun error  ", {
+      theme: "dark",
+    });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,21 +87,24 @@ export const H_gastos = () => {
         <th>Valor pago</th>
         <th>Observaciones</th>
         <th>Opciones</th>
-        
       </tr>
     );
   };
-  //formatear fecha 
+  //formatear fecha
   function formatDate(fechaString) {
-    return moment(fechaString).format('MMMM , D , YYYY');
+    return moment(fechaString).format("MMMM , D , YYYY");
   }
 
-  moment.updateLocale('es', {
-    months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
-    monthsShort : 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
-    weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
-    weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
-    weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_')
+  moment.updateLocale("es", {
+    months:
+      "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split(
+        "_"
+      ),
+    monthsShort:
+      "ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),
+    weekdays: "domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),
+    weekdaysShort: "dom._lun._mar._mié._jue._vie._sáb.".split("_"),
+    weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
   });
   const createrow = (CPropietario) => {
     return (
@@ -110,8 +115,8 @@ export const H_gastos = () => {
         <td>{formatDate(CPropietario.FechaElaboracion)}</td>
         <td>{CPropietario.ElaboradoPor}</td>
         <td>{CPropietario.FormaPago}</td>
-        <td>${CPropietario.ValorArriendo}</td>     
-        <td>{CPropietario.Observaciones}</td>     
+        <td>${CPropietario.ValorArriendo}</td>
+        <td>{CPropietario.Observaciones}</td>
         <td>
           <Button
             className="btn-opciones"
@@ -128,20 +133,20 @@ export const H_gastos = () => {
       </tr>
     );
   };
-      //Variables Paginacion
-      const [currentPage, setCurrentPage] = useState(1);
-      const [itemsPerPage] = useState(10);
-      // Paginación
-      const indexOfLastItem = currentPage * itemsPerPage;
-      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-      const currentItems = infoComision.slice(indexOfFirstItem, indexOfLastItem);
-    
-      const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  //Variables Paginacion
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = infoComision.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <>
       <div className="contener-home">
-      <div className="conten-filtro">
+        <div className="conten-filtro">
           <div className="conten-inputs">
             <label className="l1">No. Cedula: </label>
             <input
@@ -154,36 +159,57 @@ export const H_gastos = () => {
             <label className="l1">Fecha Ingreso: </label>
             <input className="input-filtroRe" type="date" name="" id="" />
           </div>
-          <Button variant="success" className="btn-add">
-            <Link to="/Rcomision">
-              <FontAwesomeIcon className="icon" icon={faUserPlus} /> Generar
-              Recibo gastos
-            </Link>
-          </Button>
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/Hgastos" className="linkes">
-              <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inhabilitados
-            </Link>
-          </Button>
+          <OverlayTrigger
+            key="tooltip-generar-recibo-gastos"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-generar-recibo-gastos">
+                Generar Recibo gastos
+              </Tooltip>
+            }
+          >
+            <Button variant="success" className="btn-add">
+              <Link to="/Rcomision">
+                <FontAwesomeIcon className="icon" icon={faUserPlus} />
+                <p className="AgregarPA">Generar Recibo gastos</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
+
+          <OverlayTrigger
+            key="tooltip-ver-inhabilitados-gastos"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-ver-inhabilitados-gastos">
+                Ver Gastos Inhabilitados
+              </Tooltip>
+            }
+          >
+            <Button variant="dark" className="btn-add-info">
+              <Link to="/Hgastos" className="linkes">
+                <FontAwesomeIcon className="icon" icon={faUserSlash} />
+                <p className="AgregarPA">Ver Gastos Inhabilitados</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
         </div>
         <div className="title_view">
-          <h1 className="tittle_propetario">Historial de comisiones propietario</h1>
+          <h1 className="tittle_propetario">
+            Historial de comisiones propietario
+          </h1>
         </div>
         <div className="view_esp">
           <div className="table-container">
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
               <tbody>
-                {currentItems.map((CPropietarios) =>
-                  createrow(CPropietarios)
-                )}
+                {currentItems.map((CPropietarios) => createrow(CPropietarios))}
               </tbody>
-              </Table>
+            </Table>
           </div>
         </div>
         <div className="paginador">
-          <Pagination >
+          <Pagination>
             <Pagination.Prev
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
@@ -221,12 +247,12 @@ export const H_gastos = () => {
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleInhabilitarHgastos(Hgastos)} 
+            onClick={() => handleInhabilitarHgastos(Hgastos)}
           >
             Confirmar
           </Button>
         </Modal.Footer>
       </Modal>
     </>
-  )
-}
+  );
+};
