@@ -24,6 +24,7 @@ export const Rarrendatario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
 
   const handleGuardarClick = async () => {
+
     for (const key in formData) {
       const element = formData[key];
       if (!element) {

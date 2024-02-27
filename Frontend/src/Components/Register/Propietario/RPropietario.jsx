@@ -40,7 +40,8 @@ export const RPropietario = () => {
       });
 
       if (response.ok) {
-        setShowSaveModal(true); // Muestra el modal de confirmación
+        setShowSaveModal(false); // Muestra el modal de confirmación
+        localStorage.setItem('NITPropie',(data.numerodocumento));
         reset(); // Reinicia el formulario si la solicitud es exitosa
         // Muestra un mensaje de éxito o redirige a otra página
       }
@@ -52,6 +53,7 @@ export const RPropietario = () => {
   const handleConfirmSave = () => {
     // Lógica para confirmar el guardado
     handleSubmit(onSubmitRegistro)(); // Envia los datos
+    window.location.href = "/RInmuebleA";
     setShowSaveModal(false); // Cierra el modal
   };
 
@@ -74,8 +76,25 @@ export const RPropietario = () => {
           
             <Form.Group controlId="formfechaingreso" className="mb-3">
               <Form.Label>Fecha de ingreso:</Form.Label>
-              <Form.Control {...register("fechaingreso")} type="date" value={currentDate} />
+              <Form.Control {...register("fechaingreso")} type="date" disabled value={currentDate} />
             </Form.Group>
+
+            <Form.Group
+                controlId="formTipoCuenta"
+                className="col col-md.auto"
+              >
+                <Form.Label>Tipo De Cuenta</Form.Label>
+                <Form.Select
+                {...register("TipoDocumento")}
+                  className="formSelect InputsRegistros"
+                  aria-label="Default select example">
+                  <option value="" disabled hidden selected>
+                  Seleccione Tipo de Documento
+                  </option>
+                  <option value="Cedula Ciudadania">Cedula Ciudadania</option>
+                  <option value="Cedula Extranjera">Cedula Extranjera</option>
+                </Form.Select>
+              </Form.Group>
   
             <Form.Group controlId="formnumerodocumento" className="mb-3">
               <Form.Label>N° Documento Identidad:</Form.Label>
@@ -87,9 +106,11 @@ export const RPropietario = () => {
               <Form.Control {...register("nombrepropietario")} type="text" maxLength={100}/>
             </Form.Group>
   
-            <Form.Group controlId="formtelefono" className="mb-3">
-              <Form.Label>Teléfono:</Form.Label>
-              <Form.Control {...register("telefono")} type="number" />
+
+            <Form.Group controlId="formBarrio" className="mb-3">
+              <Form.Label>Telefono:</Form.Label>
+              <Form.Control {...register("telefono")}  max={9999999999} type="number" />
+
             </Form.Group>
   
             <Form.Group controlId="formcorreoelectronico" className="mb-3">
@@ -106,11 +127,33 @@ export const RPropietario = () => {
               <Form.Label>Dirección Del Propietario:</Form.Label>
               <Form.Control {...register("direccion")} type="text" />
             </Form.Group>
+            <Form.Group
+                controlId="formTipoCuenta"
+                className="col col-md.auto"
+              >
+                <Form.Label>Tipo De Cuenta</Form.Label>
+                <Form.Select
+                {...register("tipocuenta")}
+                  className="formSelect InputsRegistros"
+                  aria-label="Default select example">
+                  <option value="" disabled hidden selected>
+                  Seleccione Tipo de Cuenta
+                  </option>
+                  <option value="Cuenta Ahorros">Cuenta Ahorros</option>
+                  <option value="Cuenta Corriente">Cuenta Corriente</option>
+                </Form.Select>
+              </Form.Group>
             
             <Form.Group controlId="numerocuenta" className="mb-3">
               <Form.Label>Número de cuenta:</Form.Label>
               <Form.Control
-                type="number" {...register("documento_cuenta")} max={9999999999}/>
+
+                type="number"
+                name="numerocuenta"
+                {...register("numerocuenta")}
+                max={9999999999}
+              />
+
             </Form.Group>
 
             </Form>

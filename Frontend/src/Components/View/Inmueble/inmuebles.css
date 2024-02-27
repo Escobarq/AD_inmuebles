@@ -1,6 +1,7 @@
 .paginador{
     display: block;
-    gap:10px;
+    position: fixed;
+    bottom: 3%;
 }
 .noselect {
     width: 120px;
