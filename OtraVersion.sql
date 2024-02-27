@@ -1,36 +1,25 @@
 -- --------------------------------------------------------
 -- Host:                         localhost
--- Versión del servidor:         8.0.32 - MySQL Community Server - GPL
--- SO del servidor:              Win64
--- HeidiSQL Versión:             12.1.0.6537
+-- Versión del servidor:         5.1.72-community - MySQL Community Server (GPL)
+-- SO del servidor:              Win32
+-- HeidiSQL Versión:             10.2.0.5599
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Volcando estructura para tabla adminmuebles.arrendatario
 CREATE TABLE IF NOT EXISTS `arrendatario` (
-  `IdArrendatario` int NOT NULL AUTO_INCREMENT,
-  `IdCodeudor` int unsigned DEFAULT NULL,
-  `NombreCompleto` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `TipoDocumento` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `DocumentoIdentidad` int unsigned DEFAULT NULL,
-  `Telefono` int unsigned DEFAULT NULL,
+  `IdArrendatario` int(11) NOT NULL AUTO_INCREMENT,
+  `IdCodeudor` int(10) unsigned DEFAULT NULL,
+  `NombreCompleto` varchar(100) DEFAULT NULL,
+  `TipoDocumento` varchar(50) DEFAULT NULL,
+  `DocumentoIdentidad` int(10) unsigned DEFAULT NULL,
+  `Telefono` int(10) unsigned DEFAULT NULL,
   `Correo` varchar(200) DEFAULT NULL,
-  `CuotasPagadas` int DEFAULT NULL,
-  `SiguienteCuota` date DEFAULT NULL,
-  `CuotasPendientes` int DEFAULT NULL,
-  `FechaInicioContrato` date DEFAULT NULL,
-  `FechaFinContrato` date DEFAULT NULL,
   `Estado` varchar(50) DEFAULT NULL,
-  `ValorDeposito` decimal(20,5) DEFAULT NULL,
-  `MesesAlquiler` int DEFAULT NULL,
   `booleanos` varchar(50) DEFAULT 'true',
   PRIMARY KEY (`IdArrendatario`) USING BTREE,
   KEY `Id_Codeudor` (`IdCodeudor`) USING BTREE
@@ -38,22 +27,22 @@ CREATE TABLE IF NOT EXISTS `arrendatario` (
 
 -- Volcando datos para la tabla adminmuebles.arrendatario: 3 rows
 /*!40000 ALTER TABLE `arrendatario` DISABLE KEYS */;
-INSERT INTO `arrendatario` (`IdArrendatario`, `IdCodeudor`, `NombreCompleto`, `TipoDocumento`, `DocumentoIdentidad`, `Telefono`, `Correo`, `CuotasPagadas`, `SiguienteCuota`, `CuotasPendientes`, `FechaInicioContrato`, `FechaFinContrato`, `Estado`, `ValorDeposito`, `MesesAlquiler`, `booleanos`) VALUES
-	(1, 1, 'Carlos López', 'CC', 111222333, 1112223334, 'carlos@gmail.com', 5, '2024-03-01', 7, '2024-01-01', '2024-12-31', 'Vigente', 30000000.00000, NULL, 'true'),
-	(2, 2, 'Ana Rodríguez', 'CE', 444555666, 4294967295, 'ana@gmail.com', 10, '2024-03-15', 5, '2023-12-01', '2024-11-30', 'Vigente', NULL, NULL, 'true'),
-	(12, NULL, 'Juan', 'CC', 111211, 313202545, 'Juan@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'true');
+INSERT INTO `arrendatario` (`IdArrendatario`, `IdCodeudor`, `NombreCompleto`, `TipoDocumento`, `DocumentoIdentidad`, `Telefono`, `Correo`, `Estado`, `booleanos`) VALUES
+	(1, 1, 'Carlos López', 'CC', 111222333, 1112223334, 'carlos@gmail.com', 'Vigente', 'true'),
+	(2, 2, 'Ana Rodríguez', 'CE', 444555666, 4294967295, 'ana@gmail.com', 'Vigente', 'true'),
+	(12, NULL, 'Juan', 'CC', 111211, 313202545, 'Juan@gmail.com', NULL, 'true');
 /*!40000 ALTER TABLE `arrendatario` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.codeudor
 CREATE TABLE IF NOT EXISTS `codeudor` (
-  `IdCodeudor` int NOT NULL AUTO_INCREMENT,
-  `NombreCompleto` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `TipoDocumento` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `DocumentoIdentidad` int unsigned DEFAULT NULL,
-  `Telefono` int unsigned DEFAULT NULL,
+  `IdCodeudor` int(11) NOT NULL AUTO_INCREMENT,
+  `NombreCompleto` varchar(100) DEFAULT NULL,
+  `TipoDocumento` varchar(50) DEFAULT NULL,
+  `DocumentoIdentidad` int(10) unsigned DEFAULT NULL,
+  `Telefono` int(10) unsigned DEFAULT NULL,
   `Correo` varchar(250) DEFAULT NULL,
   `Direccion` varchar(150) DEFAULT NULL,
-  `booleanos` varchar(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT 'true' COMMENT 'Datos booleanos si esta activo mostrar de lo contario no mostrar',
+  `booleanos` varchar(10) DEFAULT 'true' COMMENT 'Datos booleanos si esta activo mostrar de lo contario no mostrar',
   PRIMARY KEY (`IdCodeudor`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
@@ -67,13 +56,13 @@ INSERT INTO `codeudor` (`IdCodeudor`, `NombreCompleto`, `TipoDocumento`, `Docume
 
 -- Volcando estructura para tabla adminmuebles.comision_propietario
 CREATE TABLE IF NOT EXISTS `comision_propietario` (
-  `IdComisionPropietario` int NOT NULL AUTO_INCREMENT,
-  `IdPropietario` int unsigned DEFAULT NULL,
+  `IdComisionPropietario` int(11) NOT NULL AUTO_INCREMENT,
+  `IdPropietario` int(10) unsigned DEFAULT NULL,
   `FechaElaboracion` date DEFAULT NULL,
   `PeriodoPagado` date DEFAULT NULL,
-  `ElaboradoPor` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `ValorArriendo` int unsigned DEFAULT NULL,
-  `FormaPago` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `ElaboradoPor` varchar(100) DEFAULT NULL,
+  `ValorArriendo` int(10) unsigned DEFAULT NULL,
+  `FormaPago` varchar(50) DEFAULT NULL,
   `Observaciones` varchar(500) DEFAULT NULL,
   `booleanos` varchar(50) DEFAULT 'true',
   PRIMARY KEY (`IdComisionPropietario`) USING BTREE,
@@ -87,26 +76,44 @@ INSERT INTO `comision_propietario` (`IdComisionPropietario`, `IdPropietario`, `F
 	(1, 1, '2024-03-01', '2024-03-01', 'Usuario X', 1500000, 'Transferencia', 'Pago recibido', 'true');
 /*!40000 ALTER TABLE `comision_propietario` ENABLE KEYS */;
 
+-- Volcando estructura para tabla adminmuebles.contratoarrendamiento
+CREATE TABLE IF NOT EXISTS `contratoarrendamiento` (
+  `IdContrato` int(11) NOT NULL AUTO_INCREMENT,
+  `IdArrendatario` int(11) DEFAULT NULL,
+  `FechaInicioContrato` date NOT NULL,
+  `FechaFinContrato` date NOT NULL,
+  `EstadoContrato` varchar(50) DEFAULT NULL,
+  `ValorDeposito` decimal(20,5) DEFAULT NULL,
+  `MesesAlquiler` int(11) DEFAULT NULL,
+  `CuotasPendientes` int(11) DEFAULT NULL,
+  PRIMARY KEY (`IdContrato`),
+  KEY `IdArrendatario` (`IdArrendatario`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- Volcando datos para la tabla adminmuebles.contratoarrendamiento: 0 rows
+/*!40000 ALTER TABLE `contratoarrendamiento` DISABLE KEYS */;
+/*!40000 ALTER TABLE `contratoarrendamiento` ENABLE KEYS */;
+
 -- Volcando estructura para tabla adminmuebles.inmueble
 CREATE TABLE IF NOT EXISTS `inmueble` (
-  `IdInmueble` int NOT NULL AUTO_INCREMENT,
-  `IdArrendatario` int unsigned DEFAULT NULL,
-  `IdPropietario` int unsigned DEFAULT NULL,
-  `NoMatricula` int unsigned DEFAULT NULL,
+  `IdInmueble` int(11) NOT NULL AUTO_INCREMENT,
+  `IdArrendatario` int(10) unsigned DEFAULT NULL,
+  `IdPropietario` int(10) unsigned DEFAULT NULL,
+  `NoMatricula` int(10) unsigned DEFAULT NULL,
   `Direccion` varchar(200) DEFAULT NULL,
-  `Estrato` int DEFAULT NULL,
+  `Estrato` int(11) DEFAULT NULL,
   `Ciudad` varchar(100) DEFAULT NULL,
   `Barrio` varchar(100) DEFAULT NULL,
   `Tipo` varchar(50) DEFAULT NULL,
-  `NoNiveles` int DEFAULT NULL,
-  `NoBanos` int DEFAULT NULL,
-  `ServiciosPublicos` varchar(700) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `NoHabitaciones` int DEFAULT NULL,
+  `NoNiveles` int(11) DEFAULT NULL,
+  `NoBanos` int(11) DEFAULT NULL,
+  `ServiciosPublicos` varchar(700) DEFAULT NULL,
+  `NoHabitaciones` int(11) DEFAULT NULL,
   `Estado` varchar(100) DEFAULT NULL,
-  `NoTerraza` int DEFAULT NULL,
+  `NoTerraza` int(11) DEFAULT NULL,
   `AreaConstruidaM2` float DEFAULT NULL,
   `Aseguramiento` date DEFAULT NULL,
-  `ValorInmueble` int unsigned DEFAULT NULL,
+  `ValorInmueble` int(10) unsigned DEFAULT NULL,
   `booleanos` varchar(50) NOT NULL DEFAULT 'true',
   `Descripcion` varchar(700) DEFAULT NULL,
   PRIMARY KEY (`IdInmueble`) USING BTREE,
@@ -132,39 +139,41 @@ INSERT INTO `inmueble` (`IdInmueble`, `IdArrendatario`, `IdPropietario`, `NoMatr
 
 -- Volcando estructura para tabla adminmuebles.pagos_arrendamiento
 CREATE TABLE IF NOT EXISTS `pagos_arrendamiento` (
-  `IdPagoArrendamiento` int NOT NULL AUTO_INCREMENT,
-  `IdArrendatario` int unsigned DEFAULT NULL,
+  `IdPagoArrendamiento` int(11) NOT NULL AUTO_INCREMENT,
+  `IdArrendatario` int(10) unsigned DEFAULT NULL,
+  `IdContrato` int(11) DEFAULT NULL,
   `FechaPago` date DEFAULT NULL,
   `FechaInicio` date DEFAULT NULL,
   `FechaFin` date DEFAULT NULL,
-  `ValorPago` int unsigned DEFAULT NULL,
-  `FormaPago` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `ValorPago` int(10) unsigned DEFAULT NULL,
+  `FormaPago` varchar(50) DEFAULT NULL,
   `Estado` varchar(50) DEFAULT NULL,
-  `DiasDMora` int DEFAULT NULL,
+  `DiasDMora` int(11) DEFAULT NULL,
   `booleanos` varchar(50) DEFAULT 'true',
   PRIMARY KEY (`IdPagoArrendamiento`) USING BTREE,
-  KEY `Id_Arrendatario` (`IdArrendatario`) USING BTREE
+  KEY `Id_Arrendatario` (`IdArrendatario`) USING BTREE,
+  KEY `IdContrato` (`IdContrato`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 -- Volcando datos para la tabla adminmuebles.pagos_arrendamiento: 2 rows
 /*!40000 ALTER TABLE `pagos_arrendamiento` DISABLE KEYS */;
-INSERT INTO `pagos_arrendamiento` (`IdPagoArrendamiento`, `IdArrendatario`, `FechaPago`, `FechaInicio`, `FechaFin`, `ValorPago`, `FormaPago`, `Estado`, `DiasDMora`, `booleanos`) VALUES
-	(1, 1, '2024-03-02', '2024-03-01', '2024-03-15', 1500000, 'Transferencia', 'Pagado', 0, 'true'),
-	(2, 2, '2024-03-16', '2024-03-16', '2024-03-31', 2000000, 'Efectivo', 'Pendiente', 5, 'true');
+INSERT INTO `pagos_arrendamiento` (`IdPagoArrendamiento`, `IdArrendatario`, `IdContrato`, `FechaPago`, `FechaInicio`, `FechaFin`, `ValorPago`, `FormaPago`, `Estado`, `DiasDMora`, `booleanos`) VALUES
+	(1, 1, NULL, '2024-03-02', '2024-03-01', '2024-03-15', 1500000, 'Transferencia', 'Pagado', 0, 'true'),
+	(2, 2, NULL, '2024-03-16', '2024-03-16', '2024-03-31', 2000000, 'Efectivo', 'Pendiente', 5, 'true');
 /*!40000 ALTER TABLE `pagos_arrendamiento` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.propietario
 CREATE TABLE IF NOT EXISTS `propietario` (
-  `IdPropietario` int NOT NULL AUTO_INCREMENT,
-  `NombreCompleto` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `TipoDocumento` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `DocumentoIdentidad` int unsigned DEFAULT NULL,
+  `IdPropietario` int(11) NOT NULL AUTO_INCREMENT,
+  `NombreCompleto` varchar(100) DEFAULT NULL,
+  `TipoDocumento` varchar(50) DEFAULT NULL,
+  `DocumentoIdentidad` int(10) unsigned DEFAULT NULL,
   `Direccion` varchar(200) DEFAULT NULL,
-  `Telefono` int unsigned DEFAULT NULL,
+  `Telefono` int(10) unsigned DEFAULT NULL,
   `Correo` varchar(200) DEFAULT NULL,
   `Banco` varchar(100) DEFAULT NULL,
-  `TipoCuenta` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `NumeroCuenta` bigint unsigned DEFAULT NULL,
+  `TipoCuenta` varchar(50) DEFAULT NULL,
+  `NumeroCuenta` bigint(20) unsigned DEFAULT NULL,
   `booleanos` varchar(50) NOT NULL DEFAULT 'true',
   `FechaIngreso` date DEFAULT NULL,
   PRIMARY KEY (`IdPropietario`) USING BTREE
@@ -181,8 +190,8 @@ INSERT INTO `propietario` (`IdPropietario`, `NombreCompleto`, `TipoDocumento`, `
 
 -- Volcando estructura para tabla adminmuebles.rol
 CREATE TABLE IF NOT EXISTS `rol` (
-  `Idrol` int NOT NULL AUTO_INCREMENT,
-  `NombreRol` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `Idrol` int(11) NOT NULL AUTO_INCREMENT,
+  `NombreRol` varchar(50) NOT NULL,
   PRIMARY KEY (`Idrol`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
@@ -197,13 +206,13 @@ INSERT INTO `rol` (`Idrol`, `NombreRol`) VALUES
 
 -- Volcando estructura para tabla adminmuebles.trabajador
 CREATE TABLE IF NOT EXISTS `trabajador` (
-  `IdTrabajador` int NOT NULL AUTO_INCREMENT,
-  `Nombre` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Apellido` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Correo` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Contrasena` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `Telefono` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `Idrol` int DEFAULT NULL,
+  `IdTrabajador` int(11) NOT NULL AUTO_INCREMENT,
+  `Nombre` varchar(50) NOT NULL,
+  `Apellido` varchar(50) NOT NULL,
+  `Correo` varchar(100) NOT NULL,
+  `Contrasena` varchar(255) NOT NULL,
+  `Telefono` varchar(20) DEFAULT NULL,
+  `Idrol` int(11) DEFAULT NULL,
   `Booleanos` char(50) NOT NULL DEFAULT 'true',
   PRIMARY KEY (`IdTrabajador`) USING BTREE,
   KEY `idrol` (`Idrol`) USING BTREE
@@ -218,8 +227,19 @@ INSERT INTO `trabajador` (`IdTrabajador`, `Nombre`, `Apellido`, `Correo`, `Contr
 	(4, 'Juan', 'David', 'juandeq15@example.com', 'contraseña111', '555-1133', 4, 'true');
 /*!40000 ALTER TABLE `trabajador` ENABLE KEYS */;
 
-/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+-- Volcando estructura para disparador adminmuebles.Before_Insert_ContratoArrendamiento
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='';
+DELIMITER //
+CREATE TRIGGER `Before_Insert_ContratoArrendamiento` BEFORE INSERT ON `contratoarrendamiento` FOR EACH ROW BEGIN
+    SET NEW.MesesAlquiler = TIMESTAMPDIFF(MONTH, NEW.FechaInicioContrato, NEW.FechaFinContrato);
+    SET NEW.CuotasPendientes = NEW.MesesAlquiler - (
+        SELECT COUNT(*) FROM PagoArrendamiento
+        WHERE IdArrendatario = NEW.IdArrendatario
+    );
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

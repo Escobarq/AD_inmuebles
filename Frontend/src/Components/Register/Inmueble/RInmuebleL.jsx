@@ -61,12 +61,12 @@ export const RInmuebleL = () => {
   };
   return (
     <div className="contener-home contener-rpropietario">
-      <h2>Registro Inmueble</h2>
+      <h2>Registro Inmueble </h2>
       <div className="container">
-        <div className="row">
-            <Form className="form-propietario row" style={{ marginTop: "0" }} onSubmit={handleSubmit(onsubmitRegistro)}
-             method="post">
-          <div className="col-md-6">
+      <Form className="form-propietario" onSubmit={handleSubmit(onsubmitRegistro)}>
+
+        
+           
               <Form.Group controlId="formTipoInmueble">
                 <Form.Label>Tipo Inmueble</Form.Label>
                 <Form.Select className="formSelect"
@@ -111,10 +111,7 @@ export const RInmuebleL = () => {
                 <Form.Label>Valor</Form.Label>
                 <Form.Control {...register("ValorIn")} type="number" />
               </Form.Group>
-           
-          </div>
-
-          <div className="col-md-6">
+          
             <Form.Group controlId="formNoBanos">
               <Form.Label>No. Habitaciones</Form.Label>
               <Form.Control {...register("NHabita")} type="number" />
@@ -149,7 +146,9 @@ export const RInmuebleL = () => {
                   style={{ width: "100%", resize: "none" }}
                 />
               </Form.Group>
+              </Form>
           </div>
+
           <div className="col-md-12">
               <div className="save_deleter">
               <Button
@@ -216,9 +215,7 @@ export const RInmuebleL = () => {
                 </Button>
               </Modal.Footer>
             </Modal>
-            </Form>
-        </div>
-      </div>
+           
     </div>
   );
 };

@@ -1,7 +1,7 @@
-import  { useState } from "react";
+import  { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Form, Button, Modal } from "react-bootstrap";
+import { Form, Button, Table, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import { toast } from "react-toastify";
@@ -9,6 +9,9 @@ import { toast } from "react-toastify";
 export const RInmuebleA = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [infopropietario, setinfopropietario] = useState([]);
+  const [NoResult, setNoResult]= useState(false)
+  const [mostrarModalA, setMostrarModalA] = useState(false);
 
   const notify = () =>
     toast.success("Se Registró correctamente", {
@@ -22,12 +25,75 @@ export const RInmuebleA = () => {
 
   const { register, handleSubmit, reset } = useForm();
 
+
+  useEffect(() => {
+    let NITPropietario = localStorage.getItem("NITPropie")
+    fetchData(NITPropietario);
+  }, []);
+
+  const fetchData = async (NITPropietario) => {
+
+    if(NITPropietario){
+      setNoResult(false)
+      try {
+        const response = await fetch(`http://localhost:3006/Vpropietarios?Cedula=${NITPropietario}`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setinfopropietario(data[0]);
+        
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+    else {
+      setNoResult(true)
+      try {
+        const response = await fetch(`http://localhost:3006/Vpropietarios?`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setinfopropietario(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+    
+  };
+  const handleCloseModalA = () => {
+    setMostrarModalA(false);
+  };
+  const handleMostrarAClick = async () => {
+      setMostrarModalA(true);
+  };
+
+  const createrowA = (Propietarios) => {
+    return (
+      <tr
+        key={Propietarios.IdArrendatario}
+      >
+        <td>{Propietarios.TipoDocumento}</td>
+        <td>{Propietarios.DocumentoIdentidad}</td>
+        <td>{Propietarios.NombreCompleto}</td>
+        <td>{Propietarios.Estado}</td>
+        <td>{Propietarios.Telefono}</td>
+        <td>{Propietarios.Correo}</td>
+      </tr>
+    );
+  };
+
+
   const onsubmitRegistro = async (data) => {
+    data.Id_Propietario = infopropietario.IdPropietario
     data.Tipo = "Apartamento";
     try {
       await crearInmueble(data);
       notify();
       reset();
+      localStorage.removeItem("NITPropie")
+      window.location.href = "/Inmueble";
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
         alert("El correo ya está registrado");
@@ -54,6 +120,7 @@ export const RInmuebleA = () => {
   };
 
   const handleConfirmCancel = () => {
+    localStorage.removeItem("NITPropie")
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
@@ -67,7 +134,7 @@ export const RInmuebleA = () => {
             style={{ marginTop: "0" }}
             onSubmit={handleSubmit(onsubmitRegistro)}
             method="post"
-          >
+             >
             <div className="form-propietario">
 
             
@@ -92,69 +159,83 @@ export const RInmuebleA = () => {
               </Form.Group>
 
               <Form.Group controlId="formNoMatricula">
-                <Form.Label>No. Matricula</Form.Label>
+                <Form.Label>No. Matricula:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("Nmatricula")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formDireccion">
-                <Form.Label>Dirección</Form.Label>
+                <Form.Label>Dirección:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("Direccion")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formCiudad">
-                <Form.Label>Ciudad</Form.Label>
+                <Form.Label>Ciudad:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("Ciudad")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formBarrio">
-                <Form.Label>Barrio</Form.Label>
+                <Form.Label>Barrio:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("Barrio")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formEstrato">
-                <Form.Label>Estrato</Form.Label>
+                <Form.Label>Estrato:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("Estrato")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formNoBanos">
-                <Form.Label>No. Baños</Form.Label>
+                <Form.Label>No. Baños:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("Nbanos")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formNoBanos">
-                <Form.Label>Valor</Form.Label>
+                <Form.Label>Valor:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("ValorIn")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formNoHabitaciones">
-                <Form.Label>No. Habitaciones</Form.Label>
+                <Form.Label>No. Habitaciones:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("NHabita")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formNoNiveles">
-                <Form.Label>No. Niveles</Form.Label>
+                <Form.Label>No. Niveles:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("NoNiveles")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formTerraza">
-                <Form.Label>Terraza</Form.Label>
+                <Form.Label>Terraza:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("NoTerraza")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formServiciosPublicos">
-                <Form.Label>Servicios Publicos</Form.Label>
+                <Form.Label>Servicios Publicos:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("Spublicos")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formAseguramiento">
-                <Form.Label>Aseguramiento</Form.Label>
+                <Form.Label>Aseguramiento:</Form.Label>
                 <Form.Control  className="InputsRegistros" {...register("aseguramiento")} type="date" />
               </Form.Group>
+              {NoResult == true ? (
+         <Form.Group controlId="formNoIdentidadPropietario">
+         <Form.Label>Propietario del inmueble</Form.Label>
+         <Button type="button" variant="success m-2" onClick={() => handleMostrarAClick()} >
+                  <span className="text_button ms-2">Ver Propietarios</span>
+                </Button>
 
+       </Form.Group>
+        ):(
               <Form.Group controlId="formNoIdentidadPropietario">
-                <Form.Label>No. Identidad Propietario</Form.Label>
-                <Form.Control  className="InputsRegistros" type="number" />
+
+                <Form.Label>Propietario del inmueble</Form.Label>
+                <Form.Control 
+                disabled
+                value={infopropietario.NombreCompleto}                
+                className="InputsRegistros" type="text" />
+
               </Form.Group>
+        )}
 
               </div>
               <Form.Group controlId="formNoIdentidadPropietario">
@@ -166,8 +247,8 @@ export const RInmuebleA = () => {
                   style={{ width: "100%", resize: "none" }}
                 />
               </Form.Group>
-            {/*Botones para guardar y cancelar*/}
-            <div className="col-md-12">
+             {/*Botones para guardar y cancelar*/}
+             <div className="col-md-12">
               <div className="save_deleter">
               <Button
                   type="button"
@@ -233,6 +314,37 @@ export const RInmuebleA = () => {
                 </Button>
               </Modal.Footer>
             </Modal>
+             <Modal
+          size="lg"
+          show={mostrarModalA}
+          onHide={handleCloseModalA}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Propietarios Disponibles</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Tipo de Documento</th>
+                  <th>No. Documento</th>
+                  <th>Nombre</th>
+                  <th>Estado</th>
+                  <th>Teléfono</th>
+                  <th>Correo</th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+              {infopropietario.map((Propietarios) =>
+                  createrowA(Propietarios)
+                )}
+              </tbody>
+            </Table>
+          </Modal.Body>
+        </Modal>
           </Form>
       </div>
     </div>
