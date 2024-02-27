@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         localhost
--- Versión del servidor:         8.0.32 - MySQL Community Server - GPL
+-- Versión del servidor:         8.0.30 - MySQL Community Server - GPL
 -- SO del servidor:              Win64
 -- HeidiSQL Versión:             12.1.0.6537
 -- --------------------------------------------------------
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `codeudor` (
 -- Volcando datos para la tabla adminmuebles.codeudor: 3 rows
 /*!40000 ALTER TABLE `codeudor` DISABLE KEYS */;
 INSERT INTO `codeudor` (`IdCodeudor`, `NombreCompleto`, `TipoDocumento`, `DocumentoIdentidad`, `Telefono`, `Correo`, `Direccion`, `booleanos`) VALUES
-	(1, 'Pedro Ramírez', 'CC', 777888999, 4294967295, 'pedro@gmail.com', 'Calle 789', 'true'),
+	(1, 'Pedro Ramíre', 'CC', 777888999, 4294967295, 'pedro@gmail.com', 'Calle 789', 'true'),
 	(2, 'Laura Martínez', 'CC', 333444555, 3334445556, 'laura@gmail.com', 'Avenida 012', 'true'),
 	(3, 'arenas', 'CE', 1123123, 12312312, 'xd@gmail', 'nose', 'false');
 /*!40000 ALTER TABLE `codeudor` ENABLE KEYS */;
@@ -138,7 +138,7 @@ INSERT INTO `inmueble` (`IdInmueble`, `IdArrendatario`, `IdPropietario`, `NoMatr
 	(12, 2, NULL, 900, 'fgff', 1, 'fdgfdg', 'dfgfdg', 'Apartamento', 9, 3, 'fgfgfdgfdfdfgfdg', NULL, 'Ocupado', 9, NULL, '2024-02-12', 8000, 'true', 'dfgfgfgf'),
 	(13, 3, NULL, 900, 'fgff', 8, 'fgfg', 'fhfh', 'Apartamento', 9, 2, 'sd', NULL, 'Ocupado', 6, NULL, '2024-02-12', 700, 'true', 'dfdfdf'),
 	(14, 2, NULL, 2, 'fdfd', 1, 'palmira', 'fhfh', 'Apartamento', 2, 2, 'fgffgf', NULL, 'Ocupado', 1, NULL, '2024-02-12', 1000000, 'true', '  n n n nvbvbbvbvvb'),
-	(15, NULL, NULL, 896, 'calle #2 cr33', 3, 'palmira', 'dfdfd', 'Apartamento', 2, 9, 'jiisgsdjsdjdjss', NULL, NULL, 1, NULL, '2024-02-12', 2000, 'true', 'vgygg'),
+	(15, 12, NULL, 896, 'calle #2 cr33', 3, 'palmira', 'dfdfd', 'Apartamento', 2, 9, 'jiisgsdjsdjdjss', NULL, 'Ocupado', 1, NULL, '2024-02-12', 2000, 'true', 'vgygg'),
 	(16, NULL, NULL, 55, 'kj,k,kj,jk,', 4, 'fgfgfd', 'dfgfgfdg', 'Bodega', NULL, 5, 'gfgfgf', NULL, NULL, NULL, NULL, NULL, 20000, 'false', ',k.kl.jk.'),
 	(17, NULL, NULL, 2001, 'carrera 90', 1, 'palmira', 'paraiso', 'Apartamento', 3, 3, 'agua y luz', NULL, NULL, 2, NULL, '2024-02-16', 200000, 'true', 'nada de mascotas');
 /*!40000 ALTER TABLE `inmueble` ENABLE KEYS */;
@@ -205,9 +205,7 @@ CREATE TABLE IF NOT EXISTS `rol` (
 /*!40000 ALTER TABLE `rol` DISABLE KEYS */;
 INSERT INTO `rol` (`Idrol`, `NombreRol`) VALUES
 	(1, 'Administrador'),
-	(2, 'Empleado'),
-	(3, 'Asesor Comercial'),
-	(4, 'Super usuario');
+	(2, 'Empleado');
 /*!40000 ALTER TABLE `rol` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.trabajador
@@ -228,9 +226,7 @@ CREATE TABLE IF NOT EXISTS `trabajador` (
 /*!40000 ALTER TABLE `trabajador` DISABLE KEYS */;
 INSERT INTO `trabajador` (`IdTrabajador`, `Nombre`, `Apellido`, `Correo`, `Contrasena`, `Telefono`, `Idrol`, `Booleanos`) VALUES
 	(1, 'Juan', 'Pérez', 'juan@example.com', 'contraseña123', '555-1234', 1, 'true'),
-	(2, 'María', 'Gómez', 'maria@example.com', 'contraseña456', '555-5678', 2, 'true'),
-	(3, 'Carlos', 'Rodríguez', 'carlos@example.com', 'contraseña789', '555-9876', 3, 'true'),
-	(4, 'Juan', 'David', 'juandeq15@example.com', 'contraseña111', '555-1133', 4, 'true');
+	(2, 'María ', 'Gómez    ', 'maria@example.com    ', 'contraseña456    ', '555-5678', 2, 'true');
 /*!40000 ALTER TABLE `trabajador` ENABLE KEYS */;
 
 -- Volcando estructura para disparador adminmuebles.Before_Insert_ContratoArrendamiento
