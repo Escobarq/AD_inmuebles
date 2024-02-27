@@ -1,3 +1,4 @@
+
 -- --------------------------------------------------------
 -- Host:                         localhost
 -- Versión del servidor:         8.0.32 - MySQL Community Server - GPL
@@ -251,3 +252,4 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+

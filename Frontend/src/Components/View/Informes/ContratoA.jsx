@@ -2,12 +2,11 @@ import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "react-bootstrap/Pagination";
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import logo from "../../../assets/Logo.png";
 import moment from 'moment';
 import 'moment/locale/es';
-
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import logo from '../../../assets/Logo.png'
 
 export const ContratoA = () => {
   const [infoarrendatario, setinfoarrendatario] = useState([]);
@@ -27,28 +26,29 @@ export const ContratoA = () => {
       }
     };
 
+    
+
     fetchData();
   }, []);
-    //formatear fecha 
-    function formatDate(fechaString) {
-      return moment(fechaString).format('MMMM , D , YYYY');
-    }
-  
-    moment.updateLocale('es', {
-      months : 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
-      monthsShort : 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
-      weekdays : 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
-      weekdaysShort : 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
-      weekdaysMin : 'do_lu_ma_mi_ju_vi_sá'.split('_')
-    });
+  //formatear fecha 
+  function formatDate(fechaString) {
+    return moment(fechaString).format('MMMM , D , YYYY');
+  }
+
+  moment.updateLocale('es', {
+    months: 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
+    monthsShort: 'ene.feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split(''),
+    weekdays: 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
+    weekdaysShort: 'dom.lun._mar._mié._jue._vie._sáb.'.split(''),
+    weekdaysMin: 'do_lu_ma_mi_ju_vi_sá'.split('_')
+  });
 
   const createheader = () => {
     return (
       <tr>
         <th>Documento</th>
         <th>Nombre Arrendatario</th>
-        <th>Meses de Alquiler</th>
-        <th>Cuotas Pendientes</th>
+
         <th>Fecha Inicio Contrato</th>
         <th>Fecha Fin Contrato</th>
         <th>Estado</th>
@@ -61,8 +61,8 @@ export const ContratoA = () => {
       <tr key={Arrendatarios.IdArrendatario}>
         <td>{Arrendatarios.DocumentoIdentidad}</td>
         <td>{Arrendatarios.NombreCompleto}</td>
-        <td>{Arrendatarios.MesesAlquiler}</td>
-        <td>{Arrendatarios.CuotasPendientes}</td>
+       
+       
         <td>{formatDate(Arrendatarios.FechaInicioContrato)}</td>
         <td>{formatDate(Arrendatarios.FechaFinContrato)}</td>
         <td>{Arrendatarios.Estado}</td>
@@ -85,41 +85,71 @@ export const ContratoA = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
-// Función para generar el PDF
-const generatePDF = () => {
-  html2canvas(pdfContentRef.current, { width: pdfContentRef.current.scrollWidth }).then(canvas => {
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgWidth = pdf.internal.pageSize.getWidth();
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    // Añadir un margen de 10mm a la izquierda y a la derecha
-    const marginLeft = 10;
-    const marginRight = 10;
-    const tableWidth = imgWidth - marginLeft - marginRight;
-
-    // Calcular la posición y el tamaño de la tabla en el PDF
-    const marginTop = 50; // Ajusta este valor según tus necesidades
-    const tableX = marginLeft;
-    const tableY = marginTop;
-    const tableHeight = (canvas.height * tableWidth) / canvas.width;
-
-    // Agregar el logo
-    const logoWidth = 35; // Ancho del logo
-    const logoHeight = 20; // Alto del logo
-    pdf.addImage(logo, 'PNG', marginLeft, 10, logoWidth, logoHeight);
-
-    // Agregar el título al lado del logo
-    pdf.setFontSize(16);
-    pdf.text("Contrato Arrendatario", marginLeft + logoWidth + 5, 20);
-
-    // Agregar la tabla
-    pdf.addImage(imgData, 'PNG', marginLeft, marginTop, tableWidth, tableHeight);
+  //Funcion para generar pdf
+  const handleGeneratePDF = () => {
+    const doc = new jsPDF();
     
-    pdf.save("contrato_arrendatario.pdf");
-  });
-};
 
+
+    // Logo-pdf
+    doc.addImage(logo, "PNG", 15, 10, 33, 20); // Logo next to the title
+
+    // titulo pdf
+    doc.text("Contrato Arrendatario", 60, 23); // Title next to the logo
+
+
+
+
+    // Columnas-pdf
+    const columns = [
+        { header: "Documento", dataKey: "DocumentoIdentidad" },
+        { header: "Nombre Arrendatario", dataKey: "NombreCompleto" },
+        { header: "Fecha Inicio Contrato", dataKey: "FechaInicioContrato" },
+        { header: "Fecha Fin Contrato", dataKey: "FechaFinContrato" },
+        { header: "Estado", dataKey: "Estado" }
+    ];
+
+    // Datos de la tabla
+    const data = infoarrendatario.map(arrendatario => ({
+        DocumentoIdentidad: arrendatario.DocumentoIdentidad,
+        NombreCompleto: arrendatario.NombreCompleto,
+        FechaInicioContrato: formatDate(arrendatario.FechaInicioContrato),
+        FechaFinContrato: formatDate(arrendatario.FechaFinContrato),
+        Estado: arrendatario.Estado
+    }));
+
+    //informacion en forma de tabla
+    autoTable(doc, { 
+// theme: 'plain',
+//grid
+//plain
+      columns,
+       body: data,
+        startY: 40 }); // Move the table further down
+
+    
+    // obtener el numero total de paginas
+    const totalPages = doc.internal.getNumberOfPages();
+
+    // numeracion de paginas
+    for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text(
+            `Pág ${i} / ${totalPages}`,
+            doc.internal.pageSize.getWidth() / 2,
+            doc.internal.pageSize.getHeight() - 10,
+            { align: "center" }
+        );
+    }
+
+
+    // nombre de pdf
+    doc.save("Contrato_Arrendatario.pdf");
+
+
+};
 
 
   return (
@@ -163,10 +193,11 @@ const generatePDF = () => {
           />
         </Pagination>
       </div>
-      <button className="bottom-button" onClick={generatePDF}>
+      <button className="bottom-button" onClick={handleGeneratePDF}>
         <FontAwesomeIcon icon={faFilePdf} />
         Generar PDF
       </button>
+
     </div>
   );
 };

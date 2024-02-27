@@ -67,6 +67,7 @@ export const Arrendatario = () => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
     
+    
   };
 
   const fetchData = async () => {
@@ -156,6 +157,7 @@ export const Arrendatario = () => {
             <label className="l1">No. Cedula: </label>
             <input
              value={filtroData.Cedula} onChange={handleChange}
+             
               className="input-filtroRe"
               type="number"
               name="Cedula"
