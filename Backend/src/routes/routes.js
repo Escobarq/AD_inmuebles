@@ -490,15 +490,17 @@ router.put('/Rcodeudor/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { nombrecompleto, documentoidentidad, telefono, correoelectronico, direccion } = req.body;
-    const updatedFields = {};
+    const { NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono, Correo, Direccion } = req.body;
+    const updatedFields = {
+      NombreCompleto: NombreCompleto,
+      TipoDocumento: TipoDocumento,
+      DocumentoIdentidad: DocumentoIdentidad,
+      Telefono: Telefono,
+      Correo: Correo,
+      Direccion: Direccion
+    };
 
-    if (nombrecompleto) updatedFields.NombreCompleto = nombrecompleto;
-    if (documentoidentidad) updatedFields.DocumentoIdentidad = documentoidentidad;
-    if (telefono) updatedFields.Telefono = telefono;
-    if (correoelectronico) updatedFields.Correo = correoelectronico;
-    if (direccion) updatedFields.Direccion = direccion;
-
+    // Verificar si se proporcionaron campos para actualizar
     if (Object.keys(updatedFields).length === 0) {
       return res.status(400).json({ error: "No se proporcionaron campos para actualizar" });
     }
@@ -515,37 +517,39 @@ router.put('/Rcodeudor/:id', async (req, res) => {
 
 
 
+
+
   /*
   Funcion para logear
   */
-router.post("/Login_user", (req, res) => {
+  router.post("/Login_user", (req, res) => {
     const { correousuario, contrausuario } = req.body; // Datos del formulario
 
-    // Consulta SQL para buscar un usuario con el correo electrónico proporcionado
-    const sql = `SELECT * FROM trabajador WHERE Correo = ?`;
+    // Consulta SQL para buscar un usuario con el correo electrónico proporcionado y Boolenos en 'true'
+    const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
 
     connection.query(sql, [correousuario], (error, results) => {
-      if (error) {
-        console.error("Error al realizar la consulta:", error);
-        res.status(500).json({ message: "Error del servidor" });
-      } else {
-        if (results.length > 0) {
-          const user = results[0];
-          // Verifica si la contraseña coincide
-          if (user.Contrasena === contrausuario) {
-            // Las credenciales son válidas
-            res.status(200).json({ message: "Inicio de sesión exitoso" });
-          } else {
-            // La contraseña es incorrecta
-            res.status(401).json({ message: "Contraseña incorrecta" });
-          }
+        if (error) {
+            console.error("Error al realizar la consulta:", error);
+            res.status(500).json({ message: "Error del servidor" });
         } else {
-          // No se encontró un usuario con el correo electrónico proporcionado
-          res.status(404).json({ message: "Usuario no encontrado" });
+            if (results.length > 0) {
+                const user = results[0];
+                // Verifica si la contraseña coincide
+                if (user.Contrasena === contrausuario) {
+                    // Las credenciales son válidas
+                    res.status(200).json({ message: "Inicio de sesión exitoso" });
+                } else {
+                    // La contraseña es incorrecta
+                    res.status(401).json({ message: "Contraseña incorrecta" });
+                }
+            } else {
+                // No se encontró un usuario con el correo electrónico proporcionado o Boolenos en 'false'
+                res.status(404).json({ message: "Usuario no encontrado o no autorizado para iniciar sesión" });
+            }
         }
-      }
     });
-  });
+});
   
 // Registrar Usuario
 router.post("/RegistrarUsuario", async (req, res) => {
@@ -852,5 +856,42 @@ router.put("/Vempleados/:id", (req, res) => {
     }
   );
 });
+//Ruta actualizar rol empleado
+const fields = ['Nombre', 'Apellido', 'DocumentoIdentidad', 'Correo', 'Contrasena', 'Telefono', 'Idrol'];
+
+router.put("/empleados/:id", (req, res) => {
+  const id = req.params.id; // ID del empleado a actualizar
+
+  // Construimos el array de valores a actualizar
+  const updateValues = [];
+  const updateFields = [];
+
+  fields.forEach(field => {
+    if (req.body[field]) {
+      updateValues.push(req.body[field]);
+      updateFields.push(`${field} = ?`);
+    }
+  });
+
+  // Si no hay campos para actualizar, respondemos con un error
+  if (updateValues.length === 0) {
+    return res.status(400).json({ error: "No se han proporcionado campos para actualizar" });
+  }
+
+  // Realiza la actualización en la base de datos
+  connection.query(
+    `UPDATE trabajador SET ${updateFields.join(", ")} WHERE IdTrabajador = ?`,
+    [...updateValues, id],
+    (error, results) => {
+      if (error) {
+        console.error("Error al actualizar el empleado:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      } else {
+        res.status(200).json({ message: "Empleado actualizado exitosamente" });
+      }
+    }
+  );
+});
+
 
 module.exports = router;

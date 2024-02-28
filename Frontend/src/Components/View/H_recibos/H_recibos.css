@@ -1,0 +1,11 @@
+.AgregarPA{
+    margin-bottom: 0px !important;
+}
+@media (width <= 1366px) {
+    .btn-add{
+        width: 5%;
+    }
+    .AgregarPA{
+        display: none;
+    }
+}

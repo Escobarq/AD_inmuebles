@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./ReArrendatario.css";
-import { Button, Form, Col, Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { registerArrendatario } from "../../Hooks/RegisterArrendatario";
@@ -14,9 +14,12 @@ export const ReArrendatario = () => {
     });
 
   const falla = () =>
-    toast.error("Error al ingresar los datos, complete todos los campos e intente nuevamente.", {
-      theme: "colored",
-    });
+    toast.error(
+      "Error al ingresar los datos, complete todos los campos e intente nuevamente.",
+      {
+        theme: "colored",
+      }
+    );
 
   const {
     register,
@@ -59,30 +62,27 @@ export const ReArrendatario = () => {
   };
 
   return (
-    
-      <div className="contener-home contener-ReArrendatario">
-        <h2 >Registro Arrendatario</h2>
-        <div className="container">
-        <Form
-          className=""
-          onSubmit={handleSubmit(onsubmitArrendatario)}
->
-         <div className="form-propietario">
-
+    <div className="contener-home contener-ReArrendatario">
+      <h2>Registro Arrendatario</h2>
+      <div className="container">
+        <Form className="" onSubmit={handleSubmit(onsubmitArrendatario)}>
+          <div className="form-propietario">
             <Form.Group controlId="tipodocumento">
-           <Form.Label  className="text_normal">Tipo de Documento:</Form.Label>
+              <Form.Label className="text_normal">Tipo Documento:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                type="text"
+                as="select"
                 {...register("tipodocumento")}
-              />
+              >
+                <option value={"CC"}>Cédula de Ciudadanía</option>
+                <option value={"CE"}>Cédula de Extranjería</option>
+              </Form.Control>
             </Form.Group>
-            
-          
+
             <Form.Group controlId="numerodocumento">
               <Form.Label className="text_normal">Número identidad:</Form.Label>
               <Form.Control
-              required
+                required
                 className="InputsRegistros"
                 type="number"
                 min={20}
@@ -90,7 +90,6 @@ export const ReArrendatario = () => {
                 {...register("numerodocumento")}
               />
             </Form.Group>
-
 
             <Form.Group controlId="telefono">
               <Form.Label className="text_normal">
@@ -108,14 +107,14 @@ export const ReArrendatario = () => {
               <Form.Label className="text_normal">
                 Correo Arrendatario:
               </Form.Label>
-              <Form.Control controlId="correo"
+              <Form.Control
+                controlId="correo"
                 className="InputsRegistros"
                 type="email"
                 {...register("correo")}
               />
             </Form.Group>
-          
-          
+
             <Form.Group controlId="nombrearrendatario">
               <Form.Label className="text_normal">
                 Nombre Arrendatario:
@@ -128,7 +127,6 @@ export const ReArrendatario = () => {
               />
             </Form.Group>
 
-
             <Form.Group controlId="fecha_inicio">
               <Form.Label className="text_normal">
                 Fecha Inicio Contrato:
@@ -140,7 +138,6 @@ export const ReArrendatario = () => {
               />
             </Form.Group>
 
-
             <Form.Group controlId="valor_deposito">
               <Form.Label className="text_normal">Valor Deposito:</Form.Label>
               <Form.Control
@@ -149,7 +146,7 @@ export const ReArrendatario = () => {
                 {...register("valordeposito")}
               />
             </Form.Group>
-         
+
             <Form.Group controlId="fecha_final">
               <Form.Label className="text_normal">
                 Fecha Termino Contrato:
@@ -160,7 +157,7 @@ export const ReArrendatario = () => {
                 {...register("fechafinal")}
               />
             </Form.Group>
-            </div>
+          </div>
 
           <div className="contener-buttons d-flex justify-content-center">
             <div className="save_deleter">
@@ -225,6 +222,6 @@ export const ReArrendatario = () => {
           </Modal.Footer>
         </Modal>
       </div>
-      </div>
-      );
+    </div>
+  );
 };

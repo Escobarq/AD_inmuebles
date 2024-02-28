@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Button ,Modal } from "react-bootstrap";
+import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,26 +11,26 @@ import {
 import Pagination from "react-bootstrap/Pagination";
 import ActualizarArrendatario from "../../Hooks/InhabilitarArren";
 import { toast } from "react-toastify";
-import NoResultImg from "../../../assets/NoResult.gif"
+import NoResultImg from "../../../assets/NoResult.gif";
 
 export const Arrendatario = () => {
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [arrendatarioIdToDelete, setarrendatarioIdToDelete] = useState(null);
   const [filtroData, setFiltroData] = useState({
-    Cedula: '',
-    Estado: '',
+    Cedula: "",
+    Estado: "",
   });
-  
-  const [NoResult, setNoResult]= useState(false)
+
+  const [NoResult, setNoResult] = useState(false);
   const notify = () =>
-  toast.success("Se Inabilito Correctamente ", {
-    theme: "dark",
-  });
+    toast.success("Se Inabilito Correctamente ", {
+      theme: "dark",
+    });
   const errores = () =>
-  toast.error("Hubo algun error  ", {
-    theme: "dark",
-  });
+    toast.error("Hubo algun error  ", {
+      theme: "dark",
+    });
 
   //Modal para Inhabilitacion
   const handleOpenModal = (ArrendatarioId) => {
@@ -44,11 +44,13 @@ export const Arrendatario = () => {
   // Hook para actualizar el estado del arrendatario
   const { actualizarEstadoArrendatario } = ActualizarArrendatario();
 
-   //Actualizar Estado Coduedor
-   const handleInhabilitarArrendatario  = async (ArrendatarioId) => {
+  //Actualizar Estado Coduedor
+  const handleInhabilitarArrendatario = async (ArrendatarioId) => {
     try {
       await actualizarEstadoArrendatario(ArrendatarioId, "false");
-      const updatedArrendatario = infoarrendatario.filter(arrendatarios => arrendatarios.IdArrendatario !== ArrendatarioId);
+      const updatedArrendatario = infoarrendatario.filter(
+        (arrendatarios) => arrendatarios.IdArrendatario !== ArrendatarioId
+      );
       setinfoarrendatario(updatedArrendatario);
       notify();
       setShowModal(false);
@@ -59,21 +61,20 @@ export const Arrendatario = () => {
   };
 
   useEffect(() => {
-    
     fetchData();
   }, [filtroData]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
-    
-    
   };
 
   const fetchData = async () => {
     try {
       const queryParams = new URLSearchParams(filtroData);
-      const response = await fetch(`http://localhost:3006/Varrendatario?${queryParams.toString()}`);
+      const response = await fetch(
+        `http://localhost:3006/Varrendatario?${queryParams.toString()}`
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -85,12 +86,10 @@ export const Arrendatario = () => {
 
       setinfoarrendatario(arrendatarioActivos);
 
-      if (arrendatarioActivos.length == 0){
-        setNoResult(true)
-      }
-      else {
-        setNoResult(false)
-        
+      if (arrendatarioActivos.length == 0) {
+        setNoResult(true);
+      } else {
+        setNoResult(false);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -153,11 +152,11 @@ export const Arrendatario = () => {
     <>
       <div className="contener-home">
         <div className="conten-filtro">
-        <div className="conten-inputs">
+          <div className="conten-inputs">
             <label className="l1">No. Cedula: </label>
             <input
-             value={filtroData.Cedula} onChange={handleChange}
-             
+              value={filtroData.Cedula}
+              onChange={handleChange}
               className="input-filtroRe"
               type="number"
               name="Cedula"
@@ -166,46 +165,76 @@ export const Arrendatario = () => {
             />
             <label className="l1">Estado: </label>
 
-            <select className="input-filtroRe"   value={filtroData.Estado} onChange={handleChange} type="date" name="Estado" id="" >
-              <option selected value="">Seleccione el Estado</option>
+            <select
+              className="input-filtroRe"
+              value={filtroData.Estado}
+              onChange={handleChange}
+              type="date"
+              name="Estado"
+              id=""
+            >
+              <option selected value="">
+                Seleccione el Estado
+              </option>
               <option value="Libre">Libre</option>
               <option value="Ocupado">Ocupado</option>
             </select>
-            
-            
           </div>
-        <Button variant="success" className="btn-add">
-            <Link to="/ReArrendatario">
-              <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
-              Arrendatario
-            </Link>
-          </Button>
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/Inharrendatario" className="linkes">
-              <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-              Inhabilitados
-            </Link>
-          </Button>
+          <OverlayTrigger
+            key="tooltip-add-arrendatario"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-add-arrendatario">
+                Agregar Arrendatario
+              </Tooltip>
+            }
+          >
+            <Button variant="success" className="btn-add">
+              <Link to="/ReArrendatario">
+                <FontAwesomeIcon className="icon" icon={faUserPlus} />
+                <p className="AgregarPA">Agregar Arrendatario</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
+
+          <OverlayTrigger
+            key="tooltip-ver-inhabilitados-arrendatario"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-ver-inhabilitados-arrendatario">
+                Ver Arrendatarios Inhabilitados
+              </Tooltip>
+            }
+          >
+            <Button variant="dark" className="btn-add-info">
+              <Link to="/Inharrendatario" className="linkes">
+                <FontAwesomeIcon className="icon" icon={faUserSlash} />
+                <p className="AgregarPA">Ver Arrendatarios Inhabilitados</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Arrendatario</h1>
         </div>
 
         <div className="view_esp">
-        {NoResult == true ? (
-          <div>
-            <img src={NoResultImg} alt="" />
-          </div>
-        ):(
-          <div className="table-container">
-            <Table striped bordered hover>
-              <thead> {createheader()} </thead>
-              <tbody>
-                {currentItems.map((Arrendatarios) => createrow(Arrendatarios))}
-              </tbody>
-            </Table>
-          </div>
-        )}
+          {NoResult == true ? (
+            <div>
+              <img src={NoResultImg} alt="" />
+            </div>
+          ) : (
+            <div className="table-container">
+              <Table striped bordered hover>
+                <thead> {createheader()} </thead>
+                <tbody>
+                  {currentItems.map((Arrendatarios) =>
+                    createrow(Arrendatarios)
+                  )}
+                </tbody>
+              </Table>
+            </div>
+          )}
         </div>
         <div className="paginador">
           <Pagination>
@@ -247,7 +276,9 @@ export const Arrendatario = () => {
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleInhabilitarArrendatario (arrendatarioIdToDelete)} 
+            onClick={() =>
+              handleInhabilitarArrendatario(arrendatarioIdToDelete)
+            }
           >
             Confirmar
           </Button>

@@ -1,39 +1,43 @@
-import { Table, Button , Modal} from "react-bootstrap";
+import { Table, Button, Modal ,OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
   faTrash,
   faPenToSquare,
-  faUserSlash
+  faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
-import moment from 'moment';
-import 'moment/locale/es';
-import NoResultImg from "../../../assets/NoResult.gif"
+import moment from "moment";
+import "moment/locale/es";
+import NoResultImg from "../../../assets/NoResult.gif";
 import { toast } from "react-toastify";
 import useActualizarEstadoHistorialArrendamiento from "../../Hooks/InhabilitarHarrendamiento";
+import "./H_recibos.css";
 
 export const H_recibos = () => {
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
-  const { actualizarEstadoHarrendamiento } = useActualizarEstadoHistorialArrendamiento();
+  const { actualizarEstadoHarrendamiento } =
+    useActualizarEstadoHistorialArrendamiento();
   const [Harrendamiento, setHarrenndamiento] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [filtroData, setFiltroData] = useState({
-    estado: '',
-    FechaPagoIni: '',
-    FechaPagoFin: '',
-    FormaPago: '',
+    estado: "",
+    FechaPagoIni: "",
+    FechaPagoFin: "",
+    FormaPago: "",
   });
-  const [NoResult, setNoResult]= useState(false)
-
+  const [NoResult, setNoResult] = useState(false);
 
   // Función para inhabilitar los gastos
   const handleInhabilitarHarrendamiento = async (arrendamientoID) => {
     try {
       await actualizarEstadoHarrendamiento(arrendamientoID, "false"); // Utilizando la función correcta
-      const updatedHarrendamiento = infoPArrendamiento.filter(harrendamiento => harrendamiento.Id_Pago_Arrendamiento !== arrendamientoID);
+      const updatedHarrendamiento = infoPArrendamiento.filter(
+        (harrendamiento) =>
+          harrendamiento.Id_Pago_Arrendamiento !== arrendamientoID
+      );
       setinfoPArrendamiento(updatedHarrendamiento); // Cambio en el nombre de la variable
       notify();
       setShowModal(false);
@@ -69,9 +73,7 @@ export const H_recibos = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        const Harrendamiento = data.filter(
-          (item) => item.booleanos === "true"
-        );
+        const Harrendamiento = data.filter((item) => item.booleanos === "true");
         setinfoPArrendamiento(Harrendamiento);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -79,30 +81,28 @@ export const H_recibos = () => {
     };
     fetchData();
   }, [filtroData]);
-  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
   };
 
-
   const fetchData = async () => {
     try {
       const queryParams = new URLSearchParams(filtroData);
-      const response = await fetch(`http://localhost:3006/VPagoArren?${queryParams.toString()}`);
+      const response = await fetch(
+        `http://localhost:3006/VPagoArren?${queryParams.toString()}`
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
       setinfoPArrendamiento(data);
 
-      if (data.length == 0){
-        setNoResult(true)
-      }
-      else {
-        setNoResult(false)
-        
+      if (data.length == 0) {
+        setNoResult(true);
+      } else {
+        setNoResult(false);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -120,16 +120,20 @@ export const H_recibos = () => {
         <th>Forma pago</th>
         <th>Estado pago</th>
         <th>Dias mora</th>
-        <th>Editar</th>
+        <th>Opciones</th>
       </tr>
     );
   };
-  moment.updateLocale('es', {
-    months: 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
-    monthsShort: 'ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split('_'),
-    weekdays: 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
-    weekdaysShort: 'dom._lun._mar._mié._jue._vie._sáb.'.split('_'),
-    weekdaysMin: 'do_lu_ma_mi_ju_vi_sá'.split('_')
+  moment.updateLocale("es", {
+    months:
+      "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split(
+        "_"
+      ),
+    monthsShort:
+      "ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),
+    weekdays: "domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),
+    weekdaysShort: "dom._lun._mar._mié._jue._vie._sáb.".split("_"),
+    weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
   });
   const createrow = (PArrendamiento) => {
     return (
@@ -144,9 +148,13 @@ export const H_recibos = () => {
         <td>{PArrendamiento.Estado}</td>
         <td>{PArrendamiento.DiasDMora}</td>
         <td>
-          <Button className="btn-opciones"
+          <Button
+            className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(PArrendamiento.Id_Pago_Arrendamiento)}>
+            onClick={() =>
+              handleOpenModal(PArrendamiento.Id_Pago_Arrendamiento)
+            }
+          >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
           <Button className="btn-opciones" variant="warning">
@@ -162,92 +170,146 @@ export const H_recibos = () => {
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = infoPArrendamiento.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = infoPArrendamiento.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  //formatear fecha 
+  //formatear fecha
   function formatDate(fechaString) {
-    return moment(fechaString).format('MMMM , D , YYYY');
+    return moment(fechaString).format("MMMM , D , YYYY");
   }
+
   return (
     <>
       <div className="contener-home">
         <div className="conten-filtro">
           <div className="conten-inputs">
-            <label className="l1">Estado:  </label>
-            <select className="input-filtroRe" name="estado" value={filtroData.estado} onChange={handleChange} id="">
+            <label className="l1">Estado: </label>
+            <select
+              className="input-filtroRe"
+              name="estado"
+              value={filtroData.estado}
+              onChange={handleChange}
+              id=""
+            >
               <option value="">Seleccione el estado</option>
               <option value="Pendiente">Pendiente</option>
-              <option value="Pagado">Pagado</option>              
+              <option value="Pagado">Pagado</option>
             </select>
 
             <label className="l1">Forma de Pago: </label>
-            <select className="input-filtroRe" name="FormaPago" value={filtroData.FormaPago} onChange={handleChange} id="">
-              <option selected value="">Seleccion forma de pago</option>
+            <select
+              className="input-filtroRe"
+              name="FormaPago"
+              value={filtroData.FormaPago}
+              onChange={handleChange}
+              id=""
+            >
+              <option selected value="">
+                Seleccion forma de pago
+              </option>
               <option value="Transferencia">Transferencia</option>
-              <option value="Efectivo">Efectivo</option>              
+              <option value="Efectivo">Efectivo</option>
             </select>
             <label className="l1">Fecha Pago Minima: </label>
-            <input className="input-filtroRe" type="date" value={filtroData.FechaPagoIni} onChange={handleChange} name="FechaPagoIni" id="" />
+            <input
+              className="input-filtroRe"
+              type="date"
+              value={filtroData.FechaPagoIni}
+              onChange={handleChange}
+              name="FechaPagoIni"
+              id=""
+            />
             <label className="l1">Fecha Pago Maxima: </label>
-            <input className="input-filtroRe" type="date" value={filtroData.FechaPagoFin} onChange={handleChange} name="FechaPagoFin" id="" />
+            <input
+              className="input-filtroRe"
+              type="date"
+              value={filtroData.FechaPagoFin}
+              onChange={handleChange}
+              name="FechaPagoFin"
+              id=""
+            />
           </div>
-          <Button variant="success" className="btn-add">
-            <Link to="/ReArrendamiento">
-              <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar
-              PArrendamiento
-            </Link>
-          </Button>
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/Hrecibos" className="linkes">
-              <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-               Historial Inhabilitados
-            </Link>
-          </Button>
+          <OverlayTrigger
+            key="tooltip-add-arrendamiento"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-add-arrendamiento">
+                Agregar Pago arrendamiento
+              </Tooltip>
+            }
+          >
+            <Button variant="success" className="btn-add">
+              <Link  to="/ReArrendamiento">
+                <FontAwesomeIcon className="icon" icon={faUserPlus} /> 
+               <p className="AgregarPA">Agregar PArrendamiento</p> 
+              </Link>
+            </Button>
+          </OverlayTrigger>
+
+          <OverlayTrigger
+            key="tooltip-historial-inhabilitados"
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip-historial-inhabilitados">
+                Ver Historial Inhabilitados
+              </Tooltip>
+            }
+          >
+            <Button variant="dark" className="btn-add-info">
+              <Link to="/Hrecibos" className="linkes">
+                <FontAwesomeIcon className="icon" icon={faUserSlash} /> 
+                <p className="AgregarPA">Historial Inhabilitados</p>
+              </Link>
+            </Button>
+          </OverlayTrigger>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Historial de Pago Arrendamiento</h1>
         </div>
 
         <div className="view_esp">
-        {NoResult == true ? (
-          <div>
-            <img src={NoResultImg} alt="" />
-          </div>
-        ):(
-          <div className="table-container">
-            <Table striped bordered hover>
-              <thead> {createheader()} </thead>
-              <tbody>
-                {currentItems.map((PArrendamientos) =>
-                  createrow(PArrendamientos)
-                )}
-              </tbody>
-            </Table>
-          </div>
-        )}
+          {NoResult == true ? (
+            <div>
+              <img src={NoResultImg} alt="" />
+            </div>
+          ) : (
+            <div className="table-container">
+              <Table striped bordered hover>
+                <thead> {createheader()} </thead>
+                <tbody>
+                  {currentItems.map((PArrendamientos) =>
+                    createrow(PArrendamientos)
+                  )}
+                </tbody>
+              </Table>
+            </div>
+          )}
         </div>
         <div className="paginador">
-          <Pagination >
+          <Pagination>
             <Pagination.Prev
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
             />
-            {[...Array(Math.ceil(infoPArrendamiento.length / itemsPerPage))].map(
-              (item, index) => (
-                <Pagination.Item
-                  key={index}
-                  active={index + 1 === currentPage}
-                  onClick={() => paginate(index + 1)}
-                >
-                  {index + 1}
-                </Pagination.Item>
-              )
-            )}
+            {[
+              ...Array(Math.ceil(infoPArrendamiento.length / itemsPerPage)),
+            ].map((item, index) => (
+              <Pagination.Item
+                key={index}
+                active={index + 1 === currentPage}
+                onClick={() => paginate(index + 1)}
+              >
+                {index + 1}
+              </Pagination.Item>
+            ))}
             <Pagination.Next
               onClick={() => paginate(currentPage + 1)}
               disabled={
-                currentPage === Math.ceil(infoPArrendamiento.length / itemsPerPage)
+                currentPage ===
+                Math.ceil(infoPArrendamiento.length / itemsPerPage)
               }
             />
           </Pagination>
@@ -266,7 +328,7 @@ export const H_recibos = () => {
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleInhabilitarHarrendamiento(Harrendamiento)} 
+            onClick={() => handleInhabilitarHarrendamiento(Harrendamiento)}
           >
             Confirmar
           </Button>

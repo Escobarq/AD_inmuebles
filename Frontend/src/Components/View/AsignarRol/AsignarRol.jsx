@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare, faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import { Table, Button, Modal } from "react-bootstrap";
@@ -29,8 +29,8 @@ export const AsignarRol = () => {
       errores();
     }
   };
-  
-  
+
+
   //Modal para Inhabilitacion
   const handleOpenModal = (EmpleadosID) => {
     setHarrenndamiento(EmpleadosID);
@@ -86,19 +86,15 @@ export const AsignarRol = () => {
   };
   // Función auxiliar para convertir idrol a texto
   const convertirIdRolATexto = (idrol) => {
-    // Mapeo de valores de idrol a textos correspondientes
     const rolesTexto = {
       1: "Administrador",
-      2: "Empleado",
-      3: "Asesor Comercial",
-      4: "Super Usuario",
+      2: "Asistente",
     };
-    // Devolver el texto correspondiente al idrol proporcionado
     return rolesTexto[idrol] || "Rol desconocido";
   };
 
   const createRowRol = (roles) => {
-    if (roles.Idrol !== 4) {
+    if (roles.Idrol !== 1) {
 
       return (
         <tr key={roles.IdTrabajador}>
@@ -115,7 +111,9 @@ export const AsignarRol = () => {
               onClick={() => handleOpenModal(roles.IdTrabajador)}>
               <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
             </Button>
-            <Button className="btn-opciones" variant="warning">
+            <Button className="btn-opciones"
+              variant="warning"
+              onClick={() => EditarPerfil(roles.IdTrabajador)}>
               <FontAwesomeIcon icon={faPenToSquare} />
             </Button>
           </td>
@@ -135,6 +133,14 @@ export const AsignarRol = () => {
   const currentItems = infoRol.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const EditarPerfil = (EmpleadosID) => {
+    const Empleados = infoRol.find(
+      (empleado) => empleado.IdTrabajador === EmpleadosID
+    );
+    window.location.href = `/EditarPerfil?IdTrabajador=${Empleados.IdTrabajador}&Idrol=${Empleados.Idrol}&Nombre=${Empleados.Nombre}&Apellido=${Empleados.Apellido}&Correo=${Empleados.Correo}&Contrasena=${Empleados.Contrasena}&Telefono=${Empleados.Telefono}`;
+  };
+  
   return (
     <div className="contener-home">
       <div className="title_view">
@@ -143,10 +149,7 @@ export const AsignarRol = () => {
           <label className="l1">Rol</label>
           <select className="input-filtroRe" value="" onChange="" name="rol" id="rol">
             <option selected value="">Seleccione el tipo</option>
-            <option value="empleado">Empleado</option>
-            <option value="asesor_comercial">Asesor Comercial</option>
-            <option value="administrador">Administrador</option>
-
+            <option value="Asistente">Asistente</option>
           </select>
         </div>
         <Button variant="dark" className="btn-add-info ">
