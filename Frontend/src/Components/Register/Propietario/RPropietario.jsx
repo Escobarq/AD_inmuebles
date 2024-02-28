@@ -40,8 +40,9 @@ export const RPropietario = () => {
       });
 
       if (response.ok) {
-        setShowSaveModal(false); // Muestra el modal de confirmación
         localStorage.setItem("NITPropie", data.numerodocumento);
+        console.log(localStorage.getItem("NITPropie"))
+        setShowSaveModal(false); // Muestra el modal de confirmación
         reset(); // Reinicia el formulario si la solicitud es exitosa
         // Muestra un mensaje de éxito o redirige a otra página
       }
@@ -84,8 +85,8 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formTipoCuenta" className="col col-md.auto">
-            <Form.Label>Tipo De Cuenta</Form.Label>
+          <Form.Group controlId="formTipoCuenta"  className="formSelect InputsRegistros">
+            <Form.Label>Tipo De Documento</Form.Label>
             <Form.Select
               {...register("TipoDocumento")}
               className="formSelect InputsRegistros"
@@ -99,7 +100,7 @@ export const RPropietario = () => {
             </Form.Select>
           </Form.Group>
 
-          <Form.Group controlId="formnumerodocumento" className="mb-3">
+          <Form.Group controlId="formnumerodocumento" className="InputsRegistros">
             <Form.Label>N° Documento Identidad:</Form.Label>
             <Form.Control {...register("numerodocumento")} type="number" />
           </Form.Group>
@@ -136,7 +137,7 @@ export const RPropietario = () => {
             <Form.Label>Dirección Del Propietario:</Form.Label>
             <Form.Control {...register("direccion")} type="text" />
           </Form.Group>
-          <Form.Group controlId="formTipoCuenta" className="col col-md.auto">
+          <Form.Group controlId="formTipoCuenta"  className="formSelect InputsRegistros">
             <Form.Label>Tipo De Cuenta</Form.Label>
             <Form.Select
               {...register("tipocuenta")}

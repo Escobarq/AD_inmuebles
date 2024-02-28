@@ -117,12 +117,12 @@ export const Inmueble = () => {
   };
   const fetchDataArren = async () => {
     try {
-      const response = await fetch("http://localhost:3006/Varrendatario");
+      const response = await fetch("http://localhost:3006/Varrendatario?Estado=Libre");
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      setinfoarrendatario(data);
+          setinfoarrendatario(data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
