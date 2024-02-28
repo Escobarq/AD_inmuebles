@@ -77,12 +77,6 @@ export const GastosIn = () => {
 
 
 
-  function getCurrentDate() {
-    return moment().format('MMMM D, YYYY');
-  }
-
-
-
   //Funcion para generar pdf
   const handleGeneratePDF = () => {
 
@@ -96,7 +90,18 @@ export const GastosIn = () => {
     doc.addImage(logo, "PNG", 15, 10, 33, 20); // Logo next to the title
 
     // titulo pdf
-    doc.text("Contrato Arrendatario", 60, 23); // Title next to the logo
+    doc.text("Comisión de Gastos", 60, 23); // Title next to the logo
+
+
+    const date = new Date();
+    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+    const formattedDate = `${monthNames[date.getMonth()]}/${date.getDate()}/${date.getFullYear()}`;
+    doc.setTextColor(128); // Gris
+    doc.setFontSize(10);
+    doc.text(formattedDate, 190, 10, null, null, "right");
+
  // Columnas-pdf
  const columns = [
   { header: "N°", dataKey: "IdPropietario" },
@@ -110,14 +115,17 @@ export const GastosIn = () => {
 ];
 
 // Datos de la tabla
-const data = currentItems.map(item => ({
-  IdPropietario: item.IdPropietario,
-  NombreCompleto: item.NombreCompleto,
-  ValorArriendo: item.ValorArriendo,
-  PeriodoPagado: formatDate(item.PeriodoPagado),
-  FormaPago: item.FormaPago,
-  Observaciones: item.Observaciones
+const data = tableData.map(arrendatario => ({
+  IdPropietario: arrendatario.IdPropietario,
+  NombreCompleto: arrendatario.NombreCompleto,
+  ValorArriendo: arrendatario.ValorArriendo,
+  PeriodoPagado: formatDate(arrendatario.PeriodoPagado),
+  FormaPago: arrendatario.FormaPago,
+  Observaciones: arrendatario.Observaciones
 }));
+
+
+
 
     //informacion en forma de tabla
     autoTable(doc, { 
@@ -126,7 +134,9 @@ const data = currentItems.map(item => ({
 //plain
       columns,
        body: data,
-        startY: 40 }); // Move the table further down
+        startY: 40,
+      
+      }); // Move the table further down
 
     
     // obtener el numero total de paginas
@@ -146,19 +156,8 @@ const data = currentItems.map(item => ({
     }
 
 
-  // Agregar fecha actual en la parte superior derecha
-  doc.setFontSize(10);
-  doc.setTextColor(100);
-  doc.text(
-    getCurrentDate(),
-    doc.internal.pageSize.getWidth() - 30,
-    10,
-    { align: "right" }
-  );
-
-
     // nombre de pdf
-    doc.save("Contrato_Arrendatario.pdf");
+    doc.save("Comisión de Gastos.pdf");
 };
 
 

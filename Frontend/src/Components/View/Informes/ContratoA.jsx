@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+
 import Pagination from "react-bootstrap/Pagination";
 import moment from 'moment';
 import 'moment/locale/es';
@@ -85,8 +86,17 @@ export const ContratoA = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
+  
+  function getCurrentDate() {
+    return moment().format('MMMM D, YYYY');
+  }
+
+
+
   //Funcion para generar pdf
   const handleGeneratePDF = () => {
+
+
     const doc = new jsPDF();
     
 
@@ -97,6 +107,14 @@ export const ContratoA = () => {
     // titulo pdf
     doc.text("Contrato Arrendatario", 60, 23); // Title next to the logo
 
+    const date = new Date();
+    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+    const formattedDate = `${monthNames[date.getMonth()]}/${date.getDate()}/${date.getFullYear()}`;
+    doc.setTextColor(128); // Gris
+    doc.setFontSize(10);
+    doc.text(formattedDate, 190, 10, null, null, "right");
 
 
 
@@ -143,6 +161,17 @@ export const ContratoA = () => {
             { align: "center" }
         );
     }
+
+
+  // Agregar fecha actual en la parte superior derecha
+  doc.setFontSize(10);
+  doc.setTextColor(100);
+  doc.text(
+    getCurrentDate(),
+    doc.internal.pageSize.getWidth() - 30,
+    10,
+    { align: "right" }
+  );
 
 
     // nombre de pdf
