@@ -137,6 +137,7 @@ export const ReciboGastos = () => {
       }
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
+        console.log("funciona")
       } else {
         console.error("Error al crear usuario:", error);
         throw error; // Re-lanza el error para que pueda ser manejado en el componente
@@ -319,6 +320,7 @@ export const ReciboGastos = () => {
         </Modal.Header>
         <Modal.Body>
           ¿Estás seguro de que deseas guardar los cambios?
+          Recuerda que si confirmas no se podran editar 
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>

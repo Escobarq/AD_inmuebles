@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap"; 
+import { useState } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { PDFDocument, rgb } from "pdf-lib"; 
-import { useForm } from "react-hook-form";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib"; // Importar StandardFonts
 import moment from "moment";
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
 
 export const Rarrendatario = () => {
   const [formData, setFormData] = useState({
@@ -22,13 +23,25 @@ export const Rarrendatario = () => {
   });
 
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
-  const handleGuardarClick = async () => {
+  const falla = (text) =>
+    toast.error(text, {
+      theme: "colored",
+    });
 
+  const fallo = (text) =>
+    toast.error(text, {
+      theme: "colored",
+    });
+
+  const handleConfirmSave = async () => {
+    setShowSaveModal(false);
+    // Verificar que todos los campos estén completos
     for (const key in formData) {
       const element = formData[key];
       if (!element) {
-        alert(`Por favor, complete el campo ${key}`);
+        falla(`Por favor, complete el campo ${key}`);
         return;
       }
     }
@@ -40,17 +53,33 @@ export const Rarrendatario = () => {
       const fontSize = 15;
       const padding = 50;
 
-      page.drawText("RECIBO DE ARRENDAMIENTO", {
-        x: width / 2 - 100,
-        y: height - padding - fontSize,
+      // Centrar el título "RECIBO DE ARRENDAMIENTO"
+      const titleText = "RECIBO DE ARRENDAMIENTO";
+      const titleWidth = titleText.length * fontSize * 0.5; // Ajustar según la anchura promedio de caracteres
+      const titleX = (width - titleWidth) / 2;
+      const titleY = height - padding - fontSize;
+
+      const titleFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold); // Usar StandardFonts
+      page.drawText(titleText, {
+        x: titleX,
+        y: titleY,
         size: fontSize,
+        font: titleFont,
         color: rgb(0, 0, 0),
       });
 
-      page.drawText(moment().format('MMMM D, YYYY'), {
-        x: width - padding - 150,
-        y: height - padding - fontSize,
+      // Mover la fecha a la esquina superior derecha
+      const dateText = moment().format("MMMM D, YYYY");
+      const dateWidth = dateText.length * fontSize * 0.5; // Ajustar según la anchura promedio de caracteres
+      const dateX = width - padding - dateWidth;
+      const dateY = height - padding - fontSize;
+
+      const textFont = await pdfDoc.embedFont(StandardFonts.Helvetica); // Usar StandardFonts
+      page.drawText(dateText, {
+        x: dateX,
+        y: dateY,
         size: fontSize,
+        font: textFont,
         color: rgb(0, 0, 0),
       });
 
@@ -58,15 +87,26 @@ export const Rarrendatario = () => {
       for (const key in formData) {
         const element = formData[key];
         if (element) {
-          page.drawText(`${key}: ${element}`, {
+          // Mostrar solo los valores de los campos y mejorar el formato
+          page.drawText(`${element}`, {
             x: padding,
             y: yOffset,
             size: fontSize,
             color: rgb(0, 0, 0),
           });
-          yOffset -= fontSize * 1.5; // Adjust the line height for better readability
+          yOffset -= fontSize * 1.5; // Ajustar la altura de línea para una mejor legibilidad
         }
       }
+
+      // Agregar texto alusivo y espacio para firma
+      const alusivoText = "Texto alusivo...";
+      const signatureSpaceY = 100;
+      page.drawText(alusivoText, {
+        x: padding,
+        y: signatureSpaceY,
+        size: fontSize,
+        color: rgb(0, 0, 0),
+      });
 
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
@@ -75,77 +115,49 @@ export const Rarrendatario = () => {
       link.href = url;
       link.download = "recibo.pdf";
       link.click();
-
-      setShowSaveModal(true);
     } catch (error) {
       console.error(error);
-      alert("Ocurrió un error al generar el PDF");
+      fallo("Ocurrió un error al generar el PDF");
     }
+  };
+
+  const handleCancelClick = () => {
+    setShowCancelModal(true);
+  };
+
+  const handleConfirmCancel = () => {
+    setShowCancelModal(false);
+    // Restablecer los campos del formulario al cancelar
+    setFormData({
+      fecha: "",
+      documentoIdentidad: "",
+      nombre: "",
+      recibidoDe: "",
+      concepto: "",
+      suma: "",
+      periodoDesde: "",
+      periodoHasta: "",
+      pagadoCon: "",
+      direccion: "",
+      recibidoPor: "",
+    });
+    window.location.href = "/H_recibos";
   };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
-    setFiltroData({ ...filtroData, [name]: value });
   };
 
   const { register, handleSubmit } = useForm();
-  const [infoarrendatario, setinfoarrendatario] = useState([]);
 
-  const [filtroData, setFiltroData] = useState({
-    Cedula: "",
-    Estado: "Ocupado",
-  });
-
-  useEffect(() => {
-    fetchData();
-  }, [filtroData]);
-
-
-
-  const fetchData = async () => {
-    try {
-      const queryParams = new URLSearchParams(filtroData);
-      const response = await fetch(
-        `http://localhost:3006/Varrendatario?${queryParams.toString()}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-
-      const arrendatarioActivos = data.filter(
-        (Arrendatarios) => Arrendatarios.booleanos === "true"
-      );
-
-      setinfoarrendatario(arrendatarioActivos);
-      
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-
-  const onSubmitArrendatario = (data) => {
-    console.log(data);
-  };
-  //Modal 
-  const [showModal, setShowModal] = useState(false);
-
-  const handleOpenModal = () => {
-    showModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
   return (
     <div className="contener-home contener-ReArrendatario">
       <h2 style={{ textAlign: "center" }}>Recibo Arrendatario</h2>
       <div className="container">
-        <Form onSubmit={handleSubmit(onSubmitArrendatario)}>
+        <Form onSubmit={handleSubmit(() => {})}>
           <div className="form-propietario">
-            <Form.Group controlId="Fecha">
+            <Form.Group controlId="fecha">
               <Form.Label>Fecha:</Form.Label>
               <Form.Control
                 type="date"
@@ -163,7 +175,7 @@ export const Rarrendatario = () => {
               />
             </Form.Group>
 
-            <Form.Group controlId="Nombre">
+            <Form.Group controlId="nombre">
               <Form.Label>Nombre:</Form.Label>
               <Form.Control
                 type="text"
@@ -181,7 +193,7 @@ export const Rarrendatario = () => {
               />
             </Form.Group>
 
-            <Form.Group controlId="Concepto">
+            <Form.Group controlId="concepto">
               <Form.Label>Concepto:</Form.Label>
               <Form.Control
                 type="text"
@@ -190,7 +202,7 @@ export const Rarrendatario = () => {
               />
             </Form.Group>
 
-            <Form.Group controlId="Suma">
+            <Form.Group controlId="suma">
               <Form.Label>Suma:</Form.Label>
               <Form.Control
                 type="number"
@@ -226,7 +238,7 @@ export const Rarrendatario = () => {
               />
             </Form.Group>
 
-            <Form.Group controlId="Direccion">
+            <Form.Group controlId="direccion">
               <Form.Label>Dirección:</Form.Label>
               <Form.Control
                 type="text"
@@ -243,11 +255,20 @@ export const Rarrendatario = () => {
                 onChange={handleInputChange}
               />
             </Form.Group>
-
+          </div>
+          <div
+            className="buttons"
+            style={{
+              width: "100%",
+              height: "auto",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             <Button
               type="button"
               variant="success m-2"
-              onClick={handleGuardarClick}
+              onClick={() => setShowSaveModal(true)}
             >
               <FontAwesomeIcon icon={faSave} />
               <span className="text_button ms-2">Guardar</span>
@@ -256,7 +277,7 @@ export const Rarrendatario = () => {
             <Button
               type="button"
               variant="danger m-2"
-              onClick={() => handleCloseModal(true)}
+              onClick={handleCancelClick}
             >
               <FontAwesomeIcon icon={faTimes} />
               <span className="text_button ms-2">Cancelar</span>
@@ -264,6 +285,38 @@ export const Rarrendatario = () => {
           </div>
         </Form>
       </div>
+
+      {/* Modal de confirmación para guardar */}
+      <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Guardar</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>¿Está seguro de que desea guardar?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleConfirmSave}>
+            Guardar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal de confirmación para cancelar */}
+      <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Cancelar</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>¿Está seguro de que desea cancelar?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
+            Volver
+          </Button>
+          <Button variant="danger" onClick={handleConfirmCancel}>
+            Cancelar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
