@@ -111,9 +111,26 @@ export const Codeudor = () => {
     const codeudor = infoCodeudor.find(
       (codeudor) => codeudor.IdCodeudor === codeudorId
     );
-
-    window.location.href = `/Registrocodeudor?IdCodeudor=${codeudor.IdCodeudor}&TipoDocumento=${codeudor.TipoDocumento}&DocumentoIdentidad=${codeudor.DocumentoIdentidad}&NombreCompleto=${codeudor.NombreCompleto}&Direccion=${codeudor.Direccion}&Telefono=${codeudor.Telefono}&Correo=${codeudor.Correo}`;
+  
+    if (codeudor) {
+      const urlParams = new URLSearchParams({
+        IdCodeudor: codeudor.IdCodeudor,
+        TipoDocumento: codeudor.TipoDocumento,
+        DocumentoIdentidad: codeudor.DocumentoIdentidad,
+        NombreCompleto: codeudor.NombreCompleto,
+        Direccion: codeudor.Direccion,
+        Telefono: codeudor.Telefono,
+        Correo: codeudor.Correo
+      });
+  
+      const url = `/Registrocodeudor?${urlParams.toString()}`;
+  
+      window.location.href = url;
+    } else {
+      console.error("No se encontró el codeudor con ID:", codeudorId);
+    }
   };
+  
 
   const createrow = (Codeudor) => {
     return (
@@ -152,8 +169,18 @@ export const Codeudor = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoCodeudor.slice(indexOfFirstItem, indexOfLastItem);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+ //Tooltip 
+  const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
+
+  useEffect(() => {
+    const updateTooltipVisibility = () => {
+      setShowTooltip(window.innerWidth < 1366);
+    };
+ 
+    window.addEventListener('resize', updateTooltipVisibility);
+    return () => window.removeEventListener('resize', updateTooltipVisibility);
+  }, []);
 
   return (
     <>
@@ -174,9 +201,7 @@ export const Codeudor = () => {
           <OverlayTrigger
             key="tooltip-add-codeudor"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-add-codeudor">Agregar Codeudor</Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Codeudor</Tooltip> : <></>}
           >
             <Button variant="success" className="btn-add">
               <Link to="/Registrocodeudor">
@@ -189,11 +214,7 @@ export const Codeudor = () => {
           <OverlayTrigger
             key="tooltip-ver-inhabilitados-codeudores"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-ver-inhabilitados-codeudores">
-                Ver Codeudores Inhabilitados
-              </Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Codeudores Inhabilitados</Tooltip> : <></>}
           >
             <Button variant="dark" className="btn-add-info">
               <Link to="/Codeudores" className="linkes">

@@ -128,7 +128,11 @@ export const Arrendatario = () => {
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
-          <Button className="btn-opciones" variant="warning">
+          <Button 
+          className="btn-opciones" 
+          variant="warning"
+          onClick={() => handleEditArrendatario(Arrendatarios.IdArrendatario)}
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
@@ -145,8 +149,46 @@ export const Arrendatario = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+ //Tooltip 
+ const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
+
+ useEffect(() => {
+   const updateTooltipVisibility = () => {
+     setShowTooltip(window.innerWidth < 1366);
+   };
+
+   window.addEventListener('resize', updateTooltipVisibility);
+   return () => window.removeEventListener('resize', updateTooltipVisibility);
+ }, []);
+
+//Pros para enviar a registro arrendatario
+const handleEditArrendatario = (ArrendatarioId) => {
+  const arrendatario = infoarrendatario.find(
+    (arrendatario) => arrendatario.IdArrendatario === ArrendatarioId
+  );
+
+  // Verifica si se encontró el arrendatario antes de redirigir
+  if (arrendatario) {
+    const urlParams = new URLSearchParams({
+      IdArrendatario: arrendatario.IdArrendatario,
+      TipoDocumento: arrendatario.TipoDocumento,
+      DocumentoIdentidad: arrendatario.DocumentoIdentidad,
+      NombreCompleto: arrendatario.NombreCompleto,
+      Telefono: arrendatario.Telefono,
+      Correo: arrendatario.Correo,
+      Estado: arrendatario.Estado
+    });
+
+    const url = `/ReArrendatario?${urlParams.toString()}`;
+    
+    window.location.href = url;
+  } else {
+    console.error("No se encontró el arrendatario con ID:", ArrendatarioId);
+  }
+};
+
+
 
   return (
     <>
@@ -183,11 +225,7 @@ export const Arrendatario = () => {
           <OverlayTrigger
             key="tooltip-add-arrendatario"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-add-arrendatario">
-                Agregar Arrendatario
-              </Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Arrendatario</Tooltip> : <></>}
           >
             <Button variant="success" className="btn-add">
               <Link to="/ReArrendatario">
@@ -200,11 +238,7 @@ export const Arrendatario = () => {
           <OverlayTrigger
             key="tooltip-ver-inhabilitados-arrendatario"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-ver-inhabilitados-arrendatario">
-                Ver Arrendatarios Inhabilitados
-              </Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Arrendatarios Inhabilitados</Tooltip> : <></>}
           >
             <Button variant="dark" className="btn-add-info">
               <Link to="/Inharrendatario" className="linkes">

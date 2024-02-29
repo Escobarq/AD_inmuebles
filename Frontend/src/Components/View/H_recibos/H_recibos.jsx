@@ -180,7 +180,17 @@ export const H_recibos = () => {
   function formatDate(fechaString) {
     return moment(fechaString).format("MMMM , D , YYYY");
   }
+    //Tooltip
+    const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
+    useEffect(() => {
+      const updateTooltipVisibility = () => {
+        setShowTooltip(window.innerWidth < 1366);
+      };
+  
+      window.addEventListener("resize", updateTooltipVisibility);
+      return () => window.removeEventListener("resize", updateTooltipVisibility);
+    }, []);
   return (
     <>
       <div className="contener-home">
@@ -235,11 +245,7 @@ export const H_recibos = () => {
           <OverlayTrigger
             key="tooltip-add-arrendamiento"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-add-arrendamiento">
-                Agregar Pago arrendamiento
-              </Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Pago arrendamiento</Tooltip> : <></>}
           >
             <Button variant="success" className="btn-add">
               <Link  to="/ReArrendamiento">
@@ -252,11 +258,7 @@ export const H_recibos = () => {
           <OverlayTrigger
             key="tooltip-historial-inhabilitados"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-historial-inhabilitados">
-                Ver Historial Inhabilitados
-              </Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Historial Inhabilitados</Tooltip> : <></>}
           >
             <Button variant="dark" className="btn-add-info">
               <Link to="/Hrecibos" className="linkes">

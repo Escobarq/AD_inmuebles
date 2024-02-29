@@ -55,7 +55,6 @@
     },
     "windows": [
       {
-        
         "minimizable": false,
         "maximized": true,
         "fullscreen": false,

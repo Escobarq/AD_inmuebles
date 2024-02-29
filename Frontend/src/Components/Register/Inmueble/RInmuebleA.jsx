@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Form, Button, Table, Modal } from "react-bootstrap";
@@ -10,7 +10,7 @@ export const RInmuebleA = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [infopropietario, setinfopropietario] = useState([]);
-  const [NoResult, setNoResult]= useState(false)
+  const [NoResult, setNoResult] = useState(false);
   const [mostrarModalA, setMostrarModalA] = useState(false);
 
   const notify = () =>
@@ -25,30 +25,32 @@ export const RInmuebleA = () => {
 
   const { register, handleSubmit, reset } = useForm();
 
-
   useEffect(() => {
-    let NITPropietario = localStorage.getItem("NITPropie")
+    let NITPropietario = localStorage.getItem("NITPropie");
     fetchData(NITPropietario);
   }, []);
 
   const fetchData = async (NITPropietario) => {
-
-    if(NITPropietario){
-      setNoResult(false)
+    setLoading(true); // Establecer loading en true antes de comenzar a cargar los datos
+  
+    if (NITPropietario) {
+      setNoResult(false);
       try {
-        const response = await fetch(`http://localhost:3006/Vpropietarios?Cedula=${NITPropietario}`);
+        const response = await fetch(
+          `http://localhost:3006/Vpropietarios?Cedula=${NITPropietario}`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
         setinfopropietario(data[0]);
-        
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false); // Cambiar loading a false después de cargar los datos
       }
-    }
-    else {
-      setNoResult(true)
+    } else {
+      setNoResult(true);
       try {
         const response = await fetch(`http://localhost:3006/Vpropietarios?`);
         if (!response.ok) {
@@ -58,22 +60,22 @@ export const RInmuebleA = () => {
         setinfopropietario(data);
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false); // Cambiar loading a false después de cargar los datos
       }
     }
-    
   };
+  
   const handleCloseModalA = () => {
     setMostrarModalA(false);
   };
   const handleMostrarAClick = async () => {
-      setMostrarModalA(true);
+    setMostrarModalA(true);
   };
 
   const createrowA = (Propietarios) => {
     return (
-      <tr
-        key={Propietarios.IdArrendatario}
-      >
+      <tr key={Propietarios.IdArrendatario}>
         <td>{Propietarios.TipoDocumento}</td>
         <td>{Propietarios.DocumentoIdentidad}</td>
         <td>{Propietarios.NombreCompleto}</td>
@@ -84,15 +86,16 @@ export const RInmuebleA = () => {
     );
   };
 
-
   const onsubmitRegistro = async (data) => {
-    data.Id_Propietario = infopropietario.IdPropietario
+    data.Id_Propietario = infopropietario.IdPropietario;
     data.Tipo = "Apartamento";
     try {
       await crearInmueble(data);
       notify();
       reset();
-      localStorage.removeItem("NITPropie")
+      localStorage.removeItem("NITPropie");
+      // Actualizar infopropietario después de un envío exitoso
+      fetchData(data.DocumentoIdentidad);
       window.location.href = "/Inmueble";
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
@@ -100,7 +103,7 @@ export const RInmuebleA = () => {
       } else {
         falla();
         console.error("Error al crear usuario:", error);
-        throw error; // Re-lanza el error para que pueda ser manejado en el componente
+        throw error;
       }
     }
   };
@@ -120,43 +123,49 @@ export const RInmuebleA = () => {
   };
 
   const handleConfirmCancel = () => {
-    localStorage.removeItem("NITPropie")
+    localStorage.removeItem("NITPropie");
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    let timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000); // 3000 milliseconds = 3 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <div className="contener-home contener-rpropietario">
       <h2>Registro Inmueble</h2>
       <div className="container">
-          <Form
-            className=""
-            style={{ marginTop: "0" }}
-            onSubmit={handleSubmit(onsubmitRegistro)}
-            method="post"
-             >
-            <div className="form-propietario">
-
-            
-              <Form.Group
-                controlId="formTipoInmueble"
-                className="col col-md.auto"
+        <Form
+          className=""
+          style={{ marginTop: "0" }}
+          onSubmit={handleSubmit(onsubmitRegistro)}
+          method="post"
+        >
+          <div className="form-propietario">
+            <Form.Group
+              controlId="formTipoInmueble"
+              className="col col-md.auto"
+            >
+              <Form.Label>Tipo Inmueble</Form.Label>
+              <Form.Select
+                className="formSelect InputsRegistros"
+                aria-label="Default select example"
+                onChange={handleSelectChange}
               >
-                <Form.Label>Tipo Inmueble</Form.Label>
-                <Form.Select
-                  className="formSelect InputsRegistros"
-                  aria-label="Default select example"
-                  onChange={handleSelectChange}
-                >
-                  <option value="RInmuebleA" disabled hidden selected>
-                    Apartamento
-                  </option>
-                  <option value="RinmuebleO">Oficina</option>
-                  <option value="RInmuebleB">Bodega</option>
-                  <option value="RInmuebleL">Local</option>
-                  <option value="RInmuebleC">Casa</option>
-                </Form.Select>
-              </Form.Group>
+                <option value="RInmuebleA" disabled hidden selected>
+                  Apartamento
+                </option>
+                <option value="RinmuebleO">Oficina</option>
+                <option value="RInmuebleB">Bodega</option>
+                <option value="RInmuebleL">Local</option>
+                <option value="RInmuebleC">Casa</option>
+              </Form.Select>
+            </Form.Group>
 
               <Form.Group controlId="formNoMatricula">
                 <Form.Label>No. Matricula:</Form.Label>
@@ -224,73 +233,187 @@ export const RInmuebleA = () => {
                   <span className="text_button ms-2">Ver Propietarios</span>
                 </Button>
 
-       </Form.Group>
-        ):(
-              <Form.Group controlId="formNoIdentidadPropietario">
+            <Form.Group controlId="formCiudad">
+              <Form.Label>Ciudad:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("Ciudad")}
+                type="text"
+              />
+            </Form.Group>
 
+            <Form.Group controlId="formBarrio">
+              <Form.Label>Barrio:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("Barrio")}
+                type="text"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formEstrato">
+              <Form.Label>Estrato:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("Estrato")}
+                type="number"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formNoBanos">
+              <Form.Label>No. Baños:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("Nbanos")}
+                type="number"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formNoBanos">
+              <Form.Label>Valor:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("ValorIn")}
+                type="number"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formNoHabitaciones">
+              <Form.Label>No. Habitaciones:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("NHabita")}
+                type="number"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formNoNiveles">
+              <Form.Label>No. Niveles:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("NoNiveles")}
+                type="number"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formTerraza">
+              <Form.Label>Terraza:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("NoTerraza")}
+                type="number"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formServiciosPublicos">
+              <Form.Label>Servicios Publicos:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("Spublicos")}
+                type="text"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formAseguramiento">
+              <Form.Label>Aseguramiento:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("aseguramiento")}
+                type="date"
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formNoIdentidadPropietario">
+              <Form.Label>No. Identidad Propietario:</Form.Label>
+              <Form.Control className="InputsRegistros" type="number" />
+            </Form.Group>
+
+            {NoResult == true ? (
+              <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Propietario del inmueble</Form.Label>
-                <Form.Control 
-                disabled
-                value={infopropietario.NombreCompleto}                
-                className="InputsRegistros" type="text" />
-
-              </Form.Group>
-        )}
-
-              </div>
-              <Form.Group controlId="formNoIdentidadPropietario">
-                <Form.Label>Descripción</Form.Label>
-                <Form.Control  className="InputsRegistros"
-                  {...register("Descripcion")}
-                  as="textarea"
-                  rows={2}
-                  style={{ width: "100%", resize: "none" }}
-                />
-              </Form.Group>
-             {/*Botones para guardar y cancelar*/}
-             <div className="col-md-12">
-              <div className="save_deleter">
-              <Button
+                <Button
                   type="button"
                   variant="success m-2"
-                  onClick={() => setShowSaveModal(true)}
+                  onClick={() => handleMostrarAClick()}
                 >
-                  <FontAwesomeIcon icon={faSave} />
-                  <span className="text_button ms-2">Guardar</span>
+                  <span className="text_button ms-2">Ver Propietarios</span>
                 </Button>
+              </Form.Group>
+            ) : (
+              <Form.Group controlId="formNoIdentidadPropietario">
+                <Form.Label>Propietario del inmueble</Form.Label>
+                {infopropietario ? (
+                  <Form.Control
+                    disabled
+                    value={infopropietario.NombreCompleto}
+                    className="InputsRegistros"
+                    type="text"
+                  />
+                ) : (
+                  <Form.Control
+                    disabled
+                    value=""
+                    className="InputsRegistros"
+                    type="text"
+                    placeholder="Cargando..."
+                  />
+                )}
+              </Form.Group>
+            )}
+          </div>
+          <Form.Group controlId="formNoIdentidadPropietario">
+            <Form.Label>Descripción</Form.Label>
+            <Form.Control
+              className="InputsRegistros"
+              {...register("Descripcion")}
+              as="textarea"
+              rows={2}
+              style={{ width: "100%", resize: "none" }}
+            />
+          </Form.Group>
+          {/*Botones para guardar y cancelar*/}
+          <div className="col-md-12">
+            <div className="save_deleter">
+              <Button
+                type="button"
+                variant="success m-2"
+                onClick={() => setShowSaveModal(true)}
+              >
+                <FontAwesomeIcon icon={faSave} />
+                <span className="text_button ms-2">Guardar</span>
+              </Button>
 
-                {/* Botón de cancelar */}
-                <Button
-                  type="button"
-                  variant="danger m-2"
-                  onClick={() => setShowCancelModal(true)}
-                >
-                  <FontAwesomeIcon icon={faTimes} />
-                  <span className="text_button ms-2">Cancelar</span>
-                </Button>
-              </div>
+              {/* Botón de cancelar */}
+              <Button
+                type="button"
+                variant="danger m-2"
+                onClick={() => setShowCancelModal(true)}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+                <span className="text_button ms-2">Cancelar</span>
+              </Button>
             </div>
-            {/* Modal de confirmación de guardar */}
-            <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
-              <Modal.Header closeButton>
-                <Modal.Title>Confirmación</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                ¿Estás seguro de que deseas guardar los cambios?
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowSaveModal(false)}
-                >
-                  No
-                </Button>
-                <Button variant="primary" onClick={handleConfirmSave}>
-                  Sí
-                </Button>
-              </Modal.Footer>
-            </Modal>
-
+          </div>
+          {/* Modal de confirmación de guardar */}
+          <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Confirmación</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              ¿Estás seguro de que deseas guardar los cambios?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setShowSaveModal(false)}
+              >
+                No
+              </Button>
+              <Button variant="primary" onClick={handleConfirmSave}>
+                Sí
+              </Button>
+            </Modal.Footer>
+          </Modal>
             {/* Modal de confirmación de cancelar */}
             <Modal
               show={showCancelModal}
@@ -351,8 +474,6 @@ export const RInmuebleA = () => {
         ):(
               <h1>hola</h1>
         )}
-
-
           </Form>
       </div>
     </div>

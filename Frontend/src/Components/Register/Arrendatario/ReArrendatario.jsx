@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./ReArrendatario.css";
 import { Button, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { registerArrendatario } from "../../Hooks/RegisterArrendatario";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 export const ReArrendatario = () => {
   const notify = () =>
@@ -21,37 +21,16 @@ export const ReArrendatario = () => {
       }
     );
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
-  const onsubmitArrendatario = async (data) => {
-    try {
-      const response = await registerArrendatario(data);
-      if (response.ok) {
-        notify();
-        reset();
-      }
-    } catch (error) {
-      if (error.message.includes("correo ya registrado")) {
-        alert("El correo ya está registrado");
-      } else {
-        falla();
-        console.error("Error al crear usuario:", error);
-        throw error; // Re-lanza el error para que pueda ser manejado en el componente
-      }
-    }
-  };
+
   // Modal
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   const handleConfirmSave = () => {
     // Lógica para confirmar el guardado
-    handleSubmit(onsubmitArrendatario)(); // Envia los datos
+    handleSubmit(onSubmitRegistro)(); // Envia los datos
     setShowSaveModal(false); // Cierra el modal
     reset();
   };
@@ -61,18 +40,97 @@ export const ReArrendatario = () => {
     setShowCancelModal(false); // Cierra el modal
   };
 
+  // Estado para almacenar los datos del codeudor
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [arrendatarioData, setarrendatarioData] = useState({
+    TipoDocumento: "",
+    DocumentoIdentidad: "",
+    NombreCompleto: "",
+    Telefono: "",
+    Correo: "",
+    Estado: "",
+  });
+
+  useEffect(() => {
+    // Si hay parámetros de consulta en la URL, significa que se está editando un codeudor existente
+    if (location.search) {
+      const arrendatario = {
+        IdArrendatario: searchParams.get("IdArrendatario"),
+        TipoDocumento: searchParams.get("TipoDocumento"),
+        DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
+        NombreCompleto: searchParams.get("NombreCompleto"),
+        Telefono: searchParams.get("Telefono"),
+        Correo: searchParams.get("Correo"),
+        Estado: searchParams.get("Estado"),
+      };
+      console.log("Datos de arrendatario recibidos:", arrendatario);
+      setarrendatarioData(arrendatario);
+    } else {
+      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo codeudor
+      setarrendatarioData({
+        NombreCompleto: "",
+        TipoDocumento: "",
+        DocumentoIdentidad: "",
+        Telefono: "",
+        Correo: "",
+        Estado: "",
+      });
+    }
+  }, [location.search]);
+
+
+  const onSubmitRegistro = async (data) => {
+    try {
+      const url = arrendatarioData.IdArrendatario
+        ? `http://localhost:3006/Rarrendatarios/${arrendatarioData.IdArrendatario}`
+        : "http://localhost:3006/Rarrendatario";
+  
+      const method = arrendatarioData.IdArrendatario ? "PUT" : "POST";
+  
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data), // Aquí debes asegurarte de incluir el ID del arrendatario si existe
+      });
+      if (response.ok) {
+        setShowSaveModal(true);
+        notify();
+        reset();
+        window.location.href = "/Arrendatario";
+      } else {
+        falla();
+      }
+    } catch (error) {
+      console.error("Error al enviar datos al servidor:", error);
+    }
+  };
   return (
     <div className="contener-home contener-ReArrendatario">
       <h2>Registro Arrendatario</h2>
       <div className="container">
-        <Form className="" onSubmit={handleSubmit(onsubmitArrendatario)}>
+        <Form className="" onSubmit={handleSubmit(onSubmitRegistro)}>
           <div className="form-propietario">
+            <Form.Group controlId="nombrearrendatario">
+              <Form.Label className="text_normal">Nombre Completo</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                type="text"
+                maxLength={50}
+                {...register("nombrearrendatario")}
+                defaultValue={arrendatarioData.NombreCompleto}
+              />
+            </Form.Group>
+
             <Form.Group controlId="tipodocumento">
               <Form.Label className="text_normal">Tipo Documento:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 as="select"
                 {...register("tipodocumento")}
+                defaultValue={arrendatarioData.TipoDocumento}
               >
                 <option value={"CC"}>Cédula de Ciudadanía</option>
                 <option value={"CE"}>Cédula de Extranjería</option>
@@ -85,9 +143,9 @@ export const ReArrendatario = () => {
                 required
                 className="InputsRegistros"
                 type="number"
-                min={20}
                 max={9999999999}
                 {...register("numerodocumento")}
+                defaultValue={arrendatarioData.DocumentoIdentidad.trim()} 
               />
             </Form.Group>
 
@@ -100,6 +158,7 @@ export const ReArrendatario = () => {
                 type="number"
                 max={9999999999}
                 {...register("telefono")}
+                defaultValue={arrendatarioData.Telefono.trim()}
               />
             </Form.Group>
 
@@ -112,49 +171,17 @@ export const ReArrendatario = () => {
                 className="InputsRegistros"
                 type="email"
                 {...register("correo")}
+                defaultValue={arrendatarioData.Correo}
               />
             </Form.Group>
 
-            <Form.Group controlId="nombrearrendatario">
-              <Form.Label className="text_normal">
-                Nombre Arrendatario:
-              </Form.Label>
+            <Form.Group controlId="estadocontrato">
+              <Form.Label className="text_normal">Estado</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 type="text"
-                maxLength={50}
-                {...register("nombrearrendatario")}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="fecha_inicio">
-              <Form.Label className="text_normal">
-                Fecha Inicio Contrato:
-              </Form.Label>
-              <Form.Control
-                className="InputsRegistros"
-                type="date"
-                {...register("fechainicio")}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="valor_deposito">
-              <Form.Label className="text_normal">Valor Deposito:</Form.Label>
-              <Form.Control
-                className="InputsRegistros"
-                type="number"
-                {...register("valordeposito")}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="fecha_final">
-              <Form.Label className="text_normal">
-                Fecha Termino Contrato:
-              </Form.Label>
-              <Form.Control
-                className="InputsRegistros"
-                type="date"
-                {...register("fechafinal")}
+                {...register("estadocontrato")}
+                defaultValue={arrendatarioData.Estado}
               />
             </Form.Group>
           </div>
