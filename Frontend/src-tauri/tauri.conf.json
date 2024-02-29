@@ -55,6 +55,8 @@
     },
     "windows": [
       {
+        "minimizable": false,
+        "maximized": true,
         "fullscreen": false,
         "height": 900,
         "resizable": true,

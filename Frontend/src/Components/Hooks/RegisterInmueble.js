@@ -1,4 +1,5 @@
 export const crearInmueble = async (data) => {
+    data.Estado = "Disponible"
     try {
         const response = await fetch('http://localhost:3006/Reinmueble', {
             method: 'POST',

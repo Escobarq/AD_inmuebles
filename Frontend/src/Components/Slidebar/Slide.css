@@ -14,14 +14,14 @@
 }
 
 .nav-item {
-  height: auto !important;
+  height: 50px !important;
 }
 
 .Links_Icons{
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
-@media (width <= 1366px) {
+@media (width <= 1440px) {
   .sliderbard {
     width: 70px !important; /* Ajusta el ancho automáticamente */
   }

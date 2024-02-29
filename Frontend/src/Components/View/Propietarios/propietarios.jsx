@@ -16,6 +16,7 @@ import Pagination from "react-bootstrap/Pagination";
 import { toast } from "react-toastify";
 import InhabilitarPropetario from "../../Hooks/InhabilitarPropetarios";
 import NoResultImg from "../../../assets/NoResult.gif";
+import { InfoPropietario } from "../../Hooks/InfoPropietario";
 
 export const Propietarios = () => {
   const [infopropietario, setinfopropietario] = useState([]);
@@ -47,7 +48,7 @@ export const Propietarios = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  // Hook para actualizar el estado del arrendatario
+  // Hook para actualizar el estado del propetario
   const { actualizarEstadoPropetario } = InhabilitarPropetario();
 
   //Actualizar Estado Coduedor
@@ -97,22 +98,10 @@ export const Propietarios = () => {
 
   const fetchData = async () => {
     try {
-      const queryParams = new URLSearchParams(filtroData);
-      const response = await fetch(
-        `http://localhost:3006/Vpropietarios?${queryParams.toString()}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-
-      const PropetarioActivos = data.filter(
-        (Propetarios) => Propetarios.booleanos === "true"
-      );
-
-      setinfopropietario(PropetarioActivos);
-
-      if (PropetarioActivos.length == 0) {
+      const info = await InfoPropietario(filtroData)
+      setinfopropietario(info);
+      
+      if (info.length == 0) {
         setNoResult(true);
       } else {
         setNoResult(false);
@@ -157,7 +146,11 @@ export const Propietarios = () => {
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
-          <Button className="btn-opciones" variant="warning">
+          <Button
+            className="btn-opciones"
+            variant="warning"
+            onClick={() => handleEditPropetario(Propietario.IdPropietario)}
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
@@ -172,7 +165,46 @@ export const Propietarios = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infopropietario.slice(indexOfFirstItem, indexOfLastItem);
 
+  const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
+
+  useEffect(() => {
+    const updateTooltipVisibility = () => {
+      setShowTooltip(window.innerWidth < 1366);
+    };
+
+    window.addEventListener("resize", updateTooltipVisibility);
+    return () => window.removeEventListener("resize", updateTooltipVisibility);
+  }, []);
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  //Pros para enviar a registro propetario
+  const handleEditPropetario = (PropetarioId) => {
+    const propetario = infopropietario.find(
+      (propetario) => propetario.IdPropietario === PropetarioId
+    );
+    // Verifica si se encontró el propetario antes de redirigir
+    if (propetario) {
+      const urlParams = new URLSearchParams({
+        IdPropietario: propetario.IdPropietario,
+        TipoDocumento: propetario.TipoDocumento,
+        DocumentoIdentidad: propetario.DocumentoIdentidad,
+        NombreCompleto: propetario.NombreCompleto,
+        Telefono: propetario.Telefono,
+        Correo: propetario.Correo,
+        Banco: propetario.Banco,
+        TipoCuenta: propetario.TipoCuenta,
+        NumeroCuenta: propetario.NumeroCuenta,
+        FechaIngreso: propetario.FechaIngreso,
+        Direccion: propetario.Direccion
+      });
+
+      const url = `/RPropietario?${urlParams.toString()}`;
+      window.location.href = url;
+    } else {
+      console.error("No se encontró el propetario con ID:", PropetarioId);
+    }
+  };
   return (
     <>
       <div className="contener-home">
@@ -208,19 +240,22 @@ export const Propietarios = () => {
               id=""
             />
           </div>
+          
           <OverlayTrigger
             key="tooltip-add-propietario"
             placement="top"
             overlay={
-              <Tooltip id="tooltip-add-propietario">
-                Agregar Propietario
-              </Tooltip>
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">Agregar Propietario</Tooltip>
+              ) : (
+                <></>
+              )
             }
           >
             <Button variant="success" className="btn-add">
               <Link to="/RPropietario">
-                <FontAwesomeIcon className="icon" icon={faUserPlus} /> 
-                <p className="AgregarPA">Agregar Propietario</p> 
+                <FontAwesomeIcon className="icon" icon={faUserPlus} />
+                <p className="AgregarPA">Agregar Propietario</p>
               </Link>
             </Button>
           </OverlayTrigger>
@@ -229,14 +264,18 @@ export const Propietarios = () => {
             key="tooltip-ver-inhabilitados-propietarios"
             placement="top"
             overlay={
-              <Tooltip id="tooltip-ver-inhabilitados-propietarios">
-                Ver Propietarios Inhabilitados
-              </Tooltip>
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">
+                  Ver Propietarios Inhabilitados
+                </Tooltip>
+              ) : (
+                <></>
+              )
             }
           >
             <Button variant="dark" className="btn-add-info">
               <Link to="/InhaPropietarios" className="linkes">
-                <FontAwesomeIcon className="icon" icon={faUserSlash} /> 
+                <FontAwesomeIcon className="icon" icon={faUserSlash} />
                 <p className="AgregarPA">Ver Propietarios Inhabilitados</p>
               </Link>
             </Button>
@@ -293,7 +332,7 @@ export const Propietarios = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          ¿Está seguro de que desea inhabilitar este Arrendatario?
+          ¿Está seguro de que desea inhabilitar este propetario?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
