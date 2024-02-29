@@ -95,8 +95,7 @@ export const RPropietario = () => {
       if (response.ok) {
         setShowSaveModal(false); // Muestra el modal de confirmación
         localStorage.setItem("NITPropie", data.DocumentoIdentidad); // Suponiendo que DocumentoIdentidad es el campo correcto
-        reset(); // Reinicia el formulario si la solicitud es exitosa
-        // Muestra un mensaje de éxito o redirige a otra página
+        reset(); 
       }
     } catch (error) {
       console.error("Error al enviar datos al servidor:", error);
@@ -104,13 +103,11 @@ export const RPropietario = () => {
   };
 
   const handleConfirmSave = () => {
-    // Lógica para confirmar el guardado
-    handleSubmit(onSubmitRegistro)(); // Envía los datos
     
-    // Determina si la solicitud es un PUT o un POST
+    handleSubmit(onSubmitRegistro)(); 
+
     const method = propetarioData.IdPropietario ? "PUT" : "POST";
-  
-    // Redirige a diferentes rutas dependiendo del método de solicitud
+
     if (method === "PUT") {
       window.location.href = "/Propietario";
     } else {
