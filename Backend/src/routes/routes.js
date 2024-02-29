@@ -563,19 +563,19 @@ router.post("/Rarrendatario", async (req, res) => {
     nombrearrendatario,
     telefono,
     correo,
-    estadocontrato,
+    estado = "Libre",
   } = req.body;
 
   try {
     connection.query(
-      "INSERT INTO arrendatario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono, Correo, Estado ) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO arrendatario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono,  Correo, Estado) VALUES (?, ?, ?, ?, ?, ?)",
       [
         nombrearrendatario,
         tipodocumento,
         numerodocumento,
-        telefono,
+        telefono,        
         correo,
-        estadocontrato,
+        estado
       ],
       (error, results) => {
         if (error) {
@@ -586,6 +586,81 @@ router.post("/Rarrendatario", async (req, res) => {
           res
             .status(201)
             .json({ message: "Arrendatario registrado exitosamente" });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error al añadir propietario:", error);
+    res.status(500).json({ error: "Error al añadir propietario" });
+  }
+});
+// Ruta para registrar un contratoarrendatario
+router.post("/RConArrendamiento", async (req, res) => {
+  const {
+    IdArrendatario,
+    fechainicio,
+    fechafinal,
+    valordeposito,
+    estadocontrato = "vigente",
+  } = req.body;
+
+  try {
+    connection.query(
+      "INSERT INTO contratoarrendamiento (IdArrendatario, FechaInicioContrato, FechaFinContrato, ValorDeporito) VALUES (?, ?, ?, ?)",
+      [
+    IdArrendatario,
+    fechainicio,
+    fechafinal,
+    valordeposito,
+    estadocontrato,
+      ],
+      (error, results) => {
+        if (error) {
+          console.error("Error al añadir arrendatario:", error);
+          res.status(500).json({ error: "Error al añadir contrato" });
+        } else {
+          console.log("arrendatario agregado:", results);
+          res
+            .status(201)
+            .json({ message: "contrato registrado exitosamente" });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error al añadir propietario:", error);
+    res.status(500).json({ error: "Error al añadir propietario" });
+  }
+});
+
+    //Registro de Comision de gastos
+router.post("/RComision", async (req, res) => {
+  const {
+    IdPropietario,
+    FechaPago,
+    ElaboradoPor,
+    FormaPago,
+    Observaciones,
+  } = req.body;
+
+  try {
+    connection.query(
+      "INSERT INTO comision_propietario (IdPropietario, PeriodoPagado, ElaboradoPor, FormaPago, Observaciones) VALUES (?, ?, ?, ?,?)",
+      [
+    IdPropietario,
+    FechaPago,
+    ElaboradoPor,
+    FormaPago,
+    Observaciones,
+      ],
+      (error, results) => {
+        if (error) {
+          console.error("Error al añadir arrendatario:", error);
+          res.status(500).json({ error: "Error al añadir La comision" });
+        } else {
+          console.log("arrendatario agregado:", results);
+          res
+            .status(201)
+            .json({ message: "contrato registrado exitosamente" });
         }
       }
     );

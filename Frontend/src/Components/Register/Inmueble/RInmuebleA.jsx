@@ -167,23 +167,71 @@ export const RInmuebleA = () => {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group controlId="formNoMatricula">
-              <Form.Label>No. Matricula:</Form.Label>
-              <Form.Control
-                className="InputsRegistros"
-                {...register("Nmatricula")}
-                type="number"
-              />
-            </Form.Group>
+              <Form.Group controlId="formNoMatricula">
+                <Form.Label>No. Matricula:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("Nmatricula")} type="number" />
+              </Form.Group>
 
-            <Form.Group controlId="formDireccion">
-              <Form.Label>Dirección:</Form.Label>
-              <Form.Control
-                className="InputsRegistros"
-                {...register("Direccion")}
-                type="text"
-              />
-            </Form.Group>
+              <Form.Group controlId="formDireccion">
+                <Form.Label>Dirección:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("Direccion")} type="text" />
+              </Form.Group>
+
+              <Form.Group controlId="formCiudad">
+                <Form.Label>Ciudad:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("Ciudad")} type="text" />
+              </Form.Group>
+
+              <Form.Group controlId="formBarrio">
+                <Form.Label>Barrio:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("Barrio")} type="text" />
+              </Form.Group>
+
+              <Form.Group controlId="formEstrato">
+                <Form.Label>Estrato:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("Estrato")} type="number" />
+              </Form.Group>
+
+              <Form.Group controlId="formNoBanos">
+                <Form.Label>No. Baños:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("Nbanos")} type="number" />
+              </Form.Group>
+
+              <Form.Group controlId="formNoBanos">
+                <Form.Label>Valor:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("ValorIn")} type="number" />
+              </Form.Group>
+
+              <Form.Group controlId="formNoHabitaciones">
+                <Form.Label>No. Habitaciones:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("NHabita")} type="number" />
+              </Form.Group>
+
+              <Form.Group controlId="formNoNiveles">
+                <Form.Label>No. Niveles:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("NoNiveles")} type="number" />
+              </Form.Group>
+
+              <Form.Group controlId="formTerraza">
+                <Form.Label>Terraza:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("NoTerraza")} type="number" />
+              </Form.Group>
+
+              <Form.Group controlId="formServiciosPublicos">
+                <Form.Label>Servicios Publicos:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("Spublicos")} type="text" />
+              </Form.Group>
+
+              <Form.Group controlId="formAseguramiento">
+                <Form.Label>Aseguramiento:</Form.Label>
+                <Form.Control  className="InputsRegistros" {...register("aseguramiento")} type="date" />
+              </Form.Group>
+              {NoResult == true ? (
+         <Form.Group controlId="formNoIdentidadPropietario">
+         <Form.Label>Propietario del inmueble</Form.Label>
+         <Button type="button" variant="success m-2" onClick={() => handleMostrarAClick()} >
+                  <span className="text_button ms-2">Ver Propietarios</span>
+                </Button>
 
             <Form.Group controlId="formCiudad">
               <Form.Label>Ciudad:</Form.Label>
@@ -366,70 +414,67 @@ export const RInmuebleA = () => {
               </Button>
             </Modal.Footer>
           </Modal>
-
-          {/* Modal de confirmación de cancelar */}
-          <Modal
-            show={showCancelModal}
-            onHide={() => setShowCancelModal(false)}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Confirmación</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              ¿Estás seguro de que deseas cancelar la operación?
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                onClick={() => setShowCancelModal(false)}
-              >
-                No
-              </Button>
-              <Button variant="primary" onClick={handleConfirmCancel}>
-                Sí
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          <Modal
-            size="lg"
-            show={mostrarModalA}
-            onHide={handleCloseModalA}
-            aria-labelledby="example-modal-sizes-title-lg"
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Propietarios Disponibles</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Tipo de Documento</th>
-                    <th>No. Documento</th>
-                    <th>Nombre</th>
-                    <th>Estado</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr>
-                      <td colSpan="6">Cargando propietarios...</td>
-                    </tr>
-                  ) : infopropietario ? (
-                    infopropietario.map((Propietarios) =>
-                      createrowA(Propietarios)
-                    )
-                  ) : (
-                    <tr>
-                      <td colSpan="6">No hay propietarios disponibles</td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
-            </Modal.Body>
-          </Modal>
-        </Form>
+            {/* Modal de confirmación de cancelar */}
+            <Modal
+              show={showCancelModal}
+              onHide={() => setShowCancelModal(false)}
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Confirmación</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¿Estás seguro de que deseas cancelar la operación?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowCancelModal(false)}
+                >
+                  No
+                </Button>
+                <Button variant="primary" onClick={handleConfirmCancel}>
+                  Sí
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            
+            {NoResult == true ? (
+             <Modal
+          size="lg"
+          show={mostrarModalA}
+          onHide={handleCloseModalA}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Propietarios Disponibles</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Tipo de Documento</th>
+                  <th>No. Documento</th>
+                  <th>Nombre</th>
+                  <th>Estado</th>
+                  <th>Teléfono</th>
+                  <th>Correo</th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+              {infopropietario.map((Propietarios) =>
+                  createrowA(Propietarios)
+                )}
+              </tbody>
+            </Table>
+          </Modal.Body>
+        </Modal>
+         
+        ):(
+              <h1>hola</h1>
+        )}
+          </Form>
       </div>
     </div>
   );

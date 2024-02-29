@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -86,9 +86,45 @@ export const Rarrendatario = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
+    setFiltroData({ ...filtroData, [name]: value });
   };
 
   const { register, handleSubmit } = useForm();
+  const [infoarrendatario, setinfoarrendatario] = useState([]);
+
+  const [filtroData, setFiltroData] = useState({
+    Cedula: "",
+    Estado: "Ocupado",
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, [filtroData]);
+
+
+
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(filtroData);
+      const response = await fetch(
+        `http://localhost:3006/Varrendatario?${queryParams.toString()}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      const arrendatarioActivos = data.filter(
+        (Arrendatarios) => Arrendatarios.booleanos === "true"
+      );
+
+      setinfoarrendatario(arrendatarioActivos);
+      
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
 
   const onSubmitArrendatario = (data) => {
     console.log(data);

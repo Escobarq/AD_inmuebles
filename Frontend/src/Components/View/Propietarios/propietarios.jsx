@@ -16,6 +16,7 @@ import Pagination from "react-bootstrap/Pagination";
 import { toast } from "react-toastify";
 import InhabilitarPropetario from "../../Hooks/InhabilitarPropetarios";
 import NoResultImg from "../../../assets/NoResult.gif";
+import { InfoPropietario } from "../../Hooks/InfoPropietario";
 
 export const Propietarios = () => {
   const [infopropietario, setinfopropietario] = useState([]);
@@ -97,22 +98,10 @@ export const Propietarios = () => {
 
   const fetchData = async () => {
     try {
-      const queryParams = new URLSearchParams(filtroData);
-      const response = await fetch(
-        `http://localhost:3006/Vpropietarios?${queryParams.toString()}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-
-      const PropetarioActivos = data.filter(
-        (Propetarios) => Propetarios.booleanos === "true"
-      );
-
-      setinfopropietario(PropetarioActivos);
-
-      if (PropetarioActivos.length == 0) {
+      const info = await InfoPropietario(filtroData)
+      setinfopropietario(info);
+      
+      if (info.length == 0) {
         setNoResult(true);
       } else {
         setNoResult(false);
@@ -251,6 +240,7 @@ export const Propietarios = () => {
               id=""
             />
           </div>
+          
           <OverlayTrigger
             key="tooltip-add-propietario"
             placement="top"
