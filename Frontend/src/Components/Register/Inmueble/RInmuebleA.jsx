@@ -31,8 +31,6 @@ export const RInmuebleA = () => {
   }, []);
 
   const fetchData = async (NITPropietario) => {
-    setLoading(true); // Establecer loading en true antes de comenzar a cargar los datos
-  
     if (NITPropietario) {
       setNoResult(false);
       try {
@@ -43,11 +41,9 @@ export const RInmuebleA = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setinfopropietario(data[0]);
+        setinfopropietario(data);
       } catch (error) {
         console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false); // Cambiar loading a false después de cargar los datos
       }
     } else {
       setNoResult(true);
@@ -60,18 +56,18 @@ export const RInmuebleA = () => {
         setinfopropietario(data);
       } catch (error) {
         console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false); // Cambiar loading a false después de cargar los datos
       }
     }
   };
-  
+
   const handleCloseModalA = () => {
     setMostrarModalA(false);
   };
   const handleMostrarAClick = async () => {
+    console.log("Mostrando modal...");
     setMostrarModalA(true);
   };
+  
 
   const createrowA = (Propietarios) => {
     return (
@@ -94,8 +90,6 @@ export const RInmuebleA = () => {
       notify();
       reset();
       localStorage.removeItem("NITPropie");
-      // Actualizar infopropietario después de un envío exitoso
-      fetchData(data.DocumentoIdentidad);
       window.location.href = "/Inmueble";
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
@@ -103,7 +97,7 @@ export const RInmuebleA = () => {
       } else {
         falla();
         console.error("Error al crear usuario:", error);
-        throw error;
+        throw error; // Re-lanza el error para que pueda ser manejado en el componente
       }
     }
   };
@@ -127,15 +121,7 @@ export const RInmuebleA = () => {
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000); // 3000 milliseconds = 3 seconds
-
-    return () => clearTimeout(timer);
-  }, []);
   return (
     <div className="contener-home contener-rpropietario">
       <h2>Registro Inmueble</h2>
@@ -167,71 +153,23 @@ export const RInmuebleA = () => {
               </Form.Select>
             </Form.Group>
 
-              <Form.Group controlId="formNoMatricula">
-                <Form.Label>No. Matricula:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("Nmatricula")} type="number" />
-              </Form.Group>
+            <Form.Group controlId="formNoMatricula">
+              <Form.Label>No. Matricula:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("Nmatricula")}
+                type="number"
+              />
+            </Form.Group>
 
-              <Form.Group controlId="formDireccion">
-                <Form.Label>Dirección:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("Direccion")} type="text" />
-              </Form.Group>
-
-              <Form.Group controlId="formCiudad">
-                <Form.Label>Ciudad:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("Ciudad")} type="text" />
-              </Form.Group>
-
-              <Form.Group controlId="formBarrio">
-                <Form.Label>Barrio:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("Barrio")} type="text" />
-              </Form.Group>
-
-              <Form.Group controlId="formEstrato">
-                <Form.Label>Estrato:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("Estrato")} type="number" />
-              </Form.Group>
-
-              <Form.Group controlId="formNoBanos">
-                <Form.Label>No. Baños:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("Nbanos")} type="number" />
-              </Form.Group>
-
-              <Form.Group controlId="formNoBanos">
-                <Form.Label>Valor:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("ValorIn")} type="number" />
-              </Form.Group>
-
-              <Form.Group controlId="formNoHabitaciones">
-                <Form.Label>No. Habitaciones:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("NHabita")} type="number" />
-              </Form.Group>
-
-              <Form.Group controlId="formNoNiveles">
-                <Form.Label>No. Niveles:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("NoNiveles")} type="number" />
-              </Form.Group>
-
-              <Form.Group controlId="formTerraza">
-                <Form.Label>Terraza:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("NoTerraza")} type="number" />
-              </Form.Group>
-
-              <Form.Group controlId="formServiciosPublicos">
-                <Form.Label>Servicios Publicos:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("Spublicos")} type="text" />
-              </Form.Group>
-
-              <Form.Group controlId="formAseguramiento">
-                <Form.Label>Aseguramiento:</Form.Label>
-                <Form.Control  className="InputsRegistros" {...register("aseguramiento")} type="date" />
-              </Form.Group>
-              {NoResult == true ? (
-         <Form.Group controlId="formNoIdentidadPropietario">
-         <Form.Label>Propietario del inmueble</Form.Label>
-         <Button type="button" variant="success m-2" onClick={() => handleMostrarAClick()} >
-                  <span className="text_button ms-2">Ver Propietarios</span>
-                </Button>
+            <Form.Group controlId="formDireccion">
+              <Form.Label>Dirección:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("Direccion")}
+                type="text"
+              />
+            </Form.Group>
 
             <Form.Group controlId="formCiudad">
               <Form.Label>Ciudad:</Form.Label>
@@ -322,13 +260,7 @@ export const RInmuebleA = () => {
                 type="date"
               />
             </Form.Group>
-
-            <Form.Group controlId="formNoIdentidadPropietario">
-              <Form.Label>No. Identidad Propietario:</Form.Label>
-              <Form.Control className="InputsRegistros" type="number" />
-            </Form.Group>
-
-            {NoResult == true ? (
+            {NoResult === true ? (
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Propietario del inmueble</Form.Label>
                 <Button
@@ -342,7 +274,7 @@ export const RInmuebleA = () => {
             ) : (
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Propietario del inmueble</Form.Label>
-                {infopropietario ? (
+                {infopropietario && infopropietario.NombreCompleto ? (
                   <Form.Control
                     disabled
                     value={infopropietario.NombreCompleto}
@@ -414,67 +346,62 @@ export const RInmuebleA = () => {
               </Button>
             </Modal.Footer>
           </Modal>
-            {/* Modal de confirmación de cancelar */}
+
+          {/* Modal de confirmación de cancelar */}
+          <Modal
+            show={showCancelModal}
+            onHide={() => setShowCancelModal(false)}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Confirmación</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              ¿Estás seguro de que deseas cancelar la operación?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setShowCancelModal(false)}
+              >
+                No
+              </Button>
+              <Button variant="primary" onClick={handleConfirmCancel}>
+                Sí
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {infopropietario.length > 0 ? (
             <Modal
-              show={showCancelModal}
-              onHide={() => setShowCancelModal(false)}
+              size="lg"
+              show={mostrarModalA}
+              onHide={handleCloseModalA}
+              aria-labelledby="example-modal-sizes-title-lg"
             >
               <Modal.Header closeButton>
-                <Modal.Title>Confirmación</Modal.Title>
+                <Modal.Title>Propietarios Disponibles</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                ¿Estás seguro de que deseas cancelar la operación?
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Tipo de Documento</th>
+                      <th>No. Documento</th>
+                      <th>Nombre</th>
+                      <th>Estado</th>
+                      <th>Teléfono</th>
+                      <th>Correo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {infopropietario.map((Propietarios) =>
+                      createrowA(Propietarios)
+                    )}
+                  </tbody>
+                </Table>
               </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowCancelModal(false)}
-                >
-                  No
-                </Button>
-                <Button variant="primary" onClick={handleConfirmCancel}>
-                  Sí
-                </Button>
-              </Modal.Footer>
             </Modal>
-            
-            {NoResult == true ? (
-             <Modal
-          size="lg"
-          show={mostrarModalA}
-          onHide={handleCloseModalA}
-          aria-labelledby="example-modal-sizes-title-lg"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Propietarios Disponibles</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Tipo de Documento</th>
-                  <th>No. Documento</th>
-                  <th>Nombre</th>
-                  <th>Estado</th>
-                  <th>Teléfono</th>
-                  <th>Correo</th>
-                  
-                </tr>
-              </thead>
-              <tbody>
-              {infopropietario.map((Propietarios) =>
-                  createrowA(Propietarios)
-                )}
-              </tbody>
-            </Table>
-          </Modal.Body>
-        </Modal>
-         
-        ):(
-              <h1>hola</h1>
-        )}
-          </Form>
+          ) : null}
+        </Form>
       </div>
     </div>
   );
