@@ -3,10 +3,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
-.InputsRegistros{
-    height: 50px;
-    width: 100% !important;
-}
+
 .save_deleter{
     width: 100%;
     display: grid;
