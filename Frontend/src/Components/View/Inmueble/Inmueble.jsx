@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Table, Button, Modal ,OverlayTrigger ,Tooltip } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -347,9 +347,19 @@ export const Inmueble = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoinmueble.slice(indexOfFirstItem, indexOfLastItem);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+ //Tooltip 
+ const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
+ useEffect(() => {
+   const updateTooltipVisibility = () => {
+     setShowTooltip(window.innerWidth < 1366);
+   };
+
+   window.addEventListener('resize', updateTooltipVisibility);
+   return () => window.removeEventListener('resize', updateTooltipVisibility);
+ }, []);
+ 
   return (
     <>
       <div className="contener-home">
@@ -410,9 +420,7 @@ export const Inmueble = () => {
           <OverlayTrigger
             key="tooltip-add-inmueble"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-add-inmueble">Agregar Inmueble</Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Inmueble</Tooltip> : <></>}
           >
             <Button variant="success" className="btn-add">
               <Link to="/RInmuebleA">
@@ -428,11 +436,7 @@ export const Inmueble = () => {
           <OverlayTrigger
             key="tooltip-ver-inhabilitados"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-ver-inhabilitados">
-                Ver Inhabilitados
-              </Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Inhabilitados</Tooltip> : <></>}
           >
             <Button variant="dark" className="btn-add-info">
               <Link to="/InhaInmueble" className="linkes">

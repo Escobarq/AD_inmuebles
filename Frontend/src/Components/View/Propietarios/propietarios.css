@@ -91,6 +91,7 @@ td {
   padding: 8px;
 }
 .btn-add {
+  margin: 2%;
   width: 20%;
   background-color: green !important;
 }
@@ -116,8 +117,7 @@ btn-add-info {
 }
 .input-filtroRe {
   width: 20% !important;
-  height: 90% !important;
-  padding: 0px !important;
+  height: 4rem !important;
   margin-bottom: 0px !important;
   border: 1px solid #ccc !important;
   border-radius: 4px !important;
@@ -139,12 +139,17 @@ btn-add-info {
  width: 40px;
  height: 40px;
 }
-@media (width <= 1366px) {
+@media (width <= 1440px) {
   .conten-inputs{
     height: 2.5rem !important;
     margin: 0.5rem !important;
   }
   .btn-add-info{
     margin: 2% !important;
+  }
+}
+@media (width <= 1440px) {
+  .input-filtroRe {
+    height: 2.5rem !important;
   }
 }

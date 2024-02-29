@@ -38,7 +38,6 @@ export const Registrocodeudor = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
   } = useForm({ mode: "onChange" });
 
   useEffect(() => {

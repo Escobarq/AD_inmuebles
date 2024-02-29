@@ -63,6 +63,17 @@ export const Slidebar = () => {
     window.location.href = "/";
   };
 
+  const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
+
+  useEffect(() => {
+    const updateTooltipVisibility = () => {
+      setShowTooltip(window.innerWidth < 1366);
+    };
+
+    window.addEventListener('resize', updateTooltipVisibility);
+    return () => window.removeEventListener('resize', updateTooltipVisibility);
+  }, []);
+
   const renderMenuItems = () => {
     const roleId = parseInt(Rol);
 
@@ -73,7 +84,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={<Tooltip id="tooltip-prop">Propietarios</Tooltip>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Propietarios</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}
@@ -97,7 +108,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={<Tooltip id="tooltip-inm">Inmuebles</Tooltip>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Inmuebles</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}
@@ -120,7 +131,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={<Tooltip id="tooltip-arr">Arrendatarios</Tooltip>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Arrendatarios</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}
@@ -143,7 +154,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={<Tooltip id="tooltip-cod">Codeudores</Tooltip>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Codeudores</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}
@@ -166,7 +177,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={<Tooltip id="tooltip-rec-arr">Recibo Arrendatarios</Tooltip>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Recibo Arrendatarios</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}
@@ -189,7 +200,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={<Tooltip id="tooltip-rec-gas">Recibo Gastos</Tooltip>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Recibo Gasto</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}
@@ -212,7 +223,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={<Tooltip id="tooltip-inf-arr">Informe Arrendamiento</Tooltip>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Informe Arrendamiento</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}
@@ -235,7 +246,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={<Tooltip id="tooltip-com-prop">Comisiones Propietario</Tooltip>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Comisiones Propietario</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}
@@ -258,7 +269,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={<Tooltip id="tooltip-asig-rol">Asignar Rol Empleados</Tooltip>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Asignar Rol Empleados</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}

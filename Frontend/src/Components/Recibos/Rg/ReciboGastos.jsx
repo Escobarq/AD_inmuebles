@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -21,6 +22,7 @@ export const ReciboGastos = () => {
   const { handleSubmit } = useForm();
 
   const handleConfirmCancel = () => {
+    window.location.href = "/H_gastos"
     handleSubmit(handleCancel)();
     setShowCancelModal(false); // Cierra el modal
   };
@@ -42,16 +44,26 @@ export const ReciboGastos = () => {
     });
   };
 
+
+   
   const handleSave = () => {
     setShowSaveModal(true)
     // Validar que todos los campos estén llenos antes de guardar
+
+    const notify = (text) => 
+    toast.error(text, {
+      theme: "colored",
+      autoClose: 2000
+    });
+ 
     for (const field in formData) {
       if (formData[field].trim() === "") {
-        alert(`El campo ${field} no puede estar vacío.`);
-        return;
+        notify("No puede haber campos vacíos"); // Llama a la notificación una sola vez
+        return; // Detén la ejecución del bucle al encontrar un campo vacío
       }
     }
-
+    
+    
     const input = document.getElementById("recibo-gastos");
     document.className = "todo";
 
