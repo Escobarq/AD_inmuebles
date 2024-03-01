@@ -135,11 +135,30 @@ export const AsignarRol = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const EditarPerfil = (EmpleadosID) => {
-    const Empleados = infoRol.find(
+    // Encuentra el empleado seleccionado
+    const Empleado = infoRol.find(
       (empleado) => empleado.IdTrabajador === EmpleadosID
     );
-    window.location.href = `/EditarPerfil?IdTrabajador=${Empleados.IdTrabajador}&Idrol=${Empleados.Idrol}&Nombre=${Empleados.Nombre}&Apellido=${Empleados.Apellido}&Correo=${Empleados.Correo}&Contrasena=${Empleados.Contrasena}&Telefono=${Empleados.Telefono}`;
+  
+    if (Empleado) {
+      const urlParams = new URLSearchParams({
+        IdTrabajador: Empleado.IdTrabajador,
+        Idrol: Empleado.Idrol,
+        Nombre: Empleado.Nombre,
+        Apellido: Empleado.Apellido,
+        Correo: Empleado.Correo,
+        Contrasena: Empleado.Contrasena,
+        Telefono: Empleado.Telefono
+      });
+  
+      const url = `/EditarPerfil?${urlParams.toString()}`;
+  
+      window.location.href = url;
+    } else {
+      console.error("No se encontró el empleado con ID:", EmpleadosID);
+    }
   };
+  
   
   return (
     <div className="contener-home">

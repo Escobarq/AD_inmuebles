@@ -174,7 +174,7 @@ function ContactForm() {
                     onChange={handleChange}
                   >
                     <option value="">Seleccione el tipo</option>
-                    <option value="2">Empleado</option>
+                    <option value="2">Asistente</option>
                     <option value="1">Administrador</option>
                   </select>
                   <label htmlFor="rol">Rol</label>

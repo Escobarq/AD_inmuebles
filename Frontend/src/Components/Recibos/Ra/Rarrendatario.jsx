@@ -129,7 +129,16 @@ export const Rarrendatario = () => {
   const onSubmitArrendatario = (data) => {
     console.log(data);
   };
+  //Modal 
+  const [showModal, setShowModal] = useState(false);
 
+  const handleOpenModal = () => {
+    showModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
   return (
     <div className="contener-home contener-ReArrendatario">
       <h2 style={{ textAlign: "center" }}>Recibo Arrendatario</h2>
@@ -247,7 +256,7 @@ export const Rarrendatario = () => {
             <Button
               type="button"
               variant="danger m-2"
-              onClick={() => setShowCancelModal(true)}
+              onClick={() => handleCloseModal(true)}
             >
               <FontAwesomeIcon icon={faTimes} />
               <span className="text_button ms-2">Cancelar</span>

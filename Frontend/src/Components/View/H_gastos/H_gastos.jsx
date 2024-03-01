@@ -140,9 +140,18 @@ export const H_gastos = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoComision.slice(indexOfFirstItem, indexOfLastItem);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  //Tooltip
+  const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
+  useEffect(() => {
+    const updateTooltipVisibility = () => {
+      setShowTooltip(window.innerWidth < 1366);
+    };
+
+    window.addEventListener("resize", updateTooltipVisibility);
+    return () => window.removeEventListener("resize", updateTooltipVisibility);
+  }, []);
   return (
     <>
       <div className="contener-home">
@@ -159,14 +168,11 @@ export const H_gastos = () => {
             <label className="l1">Fecha Ingreso: </label>
             <input className="input-filtroRe" type="date" name="" id="" />
           </div>
+          
           <OverlayTrigger
             key="tooltip-generar-recibo-gastos"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-generar-recibo-gastos">
-                Generar Recibo gastos
-              </Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Generar Recibo gastos</Tooltip> : <></>}
           >
             <Button variant="success" className="btn-add">
               <Link to="/Rcomision">
@@ -179,11 +185,7 @@ export const H_gastos = () => {
           <OverlayTrigger
             key="tooltip-ver-inhabilitados-gastos"
             placement="top"
-            overlay={
-              <Tooltip id="tooltip-ver-inhabilitados-gastos">
-                Ver Gastos Inhabilitados
-              </Tooltip>
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop"> Ver Gastos Inhabilitados</Tooltip> : <></>}
           >
             <Button variant="dark" className="btn-add-info">
               <Link to="/Hgastos" className="linkes">

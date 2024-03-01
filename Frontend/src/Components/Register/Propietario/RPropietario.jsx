@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./Rpropietario.css";
+import { useLocation } from "react-router-dom";
 
 // Función para obtener la fecha actual en formato YYYY-MM-DD
 function getCurrentDate() {
@@ -20,30 +21,82 @@ export const RPropietario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
+  // Estado para almacenar los datos del codeudor
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [propetarioData, setpropetarioData] = useState({
+    TipoDocumento: "",
+    DocumentoIdentidad: "",
+    NombreCompleto: "",
+    Telefono: "",
+    Correo: "",
+    Banco: "",
+    TipoCuenta: "",
+    NumeroCuenta: "",
+    FechaIngreso: "",
+    Direccion: "",
+    IdPropietario: "" // Agregamos el campo IdPropietario
+  });
+
+  useEffect(() => {
+    // Si hay parámetros de consulta en la URL, significa que se está editando un propietario existente
+    if (location.search) {
+      const arrendatario = {
+        IdPropietario: searchParams.get("IdPropietario"),
+        TipoDocumento: searchParams.get("TipoDocumento"),
+        DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
+        NombreCompleto: searchParams.get("NombreCompleto"),
+        Telefono: searchParams.get("Telefono"),
+        Banco: searchParams.get("Banco"),
+        TipoCuenta: searchParams.get("TipoCuenta"),
+        NumeroCuenta: searchParams.get("NumeroCuenta"),
+        FechaIngreso: searchParams.get("FechaIngreso"),
+        Direccion: searchParams.get("Direccion"),
+        Correo: searchParams.get("Correo"),
+      };
+      console.log("Datos de propietario recibidos:", arrendatario);
+      setpropetarioData(arrendatario);
+    } else {
+      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo propietario
+      setpropetarioData({
+        IdPropietario: "" ,// Agregamos el campo IdPropietario
+        NombreCompleto: "",
+        TipoDocumento: "",
+        DocumentoIdentidad: "",
+        Telefono: "",
+        Correo: "",
+        TipoCuenta: "",
+        NumeroCuenta: "",
+        FechaIngreso: "",
+        Direccion: "",
+      });
+    }
+  }, [location.search]);
 
   const onSubmitRegistro = async (data) => {
     try {
-      const response = await fetch("http://localhost:3006/RPropietario", {
-        method: "POST",
+      const url = propetarioData.IdPropietario
+        ? `http://localhost:3006/RPropietario/${propetarioData.IdPropietario}`
+        : "http://localhost:3006/RPropietario";
+
+      const method = propetarioData.IdPropietario ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data), // Aquí debes asegurarte de que data contenga todos los campos necesarios
       });
-
+      console.log(data);
       if (response.ok) {
-        localStorage.setItem("NITPropie", data.numerodocumento);
-        console.log(localStorage.getItem("NITPropie"))
         setShowSaveModal(false); // Muestra el modal de confirmación
+
         localStorage.setItem("NITPropie", data.numerodocumento); // Suponiendo que DocumentoIdentidad es el campo correcto
+
         reset(); 
       }
     } catch (error) {
@@ -54,7 +107,7 @@ export const RPropietario = () => {
   const handleConfirmSave = () => {
     
     handleSubmit(onSubmitRegistro)(); 
-    
+
     const method = propetarioData.IdPropietario ? "PUT" : "POST";
 
     if (method === "PUT") {
@@ -65,6 +118,7 @@ export const RPropietario = () => {
     
     setShowSaveModal(false); // Cierra el modal
   };
+  
 
   const handleConfirmCancel = () => {
     window.location.href = "/Propietario";
@@ -84,14 +138,18 @@ export const RPropietario = () => {
           onSubmit={handleSubmit(onSubmitRegistro)}
         >
           <Form.Group controlId="formnombrepropietario" className="mb-3">
+
             <Form.Label>Nombre de Propietario:</Form.Label>
+
             <Form.Control
-              {...register("fechaingreso")}
-              type="date"
-              disabled
-              value={currentDate}
+              {...register("nombrepropietario")}
+              type="text"
+              maxLength={100}
+              defaultValue={propetarioData.NombreCompleto}
+              required
             />
           </Form.Group>
+
 
               {...register("nombrepropietario")}
               type="text"
@@ -100,22 +158,28 @@ export const RPropietario = () => {
               required
             />
           </Form.Group>
+
           <Form.Group controlId="formTipoCuenta"  className="formSelect InputsRegistros">
             <Form.Label>Tipo De Documento</Form.Label>
             <Form.Select
               {...register("TipoDocumento")}
               className="formSelect InputsRegistros"
               aria-label="Default select example"
+              defaultValue={propetarioData.TipoDocumento}
+              required
             >
-              <option value="" disabled hidden selected>
+              <option defaultValue="" disabled hidden selected>
                 Seleccione Tipo de Documento
               </option>
               <option defaultValue="Cedula Ciudadania">Cedula Ciudadania</option>
               <option defaultValue="Cedula Extranjera">Cedula Extranjera</option>
+
             </Form.Select>
           </Form.Group>
+         
 
           <Form.Group controlId="formdireccion" className="InputsRegistros">
+
             <Form.Label>Dirección Del Propietario:</Form.Label>
             <Form.Control
               {...register("direccion")}
@@ -140,16 +204,18 @@ export const RPropietario = () => {
 
           <Form.Group controlId="formBarrio" className="InputsRegistros">
             <Form.Label>Telefono:</Form.Label>
+
             <Form.Control
-              {...register("telefono")}
-              max={9999999999}
+              {...register("numerodocumento")}
               type="number"
-              defaultValue={propetarioData.Telefono}
+
+              defaultValue={propetarioData.DocumentoIdentidad}
               required
             />
           </Form.Group>
+          
 
-          <Form.Group controlId="formcorreoelectronico" className="mb-3">
+          <Form.Group controlId="formcorreoelectronico" className="InputsRegistros" >
             <Form.Label>Correo Eléctronico:</Form.Label>
             <Form.Control
               type="email"
@@ -159,6 +225,7 @@ export const RPropietario = () => {
               required
             />
           </Form.Group>
+
 
           <Form.Group controlId="formbanco" className="mb-3">
             <Form.Label>Banco:</Form.Label>
@@ -170,20 +237,36 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
+
           <Form.Group controlId="formTipoCuenta" className="InputsRegistros">
             <Form.Label>Tipo De Cuenta</Form.Label>
             <Form.Select
               {...register("tipocuenta")}
               className="formSelect InputsRegistros"
               aria-label="Default select example"
+              defaultValue={propetarioData.TipoCuenta}
+              required
             >
-              <option value="" disabled hidden selected>
+              <option defaultValue="" disabled hidden selected>
                 Seleccione Tipo de Cuenta
               </option>
-              <option value="Cuenta Ahorros">Cuenta Ahorros</option>
-              <option value="Cuenta Corriente">Cuenta Corriente</option>
+              <option defaultValue="Cuenta Ahorros">Cuenta Ahorros</option>
+              <option defaultValue="Cuenta Corriente">Cuenta Corriente</option>
             </Form.Select>
           </Form.Group>
+
+          
+          
+          <Form.Group controlId="formfechaingreso" className="InputsRegistros">
+            <Form.Label>Fecha de ingreso:</Form.Label>
+            <Form.Control
+              {...register("fechaingreso")}
+              type="date"
+              value={currentDate}
+              disabled // Deshabilita la edición del campo de fecha
+            />
+          </Form.Group>
+       
 
           <Form.Group controlId="numerocuenta" className="InputsRegistros">
             <Form.Label>Número de cuenta:</Form.Label>
@@ -197,16 +280,6 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formfechaingreso" className="InputsRegistros">
-            <Form.Label>Fecha de ingreso:</Form.Label>
-            <Form.Control
-              {...register("fechaingreso")}
-              type="date"
-              value={currentDate}
-              defaultValue={propetarioData.FechaIngreso}
-              required
-            />
-          </Form.Group>
         </Form>
       </div>
       {/* Botones de guardar y cancelar */}

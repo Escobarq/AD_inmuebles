@@ -8,6 +8,7 @@ import { Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
+
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -22,6 +23,7 @@ export const ReciboGastos = () => {
   const { handleSubmit, register, reset } = useForm();
 
   const handleConfirmCancel = () => {
+    window.location.href = "/H_gastos"
     handleSubmit(handleCancel)();
     setShowCancelModal(false); // Cierra el modal
   };
@@ -57,9 +59,44 @@ export const ReciboGastos = () => {
     console.log(Valor);
   };
 
+
+   
   const handleSave = () => {
     setShowSaveModal(true)
     // Validar que todos los campos estén llenos antes de guardar
+
+    const notify = (text) => 
+    toast.error(text, {
+      theme: "colored",
+      autoClose: 2000
+    });
+ 
+    for (const field in formData) {
+      if (formData[field].trim() === "") {
+        notify("No puede haber campos vacíos"); // Llama a la notificación una sola vez
+        return; // Detén la ejecución del bucle al encontrar un campo vacío
+      }
+    }
+    
+    
+    const input = document.getElementById("recibo-gastos");
+    document.className = "todo";
+
+    const options = {
+      margin: 20,
+      filename: "recibo-gastos.pdf",
+      image: { type: "jpeg", quality: 0.2 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    };
+
+    const contenido = input.cloneNode(true);
+    // Clase para el logo pequeño
+    const logoElement = document.createElement("img");
+    logoElement.src = logo;
+    logoElement.className = "logo-pequeno";
+    contenido.prepend(logoElement);
+    html2pdf().from(contenido).set(options).save();
   };
 
   const handleCancel = () => {
