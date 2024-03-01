@@ -3,13 +3,12 @@ import { Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { PDFDocument, rgb } from "pdf-lib";
-import moment from "moment";
 import logo from '../../../assets/Logo.png'
 
 export const Rarrendatario = () => {
     const [formData, setFormData] = useState({
         fecha: "",
-        documentoIdentidad: "",
+        documento: "",
         nombre: "",
         recibidoDe: "",
         concepto: "",
@@ -20,128 +19,152 @@ export const Rarrendatario = () => {
         direccion: "",
         recibidoPor: "",
     });
-
+    /*quiero que en la hoja, ahiga un encabezado
+    con el logo, importado. color opaco y al lado un titulo que diga adminmuebles */
 
     const handleInputChange = (event) => {
-      const { name, value } = event.target;
-      setFormData({ ...formData, [name]: value });
-  };
-  const handleGuardarClick = async () => {
-    for (const key in formData) {
-        const element = formData[key];
-        if (!element) {
-            alert(`Por favor, complete el campo ${key}`);
-            return;
-        }
-    }
-  
-    try {
-        const pdfDoc = await PDFDocument.create();
-        const page = pdfDoc.addPage();
-        const { width, height } = page.getSize();
-        const fontSize = 15;
-        const padding = 50;
-  
-        // Organizamos los campos en dos columnas
-        const columnWidth = width / 2 - padding;
-        let leftX = padding;
-        let rightX = width / 2 + padding;
-  
-        let yOffset = height - padding - fontSize * 2;
-  
-        // Dibujamos los campos y las respuestas
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+
+    const handleGuardarClick = async () => {
         for (const key in formData) {
             const element = formData[key];
-            if (element) {
-                // Dibujamos el nombre del campo en negrita y centrado
-                page.drawText(`${key.charAt(0).toUpperCase() + key.slice(1)}:`, {
-                    x: leftX,
-                    y: yOffset,
-                    size: fontSize,
-                    color: rgb(0, 0, 0),
-                    font: await pdfDoc.embedFont("Helvetica-Bold"),
-                    align: 'center',
-                });
-  
-                // Dibujamos la respuesta debajo del nombre del campo
-                page.drawText(`${element}`, {
-                    x: leftX,
-                    y: yOffset - fontSize * 1.5,
-                    size: fontSize,
-                    color: rgb(0, 0, 0),
-                    align: 'center',
-                });
-  
-                // Movemos a la siguiente columna o siguiente línea si no hay más espacio
-                if (leftX === padding) {
-                    leftX = rightX;
-                } else {
-                    leftX = padding;
-                    yOffset -= fontSize * 3; // Espacio entre campos
-                    if (yOffset < padding) {
-                        // Agregar una nueva página si no hay espacio suficiente en la página actual
-                        page.drawText("Continuar en la siguiente página...", {
-                            x: padding,
-                            y: padding,
-                            size: fontSize,
-                            color: rgb(0, 0, 0),
-                        });
-                        page.drawText("Página 2", {
-                            x: width - padding,
-                            y: padding,
-                            size: fontSize,
-                            color: rgb(0, 0, 0),
-                            align: 'right',
-                        });
-                        page.drawText("Continuación...", {
-                            x: padding,
-                            y: height - padding,
-                            size: fontSize,
-                            color: rgb(0, 0, 0),
-                        });
-                        page.drawText("Página 2", {
-                            x: width - padding,
-                            y: height - padding,
-                            size: fontSize,
-                            color: rgb(0, 0, 0),
-                            align: 'right',
-                        });
-                        page.drawText("Página 2", {
-                            x: width / 2,
-                            y: height - padding,
-                            size: fontSize,
-                            color: rgb(0, 0, 0),
-                            align: 'center',
-                        });
-                        const newPage = pdfDoc.addPage();
-                        yOffset = height - padding - fontSize * 2; // Restablecer el yOffset para la nueva página
-                        page.drawText(`${key.charAt(0).toUpperCase() + key.slice(1)}:`, {
-                            x: leftX,
-                            y: yOffset,
-                            size: fontSize,
-                            color: rgb(0, 0, 0),
-                            font: await pdfDoc.embedFont("Helvetica-Bold"),
-                            align: 'center',
-                        });
+            if (!element) {
+                alert(`Por favor, complete el campo ${key}`);
+                return;
+            }
+        }
+        try {
+            const pdfDoc = await PDFDocument.create();
+            const page = pdfDoc.addPage();
+            const { width, height } = page.getSize();
+            const fontSize = 19;
+            const padding = 60;
+            // Agregar texto con la hora de emisión en la parte inferior de la página
+            const currentTime = new Date().toLocaleTimeString();
+            const footerText = `Hora de emisión: ${currentTime}`;
+
+            page.drawText(footerText, {
+                x: padding, // Ajusta la posición horizontal según sea necesario
+                y: padding, // Ajusta la posición vertical según sea necesario
+                size: 13, // Tamaño de la fuente del texto
+                color: rgb(0.5, 0.5, 0.5), // Color gris opaco
+                font: await pdfDoc.embedFont("Helvetica"),
+            });
+            // Organizamos los campos en dos columnas
+            let leftX = padding;
+            let rightX = width / 2 + 20;
+
+            let yOffset = height - padding - fontSize * 2;
+
+
+            // Load the logo image
+            const logoImageBytes = await fetch(logo).then((res) =>
+                res.arrayBuffer()
+            );
+            const logoImage = await pdfDoc.embedPng(logoImageBytes);
+            // Dibuja el logo en el encabezado
+
+            page.drawImage(logoImage, {
+                x: padding - 20, // Ajusta la posición hacia la izquierda según sea necesario
+                y: height - padding - fontSize * 0.6, // Ajusta la posición vertical según sea necesario
+                width: 100, // Ajusta el ancho según sea necesario
+                height: 50, // Ajusta la altura según sea necesario
+                color: rgb(0.7, 0.7, 0.7), // Cambia el color del logo a un tono más opaco
+            });
+
+            // Dibuja el título al lado del logo con color gris opaco y posición vertical más alta
+            page.drawText("Adminmuebles", {
+                x: padding + 120, // Ajusta la posición horizontal según sea necesario
+                y: height - padding - fontSize * 0.0, // Ajusta la posición vertical más arriba
+                size: fontSize + 0,
+                color: rgb(0.8, 0.8, 0.8), // Color gris opaco
+                font: await pdfDoc.embedFont("Helvetica"),
+            });
+
+
+            // Título del recibo
+              page.drawText("Recibo de Arrendatario", {
+                      x: width / 10,
+                      y: height - padding - fontSize * 3.5,
+                      size: fontSize + 9, // Aumentar el tamaño del texto para el título
+      
+                      font: await pdfDoc.embedFont("Helvetica"),
+      
+                  });
+
+            yOffset -= fontSize * 5.5;
+
+            // Dibujamos los campos y las respuestas
+            for (const key in formData) {
+                const element = formData[key];
+                if (element) {
+                    // Dibujamos el nombre del campo en negrita y centrado
+                    page.drawText(`${key.charAt(0).toUpperCase() + key.slice(1)}:`, {
+                        x: leftX,
+                        y: yOffset,
+                        size: fontSize,
+                        color: rgb(0, 0, 0),
+                        font: await pdfDoc.embedFont("Helvetica-Bold"),
+                        align: 'right',
+                    });
+
+
+
+                    // Dibujamos la respuesta debajo del nombre del campo
+                    page.drawText(`${element}`, {
+                        x: leftX,
+                        y: yOffset - fontSize * 1.5,
+                        size: fontSize,
+                        color: rgb(0, 0, 0),
+                        align: 'left',
+                    });
+
+
+                    if (leftX === padding) {
+                        leftX = rightX;
+                    } else {
+                        leftX = padding;
+                        yOffset -= fontSize * 5; // Espacio entre campos
+                        if (yOffset < padding) {
+
+                            page.drawText(`${key.charAt(0).toUpperCase() + key.slice(1)}:`, {
+                                x: leftX,
+                                y: yOffset,
+                                size: fontSize,
+                                color: rgb(0, 0, 0),
+                                font: await pdfDoc.embedFont("Helvetica"),
+                                align: 'center',
+
+
+                            });
+                        }
+
+
                     }
                 }
             }
-        }
-  
-        const pdfBytes = await pdfDoc.save();
-        const blob = new Blob([pdfBytes], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "recibo.pdf";
-        link.click();
-  
-        setShowSaveModal(true);
-        
-    } catch (error) {
 
-  };
-};
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "recibo.pdf";
+            link.click();
+
+            setShowSaveModal(true);
+
+        } catch (error) {
+
+        };
+
+    };
+
+
+
     return (
         <div className="contener-home contener-ReArrendatario">
             <h2 style={{ textAlign: "center" }}>Recibo Arrendatario</h2>
@@ -157,11 +180,11 @@ export const Rarrendatario = () => {
                             />
                         </Form.Group>
 
-                        <Form.Group controlId="documentoIdentidad">
+                        <Form.Group controlId="documento">
                             <Form.Label>Documento Identidad:</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="documentoIdentidad"
+                                name="documento"
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
@@ -179,6 +202,7 @@ export const Rarrendatario = () => {
                             <Form.Label>Recibido de:</Form.Label>
                             <Form.Control
                                 type="text"
+                                maxLength={17}
                                 name="recibidoDe"
                                 onChange={handleInputChange}
                             />

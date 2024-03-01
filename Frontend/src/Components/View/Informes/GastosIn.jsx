@@ -71,7 +71,9 @@ export const GastosIn = () => {
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = tableData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = tableData.slice(indexOfFirstItem,
+     indexOfLastItem
+     );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
