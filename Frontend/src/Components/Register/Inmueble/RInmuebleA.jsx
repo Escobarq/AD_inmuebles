@@ -26,7 +26,9 @@ export const RInmuebleA = () => {
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
+
     let NITPropietario = localStorage.getItem("NITPropie");
+
     fetchData(NITPropietario);
   }, []);
 
@@ -41,7 +43,9 @@ export const RInmuebleA = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setinfopropietario(data);
+
+        setinfopropietario(data[0]);
+
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -64,18 +68,22 @@ export const RInmuebleA = () => {
     setMostrarModalA(false);
   };
   const handleMostrarAClick = async () => {
-    console.log("Mostrando modal...");
+
     setMostrarModalA(true);
   };
   
 
   const createrowA = (Propietarios) => {
+    let NITPropietario =  Propietarios.DocumentoIdentidad
     return (
-      <tr key={Propietarios.IdArrendatario}>
+
+      <tr
+      onClick={() => fetchData(NITPropietario)} 
+        key={Propietarios.IdPropietario}>
+
         <td>{Propietarios.TipoDocumento}</td>
         <td>{Propietarios.DocumentoIdentidad}</td>
         <td>{Propietarios.NombreCompleto}</td>
-        <td>{Propietarios.Estado}</td>
         <td>{Propietarios.Telefono}</td>
         <td>{Propietarios.Correo}</td>
       </tr>
@@ -347,6 +355,7 @@ export const RInmuebleA = () => {
             </Modal.Footer>
           </Modal>
 
+
           {/* Modal de confirmación de cancelar */}
           <Modal
             show={showCancelModal}
@@ -400,6 +409,100 @@ export const RInmuebleA = () => {
                 </Table>
               </Modal.Body>
             </Modal>
+
+            
+            {NoResult == true ? (
+             <Modal
+          size="lg"
+          show={mostrarModalA}
+          onHide={handleCloseModalA}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Propietarios Disponibles</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Tipo de Documento</th>
+                  <th>No. Documento</th>
+                  <th>Nombre</th>
+                  <th>Estado</th>
+                  <th>Teléfono</th>
+                  <th>Correo</th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+              {infopropietario.map((Propietarios) =>
+                  createrowA(Propietarios)
+                )}
+              </tbody>
+            </Table>
+          </Modal.Body>
+        </Modal>
+         
+        ):(
+              <h1>hola</h1>
+        )}
+
+
+          
+          {/* Modal de confirmación de cancelar */}
+          <Modal
+            show={showCancelModal}
+            onHide={() => setShowCancelModal(false)}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Confirmación</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              ¿Estás seguro de que deseas cancelar la operación?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setShowCancelModal(false)}
+              >
+                No
+              </Button>
+              <Button variant="primary" onClick={handleConfirmCancel}>
+                Sí
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {infopropietario.length > 0 ? (
+            <Modal
+              size="lg"
+              show={mostrarModalA}
+              onHide={handleCloseModalA}
+              aria-labelledby="example-modal-sizes-title-lg"
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Propietarios Disponibles</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Tipo de Documento</th>
+                      <th>No. Documento</th>
+                      <th>Nombre</th>
+                      <th>Teléfono</th>
+                      <th>Correo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {infopropietario.map((Propietarios) =>
+                      createrowA(Propietarios)
+                    )}
+                  </tbody>
+                </Table>
+              </Modal.Body>
+            </Modal>
+
           ) : null}
         </Form>
       </div>
