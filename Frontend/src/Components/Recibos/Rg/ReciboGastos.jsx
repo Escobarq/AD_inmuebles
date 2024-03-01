@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -35,10 +36,25 @@ export const ReciboGastos = () => {
     setFiltroData({ ...filtroData, [name]: value });
   };
   
-  const [Valor, setValor] = useState({});
+  const [Valor, setValor] = useState(null);
   const handleChangeValor = (event) => {
     const { name, value } = event.target;
-    setValor({ ...Valor, [name]: value });
+    if (name == "Pago Arriendo:"){
+      var PagoA = `${name} ${value}`
+      console.log ("Prueba")
+    }
+    else if(name == "Administracion Inmobiliaria:") {
+      var AdInm = `${name} ${value}`
+      console.log("no sirve");
+    }
+    else if (name == "Aseo Entrega Casa:") {
+      var AsEnCa = `${name} ${value}`
+    }
+    else if (name == "Mantenimiento:") {
+      var Mante = `${name} ${value}`
+    }
+    setValor(PagoA + ", " + AdInm + ", " + AsEnCa + ", " + Mante)
+    console.log(Valor);
   };
 
   const handleSave = () => {
@@ -77,9 +93,7 @@ export const ReciboGastos = () => {
   };
 
   const onsubmitGastos = async (data) => {
-    let prueba = Valor
-    data.Observaciones = prueba;
-    console.log(data.Observaciones);
+    data.Observaciones = Valor;
     data.IdPropietario = infopropietario.IdPropietario
     try {
       const response = await fetch("http://localhost:3006/RComision", {
@@ -240,14 +254,14 @@ export const ReciboGastos = () => {
                 type="text"
                 className="form-control"
                  value={filtroData.Aseo}
-                name="Aseo Entrega Casa"
+                name="Aseo Entrega Casa:"
                 onChange={handleChangeValor}
               />
               <input
                 type="text"
                 className="form-control"
                  value={filtroData.Mantenimiento}
-                name="Mantenimiento"
+                name="Mantenimiento:"
                 onChange={handleChangeValor}
               />
             </div>

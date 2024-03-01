@@ -43,8 +43,8 @@ export const RPropietario = () => {
         localStorage.setItem("NITPropie", data.numerodocumento);
         console.log(localStorage.getItem("NITPropie"))
         setShowSaveModal(false); // Muestra el modal de confirmación
-        reset(); // Reinicia el formulario si la solicitud es exitosa
-        // Muestra un mensaje de éxito o redirige a otra página
+        localStorage.setItem("NITPropie", data.numerodocumento); // Suponiendo que DocumentoIdentidad es el campo correcto
+        reset(); 
       }
     } catch (error) {
       console.error("Error al enviar datos al servidor:", error);
@@ -52,9 +52,17 @@ export const RPropietario = () => {
   };
 
   const handleConfirmSave = () => {
-    // Lógica para confirmar el guardado
-    handleSubmit(onSubmitRegistro)(); // Envia los datos
-    window.location.href = "/RInmuebleA";
+    
+    handleSubmit(onSubmitRegistro)(); 
+    
+    const method = propetarioData.IdPropietario ? "PUT" : "POST";
+
+    if (method === "PUT") {
+      window.location.href = "/Propietario";
+    } else {
+      window.location.href = "/RInmuebleA";
+    }
+    
     setShowSaveModal(false); // Cierra el modal
   };
 
@@ -75,8 +83,8 @@ export const RPropietario = () => {
           className="form-propietario"
           onSubmit={handleSubmit(onSubmitRegistro)}
         >
-          <Form.Group controlId="formfechaingreso" className="mb-3">
-            <Form.Label>Fecha de ingreso:</Form.Label>
+          <Form.Group controlId="formnombrepropietario" className="mb-3">
+            <Form.Label>Nombre de Propietario:</Form.Label>
             <Form.Control
               {...register("fechaingreso")}
               type="date"
@@ -85,6 +93,13 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
+              {...register("nombrepropietario")}
+              type="text"
+              maxLength={100}
+              defaultValue={propetarioData.NombreCompleto}
+              required
+            />
+          </Form.Group>
           <Form.Group controlId="formTipoCuenta"  className="formSelect InputsRegistros">
             <Form.Label>Tipo De Documento</Form.Label>
             <Form.Select
@@ -95,49 +110,67 @@ export const RPropietario = () => {
               <option value="" disabled hidden selected>
                 Seleccione Tipo de Documento
               </option>
-              <option value="Cedula Ciudadania">Cedula Ciudadania</option>
-              <option value="Cedula Extranjera">Cedula Extranjera</option>
+              <option defaultValue="Cedula Ciudadania">Cedula Ciudadania</option>
+              <option defaultValue="Cedula Extranjera">Cedula Extranjera</option>
             </Form.Select>
+          </Form.Group>
+
+          <Form.Group controlId="formdireccion" className="InputsRegistros">
+            <Form.Label>Dirección Del Propietario:</Form.Label>
+            <Form.Control
+              {...register("direccion")}
+              type="text"
+              defaultValue={propetarioData.Direccion}
+              required
+            />
           </Form.Group>
 
           <Form.Group controlId="formnumerodocumento" className="InputsRegistros">
             <Form.Label>N° Documento Identidad:</Form.Label>
-            <Form.Control {...register("numerodocumento")} type="number" />
-          </Form.Group>
-
-          <Form.Group controlId="formnombrepropietario" className="mb-3">
-            <Form.Label>Nombre de Propietario:</Form.Label>
             <Form.Control
-              {...register("nombrepropietario")}
-              type="text"
-              maxLength={100}
+              {...register("telefono")}
+              max={9999999999}
+              type="number"
+              defaultValue={propetarioData.DocumentoIdentidad}
+              required
             />
           </Form.Group>
 
-          <Form.Group controlId="formBarrio" className="mb-3">
+          <Form.Group controlId="formcorreoelectronico" className="mb-3">
+
+          <Form.Group controlId="formBarrio" className="InputsRegistros">
             <Form.Label>Telefono:</Form.Label>
             <Form.Control
               {...register("telefono")}
               max={9999999999}
               type="number"
+              defaultValue={propetarioData.Telefono}
+              required
             />
           </Form.Group>
 
           <Form.Group controlId="formcorreoelectronico" className="mb-3">
             <Form.Label>Correo Eléctronico:</Form.Label>
-            <Form.Control {...register("correoelectronico")} type="email" />
+            <Form.Control
+              type="email"
+              name="Correo"
+              {...register("correoelectronico")}
+              defaultValue={propetarioData.Correo}
+              required
+            />
           </Form.Group>
 
           <Form.Group controlId="formbanco" className="mb-3">
             <Form.Label>Banco:</Form.Label>
-            <Form.Control {...register("banco")} type="Text" />
+            <Form.Control
+              {...register("banco")}
+              type="Text"
+              defaultValue={propetarioData.Banco}
+              required
+            />
           </Form.Group>
 
-          <Form.Group controlId="formdireccion" className="mb-3">
-            <Form.Label>Dirección Del Propietario:</Form.Label>
-            <Form.Control {...register("direccion")} type="text" />
-          </Form.Group>
-          <Form.Group controlId="formTipoCuenta"  className="formSelect InputsRegistros">
+          <Form.Group controlId="formTipoCuenta" className="InputsRegistros">
             <Form.Label>Tipo De Cuenta</Form.Label>
             <Form.Select
               {...register("tipocuenta")}
@@ -152,13 +185,26 @@ export const RPropietario = () => {
             </Form.Select>
           </Form.Group>
 
-          <Form.Group controlId="numerocuenta" className="mb-3">
+          <Form.Group controlId="numerocuenta" className="InputsRegistros">
             <Form.Label>Número de cuenta:</Form.Label>
             <Form.Control
               type="number"
-              name="numerocuenta"
+              name="NumeroCuenta"
               {...register("numerocuenta")}
               max={9999999999}
+              defaultValue={propetarioData.NumeroCuenta}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formfechaingreso" className="InputsRegistros">
+            <Form.Label>Fecha de ingreso:</Form.Label>
+            <Form.Control
+              {...register("fechaingreso")}
+              type="date"
+              value={currentDate}
+              defaultValue={propetarioData.FechaIngreso}
+              required
             />
           </Form.Group>
         </Form>

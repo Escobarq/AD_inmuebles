@@ -27,7 +27,7 @@ export const RInmuebleA = () => {
 
 
   useEffect(() => {
-    let NITPropietario = localStorage.getItem("NITPropie")
+    const NITPropietario = localStorage.getItem("NITPropie");
     fetchData(NITPropietario);
   }, []);
 
@@ -42,7 +42,6 @@ export const RInmuebleA = () => {
         }
         const data = await response.json();
         setinfopropietario(data[0]);
-        
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -66,18 +65,18 @@ export const RInmuebleA = () => {
     setMostrarModalA(false);
   };
   const handleMostrarAClick = async () => {
-      setMostrarModalA(true);
+    setMostrarModalA(true);
   };
 
   const createrowA = (Propietarios) => {
+    let NITPropietario =  Propietarios.DocumentoIdentidad
     return (
       <tr
-        key={Propietarios.IdArrendatario}
-      >
+      onClick={() => fetchData(NITPropietario)} 
+        key={Propietarios.IdPropietario}>
         <td>{Propietarios.TipoDocumento}</td>
         <td>{Propietarios.DocumentoIdentidad}</td>
         <td>{Propietarios.NombreCompleto}</td>
-        <td>{Propietarios.Estado}</td>
         <td>{Propietarios.Telefono}</td>
         <td>{Propietarios.Correo}</td>
       </tr>
@@ -259,37 +258,37 @@ export const RInmuebleA = () => {
                   <span className="text_button ms-2">Guardar</span>
                 </Button>
 
-                {/* Botón de cancelar */}
-                <Button
-                  type="button"
-                  variant="danger m-2"
-                  onClick={() => setShowCancelModal(true)}
-                >
-                  <FontAwesomeIcon icon={faTimes} />
-                  <span className="text_button ms-2">Cancelar</span>
-                </Button>
-              </div>
+              {/* Botón de cancelar */}
+              <Button
+                type="button"
+                variant="danger m-2"
+                onClick={() => setShowCancelModal(true)}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+                <span className="text_button ms-2">Cancelar</span>
+              </Button>
             </div>
-            {/* Modal de confirmación de guardar */}
-            <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
-              <Modal.Header closeButton>
-                <Modal.Title>Confirmación</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                ¿Estás seguro de que deseas guardar los cambios?
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowSaveModal(false)}
-                >
-                  No
-                </Button>
-                <Button variant="primary" onClick={handleConfirmSave}>
-                  Sí
-                </Button>
-              </Modal.Footer>
-            </Modal>
+          </div>
+          {/* Modal de confirmación de guardar */}
+          <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Confirmación</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              ¿Estás seguro de que deseas guardar los cambios?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setShowSaveModal(false)}
+              >
+                No
+              </Button>
+              <Button variant="primary" onClick={handleConfirmSave}>
+                Sí
+              </Button>
+            </Modal.Footer>
+          </Modal>
 
             {/* Modal de confirmación de cancelar */}
             <Modal
@@ -353,7 +352,61 @@ export const RInmuebleA = () => {
         )}
 
 
-          </Form>
+          
+          {/* Modal de confirmación de cancelar */}
+          <Modal
+            show={showCancelModal}
+            onHide={() => setShowCancelModal(false)}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Confirmación</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              ¿Estás seguro de que deseas cancelar la operación?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setShowCancelModal(false)}
+              >
+                No
+              </Button>
+              <Button variant="primary" onClick={handleConfirmCancel}>
+                Sí
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {infopropietario.length > 0 ? (
+            <Modal
+              size="lg"
+              show={mostrarModalA}
+              onHide={handleCloseModalA}
+              aria-labelledby="example-modal-sizes-title-lg"
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Propietarios Disponibles</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Tipo de Documento</th>
+                      <th>No. Documento</th>
+                      <th>Nombre</th>
+                      <th>Teléfono</th>
+                      <th>Correo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {infopropietario.map((Propietarios) =>
+                      createrowA(Propietarios)
+                    )}
+                  </tbody>
+                </Table>
+              </Modal.Body>
+            </Modal>
+          ) : null}
+        </Form>
       </div>
     </div>
   );
