@@ -136,6 +136,74 @@ router.get("/Vinmueble", (req, res) => {
     );
   } catch (error) {}
 });
+//traer propietarios con el id del inmueble
+router.get("/propietarios-inmuebles", (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        p.*, 
+        i.IdInmueble,
+        i.Direccion AS DireccionInmueble,
+        i.Ciudad,
+        i.Barrio,
+        i.Tipo AS TipoInmueble
+      FROM 
+        propietario p
+      LEFT JOIN 
+        inmueble i ON p.IdPropietario = i.IdPropietario
+      ORDER BY 
+        p.IdPropietario ASC`;
+    
+    connection.query(query, (error, results) => {
+      if (error) {
+        console.error("Error al obtener datos de la base de datos:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+//traer Arrendatarios con id del codeudor:
+router.get("/arrendatarios-codeudores", (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        a.IdArrendatario,
+        c.IdCodeudor,
+        a.NombreCompleto AS NombreArrendatario,
+        c.NombreCompleto AS NombreCodeudor,
+        a.TipoDocumento AS TipoDocumentoArrendatario,
+        c.TipoDocumento AS TipoDocumentoCodeudor,
+        a.DocumentoIdentidad AS DocumentoIdentidadArrendatario,
+        c.DocumentoIdentidad AS DocumentoIdentidadCodeudor,
+        a.Telefono AS TelefonoArrendatario,
+        c.Telefono AS TelefonoCodeudor,
+        a.Correo AS CorreoArrendatario,
+        c.Correo AS CorreoCodeudor,
+        a.Estado,
+        a.booleanos
+      FROM 
+        arrendatario a
+      LEFT JOIN 
+        codeudor c ON a.IdCodeudor = c.IdCodeudor
+      ORDER BY 
+        a.IdArrendatario ASC`;
+    
+    connection.query(query, (error, results) => {
+      if (error) {
+        console.error("Error al obtener datos de la base de datos:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
 
 router.get("/VinmuArren", (req, res) => {
   const { IdInmueble } = req.query;

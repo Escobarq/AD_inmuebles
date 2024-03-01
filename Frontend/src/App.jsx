@@ -32,6 +32,7 @@ import { InhabilitarPropetario } from "./Components/View/Propietarios/Inhabilita
 import { InhabilitarInmuebles } from "./Components/View/Inmueble/InhabilitarInmuebles";
 import { InhabilitarRol } from "./Components/View/AsignarRol/InhabilitarRol";
 import ContactForm from "./Components/Register/EditarPerfil/ContactForm";
+import { Contrato } from "./Components/Register/Contrato/Contrato";
 
 function App() {
   const location = useLocation();
@@ -87,6 +88,7 @@ function App() {
             <Route path="/AsignarRol" element={<AsignarRol />} />
             <Route path="/InhabilitarRol" element={<InhabilitarRol />} />
             <Route path="/EditarPerfil" element={<ContactForm />} />
+            <Route path="/Generar" element={<Contrato />} />
           </Routes>
         </div>
       </>
