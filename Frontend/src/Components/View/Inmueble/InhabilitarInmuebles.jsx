@@ -19,7 +19,7 @@ export const InhabilitarInmuebles = () => {
   const [showModal, setShowModal] = useState(false);
   const [infoinmueble, setinfoinmueble] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(8);
 
   useEffect(() => {
     const fetchData = async () => {
