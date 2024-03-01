@@ -94,7 +94,9 @@ export const RPropietario = () => {
       console.log(data);
       if (response.ok) {
         setShowSaveModal(false); // Muestra el modal de confirmación
-        localStorage.setItem("NITPropie", data.DocumentoIdentidad); // Suponiendo que DocumentoIdentidad es el campo correcto
+
+        localStorage.setItem("NITPropie", data.numerodocumento); // Suponiendo que DocumentoIdentidad es el campo correcto
+
         reset(); 
       }
     } catch (error) {
@@ -136,7 +138,9 @@ export const RPropietario = () => {
           onSubmit={handleSubmit(onSubmitRegistro)}
         >
           <Form.Group controlId="formnombrepropietario" className="mb-3">
+
             <Form.Label>Nombre de Propietario:</Form.Label>
+
             <Form.Control
               {...register("nombrepropietario")}
               type="text"
@@ -145,6 +149,16 @@ export const RPropietario = () => {
               required
             />
           </Form.Group>
+
+
+              {...register("nombrepropietario")}
+              type="text"
+              maxLength={100}
+              defaultValue={propetarioData.NombreCompleto}
+              required
+            />
+          </Form.Group>
+
           <Form.Group controlId="formTipoCuenta"  className="formSelect InputsRegistros">
             <Form.Label>Tipo De Documento</Form.Label>
             <Form.Select
@@ -159,10 +173,13 @@ export const RPropietario = () => {
               </option>
               <option defaultValue="Cedula Ciudadania">Cedula Ciudadania</option>
               <option defaultValue="Cedula Extranjera">Cedula Extranjera</option>
+
             </Form.Select>
           </Form.Group>
+         
 
           <Form.Group controlId="formdireccion" className="InputsRegistros">
+
             <Form.Label>Dirección Del Propietario:</Form.Label>
             <Form.Control
               {...register("direccion")}
@@ -175,25 +192,30 @@ export const RPropietario = () => {
           <Form.Group controlId="formnumerodocumento" className="InputsRegistros">
             <Form.Label>N° Documento Identidad:</Form.Label>
             <Form.Control
-              {...register("numerodocumento")}
+              {...register("telefono")}
+              max={9999999999}
               type="number"
               defaultValue={propetarioData.DocumentoIdentidad}
               required
             />
           </Form.Group>
 
+          <Form.Group controlId="formcorreoelectronico" className="mb-3">
+
           <Form.Group controlId="formBarrio" className="InputsRegistros">
             <Form.Label>Telefono:</Form.Label>
+
             <Form.Control
-              {...register("telefono")}
-              max={9999999999}
+              {...register("numerodocumento")}
               type="number"
-              defaultValue={propetarioData.Telefono}
+
+              defaultValue={propetarioData.DocumentoIdentidad}
               required
             />
           </Form.Group>
+          
 
-          <Form.Group controlId="formcorreoelectronico" className="mb-3">
+          <Form.Group controlId="formcorreoelectronico" className="InputsRegistros" >
             <Form.Label>Correo Eléctronico:</Form.Label>
             <Form.Control
               type="email"
@@ -204,6 +226,7 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
+
           <Form.Group controlId="formbanco" className="mb-3">
             <Form.Label>Banco:</Form.Label>
             <Form.Control
@@ -213,6 +236,7 @@ export const RPropietario = () => {
               required
             />
           </Form.Group>
+
 
           <Form.Group controlId="formTipoCuenta" className="InputsRegistros">
             <Form.Label>Tipo De Cuenta</Form.Label>
@@ -231,6 +255,19 @@ export const RPropietario = () => {
             </Form.Select>
           </Form.Group>
 
+          
+          
+          <Form.Group controlId="formfechaingreso" className="InputsRegistros">
+            <Form.Label>Fecha de ingreso:</Form.Label>
+            <Form.Control
+              {...register("fechaingreso")}
+              type="date"
+              value={currentDate}
+              disabled // Deshabilita la edición del campo de fecha
+            />
+          </Form.Group>
+       
+
           <Form.Group controlId="numerocuenta" className="InputsRegistros">
             <Form.Label>Número de cuenta:</Form.Label>
             <Form.Control
@@ -243,16 +280,6 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formfechaingreso" className="InputsRegistros">
-            <Form.Label>Fecha de ingreso:</Form.Label>
-            <Form.Control
-              {...register("fechaingreso")}
-              type="date"
-              value={currentDate}
-              defaultValue={propetarioData.FechaIngreso}
-              required
-            />
-          </Form.Group>
         </Form>
       </div>
       {/* Botones de guardar y cancelar */}

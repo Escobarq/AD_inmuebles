@@ -38,10 +38,25 @@ export const ReciboGastos = () => {
     setFiltroData({ ...filtroData, [name]: value });
   };
   
-  const [Valor, setValor] = useState({});
+  const [Valor, setValor] = useState(null);
   const handleChangeValor = (event) => {
     const { name, value } = event.target;
-    setValor({ ...Valor, [name]: value });
+    if (name == "Pago Arriendo:"){
+      var PagoA = `${name} ${value}`
+      console.log ("Prueba")
+    }
+    else if(name == "Administracion Inmobiliaria:") {
+      var AdInm = `${name} ${value}`
+      console.log("no sirve");
+    }
+    else if (name == "Aseo Entrega Casa:") {
+      var AsEnCa = `${name} ${value}`
+    }
+    else if (name == "Mantenimiento:") {
+      var Mante = `${name} ${value}`
+    }
+    setValor(PagoA + ", " + AdInm + ", " + AsEnCa + ", " + Mante)
+    console.log(Valor);
   };
 
 
@@ -115,9 +130,7 @@ export const ReciboGastos = () => {
   };
 
   const onsubmitGastos = async (data) => {
-    let prueba = Valor
-    data.Observaciones = prueba;
-    console.log(data.Observaciones);
+    data.Observaciones = Valor;
     data.IdPropietario = infopropietario.IdPropietario
     try {
       const response = await fetch("http://localhost:3006/RComision", {
@@ -279,14 +292,14 @@ export const ReciboGastos = () => {
                 type="text"
                 className="form-control"
                  value={filtroData.Aseo}
-                name="Aseo Entrega Casa"
+                name="Aseo Entrega Casa:"
                 onChange={handleChangeValor}
               />
               <input
                 type="text"
                 className="form-control"
                  value={filtroData.Mantenimiento}
-                name="Mantenimiento"
+                name="Mantenimiento:"
                 onChange={handleChangeValor}
               />
             </div>

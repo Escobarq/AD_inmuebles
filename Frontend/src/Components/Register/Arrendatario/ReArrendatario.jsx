@@ -114,7 +114,7 @@ export const ReArrendatario = () => {
         <Form className="" onSubmit={handleSubmit(onSubmitRegistro)}>
           <div className="form-propietario">
             <Form.Group controlId="nombrearrendatario">
-              <Form.Label className="text_normal">Nombre Completo</Form.Label>
+              <Form.Label className="text_normal">Nombre Completo:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 type="text"
@@ -134,6 +134,7 @@ export const ReArrendatario = () => {
               >
                 <option value={"CC"}>Cédula de Ciudadanía</option>
                 <option value={"CE"}>Cédula de Extranjería</option>
+                <option value={"PASS"}>Pasaporte</option>
               </Form.Control>
             </Form.Group>
 
@@ -176,7 +177,7 @@ export const ReArrendatario = () => {
             </Form.Group>
 
             <Form.Group controlId="estadocontrato">
-              <Form.Label className="text_normal">Estado</Form.Label>
+              <Form.Label className="text_normal">Estado:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 type="text"
