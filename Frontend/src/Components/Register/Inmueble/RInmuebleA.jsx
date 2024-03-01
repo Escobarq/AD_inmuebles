@@ -26,9 +26,7 @@ export const RInmuebleA = () => {
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
-
     let NITPropietario = localStorage.getItem("NITPropie");
-
     fetchData(NITPropietario);
   }, []);
 
@@ -84,6 +82,7 @@ export const RInmuebleA = () => {
         <td>{Propietarios.TipoDocumento}</td>
         <td>{Propietarios.DocumentoIdentidad}</td>
         <td>{Propietarios.NombreCompleto}</td>
+        <td>{Propietarios.Banco}</td>
         <td>{Propietarios.Telefono}</td>
         <td>{Propietarios.Correo}</td>
       </tr>
@@ -396,7 +395,7 @@ export const RInmuebleA = () => {
                       <th>Tipo de Documento</th>
                       <th>No. Documento</th>
                       <th>Nombre</th>
-                      <th>Estado</th>
+                      <th>Banco</th>
                       <th>Teléfono</th>
                       <th>Correo</th>
                     </tr>

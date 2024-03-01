@@ -246,7 +246,7 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Comisiones Propietario</Tooltip> : <></>}
+              overlay={showTooltip ? <Tooltip id="tooltip-prop">Comisiones Gastos</Tooltip> : <></>}
             >
               <Nav.Link
                 as={NavLink}
@@ -262,7 +262,7 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faTableList}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Comisiones Propetario</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>Comisiones Gastos</p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
