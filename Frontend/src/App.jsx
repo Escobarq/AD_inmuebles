@@ -31,8 +31,6 @@ import { CodeudorInha } from './Components/View/Codeudor/CodeudorInha';
 import { InhabilitarArren } from './Components/View/Arrendatario/InhabilitarArren';
 import { InhabilitarPropetario } from './Components/View/Propietarios/InhabilitarPropetario';
 import { InhabilitarInmuebles } from './Components/View/Inmueble/InhabilitarInmuebles';
-import { InhabilitarGastos } from './Components/View/H_gastos/InhabilitarGastos';
-import { H_recibosInha } from './Components/View/H_recibos/H_recibosInha';
 import { InhabilitarRol } from './Components/View/AsignarRol/InhabilitarRol';
 import ContactForm from './Components/Register/EditarPerfil/ContactForm';
 
@@ -71,10 +69,8 @@ function App() {
         <Route path="/InhaInmueble" element={<InhabilitarInmuebles />} />
         <Route path="/Codeudor" element={<Codeudor />} />
         <Route path="/Codeudores" element={<CodeudorInha />} />
-        <Route path="/H_gastos" element={<H_gastos />} />
-        <Route path="/Hgastos" element={<InhabilitarGastos />} />
+        <Route path="/H_gastos" element={<H_gastos />} />      
         <Route path="/H_recibos" element={<H_recibos />} />
-        <Route path="/Hrecibos" element={<H_recibosInha />} />
         <Route path="/RPropietario" element={<RPropietario />} />
         <Route path="/Rcomision" element={<ReciboGastos />} />
         <Route path="/ReArrendamiento" element={<Rarrendatario />} />
