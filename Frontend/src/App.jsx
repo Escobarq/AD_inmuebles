@@ -1,4 +1,5 @@
 
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import Home from './Components/Home/Home'
@@ -35,6 +36,7 @@ import { InhabilitarRol } from './Components/View/AsignarRol/InhabilitarRol';
 import ContactForm from './Components/Register/EditarPerfil/ContactForm';
 
 
+
 function App() {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
@@ -44,12 +46,11 @@ function App() {
       setLoading(false);
     }, 1500);
   }, []);
-  
 
   if (loading) {
     return (
-      <div className='contener-carga'>
-        <Home/>
+      <div className="contener-carga">
+        <Home />
       </div>
     );
   } else {
@@ -91,7 +92,8 @@ function App() {
     </div>
   </>
   )
+
   }
 }
 
-export default App
+export default App;

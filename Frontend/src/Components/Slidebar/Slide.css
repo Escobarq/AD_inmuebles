@@ -45,5 +45,10 @@
   .sliderbard .modal-body {
     text-align: center; /* Centra el texto dentro del cuerpo del modal */
   }
-  
+  .opcioness{
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
 }
