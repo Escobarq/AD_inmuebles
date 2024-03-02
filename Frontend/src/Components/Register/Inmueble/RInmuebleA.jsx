@@ -264,13 +264,12 @@ export const RInmuebleA = () => {
             {NoResult === true ? (
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Propietario del inmueble</Form.Label>
-                <Button
-                  type="button"
-                  variant="success m-2"
+                <Form.Control
+                  placeholder="Seleccione aqui"
                   onClick={() => handleMostrarAClick()}
-                >
-                  <span className="text_button ms-2">Ver Propietarios</span>
-                </Button>
+                  className="InputsRegistros"
+                  type="text"
+                />
               </Form.Group>
             ) : (
               <Form.Group controlId="formNoIdentidadPropietario">

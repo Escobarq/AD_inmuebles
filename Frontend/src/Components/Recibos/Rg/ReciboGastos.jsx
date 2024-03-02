@@ -39,23 +39,26 @@ export const ReciboGastos = () => {
   };
   
   const [Valor, setValor] = useState(null);
+  const [PagoAr, setPagoAr] = useState(null);
+  const [AdIm, setAdIm] = useState(null);
+  const [AsEnCa, setAsEnCa] = useState(null);
+  const [Mante, setMante] = useState(null);
   const handleChangeValor = (event) => {
     const { name, value } = event.target;
+
     if (name == "Pago Arriendo:"){
-      var PagoA = `${name} ${value}`
-      console.log ("Prueba")
+      setPagoAr(`${name} ${value}`)
     }
     else if(name == "Administracion Inmobiliaria:") {
-      var AdInm = `${name} ${value}`
-      console.log("no sirve");
+      setAdIm(`${name} ${value}`)
     }
     else if (name == "Aseo Entrega Casa:") {
-      var AsEnCa = `${name} ${value}`
+      setAsEnCa(`${name} ${value}`)
     }
     else if (name == "Mantenimiento:") {
-      var Mante = `${name} ${value}`
+      setMante(`${name} ${value}`)
     }
-    setValor(PagoA + ", " + AdInm + ", " + AsEnCa + ", " + Mante)
+    setValor(PagoAr + ", " + AdIm + ", " + AsEnCa + ", " + Mante)
     console.log(Valor);
   };
 
