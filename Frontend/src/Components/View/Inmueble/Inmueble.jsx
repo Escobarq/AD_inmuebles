@@ -155,7 +155,7 @@ export const Inmueble = () => {
         <td>{inmueble.Barrio}</td>
         <td>{inmueble.Tipo}</td>
         <td>{inmueble.Estado}</td>
-        <td className="opcioness">
+        <td >
           <Button
             className="btn-opciones"
             variant="primary"

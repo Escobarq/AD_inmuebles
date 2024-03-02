@@ -136,6 +136,76 @@ router.get("/Vinmueble", (req, res) => {
     );
   } catch (error) {}
 });
+//traer propietarios con el id del inmueble
+router.get("/propietarios-inmuebles", (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        p.*, 
+        i.IdInmueble,
+        i.Direccion AS DireccionInmueble,
+        i.Ciudad,
+        i.Barrio,
+        i.Tipo AS TipoInmueble,
+        i.NoMatricula
+      FROM 
+        propietario p
+      LEFT JOIN 
+        inmueble i ON p.IdPropietario = i.IdPropietario
+      ORDER BY 
+        p.IdPropietario ASC`;
+    
+    connection.query(query, (error, results) => {
+      if (error) {
+        console.error("Error al obtener datos de la base de datos:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+//traer Arrendatarios con id del codeudor:
+router.get("/arrendatarios-codeudores", (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        a.IdArrendatario,
+        c.IdCodeudor,
+        a.NombreCompleto AS NombreArrendatario,
+        c.NombreCompleto AS NombreCodeudor,
+        a.TipoDocumento AS TipoDocumentoArrendatario,
+        c.TipoDocumento AS TipoDocumentoCodeudor,
+        a.DocumentoIdentidad AS DocumentoIdentidadArrendatario,
+        c.DocumentoIdentidad AS DocumentoIdentidadCodeudor,
+        a.Telefono AS TelefonoArrendatario,
+        c.Telefono AS TelefonoCodeudor,
+        a.Correo AS CorreoArrendatario,
+        c.Correo AS CorreoCodeudor,
+        a.Estado,
+        a.booleanos
+      FROM 
+        arrendatario a
+      LEFT JOIN 
+        codeudor c ON a.IdCodeudor = c.IdCodeudor
+      ORDER BY 
+        a.IdArrendatario ASC`;
+    
+    connection.query(query, (error, results) => {
+      if (error) {
+        console.error("Error al obtener datos de la base de datos:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
 
 router.get("/VinmuArren", (req, res) => {
   const { IdInmueble } = req.query;
@@ -483,7 +553,6 @@ router.post("/Rcodeudor", async (req, res) => {
 router.post("/Login_user", (req, res) => {
   const { correousuario, contrausuario } = req.body; // Datos del formulario
 
-  // Consulta SQL para buscar un usuario con el correo electrónico proporcionado y Boolenos en 'true'
   const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
 
   connection.query(sql, [correousuario], (error, results) => {
@@ -493,16 +562,12 @@ router.post("/Login_user", (req, res) => {
     } else {
       if (results.length > 0) {
         const user = results[0];
-        // Verifica si la contraseña coincide
         if (user.Contrasena === contrausuario) {
-          // Las credenciales son válidas
           res.status(200).json({ message: "Inicio de sesión exitoso" });
         } else {
-          // La contraseña es incorrecta
           res.status(401).json({ message: "Contraseña incorrecta" });
         }
       } else {
-        // No se encontró un usuario con el correo electrónico proporcionado o Boolenos en 'false'
         res.status(404).json({
           message: "Usuario no encontrado o no autorizado para iniciar sesión",
         });
