@@ -26,8 +26,6 @@ export const Rarrendatario = () => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     };
-
-
     const handleGuardarClick = async () => {
         for (const key in formData) {
             const element = formData[key];
@@ -45,7 +43,7 @@ export const Rarrendatario = () => {
             // Agregar texto con la hora de emisión en la parte inferior de la página
             const currentTime = new Date().toLocaleTimeString();
             const footerText = `Hora de emisión: ${currentTime}`;
-
+    
             page.drawText(footerText, {
                 x: padding, // Ajusta la posición horizontal según sea necesario
                 y: padding, // Ajusta la posición vertical según sea necesario
@@ -56,17 +54,17 @@ export const Rarrendatario = () => {
             // Organizamos los campos en dos columnas
             let leftX = padding;
             let rightX = width / 2 + 20;
-
+    
             let yOffset = height - padding - fontSize * 2;
-
-
+    
+    
             // Load the logo image
             const logoImageBytes = await fetch(logo).then((res) =>
                 res.arrayBuffer()
             );
             const logoImage = await pdfDoc.embedPng(logoImageBytes);
             // Dibuja el logo en el encabezado
-
+    
             page.drawImage(logoImage, {
                 x: padding - 20, // Ajusta la posición hacia la izquierda según sea necesario
                 y: height - padding - fontSize * 0.6, // Ajusta la posición vertical según sea necesario
@@ -74,7 +72,7 @@ export const Rarrendatario = () => {
                 height: 50, // Ajusta la altura según sea necesario
                 color: rgb(0.7, 0.7, 0.7), // Cambia el color del logo a un tono más opaco
             });
-
+    
             // Dibuja el título al lado del logo con color gris opaco y posición vertical más alta
             page.drawText("Adminmuebles", {
                 x: padding + 120, // Ajusta la posición horizontal según sea necesario
@@ -83,20 +81,20 @@ export const Rarrendatario = () => {
                 color: rgb(0.8, 0.8, 0.8), // Color gris opaco
                 font: await pdfDoc.embedFont("Helvetica"),
             });
-
-
+    
+    
             // Título del recibo
-              page.drawText("Recibo de Arrendatario", {
-                      x: width / 10,
-                      y: height - padding - fontSize * 3.5,
-                      size: fontSize + 9, // Aumentar el tamaño del texto para el título
-      
-                      font: await pdfDoc.embedFont("Helvetica"),
-      
-                  });
-
+            page.drawText("Recibo de Arrendatario", {
+                x: width / 10,
+                y: height - padding - fontSize * 3.5,
+                size: fontSize + 9, // Aumentar el tamaño del texto para el título
+    
+                font: await pdfDoc.embedFont("Helvetica"),
+    
+            });
+    
             yOffset -= fontSize * 5.5;
-
+    
             // Dibujamos los campos y las respuestas
             for (const key in formData) {
                 const element = formData[key];
@@ -110,9 +108,9 @@ export const Rarrendatario = () => {
                         font: await pdfDoc.embedFont("Helvetica-Bold"),
                         align: 'right',
                     });
-
-
-
+    
+    
+    
                     // Dibujamos la respuesta debajo del nombre del campo
                     page.drawText(`${element}`, {
                         x: leftX,
@@ -121,15 +119,15 @@ export const Rarrendatario = () => {
                         color: rgb(0, 0, 0),
                         align: 'left',
                     });
-
-
+    
+    
                     if (leftX === padding) {
                         leftX = rightX;
                     } else {
                         leftX = padding;
                         yOffset -= fontSize * 5; // Espacio entre campos
                         if (yOffset < padding) {
-
+    
                             page.drawText(`${key.charAt(0).toUpperCase() + key.slice(1)}:`, {
                                 x: leftX,
                                 y: yOffset,
@@ -137,16 +135,33 @@ export const Rarrendatario = () => {
                                 color: rgb(0, 0, 0),
                                 font: await pdfDoc.embedFont("Helvetica"),
                                 align: 'center',
-
-
+    
+    
                             });
                         }
-
-
+    
+    
                     }
                 }
             }
+    
+            // Dibujar línea horizontal en el encabezado
+         // Dibujar línea horizontal en el encabezado
+page.drawLine({
+    start: { x: padding, y: height - padding - fontSize * 0.6 - 20 }, // Punto de inicio - ajusta y para bajar la línea
+    end: { x: width - padding, y: height - padding - fontSize * 0.6 - 20 }, // Punto final - ajusta y para bajar la línea
+    thickness: 1, // Grosor de la línea
+    color: rgb(0.7, 0.7, 0.7) // Color de la línea
+});
 
+// Dibujar línea horizontal arriba de la hora actual
+page.drawLine({
+    start: { x: padding, y: padding + fontSize * 2 + 20 }, // Ajusta el valor de y para bajar la línea
+    end: { x: width - padding, y: padding + fontSize * 2 + 20 }, // Ajusta el valor de y para bajar la línea
+    thickness: 1, // Grosor de la línea
+    color: rgb(0.7, 0.7, 0.7) // Color de la línea
+});
+    
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: "application/pdf" });
             const url = URL.createObjectURL(blob);
@@ -154,16 +169,16 @@ export const Rarrendatario = () => {
             link.href = url;
             link.download = "recibo.pdf";
             link.click();
-
-            setShowSaveModal(true);
-
+    
+    
+    
+        // eslint-disable-next-line no-empty
         } catch (error) {
-
-        };
-
+    
+        }
+    
     };
-
-
+    
 
     return (
         <div className="contener-home contener-ReArrendatario">
@@ -283,7 +298,7 @@ export const Rarrendatario = () => {
                         <Button
                             type="button"
                             variant="danger m-2"
-                            onClick={() => setShowSaveModal(false)}
+                        
                         >
                             <FontAwesomeIcon icon={faTimes} />
                             <span className="text_button ms-2">Cancelar</span>
