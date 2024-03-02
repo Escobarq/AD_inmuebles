@@ -120,7 +120,7 @@ export const Registrocodeudor = () => {
           className="form-propietario"
           onSubmit={handleSubmit(onsubmitRegistro)}
         >
-          <Form.Group controlId="nombre" className="mb-3">
+          <Form.Group controlId="nombre" >
             <Form.Label>Nombre:</Form.Label>
             <Form.Control
               type="text"
