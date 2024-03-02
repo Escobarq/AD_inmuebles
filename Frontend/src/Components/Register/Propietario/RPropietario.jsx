@@ -246,6 +246,7 @@ export const RPropietario = () => {
           <Form.Group controlId="formfechaingreso" className="InputsRegistros">
             <Form.Label>Fecha de ingreso:</Form.Label>
             <Form.Control
+            disabled
               {...register("fechaingreso")}
               type="date"
               value={currentDate}

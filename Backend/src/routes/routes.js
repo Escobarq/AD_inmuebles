@@ -697,6 +697,47 @@ router.post("/RConArrendamiento", async (req, res) => {
   }
 });
 
+// Ruta para registar Pago de Arrendamiento --------------------------------------------------
+router.post("/RPagoArrendamiento", async (req, res) => {
+  const {
+    FechaPago,
+    FechaIni,
+    FechaFin,
+    ValorPago,
+    FormaPago,
+    Estado
+
+  } = req.body;
+
+  try {
+    connection.query(
+      "INSERT INTO pagos_arrendamiento (FechaPago, FechaInicio, FechaFin, ValorPago, FormaPago, Estado) VALUES (?, ?, ?, ?,?,?)",
+      [
+    FechaPago,
+    FechaIni,
+    FechaFin,
+    ValorPago,
+    FormaPago,
+    Estado
+      ],
+      (error, results) => {
+        if (error) {
+          console.error("Error al añadir Un pago de arrendamiento:", error);
+          res.status(500).json({ error: "Error al añadir Pago de arrendamiento" });
+        } else {
+          console.log(" Pago Arrenmiento agregado:", results);
+          res
+            .status(201)
+            .json({ message: "Pago Arrenmiento registrado exitosamente" });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error al añadir Pago Arrenmiento: ", error);
+    res.status(500).json({ error: "Error al Pago Arrenmiento" });
+  }
+});
+
     //Registro de Comision de gastos
 router.post("/RComision", async (req, res) => {
   const {
