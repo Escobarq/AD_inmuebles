@@ -370,7 +370,7 @@ export const RInmuebleA = () => {
               </Button>
             </Modal.Footer>
           </Modal>
-          {infopropietario.length > 0 ? (
+          {infopropietario && infopropietario.length > 0 ? (
             <Modal
               size="lg"
               show={mostrarModalA}
