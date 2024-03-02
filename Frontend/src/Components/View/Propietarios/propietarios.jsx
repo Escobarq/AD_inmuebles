@@ -138,7 +138,7 @@ export const Propietarios = () => {
         <td>{Propietario.Banco}</td>
         <td>{Propietario.TipoCuenta}</td>
         <td>{Propietario.NumeroCuenta}</td>
-        <td className="opcioness">
+        <td >
           <Button
             className="btn-opciones"
             variant="danger"
