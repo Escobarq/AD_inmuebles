@@ -138,7 +138,7 @@ export const Propietarios = () => {
         <td>{Propietario.Banco}</td>
         <td>{Propietario.TipoCuenta}</td>
         <td>{Propietario.NumeroCuenta}</td>
-        <td>
+        <td >
           <Button
             className="btn-opciones"
             variant="danger"
@@ -159,7 +159,7 @@ export const Propietarios = () => {
   };
   //Variables Paginacion
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

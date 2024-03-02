@@ -1,27 +1,18 @@
-import { Table, Button, Modal ,OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Table, Button ,OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
-  faTrash,
-  faPenToSquare,
-  faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
 import "moment/locale/es";
 import NoResultImg from "../../../assets/NoResult.gif";
-import { toast } from "react-toastify";
-import useActualizarEstadoHistorialArrendamiento from "../../Hooks/InhabilitarHarrendamiento";
 import "./H_recibos.css";
 
 export const H_recibos = () => {
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
-  const { actualizarEstadoHarrendamiento } =
-    useActualizarEstadoHistorialArrendamiento();
-  const [Harrendamiento, setHarrenndamiento] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [filtroData, setFiltroData] = useState({
     estado: "",
     FechaPagoIni: "",
@@ -30,40 +21,6 @@ export const H_recibos = () => {
   });
   const [NoResult, setNoResult] = useState(false);
 
-  // Función para inhabilitar los gastos
-  const handleInhabilitarHarrendamiento = async (arrendamientoID) => {
-    try {
-      await actualizarEstadoHarrendamiento(arrendamientoID, "false"); // Utilizando la función correcta
-      const updatedHarrendamiento = infoPArrendamiento.filter(
-        (harrendamiento) =>
-          harrendamiento.Id_Pago_Arrendamiento !== arrendamientoID
-      );
-      setinfoPArrendamiento(updatedHarrendamiento); // Cambio en el nombre de la variable
-      notify();
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error al inhabilitar Historial Arrendamiento:", error);
-      errores();
-    }
-  };
-  //Modal para Inhabilitacion
-  const handleOpenModal = (arrendamientoID) => {
-    setHarrenndamiento(arrendamientoID);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  const notify = () =>
-    toast.success("Se Inabilito Correctamente ", {
-      theme: "dark",
-    });
-  const errores = () =>
-    toast.error("Hubo algun error  ", {
-      theme: "dark",
-    });
   //Mostrar informaicon
   useEffect(() => {
     const fetchData = async () => {
@@ -120,7 +77,6 @@ export const H_recibos = () => {
         <th>Forma pago</th>
         <th>Estado pago</th>
         <th>Dias mora</th>
-        <th>Opciones</th>
       </tr>
     );
   };
@@ -147,26 +103,12 @@ export const H_recibos = () => {
         <td>{PArrendamiento.FormaPago}</td>
         <td>{PArrendamiento.Estado}</td>
         <td>{PArrendamiento.DiasDMora}</td>
-        <td>
-          <Button
-            className="btn-opciones"
-            variant="danger"
-            onClick={() =>
-              handleOpenModal(PArrendamiento.Id_Pago_Arrendamiento)
-            }
-          >
-            <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
-          </Button>
-          <Button className="btn-opciones" variant="warning">
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </Button>
-        </td>
       </tr>
     );
   };
   //Variables Paginacion
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -191,6 +133,7 @@ export const H_recibos = () => {
       window.addEventListener("resize", updateTooltipVisibility);
       return () => window.removeEventListener("resize", updateTooltipVisibility);
     }, []);
+
   return (
     <>
       <div className="contener-home">
@@ -250,20 +193,7 @@ export const H_recibos = () => {
             <Button variant="success" className="btn-add">
               <Link  to="/ReArrendamiento">
                 <FontAwesomeIcon className="icon" icon={faUserPlus} /> 
-               <p className="AgregarPA">Agregar PArrendamiento</p> 
-              </Link>
-            </Button>
-          </OverlayTrigger>
-
-          <OverlayTrigger
-            key="tooltip-historial-inhabilitados"
-            placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Historial Inhabilitados</Tooltip> : <></>}
-          >
-            <Button variant="dark" className="btn-add-info">
-              <Link to="/Hrecibos" className="linkes">
-                <FontAwesomeIcon className="icon" icon={faUserSlash} /> 
-                <p className="AgregarPA">Historial Inhabilitados</p>
+               <p className="AgregarPA">Agregar Pago Arrendamiento</p> 
               </Link>
             </Button>
           </OverlayTrigger>
@@ -317,25 +247,6 @@ export const H_recibos = () => {
           </Pagination>
         </div>
       </div>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          ¿Está seguro de que desea inhabilitar este codeudor?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => handleInhabilitarHarrendamiento(Harrendamiento)}
-          >
-            Confirmar
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

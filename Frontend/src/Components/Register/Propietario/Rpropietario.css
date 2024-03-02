@@ -6,7 +6,10 @@
 
 .save_deleter{
     width: 100%;
-    display: grid;
-    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: nowrap;
 }
 

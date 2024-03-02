@@ -38,10 +38,28 @@ export const ReciboGastos = () => {
     setFiltroData({ ...filtroData, [name]: value });
   };
   
-  const [Valor, setValor] = useState({});
+  const [Valor, setValor] = useState(null);
+  const [PagoAr, setPagoAr] = useState(null);
+  const [AdIm, setAdIm] = useState(null);
+  const [AsEnCa, setAsEnCa] = useState(null);
+  const [Mante, setMante] = useState(null);
   const handleChangeValor = (event) => {
     const { name, value } = event.target;
-    setValor({ ...Valor, [name]: value });
+
+    if (name == "Pago Arriendo:"){
+      setPagoAr(`${name} ${value}`)
+    }
+    else if(name == "Administracion Inmobiliaria:") {
+      setAdIm(`${name} ${value}`)
+    }
+    else if (name == "Aseo Entrega Casa:") {
+      setAsEnCa(`${name} ${value}`)
+    }
+    else if (name == "Mantenimiento:") {
+      setMante(`${name} ${value}`)
+    }
+    setValor(PagoAr + ", " + AdIm + ", " + AsEnCa + ", " + Mante)
+    console.log(Valor);
   };
 
 
@@ -115,9 +133,7 @@ export const ReciboGastos = () => {
   };
 
   const onsubmitGastos = async (data) => {
-    let prueba = Valor
-    data.Observaciones = prueba;
-    console.log(data.Observaciones);
+    data.Observaciones = Valor;
     data.IdPropietario = infopropietario.IdPropietario
     try {
       const response = await fetch("http://localhost:3006/RComision", {
@@ -137,6 +153,7 @@ export const ReciboGastos = () => {
       }
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
+        console.log("funciona")
       } else {
         console.error("Error al crear usuario:", error);
         throw error; // Re-lanza el error para que pueda ser manejado en el componente
@@ -278,14 +295,14 @@ export const ReciboGastos = () => {
                 type="text"
                 className="form-control"
                  value={filtroData.Aseo}
-                name="Aseo Entrega Casa"
+                name="Aseo Entrega Casa:"
                 onChange={handleChangeValor}
               />
               <input
                 type="text"
                 className="form-control"
                  value={filtroData.Mantenimiento}
-                name="Mantenimiento"
+                name="Mantenimiento:"
                 onChange={handleChangeValor}
               />
             </div>
@@ -319,6 +336,7 @@ export const ReciboGastos = () => {
         </Modal.Header>
         <Modal.Body>
           ¿Estás seguro de que deseas guardar los cambios?
+          Recuerda que si confirmas no se podran editar 
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
