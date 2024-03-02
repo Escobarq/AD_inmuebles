@@ -146,7 +146,8 @@ router.get("/propietarios-inmuebles", (req, res) => {
         i.Direccion AS DireccionInmueble,
         i.Ciudad,
         i.Barrio,
-        i.Tipo AS TipoInmueble
+        i.Tipo AS TipoInmueble,
+        i.NoMatricula
       FROM 
         propietario p
       LEFT JOIN 
@@ -166,6 +167,7 @@ router.get("/propietarios-inmuebles", (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
+
 //traer Arrendatarios con id del codeudor:
 router.get("/arrendatarios-codeudores", (req, res) => {
   try {
@@ -551,7 +553,6 @@ router.post("/Rcodeudor", async (req, res) => {
 router.post("/Login_user", (req, res) => {
   const { correousuario, contrausuario } = req.body; // Datos del formulario
 
-  // Consulta SQL para buscar un usuario con el correo electrónico proporcionado y Boolenos en 'true'
   const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
 
   connection.query(sql, [correousuario], (error, results) => {
@@ -561,16 +562,12 @@ router.post("/Login_user", (req, res) => {
     } else {
       if (results.length > 0) {
         const user = results[0];
-        // Verifica si la contraseña coincide
         if (user.Contrasena === contrausuario) {
-          // Las credenciales son válidas
           res.status(200).json({ message: "Inicio de sesión exitoso" });
         } else {
-          // La contraseña es incorrecta
           res.status(401).json({ message: "Contraseña incorrecta" });
         }
       } else {
-        // No se encontró un usuario con el correo electrónico proporcionado o Boolenos en 'false'
         res.status(404).json({
           message: "Usuario no encontrado o no autorizado para iniciar sesión",
         });

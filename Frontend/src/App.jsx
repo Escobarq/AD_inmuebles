@@ -33,6 +33,7 @@ import { InhabilitarInmuebles } from "./Components/View/Inmueble/InhabilitarInmu
 import { InhabilitarRol } from "./Components/View/AsignarRol/InhabilitarRol";
 import ContactForm from "./Components/Register/EditarPerfil/ContactForm";
 import { Contrato } from "./Components/Register/Contrato/Contrato";
+import { Switch } from "./Components/ToggleSwitche/Switch";
 
 function App() {
   const location = useLocation();
@@ -90,6 +91,7 @@ function App() {
             <Route path="/EditarPerfil" element={<ContactForm />} />
             <Route path="/Generar" element={<Contrato />} />
           </Routes>
+          <Switch/>
         </div>
       </>
     );

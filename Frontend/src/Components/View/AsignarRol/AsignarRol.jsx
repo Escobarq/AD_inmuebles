@@ -105,7 +105,7 @@ export const AsignarRol = () => {
           <td>{roles.Contrasena}</td>
           <td>{roles.Telefono}</td>
           <td>{convertirIdRolATexto(roles.Idrol)}</td>
-          <td className="opcioness">
+          <td >
             <Button className="btn-opciones"
               variant="danger"
               onClick={() => handleOpenModal(roles.IdTrabajador)}>

@@ -142,7 +142,7 @@ export const Codeudor = () => {
         <td>{Codeudor.Direccion}</td>
         <td>{Codeudor.Telefono}</td>
         <td>{Codeudor.Correo}</td>
-        <td className="opcioness">
+        <td >
           <Button
             className="btn-opciones"
             variant="danger"

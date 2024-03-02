@@ -120,7 +120,7 @@ export const Arrendatario = () => {
         <td>{Arrendatarios.Estado}</td>
         <td>{Arrendatarios.Telefono}</td>
         <td>{Arrendatarios.Correo}</td>
-        <td className="opcioness">
+        <td >
           <Button
             className="btn-opciones"
             variant="danger"

@@ -2,9 +2,7 @@ import login from "../../assets/login.png";
 import "./login.css";
 import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -26,16 +24,10 @@ export const Login = () => {
       theme: "dark",
     });
 
-  const notifi = () =>
-    toast.success("Ya existes en la base de datos", {
-      theme: "dark",
-    });
-  const falla = () =>
-    toast.error("Hubo un error al ingresar los datos , intente nuevamente", {
+  const falla = (text) =>
+    toast.error(text, {
       theme: "colored",
     });
-
-
 
   const {
     register,
@@ -44,18 +36,25 @@ export const Login = () => {
     formState: { errors },
   } = useForm();
 
-  //Login//
+  //Login
   const onsubmitLoginUser = async (data) => {
     try {
+      if (!data.correousuario || !data.contrausuario) {
+        toast.error("Por favor, completa todos los campos");
+        return; // Detener la ejecución de la función si faltan campos
+      }
       await userLogin(data);
-      reset
-      a();
+      reset();
+      a(); // Mostrar mensaje de éxito
     } catch (error) {
-      if (error.message.includes("Cliente ya registrado")) {
-        notifi();
+      if (
+        error.message.includes(
+          "Usuario no encontrado o no autorizado para iniciar sesión"
+        )
+      ) {
+        falla("Usuario no encontrado o no autorizado para iniciar sesión");
       } else {
-        falla();
-        throw error; // Re-lanza el error para que pueda ser manejado en el componente
+        falla("Error al enviar datos al servidor:", error);
       }
     }
   };
@@ -69,29 +68,28 @@ export const Login = () => {
     setMostrarModal(false);
   };
 
-
-//Registro Usuario //
-const onsubmitNewUser = async (data) => {
-  try {
+  //Registro Usuario //
+  const onsubmitNewUser = async (data) => {
+    try {
       await crearUser(data);
       setMostrarModal(false);
       notify("Registro Exitoso");
-      reset 
-  } catch (error) {
-      if (error.message === 'El correo electrónico o la contraseña ya están en uso') {
-          toast.error('El correo electrónico o la contraseña ya están en uso', {
-              theme: 'colored',
-          });
+      reset;
+    } catch (error) {
+      if (
+        error.message ===
+        "El correo electrónico o la contraseña ya están en uso"
+      ) {
+        toast.error("El correo electrónico o la contraseña ya están en uso", {
+          theme: "colored",
+        });
       } else {
-          falla();
-          console.error('Error al crear usuario:', error);
+        falla();
+        console.error("Error al crear usuario:", error);
       }
-  }
-};
+    }
+  };
 
-
-
-  
   return (
     <>
       <section className="vh-100 login login-section">
@@ -176,7 +174,7 @@ const onsubmitNewUser = async (data) => {
                             className="btn btn-link"
                             style={{ color: "#393f81" }}
                           >
-                             ¿No tienes Cuenta? Regístrate{" "}
+                            ¿No tienes Cuenta? Regístrate{" "}
                             <FontAwesomeIcon
                               icon={faUserPlus}
                               className="ms-1"
