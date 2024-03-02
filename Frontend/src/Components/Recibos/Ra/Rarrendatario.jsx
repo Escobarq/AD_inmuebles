@@ -25,8 +25,7 @@ export const Rarrendatario = () => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
-    };
-    const handleGuardarClick = async () => {
+    };    const handleGuardarClick = async () => {
         for (const key in formData) {
             const element = formData[key];
             if (!element) {
@@ -66,7 +65,7 @@ export const Rarrendatario = () => {
             // Dibuja el logo en el encabezado
     
             page.drawImage(logoImage, {
-                x: padding - 20, // Ajusta la posición hacia la izquierda según sea necesario
+                x: padding - 10, // Ajusta la posición hacia la izquierda según sea necesario
                 y: height - padding - fontSize * 0.6, // Ajusta la posición vertical según sea necesario
                 width: 100, // Ajusta el ancho según sea necesario
                 height: 50, // Ajusta la altura según sea necesario
@@ -86,14 +85,14 @@ export const Rarrendatario = () => {
             // Título del recibo
             page.drawText("Recibo de Arrendatario", {
                 x: width / 10,
-                y: height - padding - fontSize * 3.5,
+                y: height - padding - fontSize * 5,
                 size: fontSize + 9, // Aumentar el tamaño del texto para el título
     
                 font: await pdfDoc.embedFont("Helvetica"),
     
             });
     
-            yOffset -= fontSize * 5.5;
+            yOffset -= fontSize * 6;
     
             // Dibujamos los campos y las respuestas
             for (const key in formData) {
@@ -144,8 +143,6 @@ export const Rarrendatario = () => {
                     }
                 }
             }
-    
-            // Dibujar línea horizontal en el encabezado
          // Dibujar línea horizontal en el encabezado
 page.drawLine({
     start: { x: padding, y: height - padding - fontSize * 0.6 - 20 }, // Punto de inicio - ajusta y para bajar la línea
@@ -156,8 +153,8 @@ page.drawLine({
 
 // Dibujar línea horizontal arriba de la hora actual
 page.drawLine({
-    start: { x: padding, y: padding + fontSize * 2 + 20 }, // Ajusta el valor de y para bajar la línea
-    end: { x: width - padding, y: padding + fontSize * 2 + 20 }, // Ajusta el valor de y para bajar la línea
+    start: { x: padding, y: padding + fontSize * 0.5+ 20 }, // Ajusta el valor de y para bajar la línea
+    end: { x: width - padding, y: padding + fontSize * 0.5 + 20 }, // Ajusta el valor de y para bajar la línea
     thickness: 1, // Grosor de la línea
     color: rgb(0.7, 0.7, 0.7) // Color de la línea
 });
@@ -200,6 +197,7 @@ page.drawLine({
                             <Form.Control
                                 type="text"
                                 name="documento"
+                                maxLength={21}
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
@@ -209,6 +207,7 @@ page.drawLine({
                             <Form.Control
                                 type="text"
                                 name="nombre"
+                                maxLength={20}
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
@@ -217,7 +216,7 @@ page.drawLine({
                             <Form.Label>Recibido de:</Form.Label>
                             <Form.Control
                                 type="text"
-                                maxLength={17}
+                                maxLength={21}
                                 name="recibidoDe"
                                 onChange={handleInputChange}
                             />
@@ -228,6 +227,7 @@ page.drawLine({
                             <Form.Control
                                 type="text"
                                 name="concepto"
+                                maxLength={20}
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
@@ -237,6 +237,7 @@ page.drawLine({
                             <Form.Control
                                 type="number"
                                 name="suma"
+                                maxLength={20}
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
@@ -264,6 +265,7 @@ page.drawLine({
                             <Form.Control
                                 type="text"
                                 name="pagadoCon"
+                                maxLength={20}
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
@@ -273,6 +275,7 @@ page.drawLine({
                             <Form.Control
                                 type="text"
                                 name="direccion"
+                                maxLength={21}
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
@@ -282,6 +285,7 @@ page.drawLine({
                             <Form.Control
                                 type="text"
                                 name="recibidoPor"
+                                maxLength={25}
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
