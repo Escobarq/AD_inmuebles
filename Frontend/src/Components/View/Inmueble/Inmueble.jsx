@@ -184,48 +184,59 @@ export const Inmueble = () => {
       </tr>
     );
   };
-  //Traer Informacion
 
+  //Traer Informacion
   const handleEditInmuebles = (InmuebleId, tipoInmueble) => {
     const inmueble = infoinmueble.find((inm) => inm.IdInmueble === InmuebleId);
     if (!inmueble) {
         console.error("No se encontró el inmueble con ID:", InmuebleId);
         return;
     }
-
-    const urlParams = new URLSearchParams({
-        IdInmueble: inmueble.IdInmueble,
-        NoMatricula: inmueble.NoMatricula,
-        Direccion: inmueble.Direccion,
-        Estrato: inmueble.Estrato,
-        Ciudad: inmueble.Ciudad,
-        Barrio: inmueble.Barrio,
-        Tipo: inmueble.Tipo,
-        Estado: inmueble.Estado
-    });
-
-    const rutas = {
-        Casa: `/RInmuebleC?${urlParams.toString()}`,
-        Apartamento: `/RInmuebleA?${urlParams.toString()}`,
-        Local: `/RInmuebleL?${urlParams.toString()}`,
-        Bodega: `/RInmuebleB?${urlParams.toString()}`,
-        Oficina: `/RInmuebleO?${urlParams.toString()}`
+    
+    // Crear objeto con los datos del inmueble
+    const inmuebleData = {
+      IdInmueble: inmueble.IdInmueble,
+      NoMatricula: inmueble.NoMatricula,
+      Direccion: inmueble.Direccion,
+      Estrato: inmueble.Estrato,
+      Ciudad: inmueble.Ciudad,
+      Barrio: inmueble.Barrio,
+      Tipo: inmueble.Tipo,
+      NoNiveles: inmueble.NoNiveles,
+      NoBanos: inmueble.NoBanos,
+      ServiciosPublicos: inmueble.ServiciosPublicos,
+      NoHabitaciones: inmueble.NoHabitaciones,
+      Estado: inmueble.Estado,
+      NoTerraza: inmueble.NoTerraza,
+      AreaConstruidaM2: inmueble.AreaConstruidaM2,
+      Aseguramiento: inmueble.Aseguramiento,
+      ValorInmueble: inmueble.ValorInmueble,
+      Descripcion: inmueble.Descripcion
     };
-  
+    
+    // Definir las rutas para cada tipo de inmueble
+    const rutas = {
+        Casa: `/RInmuebleC`,
+        Apartamento: `/RInmuebleA`,
+        Local: `/RInmuebleL`,
+        Bodega: `/RInmuebleB`,
+        Oficina: `/RInmuebleO`
+    };
+    
+    // Obtener la ruta correspondiente al tipo de inmueble
     const ruta = rutas[tipoInmueble];
     if (!ruta) {
         console.error("Tipo de inmueble no reconocido:", tipoInmueble);
         return;
     }
   
-    // Realizar la redirección
-    window.location.href = ruta;
-};
-
+    // Convertir objeto de datos del inmueble a cadena de consulta
+    const queryString = new URLSearchParams(inmuebleData).toString();
   
-
-
-
+    // Redireccionar a la URL correspondiente con los datos del inmueble
+    window.location.href = `${ruta}?${queryString}`;
+  };
+  
 
   const createrowDetalles = () => {
     if (inmuebleseleccion) {

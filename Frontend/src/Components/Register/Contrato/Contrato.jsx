@@ -9,52 +9,39 @@ import axios from "axios";
 export const Contrato = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showPropietarioModal, setShowPropietarioModal] = useState(false);
-  const [propietariosDisponibles, setPropietariosDisponibles] = useState([]);
-  const [selectedPropietario, setSelectedPropietario] = useState("");
+  const [showMatriculaModal, setShowMatriculaModal] = useState(false);
   const [showArrendatarioModal, setShowArrendatarioModal] = useState(false);
   const [arrendatariosDisponibles, setArrendatariosDisponibles] = useState([]);
   const [selectedArrendatario, setSelectedArrendatario] = useState("");
   const [selectedCodeudor, setSelectedCodeudor] = useState("");
+  const [selectedTipoInmueble, setSelectedTipoInmueble] = useState("");
+  const [selectedMatricula, setSelectedMatricula] = useState("");
+  const [matriculasDisponibles, setMatriculasDisponibles] = useState([]);
   const { register, handleSubmit, reset } = useForm({ mode: "onChange" });
 
   useEffect(() => {
-    cargarPropietariosDisponibles();
+    cargarMatriculasDisponibles();
     cargarArrendatariosDisponibles();
   }, []);
 
-  const cargarPropietariosDisponibles = async () => {
+  const cargarMatriculasDisponibles = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3006/propietarios-inmuebles"
-      );
-      const propietarios = response.data.map((propietario) => ({
-        ...propietario,
-        tipoInmuebleAsociado:
-          propietario.TipoInmueble || "No tiene inmueble asociado",
-        numeroMatricula:
-          propietario.NoMatricula || "No tiene número de matrícula",
-      }));
-      setPropietariosDisponibles(propietarios);
+      const response = await axios.get("http://localhost:3006/propietarios-inmuebles");
+      const matriculas = response.data.map((prop) => prop.NoMatricula);
+      setMatriculasDisponibles(matriculas);
     } catch (error) {
-      console.error("Error al cargar los propietarios:", error);
-      toast.error(
-        "Error al cargar los propietarios. Inténtalo de nuevo más tarde."
-      );
+      console.error("Error al cargar las matrículas:", error);
+      toast.error("Error al cargar las matrículas. Inténtalo de nuevo más tarde.");
     }
   };
 
   const cargarArrendatariosDisponibles = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3006/arrendatarios-codeudores"
-      );
+      const response = await axios.get("http://localhost:3006/arrendatarios-codeudores");
       setArrendatariosDisponibles(response.data);
     } catch (error) {
       console.error("Error al cargar los arrendatarios:", error);
-      toast.error(
-        "Error al cargar los arrendatarios. Inténtalo de nuevo más tarde."
-      );
+      toast.error("Error al cargar los arrendatarios. Inténtalo de nuevo más tarde.");
     }
   };
 
@@ -64,15 +51,7 @@ export const Contrato = () => {
     );
     setSelectedArrendatario(selected);
     setSelectedCodeudor(selected.NombreCodeudor);
-    setShowArrendatarioModal(false);
-  };
-
-  const handleSelectPropietario = (propietario) => {
-    const selected = propietariosDisponibles.find(
-      (item) => item.NombreCompleto === propietario
-    );
-    setSelectedPropietario(selected);
-    setShowPropietarioModal(false);
+    setShowMatriculaModal(false);
   };
 
   const handleConfirmSave = () => {
@@ -86,56 +65,57 @@ export const Contrato = () => {
     reset();
   };
 
+  const handleMatriculaChange = async (matricula) => {
+    setSelectedMatricula(matricula);
+    try {
+      const response = await axios.get(
+        `http://localhost:3006/propietarios-inmuebles`
+      );
+      const inmueble = response.data.find((prop) => prop.NoMatricula === matricula);
+      if (inmueble) {
+        setSelectedTipoInmueble(inmueble.TipoInmueble);
+      } else {
+        setSelectedTipoInmueble("");
+      }
+    } catch (error) {
+      console.error("Error al obtener el tipo de inmueble:", error);
+      toast.error("Error al obtener el tipo de inmueble. Inténtalo de nuevo.");
+    }
+  };
+
   return (
     <div className="contener-home contener-rpropietario">
-      <h2>Generacion Nuevo Contrato</h2>
+      <h2>Generación Nuevo Contrato</h2>
       <div className="container">
         <Form className="form-propietario" onSubmit="">
-          <Form.Group controlId="Propietario" className="mb-3">
-            <Form.Label>Nombre Propietario:</Form.Label>
+          <Form.Group controlId="Matricula" className="mb-3">
+            <Form.Label>Número de Matrícula:</Form.Label>
             <InputGroup>
               <Form.Select
-                value={
-                  selectedPropietario ? selectedPropietario.NombreCompleto : ""
-                }
-                onChange={(e) => setSelectedPropietario(e.target.value)}
-                onClick={() => setShowPropietarioModal(true)}
+                value={selectedMatricula}
+                onChange={(e) => handleMatriculaChange(e.target.value)}
+                onClick={() => setShowMatriculaModal(true)}
               >
-                <option value="">Seleccionar Propietario</option>
-                {propietariosDisponibles.map((propietario, index) => (
-                  <option key={index} value={propietario.NombreCompleto}>
-                    {propietario.NombreCompleto}
+                <option value="">Seleccionar Matrícula</option>
+                {matriculasDisponibles.map((matricula, index) => (
+                  <option key={index} value={matricula}>
+                    {matricula}
                   </option>
                 ))}
               </Form.Select>
             </InputGroup>
           </Form.Group>
 
-          <Form.Group controlId="tipoInmueble" className="mb-3">
+          <Form.Group controlId="TipoInmueble" className="mb-3">
             <Form.Label>Tipo de Inmueble:</Form.Label>
             <Form.Control
               type="text"
-              value={
-                selectedPropietario
-                  ? selectedPropietario.tipoInmuebleAsociado
-                  : ""
-              }
+              value={selectedTipoInmueble}
               readOnly
-              disabled={!selectedPropietario}
+              disabled={!selectedTipoInmueble}
             />
           </Form.Group>
 
-          <Form.Group controlId="numeroMatricula" className="mb-3">
-            <Form.Label>Número de Matrícula:</Form.Label>
-            <Form.Control
-              type="text"
-              value={
-                selectedPropietario ? selectedPropietario.numeroMatricula : ""
-              }
-              readOnly
-              disabled={!selectedPropietario}
-            />
-          </Form.Group>
           <Form.Group controlId="Arrendatario" className="mb-3">
             <Form.Label>Nombre Arrendatario:</Form.Label>
             <InputGroup>
@@ -169,14 +149,10 @@ export const Contrato = () => {
               />
             </InputGroup>
           </Form.Group>
+
           <Form.Group controlId="FechaInicioContrato">
             <Form.Label>Fecha Inicio Contrato:</Form.Label>
             <Form.Control type="date" {...register("FechaInicioContrato")} />
-          </Form.Group>
-
-          <Form.Group controlId="documentoidentidad">
-            <Form.Label>Fecha Final Contrato:</Form.Label>
-            <Form.Control type="date" {...register("FechaFinalContrato")} />
           </Form.Group>
 
           <Form.Group controlId="TipoDocumento">
@@ -219,31 +195,29 @@ export const Contrato = () => {
         </Form>
       </div>
 
-      {/* Modales Mostrar info propietario*/}
+      {/* Modal para seleccionar la matrícula */}
       <Modal
-        show={showPropietarioModal}
-        onHide={() => setShowPropietarioModal(false)}
+        show={showMatriculaModal}
+        onHide={() => setShowMatriculaModal(false)}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Seleccionar Propietario</Modal.Title>
+          <Modal.Title>Seleccionar Matrícula</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
-            {propietariosDisponibles.map((propietario, index) => (
+            {matriculasDisponibles.map((matricula, index) => (
               <ListGroup.Item
                 key={index}
                 action
-                onClick={() =>
-                  handleSelectPropietario(propietario.NombreCompleto)
-                }
+                onClick={() => handleMatriculaChange(matricula)}
               >
-                {propietario.NombreCompleto}
+                {matricula}
               </ListGroup.Item>
             ))}
           </ListGroup>
         </Modal.Body>
       </Modal>
-       {/* Modales Mostrar info arrendatario*/}
+
       <Modal
         show={showArrendatarioModal}
         onHide={() => setShowArrendatarioModal(false)}

@@ -5,6 +5,7 @@ import { Form, Button, Table, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 export const RInmuebleA = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -84,24 +85,44 @@ export const RInmuebleA = () => {
   };
 
   const onsubmitRegistro = async (data) => {
-    data.Id_Propietario = infopropietario.IdPropietario;
-    data.Tipo = "Apartamento";
     try {
-      await crearInmueble(data);
-      notify();
-      reset();
-      localStorage.removeItem("NITPropie");
-      window.location.href = "/Inmueble";
+      const url = data.IdInmueble
+        ? `http://localhost:3006/Reinmueble/${data.IdInmueble}`
+        : "http://localhost:3006/Reinmueble";
+  
+      const method = data.IdInmueble ? "PUT" : "POST";
+  
+      const dataToSend = {
+        ...data,
+        Tipo: "Apartamento", // Esto puede variar según tu lógica
+      };
+  
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+  
+      if (response.ok) {
+        notify();
+        reset();
+        localStorage.removeItem("NITPropie");
+        window.location.href = "/Inmueble";
+      } else {
+        falla();
+      }
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
         alert("El correo ya está registrado");
       } else {
         falla();
-        console.error("Error al crear usuario:", error);
-        throw error; // Re-lanza el error para que pueda ser manejado en el componente
+        console.error("Error al enviar datos al servidor:", error);
       }
     }
   };
+  
 
   const handleSelectChange = (event) => {
     const selectedOption = event.target.value;
@@ -122,6 +143,75 @@ export const RInmuebleA = () => {
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
+
+  
+  // Estado para almacenar los datos del codeudor
+  const [inmuebledata, setinmuebledata] = useState({
+    NoMatricula: "",
+    Direccion:"" ,
+    Estrato: "",
+    Ciudad:"" ,
+    Barrio: "",
+    Tipo:"" ,
+    NoNiveles: "",
+    NoBanos: "",
+    ServiciosPublicos: "",
+    NoHabitaciones:"" ,
+    Estado:"" ,
+    NoTerraza: "",
+    AreaConstruidaM2: "",
+    Aseguramiento: "",
+    ValorInmueble:"" ,
+    Descripcion: "",
+  });
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  useEffect(() => {
+    // Si hay parámetros de consulta en la URL, significa que se está editando un codeudor existente
+    if (location.search) {
+      setinmuebledata({
+        IdInmueble: searchParams.get("IdInmueble"),
+        NoMatricula: searchParams.get("NoMatricula"),
+        Direccion: searchParams.get("Direccion"),
+        Estrato: searchParams.get("Estrato"),
+        Ciudad: searchParams.get("Ciudad"),
+        Barrio: searchParams.get("Barrio"),
+        Tipo: searchParams.get("Tipo"),
+        NoNiveles: searchParams.get("NoNiveles"),
+        NoBanos: searchParams.get("NoBanos"),
+        ServiciosPublicos: searchParams.get("ServiciosPublicos"),
+        NoHabitaciones: searchParams.get("NoHabitaciones"),
+        Estado: searchParams.get("Estado"),
+        NoTerraza: searchParams.get("NoTerraza"),
+        AreaConstruidaM2: searchParams.get("AreaConstruidaM2"),
+        Aseguramiento: searchParams.get("Aseguramiento"),
+        ValorInmueble: searchParams.get("ValorInmueble"),
+        Descripcion: searchParams.get("Descripcion"),
+      });
+    } else {
+      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo codeudor
+      setinmuebledata({
+        NoMatricula:"",
+        Direccion:"",
+        Estrato:"",
+        Ciudad:"",
+        Barrio:"",
+        Tipo:"",
+        NoNiveles:"",
+        NoBanos:"",
+        ServiciosPublicos:"",
+        NoHabitaciones:"",
+        Estado:"",
+        NoTerraza:"",
+        AreaConstruidaM2:"",
+        Aseguramiento:"",
+        ValorInmueble:"",
+        Descripcion:"",
+      });
+    }
+  }, [location.search]);
 
   return (
     <div className="contener-home contener-rpropietario">
