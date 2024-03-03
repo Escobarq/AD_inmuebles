@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -24,6 +24,7 @@ export const Rarrendatario = () => {
 
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const { register, handleSubmit, reset } = useForm();
 
   const falla = (text) =>
     toast.error(text, {
@@ -34,8 +35,46 @@ export const Rarrendatario = () => {
     toast.error(text, {
       theme: "colored",
     });
+    const [currentDate, setCurrentDate] = useState(getCurrentDate());
+    // Función para obtener la fecha actual en formato YYYY-MM-DD
+function getCurrentDate() {
+  const date = new Date();
+  const year = date.getFullYear();
+  let month = (1 + date.getMonth()).toString();
+  month = month.length > 1 ? month : "0" + month;
+  let day = date.getDate().toString();
+  day = day.length > 1 ? day : "0" + day;
+  return `${year}-${month}-${day}`;
+}
+useEffect(() => {
+  setCurrentDate(getCurrentDate());
+}, []);
+
+
+const onSubmitRegistro = async (data) => {
+  data.FechaPago = currentDate
+  data.Estado = "Pagado"
+  console.log(data);
+  try {
+    const response = await fetch('http://localhost:3006/RPagoArrendamiento', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data), // Aquí debes asegurarte de que data contenga todos los campos necesarios
+    });
+    if (response.ok) {
+      setShowSaveModal(false); // Muestra el modal de confirmación
+      reset(); 
+    }
+  } catch (error) {
+    console.error("Error al enviar datos al servidor:", error);
+  }
+};
+
 
   const handleConfirmSave = async () => {
+    handleSubmit(onSubmitRegistro)(); 
     setShowSaveModal(false);
     // Verificar que todos los campos estén completos
     for (const key in formData) {
@@ -45,6 +84,8 @@ export const Rarrendatario = () => {
         return;
       }
     }
+
+   
 
     try {
       const pdfDoc = await PDFDocument.create();
@@ -144,114 +185,91 @@ export const Rarrendatario = () => {
     window.location.href = "/H_recibos";
   };
 
-  const handleInputChange = (event) => {
+  const   handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const { register, handleSubmit } = useForm();
 
   return (
     <div className="contener-home contener-ReArrendatario">
       <h2 style={{ textAlign: "center" }}>Recibo Arrendatario</h2>
       <div className="container">
-        <Form onSubmit={handleSubmit(() => {})}>
+        <Form  action="" onSubmit={handleSubmit(onSubmitRegistro)}>
           <div className="form-propietario">
             <Form.Group controlId="fecha">
-              <Form.Label>Fecha:</Form.Label>
-              <Form.Control
-                type="date"
-                {...register("fecha")}
-                onChange={handleInputChange}
+              <Form.Label>Fecha de Pago:</Form.Label>
+              <Form.Control className="InputsRegistros"
+              disabled
+                defaultValue={currentDate}
+                type="date" 
+                onChange={handleInputChange}             
               />
             </Form.Group>
 
             <Form.Group controlId="documentoIdentidad">
-              <Form.Label>Documento Identidad:</Form.Label>
-              <Form.Control
-                type="text"
-                {...register("documentoIdentidad")}
+              <Form.Label>Contrato:</Form.Label>
+              <Form.Control className="InputsRegistros"
+                type="text"                
                 onChange={handleInputChange}
               />
             </Form.Group>
 
             <Form.Group controlId="nombre">
-              <Form.Label>Nombre:</Form.Label>
-              <Form.Control
+              <Form.Label>Nombre Arrendatario:</Form.Label>
+              <Form.Control className="InputsRegistros"
                 type="text"
-                {...register("nombre")}
                 onChange={handleInputChange}
               />
             </Form.Group>
 
-            <Form.Group controlId="recibidoDe">
-              <Form.Label>Recibido de:</Form.Label>
-              <Form.Control
-                type="text"
-                {...register("recibidoDe")}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="concepto">
-              <Form.Label>Concepto:</Form.Label>
-              <Form.Control
-                type="text"
-                {...register("concepto")}
+            <Form.Group controlId="nombre">
+              <Form.Label>No Matricula Inmueble:</Form.Label>
+              <Form.Control className="InputsRegistros"
+                type="text"                
                 onChange={handleInputChange}
               />
             </Form.Group>
 
             <Form.Group controlId="suma">
-              <Form.Label>Suma:</Form.Label>
-              <Form.Control
+              <Form.Label>Valor del Pago:</Form.Label>
+              <Form.Control className="InputsRegistros"
                 type="number"
-                {...register("suma")}
-                onChange={handleInputChange}
+                {...register("ValorPago")}
+                
               />
             </Form.Group>
 
+            
+
+            <Form.Group controlId="pagadoCon">
+              <Form.Label>Forma de Pagado:</Form.Label>
+              <Form.Select
+              {...register("FormaPago")}
+              className="formSelect InputsRegistros"
+              aria-label="Default select example"
+              required
+            >
+              <option defaultValue="Cedula Ciudadania">Efectivo</option>
+              <option defaultValue="Cedula Extranjera">Transferencia</option>
+            </Form.Select>
+            </Form.Group>
+
+
             <Form.Group controlId="periodoDesde">
-              <Form.Label>Periodo Desde:</Form.Label>
-              <Form.Control
+              <Form.Label>Fecha Inicial de Pago:</Form.Label>
+              <Form.Control className="InputsRegistros"
                 type="date"
-                {...register("periodoDesde")}
+                {...register("FechaIni")}
                 onChange={handleInputChange}
               />
             </Form.Group>
 
             <Form.Group controlId="periodoHasta">
-              <Form.Label>Periodo Hasta:</Form.Label>
-              <Form.Control
+              <Form.Label>Fecha Final Pago:</Form.Label>
+              <Form.Control className="InputsRegistros"
                 type="date"
-                {...register("periodoHasta")}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="pagadoCon">
-              <Form.Label>Pagado Con:</Form.Label>
-              <Form.Control
-                type="text"
-                {...register("pagadoCon")}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="direccion">
-              <Form.Label>Dirección:</Form.Label>
-              <Form.Control
-                type="text"
-                {...register("direccion")}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="recibidoPor">
-              <Form.Label>Recibido Por:</Form.Label>
-              <Form.Control
-                type="text"
-                {...register("recibidoPor")}
+                {...register("FechaFin")}
                 onChange={handleInputChange}
               />
             </Form.Group>
