@@ -55,5 +55,6 @@ input:checked + .slider:before {
     transform: translateX(1.3em);
 }
 
-
-  
+.jeison{
+     font-size: 1.3rem !important;
+}

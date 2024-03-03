@@ -182,6 +182,10 @@ export const Codeudor = () => {
     return () => window.removeEventListener('resize', updateTooltipVisibility);
   }, []);
 
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  }
+  
   return (
     <>
       <div className="contener-home">
@@ -203,11 +207,9 @@ export const Codeudor = () => {
             placement="top"
             overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Codeudor</Tooltip> : <></>}
           >
-            <Button variant="success" className="btn-add">
-              <Link to="/Registrocodeudor">
+            <Button variant="success" className="btn-add" onClick={() => redireccion("/Registrocodeudor")}>
                 <FontAwesomeIcon className="icon" icon={faUserPlus} />
                 <p className="AgregarPA">Agregar Codeudor</p>
-              </Link>
             </Button>
           </OverlayTrigger>
 
@@ -216,11 +218,9 @@ export const Codeudor = () => {
             placement="top"
             overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Codeudores Inhabilitados</Tooltip> : <></>}
           >
-            <Button variant="dark" className="btn-add-info">
-              <Link to="/Codeudores" className="linkes">
+            <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Codeudores")}>
                 <FontAwesomeIcon className="icon" icon={faUserSlash} />
                 <p className="AgregarPA">Ver Codeudores Inhabilitados</p>
-              </Link>
             </Button>
           </OverlayTrigger>
         </div>

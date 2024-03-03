@@ -136,7 +136,7 @@ router.get("/Vinmueble", (req, res) => {
     );
   } catch (error) {}
 });
-//traer propietarios con el id del inmueble
+
 router.get("/propietarios-inmuebles", (req, res) => {
   try {
     const query = `
@@ -167,6 +167,43 @@ router.get("/propietarios-inmuebles", (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
+
+
+router.get("/propietarios-inmuebles/:idInmueble", (req, res) => {
+  try {
+    const { idInmueble } = req.params;
+    const query = `
+      SELECT 
+        p.*, 
+        i.IdInmueble,
+        i.Direccion AS DireccionInmueble,
+        i.Ciudad,
+        i.Barrio,
+        i.Tipo AS TipoInmueble,
+        i.NoMatricula
+      FROM 
+        propietario p
+      LEFT JOIN 
+        inmueble i ON p.IdPropietario = i.IdPropietario
+      WHERE
+        i.NoMatricula = ?
+      ORDER BY 
+        p.IdPropietario ASC`;
+    
+    connection.query(query, [idInmueble], (error, results) => {
+      if (error) {
+        console.error("Error al obtener datos de la base de datos:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+
 
 //traer Arrendatarios con id del codeudor:
 router.get("/arrendatarios-codeudores", (req, res) => {
@@ -1147,5 +1184,137 @@ router.put("/RPropietario/:id", async (req, res) => {
   }
 });
 
+//Actualizar Datos Inmuble
+router.put("/Reinmueble/:id", async (req, res) => {
+  const inmuebleId = req.params.id;
+  const {
+    Nmatricula,
+    Direccion,
+    Ciudad,
+    Barrio,
+    Tipo,
+    NoNiveles,
+    ValorIn,
+    Estrato,
+    NoHabita,
+    Estado,
+    NoTerraza,
+    AreaM,
+    Descripcion,
+    Nbanos,
+    Spublicos,
+    aseguramiento,
+    Id_Propietario,
+  } = req.body;
+
+  try {
+    if (Tipo == "Bodega") {
+      connection.query(
+        "UPDATE inmueble SET NoMatricula = ?, Direccion = ?, Estrato = ?, Ciudad = ?, Barrio = ?, Tipo = ?, NoBanos = ?, ServiciosPublicos = ?, Aseguramiento = ?, Descripcion = ?, ValorInmueble = ?, Estado = ? WHERE IdInmueble = ?",
+        [
+          Nmatricula,
+          Direccion,
+          Estrato,
+          Ciudad,
+          Barrio,
+          Tipo,
+          Nbanos,
+          Spublicos,
+          aseguramiento,
+          Descripcion,
+          ValorIn,
+          Estado,
+          inmuebleId,
+        ]
+      );
+    } else if (Tipo == "Casa") {
+      connection.query(
+        "UPDATE inmueble SET NoMatricula = ?, Direccion = ?, Estrato = ?, Ciudad = ?, Barrio = ?, Tipo = ?, NoBanos = ?, ServiciosPublicos = ?, Aseguramiento = ?, Descripcion = ?, ValorInmueble = ?, Estado = ? WHERE IdInmueble = ?",
+        [
+          Nmatricula,
+          Direccion,
+          Estrato,
+          Ciudad,
+          Barrio,
+          Tipo,
+          Nbanos,
+          Spublicos,
+          aseguramiento,
+          Descripcion,
+          ValorIn,
+          Estado,
+          inmuebleId,
+        ]
+      );
+    } else if (Tipo == "Apartamento") {
+      connection.query(
+        "UPDATE inmueble SET NoMatricula = ?, IdPropietario = ?, Direccion = ?, Estrato = ?, Ciudad = ?, Barrio = ?, Tipo = ?, NoHabitaciones = ?, NoNiveles = ?, NoTerraza = ?, NoBanos = ?, ServiciosPublicos = ?, Aseguramiento = ?, Descripcion = ?, ValorInmueble = ?, Estado = ? WHERE IdInmueble = ?",
+        [
+          Nmatricula,
+          Id_Propietario,
+          Direccion,
+          Estrato,
+          Ciudad,
+          Barrio,
+          Tipo,
+          NoHabita,
+          NoNiveles,
+          NoTerraza,
+          Nbanos,
+          Spublicos,
+          aseguramiento,
+          Descripcion,
+          ValorIn,
+          Estado,
+          inmuebleId,
+        ]
+      );
+    } else if (Tipo == "Oficina") {
+      connection.query(
+        "UPDATE inmueble SET NoMatricula = ?, Direccion = ?, Estrato = ?, Ciudad = ?, Barrio = ?, Tipo = ?, NoBanos = ?, ServiciosPublicos = ?, Aseguramiento = ?, Descripcion = ?, ValorInmueble = ?, Estado = ? WHERE IdInmueble = ?",
+        [
+          Nmatricula,
+          Direccion,
+          Estrato,
+          Ciudad,
+          Barrio,
+          Tipo,
+          Nbanos,
+          Spublicos,
+          aseguramiento,
+          Descripcion,
+          ValorIn,
+          Estado,
+          inmuebleId,
+        ]
+      );
+    } else if (Tipo == "Local") {
+      connection.query(
+        "UPDATE inmueble SET NoMatricula = ?, Direccion = ?, Estrato = ?, Ciudad = ?, Barrio = ?, Tipo = ?, NoBanos = ?, NoHabitaciones = ?, ServiciosPublicos = ?, Aseguramiento = ?, Descripcion = ?, ValorInmueble = ?, Estado = ? WHERE IdInmueble = ?",
+        [
+          Nmatricula,
+          Direccion,
+          Estrato,
+          Ciudad,
+          Barrio,
+          Tipo,
+          Nbanos,
+          NoHabita,
+          Spublicos,
+          aseguramiento,
+          Descripcion,
+          ValorIn,
+          Estado,
+          inmuebleId,
+        ]
+      );
+    }
+
+    res.status(200).json({ message: "Inmueble actualizado exitosamente" });
+  } catch (error) {
+    console.error("Error al actualizar inmueble:", error);
+    res.status(500).json({ error: "Error al actualizar inmueble" });
+  }
+});
 
 module.exports = router;

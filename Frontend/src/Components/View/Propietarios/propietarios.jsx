@@ -100,7 +100,7 @@ export const Propietarios = () => {
     try {
       const info = await InfoPropietario(filtroData)
       setinfopropietario(info);
-      
+
       if (info.length == 0) {
         setNoResult(true);
       } else {
@@ -205,6 +205,9 @@ export const Propietarios = () => {
       console.error("No se encontró el propetario con ID:", PropetarioId);
     }
   };
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  }
   return (
     <>
       <div className="contener-home">
@@ -240,7 +243,7 @@ export const Propietarios = () => {
               id=""
             />
           </div>
-          
+
           <OverlayTrigger
             key="tooltip-add-propietario"
             placement="top"
@@ -252,11 +255,9 @@ export const Propietarios = () => {
               )
             }
           >
-            <Button variant="success" className="btn-add">
-              <Link to="/RPropietario">
-                <FontAwesomeIcon className="icon" icon={faUserPlus} />
-                <p className="AgregarPA">Agregar Propietario</p>
-              </Link>
+            <Button variant="success" className="btn-add" onClick={() => redireccion("/RPropietario")}>
+              <FontAwesomeIcon className="icon" icon={faUserPlus} />
+              <p className="AgregarPA">Agregar Propietario</p>
             </Button>
           </OverlayTrigger>
 
@@ -273,11 +274,9 @@ export const Propietarios = () => {
               )
             }
           >
-            <Button variant="dark" className="btn-add-info">
-              <Link to="/InhaPropietarios" className="linkes">
-                <FontAwesomeIcon className="icon" icon={faUserSlash} />
-                <p className="AgregarPA">Ver Propietarios Inhabilitados</p>
-              </Link>
+            <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/InhaPropietarios")}>
+              <FontAwesomeIcon className="icon" icon={faUserSlash} />
+              <p className="AgregarPA">Ver Propietarios Inhabilitados</p>
             </Button>
           </OverlayTrigger>
         </div>

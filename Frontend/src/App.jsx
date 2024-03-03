@@ -63,10 +63,7 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/inicio" element={<Home />} />
             <Route path="/Propietario" element={<Propietarios />} />
-            <Route
-              path="/InhaPropietarios"
-              element={<InhabilitarPropetario />}
-            />
+            <Route path="/InhaPropietarios" element={<InhabilitarPropetario />}/>
             <Route path="/Arrendatario" element={<Arrendatario />} />
             <Route path="/Inharrendatario" element={<InhabilitarArren />} />
             <Route path="/Inmueble" element={<Inmueble />} />

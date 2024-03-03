@@ -6,25 +6,16 @@ import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./Rpropietario.css";
 import { useLocation } from "react-router-dom";
 
-// Función para obtener la fecha actual en formato YYYY-MM-DD
-function getCurrentDate() {
-  const date = new Date();
-  const year = date.getFullYear();
-  let month = (1 + date.getMonth()).toString();
-  month = month.length > 1 ? month : "0" + month;
-  let day = date.getDate().toString();
-  day = day.length > 1 ? day : "0" + day;
-  return `${year}-${month}-${day}`;
-}
-
 export const RPropietario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la alerta
+  const [focusedField, setFocusedField] = useState(""); // Estado para rastrear el campo enfocado
 
   const { register, handleSubmit, reset } = useForm();
 
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
-  // Estado para almacenar los datos del codeudor
+  // Estado para almacenar los datos del propietario
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const [propetarioData, setpropetarioData] = useState({
@@ -116,7 +107,6 @@ export const RPropietario = () => {
     
     setShowSaveModal(false); // Cierra el modal
   };
-  
 
   const handleConfirmCancel = () => {
     window.location.href = "/Propietario";
@@ -127,49 +117,90 @@ export const RPropietario = () => {
     setCurrentDate(getCurrentDate());
   }, []);
 
+  // Función para obtener la fecha actual en formato YYYY-MM-DD
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
+
+  const handleTextChange = (event) => {
+    const fieldValue = event.target.value;
+    const fieldName = event.target.name;
+
+    // Expresión regular para permitir solo letras y espacios
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/;
+
+    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
+    if (!regex.test(fieldValue) && focusedField === fieldName) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+
+    // Actualiza los datos del propietario
+    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+  };
+
+  const handleNumberChange = (event) => {
+    const fieldValue = event.target.value;
+    const fieldName = event.target.name;
+
+    // Expresión regular para permitir solo números
+    const regex = /^[0-9]*$/;
+
+    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
+    if (!regex.test(fieldValue) && focusedField === fieldName) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+
+    // Actualiza los datos del propietario
+    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+  };
+
+  const handleFieldFocus = (fieldName) => {
+    setFocusedField(fieldName);
+  };
+
   return (
     <div className="contener-home contener-rpropietario">
       <h2>Registro Propietario</h2>
       <div className="container">
-        <Form
-          className="form-propietario"
-          onSubmit={handleSubmit(onSubmitRegistro)}
-        >
-          <Form.Group controlId="formnombrepropietario" className="mb-3">
+        <Form className="form-propietario" onSubmit={handleSubmit(onSubmitRegistro)}>
+          <Form.Group controlId="formnombrepropietario" className="formSelect InputsRegistros">
             <Form.Label>Nombre de Propietario:</Form.Label>
             <Form.Control
               {...register("nombrepropietario")}
               type="text"
-              maxLength={100}
               defaultValue={propetarioData.NombreCompleto}
+              onChange={handleTextChange}
+              onFocus={() => handleFieldFocus("nombrepropietario")}
               required
             />
+            {focusedField === "nombrepropietario" && showWarning && (
+              <span className="error-message">Solo se permiten letras y espacios</span>
+            )}
           </Form.Group>
-          <Form.Group controlId="formTipoCuenta"  className="formSelect InputsRegistros">
+
+          <Form.Group controlId="formTipoDocumento" className="formSelect InputsRegistros">
             <Form.Label>Tipo De Documento</Form.Label>
-            <Form.Select
-              {...register("TipoDocumento")}
-              className="formSelect InputsRegistros"
-              aria-label="Default select example"
-              defaultValue={propetarioData.TipoDocumento}
-              required
-            >
-              <option defaultValue="" disabled hidden selected>
-                Seleccione Tipo de Documento
-              </option>
-              <option defaultValue="Cedula Ciudadania">Cedula Ciudadania</option>
-              <option defaultValue="Cedula Extranjera">Cedula Extranjera</option>
+            <Form.Select {...register("TipoDocumento")} defaultValue={propetarioData.TipoDocumento} required  onChange={(e) => setpropetarioData({ ...propetarioData, TipoDocumento: e.target.value })} >
+              <option defaultValue="" disabled hidden> Seleccione Tipo de Documento </option>
+              <option value="Cedula Ciudadania">Cedula Ciudadania</option>
+              <option value="Cedula Extranjera">Cedula Extranjera</option>
+              <option value="Pasaporte">Pasaporte</option>
             </Form.Select>
           </Form.Group>
 
           <Form.Group controlId="formdireccion" className="InputsRegistros">
             <Form.Label>Dirección Del Propietario:</Form.Label>
-            <Form.Control
-              {...register("direccion")}
-              type="text"
-              defaultValue={propetarioData.Direccion}
-              required
-            />
+            <Form.Control {...register("direccion")}  type="text"  defaultValue={propetarioData.Direccion}  />           
           </Form.Group>
 
           <Form.Group controlId="formnumerodocumento" className="InputsRegistros">
@@ -178,29 +209,39 @@ export const RPropietario = () => {
               {...register("numerodocumento")}
               type="number"
               defaultValue={propetarioData.DocumentoIdentidad}
+              onChange={handleNumberChange}
+              onFocus={() => handleFieldFocus("numerodocumento")}
               required
             />
+            {focusedField === "numerodocumento" && showWarning && (
+              <span className="error-message">Solo se permiten números</span>
+            )}
           </Form.Group>
 
-          <Form.Group controlId="formBarrio" className="InputsRegistros">
-            <Form.Label>Telefono:</Form.Label>
+          <Form.Group controlId="formtelefono" className="InputsRegistros">
+            <Form.Label>Teléfono:</Form.Label>
             <Form.Control
               {...register("telefono")}
-              max={9999999999}
-              type="number"
+              type="text"
               defaultValue={propetarioData.Telefono}
+              onChange={handleNumberChange}
+              onFocus={() => handleFieldFocus("telefono")}
               required
             />
+            {focusedField === "telefono" && showWarning && (
+              <span className="error-message">Solo se permiten números</span>
+            )}
           </Form.Group>
 
           <Form.Group controlId="formcorreoelectronico" className="mb-3">
-            <Form.Label>Correo Eléctronico:</Form.Label>
+            <Form.Label>Correo Electrónico:</Form.Label>
             <Form.Control
               type="email"
-              name="Correo"
+              name="correo"
               {...register("correoelectronico")}
               defaultValue={propetarioData.Correo}
               required
+              onChange={(e) => setpropetarioData({ ...propetarioData, Correo: e.target.value })}
             />
           </Form.Group>
 
@@ -208,10 +249,15 @@ export const RPropietario = () => {
             <Form.Label>Banco:</Form.Label>
             <Form.Control
               {...register("banco")}
-              type="Text"
+              type="text"
               defaultValue={propetarioData.Banco}
+              onChange={handleTextChange}
+              onFocus={() => handleFieldFocus("banco")}
               required
             />
+            {focusedField === "banco" && showWarning && (
+              <span className="error-message">Solo se permiten letras y espacios</span>
+            )}
           </Form.Group>
 
           <Form.Group controlId="formTipoCuenta" className="InputsRegistros">
@@ -222,29 +268,35 @@ export const RPropietario = () => {
               aria-label="Default select example"
               defaultValue={propetarioData.TipoCuenta}
               required
+              onChange={(e) => setpropetarioData({ ...propetarioData, TipoCuenta: e.target.value })}
             >
-              <option defaultValue="" disabled hidden selected>
+              <option defaultValue="" disabled hidden>
                 Seleccione Tipo de Cuenta
               </option>
-              <option defaultValue="Cuenta Ahorros">Cuenta Ahorros</option>
-              <option defaultValue="Cuenta Corriente">Cuenta Corriente</option>
+              <option value="Cuenta Ahorros">Cuenta Ahorros</option>
+              <option value="Cuenta Corriente">Cuenta Corriente</option>
             </Form.Select>
           </Form.Group>
 
-          <Form.Group controlId="numerocuenta" className="InputsRegistros">
-            <Form.Label>Número de cuenta:</Form.Label>
+          <Form.Group controlId="formnumerocuenta" className="InputsRegistros">
+            <Form.Label>Número de Cuenta:</Form.Label>
             <Form.Control
               type="number"
-              name="NumeroCuenta"
+              name="numerocuenta"
               {...register("numerocuenta")}
               max={9999999999}
               defaultValue={propetarioData.NumeroCuenta}
               required
+              onChange={handleNumberChange}
+              onFocus={() => handleFieldFocus("numerocuenta")}
             />
+            {focusedField === "numerocuenta" && showWarning && (
+              <span className="error-message">Solo se permiten números</span>
+            )}
           </Form.Group>
 
           <Form.Group controlId="formfechaingreso" className="InputsRegistros">
-            <Form.Label>Fecha de ingreso:</Form.Label>
+            <Form.Label>Fecha de Ingreso:</Form.Label>
             <Form.Control
             disabled
               {...register("fechaingreso")}
@@ -252,10 +304,15 @@ export const RPropietario = () => {
               value={currentDate}
               defaultValue={propetarioData.FechaIngreso}
               required
+              onChange={(e) => setpropetarioData({ ...propetarioData, FechaIngreso: e.target.value })}
             />
           </Form.Group>
+
+          {/* Aquí irían los demás campos del formulario */}
+          
         </Form>
       </div>
+
       {/* Botones de guardar y cancelar */}
       <div className="col-md-12">
         <div className="save_deleter">
@@ -307,10 +364,7 @@ export const RPropietario = () => {
             ¿Estás seguro de que deseas cancelar la operación?
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => setShowCancelModal(false)}
-            >
+            <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
               No
             </Button>
             <Button variant="primary" onClick={handleConfirmCancel}>
