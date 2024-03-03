@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 export const EditarDatosIn = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit ,reset} = useForm();
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const [inmuebleData, setInmuebleData] = useState({
@@ -64,7 +64,9 @@ export const EditarDatosIn = () => {
   };
 
   const handleCloseConfirmationModal = () => {
+    reset();
     setShowConfirmationModal(false);
+    window.location.href = "/Inmueble"
   };
 
   // Función para manejar el envío del formulario
@@ -84,7 +86,7 @@ export const EditarDatosIn = () => {
       if (response.ok) {
         setShowConfirmationModal(false);
         toast.success("Inmueble actualizado exitosamente");
-        // window.location.href ="/Inmueble";
+        window.location.href ="/Inmueble";
       } else {
         throw new Error("Error al actualizar inmueble");
       }
@@ -235,7 +237,7 @@ export const EditarDatosIn = () => {
             <Form.Group controlId="formNoHabitaciones">
               <Form.Label>Numero Habitaciones </Form.Label>
               <Form.Control
-                type="text"
+                type="number"
                 className="InputsRegistros"
                 placeholder="Numero Habitaciones"
                 name="NoHabitaciones" // Eliminado el espacio adicional al principio

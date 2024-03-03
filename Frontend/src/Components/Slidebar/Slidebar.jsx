@@ -12,8 +12,17 @@ import {
   faTableList,
   faRightFromBracket,
   faUserShield,
+  faSun,
+  faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { Nav, Modal, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import {
+  Nav,
+  Modal,
+  Button,
+  OverlayTrigger,
+  Tooltip,
+  Dropdown,
+} from "react-bootstrap";
 import { useEffect } from "react";
 
 export const Slidebar = () => {
@@ -70,8 +79,8 @@ export const Slidebar = () => {
       setShowTooltip(window.innerWidth < 1366);
     };
 
-    window.addEventListener('resize', updateTooltipVisibility);
-    return () => window.removeEventListener('resize', updateTooltipVisibility);
+    window.addEventListener("resize", updateTooltipVisibility);
+    return () => window.removeEventListener("resize", updateTooltipVisibility);
   }, []);
 
   const renderMenuItems = () => {
@@ -84,7 +93,13 @@ export const Slidebar = () => {
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Propietarios</Tooltip> : <></>}
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Propietarios</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
             >
               <Nav.Link
                 as={NavLink}
@@ -101,14 +116,22 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faUserTie}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Propietarios</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Propietarios
+                </p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Inmuebles</Tooltip> : <></>}
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Inmuebles</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
             >
               <Nav.Link
                 as={NavLink}
@@ -124,14 +147,22 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faHouseUser}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Inmuebles</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Inmuebles
+                </p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Arrendatarios</Tooltip> : <></>}
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Arrendatarios</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
             >
               <Nav.Link
                 as={NavLink}
@@ -147,14 +178,22 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faPersonShelter}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Arrendatarios</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Arrendatarios
+                </p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Codeudores</Tooltip> : <></>}
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Codeudores</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
             >
               <Nav.Link
                 as={NavLink}
@@ -170,14 +209,22 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faPeopleRoof}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Codeudores</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Codeudores
+                </p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Recibo Arrendatarios</Tooltip> : <></>}
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Recibo Arrendatarios</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
             >
               <Nav.Link
                 as={NavLink}
@@ -193,14 +240,22 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faReceipt}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Recibo Arrendatarios</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Recibo Arrendatarios
+                </p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Recibo Gasto</Tooltip> : <></>}
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Recibo Gasto</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
             >
               <Nav.Link
                 as={NavLink}
@@ -216,14 +271,22 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faReceipt}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Recibo Gastos</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Recibo Gastos
+                </p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Informe Arrendamiento</Tooltip> : <></>}
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Informe Arrendamiento</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
             >
               <Nav.Link
                 as={NavLink}
@@ -239,14 +302,22 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faTable}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Informe Arrendamiento</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Informe Arrendamiento
+                </p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Comisiones Gastos</Tooltip> : <></>}
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Comisiones Gastos</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
             >
               <Nav.Link
                 as={NavLink}
@@ -262,14 +333,22 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faTableList}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Comisiones Gastos</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Comisiones Gastos
+                </p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
           <Nav.Item>
             <OverlayTrigger
               placement="right"
-              overlay={showTooltip ? <Tooltip id="tooltip-prop">Asignar Rol Empleados</Tooltip> : <></>}
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Asignar Rol Empleados</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
             >
               <Nav.Link
                 as={NavLink}
@@ -285,7 +364,9 @@ export const Slidebar = () => {
                   style={{ color: "#ffffff" }}
                   icon={faUserShield}
                 />
-                <p className="Links_Icons" style={{ margin: "2%" }}>Asignar Rol Empleados</p>
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Asignar Rol Empleados
+                </p>
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
@@ -295,6 +376,16 @@ export const Slidebar = () => {
       return null;
     }
   };
+
+  //Dark Mode
+  const [darkMode, setDarkMode] = useState(false);
+
+  const handleDarkModeToggle = () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    document.body.classList.toggle("dark-mode",newDarkMode);
+  };
+
   return (
     <>
       <div
@@ -310,6 +401,31 @@ export const Slidebar = () => {
         <Nav className="nav nav-pills d-flex flex-column align-items-stretch justify-content-evenly align-content-stretch mb-auto">
           {renderMenuItems()}
         </Nav>
+        <hr />
+        <Dropdown className="Drowon">
+          <Dropdown.Toggle
+            variant="link"
+            className="nav-link text-white"
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <FontAwesomeIcon
+              width="32"
+              height="32"
+              style={{ color: "#ffffff" }}
+              icon={darkMode ? faMoon : faSun}
+            />
+            <strong>Opciones</strong>
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={handleDarkModeToggle}>
+              <FontAwesomeIcon
+                style={{ marginRight: "10px" }}
+                icon={darkMode ? faSun :faMoon}
+              />
+              {darkMode ? "Modo Claro" : "Modo Oscuro"}
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
         <hr />
         <Button
           variant="link"

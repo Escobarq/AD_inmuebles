@@ -41,6 +41,7 @@ import { EditarDatosIn } from "./Components/Register/EditarDatosInmueble/EditarD
 function App() {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
