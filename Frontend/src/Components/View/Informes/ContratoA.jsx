@@ -140,9 +140,10 @@ export const ContratoA = () => {
     doc.save("Contrato_Arrendatario.pdf");
   };
 
-const GenerarNewContrato = () => {
-  window.location.href = "/Generar"
-};
+
+const redireccion = (ruta) => {
+  window.location.href = ruta;
+}
 
   return (
     <div className="contenerhom">
@@ -150,7 +151,7 @@ const GenerarNewContrato = () => {
         <div className="ContArrendatario">
           <h1>Contrato Arrendatario</h1>
           <div className="buttonsapp">
-            <Button variant="primary"  onClick={GenerarNewContrato}>
+            <Button variant="primary"  onClick={() => redireccion("/Generar")}>
             <FontAwesomeIcon icon={faFileSignature}/>
               Generar Nuevo contrato
               </Button>

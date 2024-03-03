@@ -133,16 +133,17 @@ export const InhabilitarInmuebles = () => {
     toast.success("Se Inabilito Correctamente ", {
       theme: "dark",
     });
-
+    const redireccion = (ruta) => {
+      window.location.href = ruta;
+    }
+    
   return (
     <>
       <div className="contener-home">
         <div className="conten-filtro">
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/Inmueble" className="linkes">
+          <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Inmueble")}>
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
               Inabilitados
-            </Link>
           </Button>
         </div>
         <div className="title_view">

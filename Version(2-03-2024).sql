@@ -27,14 +27,15 @@ CREATE TABLE IF NOT EXISTS `arrendatario` (
   `booleanos` varchar(50) DEFAULT 'true',
   PRIMARY KEY (`IdArrendatario`) USING BTREE,
   KEY `Id_Codeudor` (`IdCodeudor`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
 
 -- Volcando datos para la tabla adminmuebles.arrendatario: 3 rows
 /*!40000 ALTER TABLE `arrendatario` DISABLE KEYS */;
 INSERT INTO `arrendatario` (`IdArrendatario`, `IdCodeudor`, `NombreCompleto`, `TipoDocumento`, `DocumentoIdentidad`, `Telefono`, `Correo`, `Estado`, `booleanos`) VALUES
 	(1, 1, 'Carlos López', 'CC', 111222333, 1112223334, 'carlos@gmail.com', 'Vigente', 'true'),
 	(2, 2, 'Ana Rodríguez', 'CE', 444555666, 4294967295, 'ana@gmail.com', 'Vigente', 'true'),
-	(12, NULL, 'Juan', 'CC', 111211, 313202545, 'Juan@gmail.com', NULL, 'true');
+	(21, NULL, 'HptsPorfin', 'CC', 1192, 4294967295, 'q@q.cos', 'Vigente', 'true'),
+	(26, NULL, 'Juanda', 'CC', 1234567890, 1234567890, 'nose@gmail.com', 'Libre', 'true');
 /*!40000 ALTER TABLE `arrendatario` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.codeudor
@@ -84,6 +85,7 @@ INSERT INTO `comision_propietario` (`IdComisionPropietario`, `IdPropietario`, `F
 CREATE TABLE IF NOT EXISTS `contratoarrendamiento` (
   `IdContrato` int NOT NULL AUTO_INCREMENT,
   `IdArrendatario` int DEFAULT NULL,
+  `IdInmueble` int DEFAULT NULL,
   `FechaInicioContrato` date NOT NULL,
   `FechaFinContrato` date NOT NULL,
   `EstadoContrato` varchar(50) DEFAULT NULL,
@@ -91,13 +93,15 @@ CREATE TABLE IF NOT EXISTS `contratoarrendamiento` (
   `MesesAlquiler` int DEFAULT NULL,
   `CuotasPendientes` int DEFAULT NULL,
   PRIMARY KEY (`IdContrato`),
-  KEY `IdArrendatario` (`IdArrendatario`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  KEY `IdArrendatario` (`IdArrendatario`),
+  KEY `IdInmueble` (`IdInmueble`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.contratoarrendamiento: 1 rows
+-- Volcando datos para la tabla adminmuebles.contratoarrendamiento: 2 rows
 /*!40000 ALTER TABLE `contratoarrendamiento` DISABLE KEYS */;
-INSERT INTO `contratoarrendamiento` (`IdContrato`, `IdArrendatario`, `FechaInicioContrato`, `FechaFinContrato`, `EstadoContrato`, `ValorDeposito`, `MesesAlquiler`, `CuotasPendientes`) VALUES
-	(1, 2, '2024-01-01', '2024-10-24', 'Vigente', 1000000.00000, 9, 9);
+INSERT INTO `contratoarrendamiento` (`IdContrato`, `IdArrendatario`, `IdInmueble`, `FechaInicioContrato`, `FechaFinContrato`, `EstadoContrato`, `ValorDeposito`, `MesesAlquiler`, `CuotasPendientes`) VALUES
+	(2, 1, 2, '2023-11-02', '2025-05-02', 'Vigente', 1200000.00000, 18, 18),
+	(3, 2, 9, '2023-12-02', '2024-03-02', 'Finalizado', 25000.00000, 3, 3);
 /*!40000 ALTER TABLE `contratoarrendamiento` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.inmueble
@@ -159,13 +163,18 @@ CREATE TABLE IF NOT EXISTS `pagos_arrendamiento` (
   PRIMARY KEY (`IdPagoArrendamiento`) USING BTREE,
   KEY `Id_Arrendatario` (`IdArrendatario`) USING BTREE,
   KEY `IdContrato` (`IdContrato`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.pagos_arrendamiento: 2 rows
+-- Volcando datos para la tabla adminmuebles.pagos_arrendamiento: 5 rows
 /*!40000 ALTER TABLE `pagos_arrendamiento` DISABLE KEYS */;
 INSERT INTO `pagos_arrendamiento` (`IdPagoArrendamiento`, `IdArrendatario`, `IdContrato`, `FechaPago`, `FechaInicio`, `FechaFin`, `ValorPago`, `FormaPago`, `Estado`, `DiasDMora`, `booleanos`) VALUES
 	(1, 1, 1, '2024-03-02', '2024-03-01', '2024-03-15', 1500000, 'Transferencia', 'Pagado', 0, 'true'),
-	(2, 2, NULL, '2024-03-16', '2024-03-16', '2024-03-31', 2000000, 'Efectivo', 'Pendiente', 5, 'true');
+	(2, 2, NULL, '2024-03-16', '2024-03-16', '2024-03-31', 2000000, 'Efectivo', 'Pendiente', 5, 'true'),
+	(3, NULL, NULL, '2024-03-02', '2024-02-27', '2024-03-29', 500000, 'Transferencia', NULL, NULL, 'true'),
+	(4, NULL, NULL, '2024-03-02', '2024-03-08', '2024-03-29', 30000, 'Transferencia', 'Pagado', NULL, 'true'),
+	(5, NULL, NULL, '2024-03-02', '2024-02-29', '2024-03-28', 5000000, 'Efectivo', 'Pagado', NULL, 'true'),
+	(6, NULL, NULL, '2024-03-02', '2024-03-05', '2024-03-30', 20000, 'Efectivo', 'Pagado', NULL, 'true'),
+	(7, NULL, NULL, '2024-03-02', '2024-02-28', '2024-04-03', 20000, 'Efectivo', 'Pagado', NULL, 'true');
 /*!40000 ALTER TABLE `pagos_arrendamiento` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.propietario
@@ -183,15 +192,25 @@ CREATE TABLE IF NOT EXISTS `propietario` (
   `booleanos` varchar(50) NOT NULL DEFAULT 'true',
   `FechaIngreso` date DEFAULT NULL,
   PRIMARY KEY (`IdPropietario`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.propietario: 4 rows
+-- Volcando datos para la tabla adminmuebles.propietario: 5 rows
 /*!40000 ALTER TABLE `propietario` DISABLE KEYS */;
 INSERT INTO `propietario` (`IdPropietario`, `NombreCompleto`, `TipoDocumento`, `DocumentoIdentidad`, `Direccion`, `Telefono`, `Correo`, `Banco`, `TipoCuenta`, `NumeroCuenta`, `booleanos`, `FechaIngreso`) VALUES
 	(1, 'Juan Pérez', 'CC', 123456789, 'Calle 123', 1234567890, 'juan@gmail.com', 'Banco A', 'Cuenta Corriente', 987654321, 'true', '2024-02-23'),
 	(2, 'María González', 'CE', 987654321, 'Avenida 456', 4294967295, 'maria@gmail.com', 'Banco B', 'Cuenta Ahorro', 123456789, 'true', '2024-01-10'),
-	(4, 'Juan Arenas', NULL, 1114541165, 'crrera 80 #7 e 98', 3132025146, 'jua@gmail.com', 'av', NULL, NULL, 'true', NULL),
-	(5, 'sdfds', NULL, 1241, 'dfdf', 20, 'sdfd@gmial-com', 'wefe', NULL, NULL, 'true', NULL);
+	(4, 'Juan Arenas', 'Cedula Ciudadania', 1114541165, 'crrera 80 #7 e 98', 3132025146, 'jua@gmail.com', 'aveces', 'Cuenta Ahorros', 1234567890, 'true', '2024-02-28'),
+	(5, 'funciona malparido', 'Cedula Ciudadania', 213456789, 'sapo', 123455, 'pedro@gmail.coms', 'Wers', 'Cuenta Ahorros', 1234567890, 'true', '2024-02-28'),
+	(6, 'putoos', 'Cedula Ciudadania', 1234567890, 'cra16 -16-22', 4294967295, 'juandeq16@gmail.com', 'We', 'Cuenta Corriente', 1234567890, 'true', '2024-02-28'),
+	(7, 'pachos', 'Cedula Ciudadania', 36098, 'nose por palmira', 3132025146, 'pacho@gmail.com', 'av villa', 'Cuenta Ahorros', 20000, 'true', '2024-03-02'),
+	(8, 'pachoss', 'Cedula Ciudadania', 360984, 'nose por palmira', 3132025146, 'pacho@gmail.com', 'av villa', 'Cuenta Ahorros', 20000, 'true', '2024-03-02'),
+	(9, 'pachosss', 'Cedula Ciudadania', 360989, 'nose por palmira', 3132025146, 'pacho@gmail.com', 'av villa', 'Cuenta Ahorros', 20000, 'true', '2024-03-02'),
+	(11, 'pancho', 'Cedula Ciudadania', 951357, 'nose por palmira', 3132025146, 'pacho@gmail.com', 'av villa', 'Cuenta Ahorros', 20000, 'true', '2024-03-02'),
+	(12, 'ricardo', 'Cedula Extranjera', 1016713467, 'villa de las palmas', 3215064879, 'richardforever@gmail.com', 'Banco bogota', 'Cuenta Corriente', 2564258697, 'true', '2024-03-02'),
+	(13, 'quijontes', 'Cedula Ciudadania', 456321547, 'nose por palmira', 3132025146, 'pacho@gmail.com', 'av villa', 'Cuenta Ahorros', 20000, 'true', '2024-03-02'),
+	(14, 'quijontes richi', 'Cedula Ciudadania', 1114578965, 'nose por palmira', 3132025146, 'pacho@gmail.com', 'av villa', 'Cuenta Ahorros', 20000, 'true', '2024-03-02'),
+	(15, 'flin david', 'Cedula Ciudadania', 1233212, 'nose por palmira', 32150412, 'pacho@gmail.com', 'av villa', 'Cuenta Ahorros', 20000, 'true', '2024-03-02'),
+	(16, '12', 'Cedula Ciudadania', 45685123, 'fsfsfdsd', 32150412, 'pacho@gmail.com', 'av villa', 'Cuenta Ahorros', 20000, 'true', '2024-03-02');
 /*!40000 ALTER TABLE `propietario` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.rol
@@ -201,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `rol` (
   PRIMARY KEY (`Idrol`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.rol: 4 rows
+-- Volcando datos para la tabla adminmuebles.rol: 2 rows
 /*!40000 ALTER TABLE `rol` DISABLE KEYS */;
 INSERT INTO `rol` (`Idrol`, `NombreRol`) VALUES
 	(1, 'Administrador'),
@@ -222,11 +241,11 @@ CREATE TABLE IF NOT EXISTS `trabajador` (
   KEY `idrol` (`Idrol`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.trabajador: 4 rows
+-- Volcando datos para la tabla adminmuebles.trabajador: 2 rows
 /*!40000 ALTER TABLE `trabajador` DISABLE KEYS */;
 INSERT INTO `trabajador` (`IdTrabajador`, `Nombre`, `Apellido`, `Correo`, `Contrasena`, `Telefono`, `Idrol`, `Booleanos`) VALUES
 	(1, 'Juan', 'Pérez', 'juan@example.com', 'contraseña123', '555-1234', 1, 'true'),
-	(2, 'María ', 'Gómez    ', 'maria@example.com    ', 'contraseña456    ', '555-5678', 2, 'true');
+	(2, 'María Sambrano', 'Gómez    ', 'maria@example.com    ', 'contraseña456    ', '555-5678', 2, 'true');
 /*!40000 ALTER TABLE `trabajador` ENABLE KEYS */;
 
 -- Volcando estructura para disparador adminmuebles.Before_Insert_ContratoArrendamiento

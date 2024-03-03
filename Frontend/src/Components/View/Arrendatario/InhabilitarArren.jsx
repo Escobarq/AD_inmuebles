@@ -129,7 +129,11 @@ export const InhabilitarArren = () => {
   );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+  
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  }
+  
   return (
     <>
       <div className="contener-home">
@@ -147,11 +151,9 @@ export const InhabilitarArren = () => {
             <input className="input-filtroRe" type="text" name="" id="" />
           </div>
          
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/Arrendatario" className="linkes">
+          <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Arrendatario")}>
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
               Habilitados
-            </Link>
           </Button>
         </div>
         <div className="title_view">
