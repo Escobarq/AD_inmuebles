@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useActualizarEstadoInmueble from "../../Hooks/InhabilitarInmueble";
 import NoResultImg from "../../../assets/NoResult.gif";
+import { format, toDate } from "date-fns";
 
 export const Inmueble = () => {
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
@@ -117,7 +118,9 @@ export const Inmueble = () => {
   };
   const fetchDataArren = async () => {
     try {
-      const response = await fetch("http://localhost:3006/Varrendatario?Estado=Libre");
+      const response = await fetch(
+        "http://localhost:3006/Varrendatario?Estado=Libre"
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -155,7 +158,7 @@ export const Inmueble = () => {
         <td>{inmueble.Barrio}</td>
         <td>{inmueble.Tipo}</td>
         <td>{inmueble.Estado}</td>
-        <td >
+        <td>
           <Button
             className="btn-opciones"
             variant="primary"
@@ -177,7 +180,11 @@ export const Inmueble = () => {
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
-          <Button className="btn-opciones" variant="warning" onClick={() => handleEditInmuebles(inmueble.IdInmueble, inmueble.Tipo)}>
+          <Button
+            className="btn-opciones"
+            variant="warning"
+            onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
@@ -186,14 +193,21 @@ export const Inmueble = () => {
   };
 
   //Traer Informacion
-  const handleEditInmuebles = (InmuebleId, tipoInmueble) => {
+  const handleEditInmuebles = (InmuebleId) => {
     const inmueble = infoinmueble.find((inm) => inm.IdInmueble === InmuebleId);
     if (!inmueble) {
-        console.error("No se encontró el inmueble con ID:", InmuebleId);
-        return;
+      console.error("No se encontró el inmueble con ID:", InmuebleId);
+      return;
     }
-    
-    // Crear objeto con los datos del inmueble
+
+    // Formatear la fecha Aseguramiento antes de agregarla a inmuebleData
+    const aseguramientoDateObject = toDate(new Date(inmueble.Aseguramiento));
+    const formattedAseguramiento = format(
+      aseguramientoDateObject,
+      "yyyy-MM-dd"
+    );
+
+    // Crear objeto con los datos del inmueble, incluyendo la fecha formateada
     const inmuebleData = {
       IdInmueble: inmueble.IdInmueble,
       NoMatricula: inmueble.NoMatricula,
@@ -209,34 +223,16 @@ export const Inmueble = () => {
       Estado: inmueble.Estado,
       NoTerraza: inmueble.NoTerraza,
       AreaConstruidaM2: inmueble.AreaConstruidaM2,
-      Aseguramiento: inmueble.Aseguramiento,
+      Aseguramiento: formattedAseguramiento, // Usar la fecha formateada
       ValorInmueble: inmueble.ValorInmueble,
-      Descripcion: inmueble.Descripcion
+      Descripcion: inmueble.Descripcion,
     };
-    
-    // Definir las rutas para cada tipo de inmueble
-    const rutas = {
-        Casa: `/RInmuebleC`,
-        Apartamento: `/RInmuebleA`,
-        Local: `/RInmuebleL`,
-        Bodega: `/RInmuebleB`,
-        Oficina: `/RInmuebleO`
-    };
-    
-    // Obtener la ruta correspondiente al tipo de inmueble
-    const ruta = rutas[tipoInmueble];
-    if (!ruta) {
-        console.error("Tipo de inmueble no reconocido:", tipoInmueble);
-        return;
-    }
-  
-    // Convertir objeto de datos del inmueble a cadena de consulta
-    const queryString = new URLSearchParams(inmuebleData).toString();
-  
-    // Redireccionar a la URL correspondiente con los datos del inmueble
-    window.location.href = `${ruta}?${queryString}`;
+
+    // Redireccionar a la ruta de edición de inmueble
+    window.location.href = `/EditarDatosIn?${new URLSearchParams(
+      inmuebleData
+    ).toString()}`;
   };
-  
 
   const createrowDetalles = () => {
     if (inmuebleseleccion) {
@@ -401,7 +397,7 @@ export const Inmueble = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoinmueble.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  //Tooltip 
+  //Tooltip
   const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
   useEffect(() => {
@@ -409,13 +405,13 @@ export const Inmueble = () => {
       setShowTooltip(window.innerWidth < 1366);
     };
 
-    window.addEventListener('resize', updateTooltipVisibility);
-    return () => window.removeEventListener('resize', updateTooltipVisibility);
+    window.addEventListener("resize", updateTooltipVisibility);
+    return () => window.removeEventListener("resize", updateTooltipVisibility);
   }, []);
 
   const redireccion = (ruta) => {
     window.location.href = ruta;
-  }
+  };
 
   return (
     <>
@@ -477,9 +473,19 @@ export const Inmueble = () => {
           <OverlayTrigger
             key="tooltip-add-inmueble"
             placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Inmueble</Tooltip> : <></>}
+            overlay={
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">Agregar Inmueble</Tooltip>
+              ) : (
+                <></>
+              )
+            }
           >
-            <Button variant="success" className="btn-add" onClick={() => redireccion("/RInmuebleA")}>
+            <Button
+              variant="success"
+              className="btn-add"
+              onClick={() => redireccion("/RInmuebleA")}
+            >
               <FontAwesomeIcon
                 icon={faHouseChimneyMedical}
                 style={{ color: "#ffffff" }}
@@ -491,9 +497,19 @@ export const Inmueble = () => {
           <OverlayTrigger
             key="tooltip-ver-inhabilitados"
             placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Inhabilitados</Tooltip> : <></>}
+            overlay={
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">Ver Inhabilitados</Tooltip>
+              ) : (
+                <></>
+              )
+            }
           >
-            <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/InhaInmueble")}>
+            <Button
+              variant="dark"
+              className="btn-add-info"
+              onClick={() => redireccion("/InhaInmueble")}
+            >
               <FontAwesomeIcon className="icon" icon={faUserSlash} />
               <p className="AgregarPA">Ver Inhabilitados</p>
             </Button>

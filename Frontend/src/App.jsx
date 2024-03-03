@@ -35,6 +35,8 @@ import { InhabilitarRol } from "./Components/View/AsignarRol/InhabilitarRol";
 import ContactForm from "./Components/Register/EditarPerfil/ContactForm";
 import { Contrato } from "./Components/Register/Contrato/Contrato";
 import { Switch } from "./Components/ToggleSwitche/Switch";
+import { EditarDatosIn } from "./Components/Register/EditarDatosInmueble/EditarDatosIn";
+
 
 function App() {
   const location = useLocation();
@@ -88,6 +90,7 @@ function App() {
             <Route path="/InhabilitarRol" element={<InhabilitarRol />} />
             <Route path="/EditarPerfil" element={<ContactForm />} />
             <Route path="/Generar" element={<Contrato />} />
+            <Route path="/EditarDatosIn" element={<EditarDatosIn />} />
           </Routes>
           <Switch/>
         </div>
