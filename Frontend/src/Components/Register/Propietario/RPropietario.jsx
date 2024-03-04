@@ -173,9 +173,9 @@ export const RPropietario = () => {
       <h2>Registro Propietario</h2>
       <div className="container">
         <Form className="form-propietario" onSubmit={handleSubmit(onSubmitRegistro)}>
-          <Form.Group controlId="formnombrepropietario" className="formSelect InputsRegistros">
+          <Form.Group controlId="formnombrepropietario" className="formSelect">
             <Form.Label>Nombre de Propietario:</Form.Label>
-            <Form.Control
+            <Form.Control className="InputsRegistros"
               {...register("nombrepropietario")}
               type="text"
               defaultValue={propetarioData.NombreCompleto}
@@ -188,9 +188,9 @@ export const RPropietario = () => {
             )}
           </Form.Group>
 
-          <Form.Group controlId="formTipoDocumento" className="formSelect InputsRegistros">
+          <Form.Group controlId="formTipoDocumento" className="formSelect">
             <Form.Label>Tipo De Documento</Form.Label>
-            <Form.Select {...register("TipoDocumento")} defaultValue={propetarioData.TipoDocumento} required  onChange={(e) => setpropetarioData({ ...propetarioData, TipoDocumento: e.target.value })} >
+            <Form.Select className="InputsRegistros" {...register("TipoDocumento")} defaultValue={propetarioData.TipoDocumento} required  onChange={(e) => setpropetarioData({ ...propetarioData, TipoDocumento: e.target.value })} >
               <option defaultValue="" disabled hidden> Seleccione Tipo de Documento </option>
               <option value="Cedula Ciudadania">Cedula Ciudadania</option>
               <option value="Cedula Extranjera">Cedula Extranjera</option>
@@ -198,14 +198,15 @@ export const RPropietario = () => {
             </Form.Select>
           </Form.Group>
 
-          <Form.Group controlId="formdireccion" className="InputsRegistros">
+          <Form.Group controlId="formdireccion">
             <Form.Label>Dirección Del Propietario:</Form.Label>
-            <Form.Control {...register("direccion")}  type="text"  defaultValue={propetarioData.Direccion}  />           
+            <Form.Control className="InputsRegistros" {...register("direccion")}  type="text"  defaultValue={propetarioData.Direccion}  />           
           </Form.Group>
 
-          <Form.Group controlId="formnumerodocumento" className="InputsRegistros">
+          <Form.Group controlId="formnumerodocumento">
             <Form.Label>N° Documento Identidad:</Form.Label>
-            <Form.Control
+            <Form.Control className="InputsRegistros"
+            
               {...register("numerodocumento")}
               type="number"
               defaultValue={propetarioData.DocumentoIdentidad}
@@ -218,9 +219,9 @@ export const RPropietario = () => {
             )}
           </Form.Group>
 
-          <Form.Group controlId="formtelefono" className="InputsRegistros">
+          <Form.Group controlId="formtelefono">
             <Form.Label>Teléfono:</Form.Label>
-            <Form.Control
+            <Form.Control className="InputsRegistros"
               {...register("telefono")}
               type="text"
               defaultValue={propetarioData.Telefono}
@@ -233,9 +234,9 @@ export const RPropietario = () => {
             )}
           </Form.Group>
 
-          <Form.Group controlId="formcorreoelectronico" className="mb-3">
+          <Form.Group controlId="formcorreoelectronico" >
             <Form.Label>Correo Electrónico:</Form.Label>
-            <Form.Control
+            <Form.Control className="InputsRegistros"
               type="email"
               name="correo"
               {...register("correoelectronico")}
@@ -245,9 +246,9 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formbanco" className="mb-3">
+          <Form.Group controlId="formbanco">
             <Form.Label>Banco:</Form.Label>
-            <Form.Control
+            <Form.Control className="InputsRegistros"
               {...register("banco")}
               type="text"
               defaultValue={propetarioData.Banco}
@@ -260,7 +261,7 @@ export const RPropietario = () => {
             )}
           </Form.Group>
 
-          <Form.Group controlId="formTipoCuenta" className="InputsRegistros">
+          <Form.Group controlId="formTipoCuenta">
             <Form.Label>Tipo De Cuenta</Form.Label>
             <Form.Select
               {...register("tipocuenta")}
@@ -278,9 +279,9 @@ export const RPropietario = () => {
             </Form.Select>
           </Form.Group>
 
-          <Form.Group controlId="formnumerocuenta" className="InputsRegistros">
+          <Form.Group controlId="formnumerocuenta">
             <Form.Label>Número de Cuenta:</Form.Label>
-            <Form.Control
+            <Form.Control className="InputsRegistros"
               type="number"
               name="numerocuenta"
               {...register("numerocuenta")}
@@ -295,9 +296,9 @@ export const RPropietario = () => {
             )}
           </Form.Group>
 
-          <Form.Group controlId="formfechaingreso" className="InputsRegistros">
+          <Form.Group controlId="formfechaingreso">
             <Form.Label>Fecha de Ingreso:</Form.Label>
-            <Form.Control
+            <Form.Control className="InputsRegistros"
             disabled
               {...register("fechaingreso")}
               type="date"

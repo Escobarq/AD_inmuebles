@@ -44,6 +44,7 @@ export const Rarrendatario = () => {
       const fontSize = 19;
       const padding = 50;
   
+
       // Agregar texto con la hora de emisión en la parte inferior de la página
       const currentTime = new Date().toLocaleTimeString();
       const footerText = `Hora de emisión: ${currentTime}`;
@@ -129,6 +130,7 @@ export const Rarrendatario = () => {
                 y: yOffset,
                 size: fontSize,
                 color: rgb(0, 0, 0),
+
                 font: await pdfDoc.embedFont("Helvetica"),
                 align: "center",
               });
@@ -438,7 +440,7 @@ export const Rarrendatario = () => {
         onHide={() => setShowContratoModal(false)}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Seleccionar Matrícula</Modal.Title>
+          <Modal.Title>Seleccionar No Contrato</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
