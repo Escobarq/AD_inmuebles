@@ -12,4 +12,9 @@
     align-items: center;
     flex-wrap: nowrap;
 }
-
+.InputsRegistros{
+    width: 100% !important;
+    height: 50px !important;
+    padding: 1% !important;
+    margin-bottom: 1% !important;
+}

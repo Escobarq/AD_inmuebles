@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Form, Button, Table, Modal } from "react-bootstrap";
+import { Form, Button, ListGroup, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export const RInmuebleA = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [infopropietario, setinfopropietario] = useState([]);
-  const [NoResult, setNoResult] = useState(false);
   const [mostrarModalA, setMostrarModalA] = useState(false);
+  const [selectedPropietario, setSelectedPropietario] = useState("");
+  const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
 
   const notify = () =>
     toast.success("Se Registró correctamente", {
@@ -26,37 +27,19 @@ export const RInmuebleA = () => {
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
-    const NITPropietario = localStorage.getItem("NITPropie");
-    fetchData(NITPropietario);
+    fetchData();
   }, []);
 
-  const fetchData = async (NITPropietario) => {
-    if (NITPropietario) {
-      setNoResult(false);
-      try {
-        const response = await fetch(
-          `http://localhost:3006/Vpropietarios?Cedula=${NITPropietario}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setinfopropietario(data[0]);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    } else {
-      setNoResult(true);
-      try {
-        const response = await fetch(`http://localhost:3006/Vpropietarios?`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setinfopropietario(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3006/Vpropietarios?");
+      const Propietarios = response.data.map((prop) => prop);
+      setPropietariosDisponibles(Propietarios);
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
     }
   };
 
@@ -66,31 +49,14 @@ export const RInmuebleA = () => {
   const handleMostrarAClick = async () => {
     setMostrarModalA(true);
   };
-  
-
-  const createrowA = (Propietarios) => {
-    let NITPropietario =  Propietarios.DocumentoIdentidad
-    return (
-      <tr
-      onClick={() => fetchData(NITPropietario)} 
-        key={Propietarios.IdPropietario}>
-        <td>{Propietarios.TipoDocumento}</td>
-        <td>{Propietarios.DocumentoIdentidad}</td>
-        <td>{Propietarios.NombreCompleto}</td>
-        <td>{Propietarios.Telefono}</td>
-        <td>{Propietarios.Correo}</td>
-      </tr>
-    );
-  };
 
   const onsubmitRegistro = async (data) => {
-    data.Id_Propietario = infopropietario.IdPropietario;
+    data.Id_Propietario = selectedPropietario.IdPropietario;
     data.Tipo = "Apartamento";
     try {
       await crearInmueble(data);
       notify();
       reset();
-      localStorage.removeItem("NITPropie");
       window.location.href = "/Inmueble";
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
@@ -102,7 +68,12 @@ export const RInmuebleA = () => {
       }
     }
   };
-  
+  const handlePropietarioChange = async (Propietario) => {
+    setSelectedPropietario(Propietario);
+    console.log(Propietario)
+    setMostrarModalA(false);
+  };
+
 
   const handleSelectChange = (event) => {
     const selectedOption = event.target.value;
@@ -119,11 +90,9 @@ export const RInmuebleA = () => {
   };
 
   const handleConfirmCancel = () => {
-    localStorage.removeItem("NITPropie");
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
-
 
   return (
     <div className="contener-home contener-rpropietario">
@@ -194,11 +163,17 @@ export const RInmuebleA = () => {
 
             <Form.Group controlId="formEstrato">
               <Form.Label>Estrato:</Form.Label>
-              <Form.Control
-                className="InputsRegistros"
-                {...register("Estrato")}
-                type="number"
-              />
+              <Form.Select className="formSelect InputsRegistros" required {...register("Estrato")} aria-label="Default select example" >
+                  <option value="" selected>
+                    Seleccione estrato
+                  </option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                </Form.Select>
             </Form.Group>
 
             <Form.Group controlId="formNoBanos">
@@ -256,44 +231,32 @@ export const RInmuebleA = () => {
             </Form.Group>
 
             <Form.Group controlId="formAseguramiento">
-              <Form.Label>Aseguramiento:</Form.Label>
+              <Form.Label>Vencimiento de Aseguramiento:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 {...register("aseguramiento")}
                 type="date"
               />
             </Form.Group>
-            {NoResult === true ? (
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Propietario del inmueble</Form.Label>
-                <Form.Control
-                  placeholder="Seleccione aqui"
-                  onClick={() => handleMostrarAClick()}
-                  className="InputsRegistros"
-                  type="text"
-                />
+                <Form.Select className="InputsRegistros"
+                value={
+                  selectedPropietario
+                    ? selectedPropietario.IdPropietario
+                    : "a?"
+                }
+                onChange={(e) => handlePropietarioChange(e.target.value)}
+                onClick={() => handleMostrarAClick(true)}
+              >
+                <option value="">Seleccionar Numero de Propietario</option>
+                {PropietariosDisponibles.map((Propietario, index) => (
+                  <option key={index} value={Propietario.IdPropietario}>               
+                    {Propietario.NombreCompleto}                    
+                  </option>
+                ))}
+              </Form.Select>
               </Form.Group>
-            ) : (
-              <Form.Group controlId="formNoIdentidadPropietario">
-                <Form.Label>Propietario del inmueble</Form.Label>
-                {infopropietario && infopropietario.NombreCompleto ? (
-                  <Form.Control
-                    onClick={() => handleMostrarAClick()}
-                    value={infopropietario.NombreCompleto}
-                    className="InputsRegistros"
-                    type="text"
-                  />
-                ) : (
-                  <Form.Control
-                    disabled
-                    value=""
-                    className="InputsRegistros"
-                    type="text"
-                    placeholder="Cargando..."
-                  />
-                )}
-              </Form.Group>
-            )}
           </div>
           <Form.Group controlId="formNoIdentidadPropietario">
             <Form.Label>Descripción</Form.Label>
@@ -372,36 +335,32 @@ export const RInmuebleA = () => {
               </Button>
             </Modal.Footer>
           </Modal>
-          {infopropietario && infopropietario.length > 0 ? (
-            <Modal
-              size="lg"
-              show={mostrarModalA}
-              onHide={handleCloseModalA}
-              aria-labelledby="example-modal-sizes-title-lg"
-            >
-              <Modal.Header closeButton>
-                <Modal.Title>Propietarios Disponibles</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Tipo de Documento</th>
-                      <th>No. Documento</th>
-                      <th>Nombre</th>
-                      <th>Teléfono</th>
-                      <th>Correo</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {infopropietario.map((Propietarios) =>
-                      createrowA(Propietarios)
-                    )}
-                  </tbody>
-                </Table>
-              </Modal.Body>
-            </Modal>
-          ) : null}
+
+          <Modal
+            size="lg"
+            show={mostrarModalA}
+            onHide={handleCloseModalA}
+            aria-labelledby="example-modal-sizes-title-lg"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Seleccionar Propietario</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <ListGroup>
+                {PropietariosDisponibles.map((Propietario, index) => (
+                  <ListGroup.Item
+                    key={index}
+                    action
+                    onClick={() => handlePropietarioChange(Propietario)}
+                  >
+                  {Propietario.TipoDocumento} : 
+                    {Propietario.DocumentoIdentidad} //                    
+                    {Propietario.NombreCompleto}
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Modal.Body>
+          </Modal>
         </Form>
       </div>
     </div>
