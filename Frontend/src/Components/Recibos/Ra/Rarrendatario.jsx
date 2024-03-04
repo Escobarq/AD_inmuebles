@@ -1,31 +1,29 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Button, Form, Modal, ListGroup } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"; // Importar StandardFonts
 import moment from "moment";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 export const Rarrendatario = () => {
   const [formData, setFormData] = useState({
-    fecha: "",
-    documentoIdentidad: "",
-    nombre: "",
-    recibidoDe: "",
-    concepto: "",
-    suma: "",
-    periodoDesde: "",
-    periodoHasta: "",
-    pagadoCon: "",
-    direccion: "",
-    recibidoPor: "",
+
   });
 
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const { register, handleSubmit, reset } = useForm();
+  const [showContratoModal, setShowContratoModal] = useState(false);
+  const [selectedContrato, setSelectedContrato] = useState("");
+  const [ContratosDisponibles, setContratosDisponibles] = useState([]);
 
+  const success = (text) =>
+    toast.success(text, {
+      theme: "colored",
+    });
   const falla = (text) =>
     toast.error(text, {
       theme: "colored",
@@ -47,11 +45,28 @@ function getCurrentDate() {
   return `${year}-${month}-${day}`;
 }
 useEffect(() => {
+  cargarContratosDisponibles();
   setCurrentDate(getCurrentDate());
 }, []);
 
+const cargarContratosDisponibles = async () => {
+  try {
+    const response = await axios.get("http://localhost:3006/contrato-arren-inmue");
+    const Contratos = response.data.map((prop) => prop);
+
+    setContratosDisponibles(Contratos);
+
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error al cargar las matrículas:", error);
+    toast.error("Error al cargar las matrículas. Inténtalo de nuevo más tarde.");
+  }
+};
+
 
 const onSubmitRegistro = async (data) => {
+  data.IdContrato = selectedContrato.IdContrato
+  data.IdArrendatario = selectedContrato.IdArrendatario
   data.FechaPago = currentDate
   data.Estado = "Pagado"
   console.log(data);
@@ -64,6 +79,7 @@ const onSubmitRegistro = async (data) => {
       body: JSON.stringify(data), // Aquí debes asegurarte de que data contenga todos los campos necesarios
     });
     if (response.ok) {
+      success()
       setShowSaveModal(false); // Muestra el modal de confirmación
       reset(); 
     }
@@ -84,8 +100,6 @@ const onSubmitRegistro = async (data) => {
         return;
       }
     }
-
-   
 
     try {
       const pdfDoc = await PDFDocument.create();
@@ -162,6 +176,12 @@ const onSubmitRegistro = async (data) => {
     }
   };
 
+  const handleContratoChange = async (Contrato) => {
+    setSelectedContrato(Contrato);
+    setShowContratoModal(false);
+  };
+
+
   const handleCancelClick = () => {
     setShowCancelModal(true);
   };
@@ -170,17 +190,7 @@ const onSubmitRegistro = async (data) => {
     setShowCancelModal(false);
     // Restablecer los campos del formulario al cancelar
     setFormData({
-      fecha: "",
-      documentoIdentidad: "",
-      nombre: "",
-      recibidoDe: "",
-      concepto: "",
-      suma: "",
-      periodoDesde: "",
-      periodoHasta: "",
-      pagadoCon: "",
-      direccion: "",
-      recibidoPor: "",
+
     });
     window.location.href = "/H_recibos";
   };
@@ -202,22 +212,39 @@ const onSubmitRegistro = async (data) => {
               <Form.Control className="InputsRegistros"
               disabled
                 defaultValue={currentDate}
-                type="date" 
-                onChange={handleInputChange}             
+                type="date"                         
               />
             </Form.Group>
 
             <Form.Group controlId="documentoIdentidad">
               <Form.Label>Contrato:</Form.Label>
-              <Form.Control className="InputsRegistros"
-                type="text"                
-                onChange={handleInputChange}
-              />
+              <Form.Select className="InputsRegistros"
+                value={
+                  selectedContrato
+                    ? selectedContrato.IdContrato
+                    : ""
+                }
+                onChange={(e) => handleContratoChange(e.target.value)}
+                onClick={() => setShowContratoModal(true)}
+              >
+                <option value="">Seleccionar Numero de contrato</option>
+                {ContratosDisponibles.map((Contrato, index) => (
+                  <option key={index} value={Contrato.IdContrato}>
+                    {Contrato.IdContrato}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
 
             <Form.Group controlId="nombre">
-              <Form.Label>Nombre Arrendatario:</Form.Label>
+              <Form.Label>No Documento Arrendatario:</Form.Label>
               <Form.Control className="InputsRegistros"
+              disabled
+              value={
+                selectedContrato
+                  ? selectedContrato.DocumentoIdentidad
+                  : ""
+              }
                 type="text"
                 onChange={handleInputChange}
               />
@@ -226,6 +253,40 @@ const onSubmitRegistro = async (data) => {
             <Form.Group controlId="nombre">
               <Form.Label>No Matricula Inmueble:</Form.Label>
               <Form.Control className="InputsRegistros"
+              disabled
+              value={
+                selectedContrato
+                  ? selectedContrato.NoMatricula
+                  : ""
+              }
+                type="text"                
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="nombre">
+              <Form.Label>Nombre Arrendatario:</Form.Label>
+              <Form.Control className="InputsRegistros"
+              disabled
+              value={
+                selectedContrato
+                  ? selectedContrato.NombreArrendatario
+                  : ""
+              }
+                type="text"
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="nombre">
+              <Form.Label>Tipo de Inmueble:</Form.Label>
+              <Form.Control className="InputsRegistros"
+              disabled
+              value={
+                selectedContrato
+                  ? selectedContrato.TipoInmueble
+                  : ""
+              }
                 type="text"                
                 onChange={handleInputChange}
               />
@@ -303,6 +364,29 @@ const onSubmitRegistro = async (data) => {
           </div>
         </Form>
       </div>
+
+            {/* Modal de lista de contratos */}
+      <Modal
+        show={showContratoModal}
+        onHide={() => setShowContratoModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Matrícula</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {ContratosDisponibles.map((Contrato, index) => (
+              <ListGroup.Item
+                key={index}
+                action
+                onClick={() => handleContratoChange(Contrato)}
+              >
+                {Contrato.IdContrato}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
 
       {/* Modal de confirmación para guardar */}
       <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
