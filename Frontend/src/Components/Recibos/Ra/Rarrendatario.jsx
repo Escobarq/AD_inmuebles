@@ -40,7 +40,8 @@ export const Rarrendatario = () => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
-    };    const handleGuardarClick = async () => {
+    };    
+    const handleGuardarClick = async () => {
         for (const key in formData) {
             const element = formData[key];
             if (!element) {
@@ -459,7 +460,7 @@ const onSubmitRegistro = async (data) => {
         onHide={() => setShowContratoModal(false)}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Seleccionar Matrícula</Modal.Title>
+          <Modal.Title>Seleccionar No Contrato</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
