@@ -23,19 +23,6 @@ export const H_recibos = () => {
 
   //Mostrar informaicon
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/VPagoArren");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        const Harrendamiento = data.filter((item) => item.booleanos === "true");
-        setinfoPArrendamiento(Harrendamiento);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     fetchData();
   }, [filtroData]);
 
@@ -54,7 +41,8 @@ export const H_recibos = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      setinfoPArrendamiento(data);
+        const Harrendamiento = data.filter((item) => item.booleanos === "true");
+        setinfoPArrendamiento(Harrendamiento);
 
       if (data.length == 0) {
         setNoResult(true);

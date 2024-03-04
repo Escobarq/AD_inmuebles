@@ -278,7 +278,7 @@ export const RInmuebleA = () => {
                 <Form.Label>Propietario del inmueble</Form.Label>
                 {infopropietario && infopropietario.NombreCompleto ? (
                   <Form.Control
-                    disabled
+                    onClick={() => handleMostrarAClick()}
                     value={infopropietario.NombreCompleto}
                     className="InputsRegistros"
                     type="text"

@@ -77,7 +77,6 @@ export const Propietarios = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
-    console.log(name, value);
   };
 
   function formatDate(fechaString) {

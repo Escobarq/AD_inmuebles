@@ -352,6 +352,80 @@ router.get("/VComisionPropie", (req, res) => {
   );
 });
 
+router.get('/contratoFiltro', (req, res) => {
+  // Obtén los parámetros de consulta
+  const { FechaFinMIN, FechaFinMAX, NContrato } = req.query;
+  // Construye la consulta SQL base
+  let query = `
+    SELECT 
+      contratoarrendamiento.*,
+      arrendatario.DocumentoIdentidad,
+      arrendatario.Nombrecompleto AS NombreArrendatario,
+      inmueble.NoMatricula
+    FROM contratoarrendamiento
+    JOIN arrendatario ON contratoarrendamiento.IdArrendatario = arrendatario.IdArrendatario
+    JOIN inmueble ON contratoarrendamiento.idInmueble = inmueble.IdInmueble
+  `;
+
+  // Construye la parte de la consulta para aplicar los filtros
+  const filtroConditions = [];
+
+  if (FechaFinMIN) {
+    filtroConditions.push(`contratoarrendamiento.FechaFinContrato >= '${FechaFinMIN}'`);
+  }
+
+  if (FechaFinMAX) {
+    filtroConditions.push(`contratoarrendamiento.FechaFinContrato <= '${FechaFinMAX}'`);
+  }
+
+  if (NContrato) {
+    filtroConditions.push(`contratoarrendamiento.IdContrato = '${NContrato}'`);
+  }
+
+  // Agrega los filtros a la consulta si hay alguno
+  if (filtroConditions.length > 0) {
+    query += ' WHERE ' + filtroConditions.join(' AND ');
+  }
+
+  // Ejecuta la consulta SQL
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+router.get('/contrato-arren-inmue', (req, res) => {
+  const query = `
+  SELECT 
+  contratoarrendamiento.IdContrato,
+  contratoarrendamiento.EstadoContrato,
+  contratoarrendamiento.ValorDeposito,
+  arrendatario.IdArrendatario,
+  arrendatario.DocumentoIdentidad,
+  arrendatario.Nombrecompleto AS NombreArrendatario,
+  inmueble.IdInmueble,
+  inmueble.NoMatricula,
+  inmueble.Tipo AS TipoInmueble
+FROM contratoarrendamiento
+JOIN arrendatario ON contratoarrendamiento.IdArrendatario = arrendatario.IdArrendatario
+JOIN inmueble ON contratoarrendamiento.idInmueble = inmueble.IdInmueble
+WHERE contratoarrendamiento.EstadoContrato = 'Vigente';
+  `;
+
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
   const { correousuario } = req.query; // Datos del formulario
@@ -731,6 +805,51 @@ router.post("/RConArrendamiento", async (req, res) => {
   } catch (error) {
     console.error("Error al añadir propietario:", error);
     res.status(500).json({ error: "Error al añadir propietario" });
+  }
+});
+
+// Ruta para registar Pago de Arrendamiento --------------------------------------------------
+router.post("/RPagoArrendamiento", async (req, res) => {
+  const {
+    IdArrendatario,
+    IdContrato,
+    FechaPago,
+    FechaIni,
+    FechaFin,
+    ValorPago,
+    FormaPago,
+    Estado
+
+  } = req.body;
+
+  try {
+    connection.query(
+      "INSERT INTO pagos_arrendamiento (IdArrendatario, IdContrato,  FechaPago, FechaInicio, FechaFin, ValorPago, FormaPago, Estado) VALUES (?,?,?, ?, ?, ?,?,?)",
+      [
+    IdArrendatario,
+    IdContrato,
+    FechaPago,
+    FechaIni,
+    FechaFin,
+    ValorPago,
+    FormaPago,
+    Estado
+      ],
+      (error, results) => {
+        if (error) {
+          console.error("Error al añadir Un pago de arrendamiento:", error);
+          res.status(500).json({ error: "Error al añadir Pago de arrendamiento" });
+        } else {
+          console.log(" Pago Arrenmiento agregado:", results);
+          res
+            .status(201)
+            .json({ message: "Pago Arrenmiento registrado exitosamente" });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error al añadir Pago Arrenmiento: ", error);
+    res.status(500).json({ error: "Error al Pago Arrenmiento" });
   }
 });
 
