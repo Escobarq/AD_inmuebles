@@ -5,11 +5,16 @@ import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Button, Modal, ListGroup, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+
+import { InfoPropietario } from "../../Hooks/InfoPropietario";
+import { PDFDocument, rgb,} from "pdf-lib";
 import axios from "axios";
 
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+
+  const [PagoGasto, setPagoGasto] = useState([]);
   const [Nombre, setNombre] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [mostrarModalB, setMostrarModalB] = useState(false);
@@ -17,6 +22,7 @@ export const ReciboGastos = () => {
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [selectedInmueble, setSelectedInmueble] = useState("");
   const [InmueblesDisponibles, setInmueblesDisponibles] = useState([]);
+
   // Redireccion en caso de confirmar o cancelar
   const handleConfirmSave = () => {
     // Lógica para confirmar el guardado
@@ -24,7 +30,7 @@ export const ReciboGastos = () => {
     setShowSaveModal(false); // Cierra el modal
   };
 
-  const { handleSubmit, register, reset } = useForm();
+  const { handleSubmit, register } = useForm();
 
   useEffect(() => {
     let a = localStorage.getItem("user");
@@ -60,6 +66,7 @@ export const ReciboGastos = () => {
     }
   };
 
+
   const handleCloseModalA = () => {
     setMostrarModalA(false);
   };
@@ -91,6 +98,7 @@ export const ReciboGastos = () => {
  
   };
 
+
   const handleCancel = () => {
     setShowCancelModal(true);
     // Limpiar los datos del formulario al hacer clic en Cancelar
@@ -117,6 +125,7 @@ export const ReciboGastos = () => {
         
       }else {
         const responseData = await response.json();
+        ReciboGasto()
         return responseData;
       }
     } catch (error) {
@@ -138,6 +147,104 @@ export const ReciboGastos = () => {
     setMostrarModalB(false);
   };
 
+
+
+
+  const ReciboGasto= async () => {
+  
+    
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const { width, height } = page.getSize();
+      const fontSize = 19;
+      const padding = 50;
+  
+      // Agregar texto con la hora de emisión en la parte inferior de la página
+      const currentTime = new Date().toLocaleTimeString();
+      const footerText = `Hora de emisión: ${currentTime}`;
+  
+      page.drawText(footerText, {
+        x: padding,
+        y: padding,
+        size: 13,
+        color: rgb(0.5, 0.5, 0.5),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+  
+      // Organizamos los campos en dos columnas
+  
+      let yOffset = height - padding - fontSize * 2;
+  
+      // Load the logo image
+      const logoImageBytes = await fetch(logo).then((res) =>
+        res.arrayBuffer()
+      );
+      const logoImage = await pdfDoc.embedPng(logoImageBytes);
+  
+      // Dibujar el logo en el encabezado
+      page.drawImage(logoImage, {
+        x: padding - 10,
+        y: height - padding - fontSize * 0.6,
+        width: 100,
+        height: 50,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+  
+      // Dibujar el título al lado del logo con color gris opaco y posición vertical más alta
+      page.drawText("Adminmuebles", {
+        x: padding + 120,
+        y: height - padding - fontSize * 0.0,
+        size: fontSize + 0,
+        color: rgb(0.8, 0.8, 0.8),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+  
+      // Título del recibo
+      page.drawText("Recibo Gastos", {
+        x: width / 10,
+        y: height - padding - fontSize * 6,
+        size: fontSize + 9,
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+      yOffset -= fontSize * 9;
+
+  
+      // Dibujar línea horizontal en el encabezado
+      page.drawLine({
+        start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
+        end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+  
+      // Dibujar línea horizontal arriba de la hora actual
+      page.drawLine({
+        start: { x: padding, y: padding + fontSize * 0.5 + 20 },
+        end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+  
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "recibo.pdf";
+      link.click();
+
+
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
+  };
+
+
+
+
+
+  
   return (
     <div className="home-2">
       <div className="contenedor-formulario" id="recibo-gastos">
@@ -323,7 +430,7 @@ export const ReciboGastos = () => {
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
             No
           </Button>
-          <Button variant="primary" onClick={() => {handleConfirmSave(); handleSave();}} >
+          <Button variant="primary" onClick={() => {handleConfirmSave();}} >
             Sí
           </Button>
         </Modal.Footer>
