@@ -1,13 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 * {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
-.Contener-todo{
+.Contener-todo {
   display: flex;
   width: 100%;
   height: 100%;
 }
 
+.dark-mode {
+  /* Estilos para el modo oscuro */
+  background-color: #333; /* Cambia el color de fondo a oscuro */
+  color: #fff; /* Cambia el color del texto a claro */
+}
 
+.dark-mode .contener-home {
+  /* Estilos específicos para contener-home en modo oscuro */
+  background-color: #222; /* Cambia el color de fondo de contener-home en modo oscuro */
+  color: #ccc; /* Cambia el color del texto de contener-home en modo oscuro */
+}
+.dark-mode .contenerhom {
+  /* Estilos específicos para contener-home en modo oscuro */
+  background-color: #222; /* Cambia el color de fondo de contener-home en modo oscuro */
+  color: #ccc; /* Cambia el color del texto de contener-home en modo oscuro */
+}
+
+.dark-mode th {
+  border-style: none !important;
+  background-color: #222 !important;
+  color: #ffff !important;
+}
+.dark-mode td {
+  border-style: none !important;
+  background-color: #222 !important;
+  color: #ffff !important;
+}
+
+.dark-mode .ModalSobreNosotros {
+  background-color: #222 !important;
+  color: #ffff !important;
+}
+
+.dark-mode .btn-add-info{
+  background-color: #7b7a7a !important;
+}
+
+.dark-mode .modal-content {
+  background-color: #222 !important;
+  color: #ffff !important;
+}contener-home contener-rpropietario
+
+.dark-mode .Contener-todo {
+  background-color: #222 !important;
+  color: #ffff !important;
+}

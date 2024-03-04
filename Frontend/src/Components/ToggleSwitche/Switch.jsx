@@ -6,6 +6,7 @@ import {
   Card,
   Row,
   Col,
+  ModalFooter,
 } from "react-bootstrap";
 import "./Switch.css";
 
@@ -29,18 +30,19 @@ export const Switch = () => {
       </OverlayTrigger>
 
       <Modal
+      
         show={showModal}
         onHide={() => setShowModal(false)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton:false>Sobre Nosotros</Modal.Header>
-        <Modal.Body>
+        <Modal.Header closeButton:false className="ModalSobreNosotros">Sobre Nosotros</Modal.Header>
+        <Modal.Body className="ModalSobreNosotros">
           <Row>
             <Col md={6}>
               <Card style={{ width: "18rem", margin: "10px" ,boxShadow:'0px 4px 8px rgba(0, 0, 0, 0.1)'}}>
-                <Card.Img variant="top" src="../../../public/escobar.jpg" style={{height:"260px"}}/>
+                <Card.Img variant="top" src="../../../public/escobar.png" style={{height:"260px"}}/>
                 <Card.Body>
                   <Card.Title>Juan David Escobar Quezada</Card.Title>
                   <Card.Text>Frontend Desing</Card.Text>
@@ -76,6 +78,7 @@ export const Switch = () => {
             </Col>
           </Row>
         </Modal.Body>
+        <ModalFooter className="ModalSobreNosotros"></ModalFooter>
       </Modal>
     </>
   );

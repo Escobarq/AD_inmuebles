@@ -17,7 +17,9 @@ export const Contrato = () => {
   const [selectedTipoInmueble, setSelectedTipoInmueble] = useState("");
   const [selectedMatricula, setSelectedMatricula] = useState("");
   const [matriculasDisponibles, setMatriculasDisponibles] = useState([]);
-  const { register, handleSubmit, reset } = useForm({ mode: "onChange" });
+  const { register, handleSubmit, reset , watch } = useForm({ mode: "onChange" });
+  const [selectedIdInmueble, setSelectedIdInmueble] = useState(null);
+  const [selectedIdArrendatario, setSelectedIdArrendatario] = useState("");
 
   useEffect(() => {
     cargarMatriculasDisponibles();
@@ -26,22 +28,87 @@ export const Contrato = () => {
 
   const cargarMatriculasDisponibles = async () => {
     try {
-      const response = await axios.get("http://localhost:3006/propietarios-inmuebles");
+      const response = await axios.get(
+        "http://localhost:3006/propietarios-inmuebles"
+      );
       const matriculas = response.data.map((prop) => prop.NoMatricula);
       setMatriculasDisponibles(matriculas);
     } catch (error) {
       console.error("Error al cargar las matrículas:", error);
-      toast.error("Error al cargar las matrículas. Inténtalo de nuevo más tarde.");
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
     }
   };
 
   const cargarArrendatariosDisponibles = async () => {
     try {
-      const response = await axios.get("http://localhost:3006/arrendatarios-codeudores");
+      const response = await axios.get(
+        "http://localhost:3006/arrendatarios-codeudores"
+      );
       setArrendatariosDisponibles(response.data);
     } catch (error) {
       console.error("Error al cargar los arrendatarios:", error);
-      toast.error("Error al cargar los arrendatarios. Inténtalo de nuevo más tarde.");
+      toast.error(
+        "Error al cargar los arrendatarios. Inténtalo de nuevo más tarde."
+      );
+    }
+  };
+
+  const handleConfirmSave = () => {
+    setShowSaveModal(true); // Mostrar modal de confirmación antes de guardar
+  };
+
+  const handleConfirmCancel = () => {
+    reset();
+    window.location.href = "/Carrendatario";
+    setShowCancelModal(true); // Mostrar modal de confirmación antes de cancelar
+  };
+
+  const handleSubmitForm = async () => {
+    // Aquí puedes enviar los datos del formulario al backend
+    try {
+      const response = await axios.post("http://localhost:3006/contratoarrendamiento", {
+        IdArrendatario: selectedIdArrendatario,
+        IdInmueble: selectedIdInmueble,
+        FechaInicioContrato: watch("FechaInicioContrato"),
+        FechaFinContrato: watch("FechaFinContrato"),
+        EstadoContrato: watch("EstadoContrato"),
+        ValorDeposito: watch("ValorDeposito")
+      });
+
+      console.log("Respuesta del servidor:", response.data);
+      toast.success("Contrato de arrendamiento creado correctamente");
+      reset();
+      // Después de guardar los datos, redirigir a la página de Carrendatario
+      window.location.href = "/Carrendatario";
+    } catch (error) {
+      console.error("Error al guardar el contrato:", error);
+      toast.error("Error al guardar el contrato. Inténtalo de nuevo.");
+    }
+  };
+
+  const handleMatriculaChange = async (matricula) => {
+    setSelectedMatricula(matricula);
+    try {
+      const response = await axios.get(
+        `http://localhost:3006/propietarios-inmuebles`
+      );
+      const inmueble = response.data.find(
+        (prop) => prop.NoMatricula === matricula
+      );
+      if (inmueble) {
+        setSelectedTipoInmueble(inmueble.TipoInmueble);
+        setSelectedIdInmueble(inmueble.IdInmueble);
+        console.log("ID del inmueble:", inmueble.IdInmueble); // Imprimir ID del inmueble en la consola
+      } else {
+        setSelectedTipoInmueble("");
+        setSelectedIdInmueble(null);
+        console.log("No se encontró el inmueble asociado"); // Mensaje de error si no se encuentra el inmueble
+      }
+    } catch (error) {
+      console.error("Error al obtener el tipo de inmueble:", error);
+      toast.error("Error al obtener el tipo de inmueble. Inténtalo de nuevo.");
     }
   };
 
@@ -52,42 +119,18 @@ export const Contrato = () => {
     setSelectedArrendatario(selected);
     setSelectedCodeudor(selected.NombreCodeudor);
     setShowMatriculaModal(false);
+
+    setSelectedIdArrendatario(selected.IdArrendatario);
+    console.log("ID del arrendatario:", selected.IdArrendatario); // Imprimir ID del arrendatario en la consola
   };
 
-  const handleConfirmSave = () => {
-    setShowSaveModal(false);
-    window.location.href = "/Carrendatario";
-  };
 
-  const handleConfirmCancel = () => {
-    setShowCancelModal(false);
-    window.location.href = "/Carrendatario";
-    reset();
-  };
-
-  const handleMatriculaChange = async (matricula) => {
-    setSelectedMatricula(matricula);
-    try {
-      const response = await axios.get(
-        `http://localhost:3006/propietarios-inmuebles`
-      );
-      const inmueble = response.data.find((prop) => prop.NoMatricula === matricula);
-      if (inmueble) {
-        setSelectedTipoInmueble(inmueble.TipoInmueble);
-      } else {
-        setSelectedTipoInmueble("");
-      }
-    } catch (error) {
-      console.error("Error al obtener el tipo de inmueble:", error);
-      toast.error("Error al obtener el tipo de inmueble. Inténtalo de nuevo.");
-    }
-  };
 
   return (
     <div className="contener-home contener-rpropietario">
       <h2>Generación Nuevo Contrato</h2>
       <div className="container">
-        <Form className="form-propietario" onSubmit="">
+        <Form className="form-propietario" onSubmit={handleSubmit(handleConfirmSave)}>
           <Form.Group controlId="Matricula" className="mb-3">
             <Form.Label>Número de Matrícula:</Form.Label>
             <InputGroup>
@@ -155,6 +198,11 @@ export const Contrato = () => {
             <Form.Control type="date" {...register("FechaInicioContrato")} />
           </Form.Group>
 
+          <Form.Group controlId="FechaFinContrato">
+            <Form.Label>Fecha Fin Contrato:</Form.Label>
+            <Form.Control type="date" {...register("FechaFinContrato")} />
+          </Form.Group>
+
           <Form.Group controlId="TipoDocumento">
             <Form.Label>Estado Contrato:</Form.Label>
             <Form.Control as="select" {...register("EstadoContrato")}>
@@ -167,7 +215,7 @@ export const Contrato = () => {
             <Form.Label>Valor Deposito:</Form.Label>
             <InputGroup>
               <InputGroup.Text>$</InputGroup.Text>
-              <Form.Control type="number" {...register("FechaFinalContrato")} />
+              <Form.Control type="number" {...register("ValorDeposito")} />
             </InputGroup>
           </Form.Group>
 
@@ -176,7 +224,7 @@ export const Contrato = () => {
               <Button
                 type="button"
                 variant="success m-2"
-                onClick={() => setShowSaveModal(true)}
+                onClick={handleConfirmSave}
               >
                 <FontAwesomeIcon icon={faSave} />
                 <span className="text_button ms-2">Guardar</span>
@@ -185,7 +233,7 @@ export const Contrato = () => {
               <Button
                 type="button"
                 variant="danger m-2"
-                onClick={() => setShowCancelModal(true)}
+                onClick={handleConfirmCancel}
               >
                 <FontAwesomeIcon icon={faTimes} />
                 <span className="text_button ms-2">Cancelar</span>
@@ -254,7 +302,7 @@ export const Contrato = () => {
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
             No
           </Button>
-          <Button variant="primary" onClick={handleConfirmSave}>
+          <Button variant="primary" onClick={handleSubmit(handleSubmitForm)}>
             Sí
           </Button>
         </Modal.Footer>
