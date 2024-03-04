@@ -12,25 +12,31 @@ import Button from 'react-bootstrap/Button';
 export const ContratoA = () => {
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const pdfContentRef = useRef(null);
+  const [filtroData, setFiltroData] = useState({
+    FechaFinMIN: "",
+    FechaFinMAX: "",
+    NContrato: "",
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Varrendatario");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setinfoarrendatario(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-
-
     fetchData();
-  }, []);
+  }, [filtroData]);
+
+  const fetchData = async (filtroData) => {
+    console.log(filtroData);
+    const queryParams = new URLSearchParams(filtroData);
+    try {
+      const response = await fetch(`http://localhost:3006/contratoFiltro?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setinfoarrendatario(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
   //formatear fecha 
   function formatDate(fechaString) {
     return moment(fechaString).format('MMMM , D , YYYY');
@@ -44,26 +50,41 @@ export const ContratoA = () => {
     weekdaysMin: 'do_lu_ma_mi_ju_vi_sá'.split('_')
   });
 
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+  };
+
+
   const createheader = () => {
     return (
       <tr>
-        <th>Documento</th>
-        <th>Nombre Arrendatario</th>
-        <th>Fecha Inicio Contrato</th>
-        <th>Fecha Fin Contrato</th>
+        <th>No Contrato</th>
+        <th>No Documento</th>
+        <th>Arrendatario</th>
+        <th>Matricula Inmueble</th>
+        <th>Inicio de Contrato</th>
+        <th>Fin de Contrato</th>
+        <th>V Deposito</th>
+        <th>Cuotas Pendientes</th>
         <th>Estado</th>
       </tr>
     );
   };
 
-  const createrow = (Arrendatarios) => {
+  const createrow = (Contrato) => {
     return (
-      <tr key={Arrendatarios.IdArrendatario}>
-        <td>{Arrendatarios.DocumentoIdentidad}</td>
-        <td>{Arrendatarios.NombreCompleto}</td>
-        <td>{formatDate(Arrendatarios.FechaInicioContrato)}</td>
-        <td>{formatDate(Arrendatarios.FechaFinContrato)}</td>
-        <td>{Arrendatarios.Estado}</td>
+      <tr key={Contrato.IdContrato}>
+        <td>{Contrato.IdContrato}</td>
+        <td>{Contrato.DocumentoIdentidad}</td>
+        <td>{Contrato.NombreArrendatario}</td>
+        <td>{Contrato.NoMatricula}</td>
+        <td>{formatDate(Contrato.FechaInicioContrato)}</td>
+        <td>{formatDate(Contrato.FechaFinContrato)}</td>
+        <td>$ {Contrato.ValorDeposito}</td>
+        <td>{Contrato.CuotasPendientes}</td>
+        <td>{Contrato.EstadoContrato}</td>
       </tr>
     );
   };
@@ -147,11 +168,40 @@ const redireccion = (ruta) => {
 
   return (
     <div className="contenerhom">
-      <div className="container__arrendatario">
-        <div className="ContArrendatario">
-          <h1>Contrato Arrendatario</h1>
-          <div className="buttonsapp">
-            <Button variant="primary"  onClick={() => redireccion("/Generar")}>
+       <div className="conten-filtro">
+          <div className="conten-inputs">
+            <label className="l1">No. Contrato: </label>
+            <input
+              value={filtroData.NContrato}
+              onChange={handleChange}
+              className="input-filtroRe"
+              type="number"
+              name="NContrato"
+              max={9999999999}
+              id=""
+            />
+            <label className="l1">Fecha Final Minimo: </label>
+            <input
+              className="input-filtroRe"
+              value={filtroData.FechaFinMIN}
+              onChange={handleChange}
+              type="date"
+              name="FechaFinMIN"
+              id=""
+            />
+
+            <label className="l1">Fecha Final Maxima: </label>
+            <input
+              className="input-filtroRe"
+              value={filtroData.FechaFinMAX}
+              onChange={handleChange}
+              type="date"
+              name="FechaFinMAX"
+              id=""
+            />
+          </div>
+
+          <Button variant="primary"  onClick={() => redireccion("/Generar")}>
             <FontAwesomeIcon icon={faFileSignature}/>
               Generar Nuevo contrato
               </Button>
@@ -159,14 +209,17 @@ const redireccion = (ruta) => {
               <FontAwesomeIcon icon={faFilePdf} />
               Generar PDF
             </button>
-          </div>
+        </div>
+      <div className="container__arrendatario">
+        <div className="ContArrendatario">
+          <h1>Contrato Arrendatario</h1>
         </div>
 
         <div className="table-container" ref={pdfContentRef}>
           <table className="table">
             <thead>{createheader()}</thead>
             <tbody>
-              {currentItems.map((Arrendatarios) => createrow(Arrendatarios))}
+              {currentItems.map((Contrato) => createrow(Contrato))}
             </tbody>
           </table>
         </div>
