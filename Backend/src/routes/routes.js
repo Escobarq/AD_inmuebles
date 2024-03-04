@@ -454,6 +454,31 @@ router.get("/Vroles", (req, res) => {
 });
 
 //Metodos Post
+// Ruta para manejar la solicitud de creación de un nuevo contrato de arrendamiento
+router.post('/contratoarrendamiento', (req, res) => {
+  const { IdArrendatario, IdInmueble, FechaInicioContrato, FechaFinContrato, EstadoContrato, ValorDeposito } = req.body;
+
+  const contrato = {
+    IdArrendatario,
+    IdInmueble,
+    FechaInicioContrato,
+    FechaFinContrato,
+    EstadoContrato,
+    ValorDeposito
+  };
+
+  const sql = 'INSERT INTO contratoarrendamiento SET ?';
+
+  connection.query(sql, contrato, (err, result) => {
+    if (err) {
+      console.error('Error al insertar el nuevo contrato:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+      return;
+    }
+    console.log('Nuevo contrato insertado correctamente');
+    res.status(201).json({ message: 'Contrato de arrendamiento creado correctamente', contratoId: result.insertId });
+  });
+});
 
 // Ruta para registrar un propietario
 router.post("/RPropietario", async (req, res) => {
