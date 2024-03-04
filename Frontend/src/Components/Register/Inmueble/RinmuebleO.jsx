@@ -1,15 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Form, Button, Modal } from "react-bootstrap";
+import { Form, Button, Modal, ListGroup } from "react-bootstrap";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 export const RInmuebleO = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-
+  const [mostrarModalA, setMostrarModalA] = useState(false);
+  const [selectedPropietario, setSelectedPropietario] = useState("");
+  const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const notify = () =>
     toast.success("Se Registro correctamente", {
       theme: "dark",
@@ -27,12 +29,39 @@ export const RInmuebleO = () => {
     formState: { errors },
   } = useForm();
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3006/Vpropietarios?");
+      const Propietarios = response.data.map((prop) => prop);
+      setPropietariosDisponibles(Propietarios);
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
+    }
+  };
+
+  const handleCloseModalA = () => {
+    setMostrarModalA(false);
+  };
+  const handleMostrarAClick = async () => {
+    setMostrarModalA(true);
+  };
+
+
   const onsubmitRegistro = async (data) => {
+    data.Id_Propietario = selectedPropietario.IdPropietario;
     data.Tipo = "Oficina";
     try {
       await crearInmueble(data);
       notify();
       reset();
+      window.location.href = "/Inmueble";
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
         alert("El correo ya está registrado");
@@ -42,6 +71,12 @@ export const RInmuebleO = () => {
         throw error; // Re-lanza el error para que pueda ser manejado en el componente
       }
     }
+  };
+
+  const handlePropietarioChange = async (Propietario) => {
+    setSelectedPropietario(Propietario);
+    console.log(Propietario)
+    setMostrarModalA(false);
   };
 
   const handleSelectChange = (event) => {
@@ -74,7 +109,7 @@ export const RInmuebleO = () => {
               <Form.Group controlId="formTipoInmueble">
                 <Form.Label>Tipo Inmueble:</Form.Label>
                 <Form.Select
-                  className="formSelect"
+                  className="formSelect InputsRegistros "
                   aria-label="Default select example"
                   onChange={handleSelectChange}
                 >
@@ -90,59 +125,84 @@ export const RInmuebleO = () => {
 
               <Form.Group controlId="formNoMatricula">
                 <Form.Label>No. Matricula</Form.Label>
-                <Form.Control {...register("Nmatricula")} type="number" />
+                <Form.Control className="InputsRegistros" {...register("Nmatricula")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formDireccion">
                 <Form.Label>Dirección</Form.Label>
-                <Form.Control {...register("Direccion")} type="text" />
+                <Form.Control className="InputsRegistros" {...register("Direccion")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formCiudad">
                 <Form.Label>Ciudad</Form.Label>
-                <Form.Control {...register("Ciudad")} type="text" />
+                <Form.Control className="InputsRegistros" {...register("Ciudad")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formBarrio">
                 <Form.Label>Barrio</Form.Label>
-                <Form.Control {...register("Barrio")} type="text" />
+                <Form.Control className="InputsRegistros" {...register("Barrio")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formNoBanos">
                 <Form.Label>Valor</Form.Label>
-                <Form.Control {...register("ValorIn")} type="number" />
+                <Form.Control className="InputsRegistros" {...register("ValorIn")} type="number" />
               </Form.Group>
            
 
             
               <Form.Group controlId="formEstrato">
                 <Form.Label>Estrato</Form.Label>
-                <Form.Control {...register("Estrato")} type="number" />
+                <Form.Select className="formSelect InputsRegistros" required {...register("Estrato")} aria-label="Default select example" >
+                  <option value="" selected>
+                    Seleccione estrato
+                  </option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                </Form.Select>
               </Form.Group>
 
               <Form.Group controlId="formNoBanos">
                 <Form.Label>No. Baños</Form.Label>
-                <Form.Control {...register("Nbanos")} type="number" />
+                <Form.Control className="InputsRegistros" {...register("Nbanos")} type="number" />
               </Form.Group>
 
               <Form.Group controlId="formNoHabitaciones">
                 <Form.Label>Servicios Publicos</Form.Label>
-                <Form.Control {...register("Spublicos")} type="text" />
+                <Form.Control className="InputsRegistros" {...register("Spublicos")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formNoNiveles">
                 <Form.Label>Aseguramiento</Form.Label>
-                <Form.Control {...register("aseguramiento")} type="date" />
+                <Form.Control className="InputsRegistros" {...register("aseguramiento")} type="date" />
               </Form.Group>
 
               <Form.Group controlId="formNoIdentidadPropietario">
-                <Form.Label>No. Identidad Propietario</Form.Label>
-                <Form.Control type="number" />
+              <Form.Label>Propietario del inmueble</Form.Label>
+                <Form.Select className="InputsRegistros"
+                value={
+                  selectedPropietario
+                    ? selectedPropietario.IdPropietario
+                    : "a?"
+                }
+                onChange={(e) => handlePropietarioChange(e.target.value)}
+                onClick={() => handleMostrarAClick(true)}
+              >
+                <option value="">Seleccionar Numero de Propietario</option>
+                {PropietariosDisponibles.map((Propietario, index) => (
+                  <option key={index} value={Propietario.IdPropietario}>               
+                    {Propietario.NombreCompleto}                    
+                  </option>
+                ))}
+              </Form.Select>
               </Form.Group>
 
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Descripción</Form.Label>
-                <Form.Control
+                <Form.Control className="InputsRegistros"
                   {...register("Descripcion")}
                   required
                   as="textarea"
@@ -220,6 +280,32 @@ export const RInmuebleO = () => {
               </Modal.Footer>
             </Modal>
           
+            <Modal
+            size="lg"
+            show={mostrarModalA}
+            onHide={handleCloseModalA}
+            aria-labelledby="example-modal-sizes-title-lg"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Seleccionar Propietario</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <ListGroup>
+                {PropietariosDisponibles.map((Propietario, index) => (
+                  <ListGroup.Item
+                    key={index}
+                    action
+                    onClick={() => handlePropietarioChange(Propietario)}
+                  >
+                  {Propietario.TipoDocumento} : 
+                    {Propietario.DocumentoIdentidad} //                    
+                    {Propietario.NombreCompleto}
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Modal.Body>
+          </Modal>
+
       </div>
     
   );

@@ -98,7 +98,7 @@ router.get("/Varrendatario", (req, res) => {
 });
 
 router.get("/Vinmueble", (req, res) => {
-  const { tipo, estrato, estado } = req.query;
+  const { tipo, estrato, estado, IdPropietario } = req.query;
 
   try {
     let query = "SELECT * FROM inmueble  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
@@ -117,6 +117,10 @@ router.get("/Vinmueble", (req, res) => {
     if (estrato) {
       query += " AND Estrato = ?";
       queryParams.push(estrato);
+    }
+    if (IdPropietario) {
+      query += " AND IdPropietario = ?";
+      queryParams.push(IdPropietario);
     }
 
     query += "ORDER BY IdInmueble ASC";
@@ -553,9 +557,10 @@ router.post("/Reinmueble", async (req, res) => {
   try {
     if (Tipo == "Bodega") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           Nmatricula,
+          Id_Propietario,
           Direccion,
           Estrato,
           Ciudad,
@@ -571,9 +576,10 @@ router.post("/Reinmueble", async (req, res) => {
       );
     } else if (Tipo == "Casa") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           Nmatricula,
+          Id_Propietario,
           Direccion,
           Estrato,
           Ciudad,
@@ -611,9 +617,10 @@ router.post("/Reinmueble", async (req, res) => {
       );
     } else if (Tipo == "Oficina") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           Nmatricula,
+          Id_Propietario,
           Direccion,
           Estrato,
           Ciudad,
@@ -629,9 +636,10 @@ router.post("/Reinmueble", async (req, res) => {
       );
     } else if (Tipo == "Local") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, NoHabitaciones, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, NoHabitaciones, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           Nmatricula,
+          Id_Propietario,
           Direccion,
           Estrato,
           Ciudad,
@@ -882,21 +890,29 @@ router.post("/RPagoArrendamiento", async (req, res) => {
 router.post("/RComision", async (req, res) => {
   const {
     IdPropietario,
+    IdInmueble,
     FechaPago,
     ElaboradoPor,
     FormaPago,
-    Observaciones,
+    PagoArriendo,
+    AdminInmobiliaria,
+    AseoEntrega,
+    Mantenimiento,
   } = req.body;
 
   try {
     connection.query(
-      "INSERT INTO comision_propietario (IdPropietario, PeriodoPagado, ElaboradoPor, FormaPago, Observaciones) VALUES (?, ?, ?, ?,?)",
+      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, PeriodoPagado, ElaboradoPor, FormaPago, PagoArriendo,AdmInmobi,AseoEntrega,Mantenimiento ) VALUES (?, ?, ?, ?,?,?,?,?,?)",
       [
     IdPropietario,
+    IdInmueble,
     FechaPago,
     ElaboradoPor,
     FormaPago,
-    Observaciones,
+    PagoArriendo,
+    AdminInmobiliaria,
+    AseoEntrega,
+    Mantenimiento
       ],
       (error, results) => {
         if (error) {

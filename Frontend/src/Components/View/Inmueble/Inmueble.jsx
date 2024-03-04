@@ -81,7 +81,7 @@ export const Inmueble = () => {
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
 
   useEffect(() => {
-    fetchDataArren();
+    
     fetchData();
   }, [filtroData]);
 
@@ -116,20 +116,7 @@ export const Inmueble = () => {
       console.error("Error fetching products:", error);
     }
   };
-  const fetchDataArren = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:3006/Varrendatario?Estado=Libre"
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      setinfoarrendatario(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
+
 
   const createheader = () => {
     return (
@@ -251,106 +238,9 @@ export const Inmueble = () => {
       return null; // Otra opción es retornar un mensaje de carga o cualquier otro contenido que desees mostrar mientras se carga la información
     }
   };
-  const existe = () => {
-    if (inmuebleseleccion) {
-      if (inmuebleseleccion.IdArrendatario >= 1) {
-        return (
-          <>
-            <p>Alerta Ya se encuentra un arrendador asignado</p>
-            <p>
-              Su nombre es {inmuebleseleccion.NombreCompleto}, con No de
-              identidad : {inmuebleseleccion.DocumentoIdentidad}
-            </p>
-            <p>
-              Para cambiar de arrendatario solo seleccionelo en la siguiente
-              lista:
-            </p>
-          </>
-        );
-      } else {
-        return null;
-      }
-    } else {
-      return null; // Otra opción es retornar un mensaje de carga o cualquier otro contenido que desees mostrar mientras se carga la información
-    }
-  };
 
-  const createrowA = (Arrendatarios) => {
-    return (
-      <tr
-        onClick={() => handleRowClickAndUpdate(Arrendatarios)}
-        key={Arrendatarios.IdArrendatario}
-      >
-        <td>{Arrendatarios.TipoDocumento}</td>
-        <td>{Arrendatarios.DocumentoIdentidad}</td>
-        <td>{Arrendatarios.NombreCompleto}</td>
-        <td>{Arrendatarios.Estado}</td>
-        <td>{Arrendatarios.Telefono}</td>
-        <td>{Arrendatarios.Correo}</td>
-      </tr>
-    );
-  };
 
-  const handleRowClickAndUpdate = async (Arrendatarios) => {
-    try {
-      console.log(inmuebleseleccion);
-      const IdInmueble = inmuebleseleccion.IdInmueble;
-      const { IdArrendatario } = Arrendatarios;
 
-      const response = await fetch(
-        `http://localhost:3006/actualizarInmueble?IdInmueble=${IdInmueble}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            IdArrendatario: IdArrendatario,
-            Estado: "Ocupado",
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Error al actualizar el inmueble");
-      }
-
-      notify();
-      console.log("Inmueble actualizado correctamente");
-    } catch (error) {
-      console.error("Error al actualizar el inmueble:", error);
-    }
-  };
-  const handleRowClickAndDelete = async () => {
-    try {
-      console.log(inmuebleseleccion);
-      const IdInmueble = inmuebleseleccion.IdInmueble;
-      const { IdArrendatario } = 0;
-
-      const response = await fetch(
-        `http://localhost:3006/actualizarInmueble?IdInmueble=${IdInmueble}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            IdArrendatario: IdArrendatario,
-            Estado: "Disponible",
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Error al actualizar el inmueble");
-      }
-
-      notify();
-      console.log("Inmueble actualizado correctamente");
-    } catch (error) {
-      console.error("Error al actualizar el inmueble:", error);
-    }
-  };
 
   const handleMostrarModalClick = async (inmueble) => {
     setinmuebleseleccion(inmueble);
@@ -388,9 +278,7 @@ export const Inmueble = () => {
     }
   };
 
-  const handleCloseModalA = () => {
-    setMostrarModalA(false);
-  };
+
 
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -587,45 +475,6 @@ export const Inmueble = () => {
           </Modal.Body>
         </Modal>
 
-        <Modal
-          size="lg"
-          show={mostrarModalA}
-          onHide={handleCloseModalA}
-          aria-labelledby="example-modal-sizes-title-lg"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Arrendatarios Disponibles</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {existe()}
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Tipo de Documento</th>
-                  <th>No. Documento</th>
-                  <th>Nombre</th>
-                  <th>Estado</th>
-                  <th>Teléfono</th>
-                  <th>Correo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {infoarrendatario.map((Arrendatarios) =>
-                  createrowA(Arrendatarios)
-                )}
-                <Link to="/ReArrendatario">
-                  <Button variant="primary">Otro</Button>
-                </Link>
-                <Button
-                  variant="danger"
-                  onClick={() => handleRowClickAndDelete()}
-                >
-                  Quitar Arrendatario
-                </Button>
-              </tbody>
-            </Table>
-          </Modal.Body>
-        </Modal>
       </div>
       <Modal show={showModal} onHide={handleCloseModals}>
         <Modal.Header closeButton>

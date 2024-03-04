@@ -1,17 +1,27 @@
 import  { useEffect, useState } from "react";
 import "./ReciboGastos.css";
-import logo from "../../../assets/Logo.png";   //logo.png
-import html2pdf from "html2pdf.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, ListGroup, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
+import { PDFDocument, rgb,} from "pdf-lib";
+import axios from "axios";
 
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+
+  const [PagoGasto, setPagoGasto] = useState([]);
+  const [Nombre, setNombre] = useState("");
+  const [mostrarModalA, setMostrarModalA] = useState(false);
+  const [mostrarModalB, setMostrarModalB] = useState(false);
+  const [selectedPropietario, setSelectedPropietario] = useState("");
+  const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
+  const [selectedInmueble, setSelectedInmueble] = useState("");
+  const [InmueblesDisponibles, setInmueblesDisponibles] = useState([]);
 
   // Redireccion en caso de confirmar o cancelar
   const handleConfirmSave = () => {
@@ -20,50 +30,62 @@ export const ReciboGastos = () => {
     setShowSaveModal(false); // Cierra el modal
   };
 
-  const { handleSubmit, register, reset } = useForm();
+  const { handleSubmit, register } = useForm();
+
+  useEffect(() => {
+    let a = localStorage.getItem("user");
+    let b = localStorage.getItem("apellido");
+    setNombre(a + " "+ b)
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3006/Vpropietarios?");
+      const Propietarios = response.data.map((prop) => prop);
+      setPropietariosDisponibles(Propietarios);
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
+    }
+  };
+
+  const fetchData2 = async (Propietario) => {
+    try {
+      const response = await axios.get(`http://localhost:3006/Vinmueble?IdPropietario=${Propietario.IdPropietario}`);
+      const Inmuebles = response.data.map((prop) => prop);
+      setInmueblesDisponibles(Inmuebles);
+      console.log("hola", Inmuebles)
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
+    }
+  };
+
+
+  const handleCloseModalA = () => {
+    setMostrarModalA(false);
+  };
+  const handleMostrarAClick = async () => {
+    setMostrarModalA(true);
+  };
+  const handleCloseModalB = () => {
+    setMostrarModalB(false);
+  };
+  const handleMostrarBClick = async () => {
+    setMostrarModalB(true);
+  };
 
   const handleConfirmCancel = () => {
     window.location.href = "/H_gastos"
     handleSubmit(handleCancel)();
     setShowCancelModal(false); // Cierra el modal
   };
-    localStorage.getItem("user")
-    localStorage.getItem("apellido")
-
-  const [filtroData, setFiltroData] = useState({
-    Cedula: "",
-  });
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFiltroData({ ...filtroData, [name]: value });
-  };
-  
-  const [Valor, setValor] = useState(null);
-  const [PagoAr, setPagoAr] = useState(null);
-  const [AdIm, setAdIm] = useState(null);
-  const [AsEnCa, setAsEnCa] = useState(null);
-  const [Mante, setMante] = useState(null);
-  const handleChangeValor = (event) => {
-    const { name, value } = event.target;
-
-    if (name == "Pago Arriendo:"){
-      setPagoAr(`${name} ${value}`)
-    }
-    else if(name == "Administracion Inmobiliaria:") {
-      setAdIm(`${name} ${value}`)
-    }
-    else if (name == "Aseo Entrega Casa:") {
-      setAsEnCa(`${name} ${value}`)
-    }
-    else if (name == "Mantenimiento:") {
-      setMante(`${name} ${value}`)
-    }
-    setValor(PagoAr + ", " + AdIm + ", " + AsEnCa + ", " + Mante)
-    console.log(Valor);
-  };
-
-
-   
+ 
   const handleSave = () => {
     setShowSaveModal(true)
     // Validar que todos los campos estén llenos antes de guardar
@@ -74,67 +96,21 @@ export const ReciboGastos = () => {
       autoClose: 2000
     });
  
-    for (const field in formData) {
-      if (formData[field].trim() === "") {
-        notify("No puede haber campos vacíos"); // Llama a la notificación una sola vez
-        return; // Detén la ejecución del bucle al encontrar un campo vacío
-      }
-    }
-    
-    
-    const input = document.getElementById("recibo-gastos");
-    document.className = "todo";
-
-    const options = {
-      margin: 20,
-      filename: "recibo-gastos.pdf",
-      image: { type: "jpeg", quality: 0.2 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    };
-
-    const contenido = input.cloneNode(true);
-    // Clase para el logo pequeño
-    const logoElement = document.createElement("img");
-    logoElement.src = logo;
-    logoElement.className = "logo-pequeno";
-    contenido.prepend(logoElement);
-    html2pdf().from(contenido).set(options).save();
   };
+
 
   const handleCancel = () => {
     setShowCancelModal(true);
     // Limpiar los datos del formulario al hacer clic en Cancelar
   };
-  const [NoResult, setNoResult] = useState(false);
-  const [infopropietario, setinfopropietario] = useState([]);
-  const [Nombre, setNombre] = useState("");
 
-  useEffect(() => {
-    let a = localStorage.getItem("user");
-    let b = localStorage.getItem("apellido");
-    setNombre(a + " "+ b)
-    fetchData();
-  }, [filtroData]);
 
-  const fetchData = async () => {
-    try {
-      const info = await InfoPropietario(filtroData)
-      if(info == "") {
-        setNoResult(true)
-      }
-      else{
-        setNoResult(false)
-        setinfopropietario(info[0]);
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
+
 
   const onsubmitGastos = async (data) => {
-    data.Observaciones = Valor;
-    data.IdPropietario = infopropietario.IdPropietario
+    data.IdPropietario = selectedPropietario.IdPropietario;
+    data.IdInmueble = selectedInmueble.IdInmueble;
+    data.ElaboradoPor = Nombre;
     try {
       const response = await fetch("http://localhost:3006/RComision", {
         method: "POST",
@@ -149,6 +125,7 @@ export const ReciboGastos = () => {
         
       }else {
         const responseData = await response.json();
+        ReciboGasto()
         return responseData;
       }
     } catch (error) {
@@ -160,8 +137,114 @@ export const ReciboGastos = () => {
       }
     }
   };
+  const handlePropietarioChange = async (Propietario) => {
+    setSelectedPropietario(Propietario);
+    fetchData2(Propietario)
+    setMostrarModalA(false);
+  };
+  const handleInmuebleChange = async (Inmueble) => {
+    setSelectedInmueble(Inmueble);
+    setMostrarModalB(false);
+  };
 
 
+
+
+  const ReciboGasto= async () => {
+  
+    
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const { width, height } = page.getSize();
+      const fontSize = 19;
+      const padding = 50;
+  
+      // Agregar texto con la hora de emisión en la parte inferior de la página
+      const currentTime = new Date().toLocaleTimeString();
+      const footerText = `Hora de emisión: ${currentTime}`;
+  
+      page.drawText(footerText, {
+        x: padding,
+        y: padding,
+        size: 13,
+        color: rgb(0.5, 0.5, 0.5),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+  
+      // Organizamos los campos en dos columnas
+  
+      let yOffset = height - padding - fontSize * 2;
+  
+      // Load the logo image
+      const logoImageBytes = await fetch(logo).then((res) =>
+        res.arrayBuffer()
+      );
+      const logoImage = await pdfDoc.embedPng(logoImageBytes);
+  
+      // Dibujar el logo en el encabezado
+      page.drawImage(logoImage, {
+        x: padding - 10,
+        y: height - padding - fontSize * 0.6,
+        width: 100,
+        height: 50,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+  
+      // Dibujar el título al lado del logo con color gris opaco y posición vertical más alta
+      page.drawText("Adminmuebles", {
+        x: padding + 120,
+        y: height - padding - fontSize * 0.0,
+        size: fontSize + 0,
+        color: rgb(0.8, 0.8, 0.8),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+  
+      // Título del recibo
+      page.drawText("Recibo Gastos", {
+        x: width / 10,
+        y: height - padding - fontSize * 6,
+        size: fontSize + 9,
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+      yOffset -= fontSize * 9;
+
+  
+      // Dibujar línea horizontal en el encabezado
+      page.drawLine({
+        start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
+        end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+  
+      // Dibujar línea horizontal arriba de la hora actual
+      page.drawLine({
+        start: { x: padding, y: padding + fontSize * 0.5 + 20 },
+        end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+  
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "recibo.pdf";
+      link.click();
+
+
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
+  };
+
+
+
+
+
+  
   return (
     <div className="home-2">
       <div className="contenedor-formulario" id="recibo-gastos">
@@ -185,42 +268,47 @@ export const ReciboGastos = () => {
               />
             </div>
             <div className="grupo2">
-              <label htmlFor="codigoPropietario">No.Doc propietario:</label>
-              <input
-                type="number"
-                className="form-control"
-                value={filtroData.Cedula}
-                name="Cedula"
-                onChange={handleChange}
+            <Form.Label>Propietario del inmueble</Form.Label>
+                <Form.Select className="InputsRegistros"
+                value={
+                  selectedPropietario
+                    ? selectedPropietario.IdPropietario
+                    : "a?"
+                }
+                onChange={(e) => handlePropietarioChange(e.target.value)}
+                onClick={() => handleMostrarAClick(true)}
+              >
+                <option value="">Seleccionar Numero de Propietario</option>
+                {PropietariosDisponibles.map((Propietario, index) => (
+                  <option key={index} value={Propietario.IdPropietario}>               
+                    {Propietario.NombreCompleto}                    
+                  </option>
+                ))}
+              </Form.Select>
 
-              />
-              <label htmlFor="beneficiario">Propietario:</label>
-
-              {NoResult == false ?(
-                <input
-                  type="text"
-                  className="form-control"
-                  id="beneficiario"
-                  
-                  defaultValue={infopropietario.NombreCompleto}
-                />
-
-              ):(
-                <input
-                type="text"
-                className="form-control"
-                id="beneficiario"
-                defaultValue={"Registrar Nuevo"}
-              />
-              )}
-
+              <Form.Label>Inmueble</Form.Label>
+                <Form.Select className="InputsRegistros"
+                value={
+                  selectedInmueble
+                    ? selectedInmueble.IdInmueble
+                    : "a?"
+                }
+                onChange={(e) => handleInmuebleChange(e.target.value)}
+                onClick={() => handleMostrarBClick(true)}
+              >
+                <option value="">Seleccionar Numero de Matricula</option>
+                {InmueblesDisponibles.map((Inmueble, index) => (
+                  <option key={index} value={Inmueble.IdInmueble}>               
+                    {Inmueble.NoMatricula}                    
+                  </option>
+                ))}
+              </Form.Select>
             </div>
           </div>
 
           <div className="entregadopor">
             <label htmlFor="entregadoPor">Entregado por:</label>
             <input
-            {...register("ElaboradoPor")}
               type="text"
               className="form-control"
               id="entregadoPor"
@@ -279,31 +367,31 @@ export const ReciboGastos = () => {
               <input
                 type="text"
                 className="form-control"
-                 value={filtroData.PagoArriendo}
                 name="Pago Arriendo:"
-                onChange={handleChangeValor}
+                defaultValue={"0"}
+                {...register("PagoArriendo")}
               />
               <input
                 type="text"
                 className="form-control"
-                 value={filtroData.AdminsMuebles}
-                name="Administracion Inmobiliaria:"
-                onChange={handleChangeValor}
+                name="AdmInmobi"
+                defaultValue={"0"}
+                {...register("AdminInmobiliaria")}
 
               />
               <input
                 type="text"
                 className="form-control"
-                 value={filtroData.Aseo}
-                name="Aseo Entrega Casa:"
-                onChange={handleChangeValor}
+                name="AseoEntrega"
+                defaultValue={"0"}
+                {...register("AseoEntrega")}
               />
               <input
                 type="text"
                 className="form-control"
-                 value={filtroData.Mantenimiento}
                 name="Mantenimiento:"
-                onChange={handleChangeValor}
+                defaultValue={"0"}
+                {...register("Mantenimiento")}
               />
             </div>
           </div>
@@ -342,7 +430,7 @@ export const ReciboGastos = () => {
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
             No
           </Button>
-          <Button variant="primary" onClick={() => {handleConfirmSave(); handleSave();}} >
+          <Button variant="primary" onClick={() => {handleConfirmSave();}} >
             Sí
           </Button>
         </Modal.Footer>
@@ -365,6 +453,57 @@ export const ReciboGastos = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Modal
+            size="lg"
+            show={mostrarModalA}
+            onHide={handleCloseModalA}
+            aria-labelledby="example-modal-sizes-title-lg"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Seleccionar Propietario</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <ListGroup>
+                {PropietariosDisponibles.map((Propietario, index) => (
+                  <ListGroup.Item
+                    key={index}
+                    action
+                    onClick={() => handlePropietarioChange(Propietario)}
+                  >
+                  {Propietario.TipoDocumento} : 
+                    {Propietario.DocumentoIdentidad} //                    
+                    {Propietario.NombreCompleto}
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Modal.Body>
+          </Modal>
+      <Modal
+            size="lg"
+            show={mostrarModalB}
+            onHide={handleCloseModalB}
+            aria-labelledby="example-modal-sizes-title-lg"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Seleccionar Inmueble</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <ListGroup>
+                {InmueblesDisponibles.map((Inmueble, index) => (
+                  <ListGroup.Item
+                    key={index}
+                    action
+                    onClick={() => handleInmuebleChange(Inmueble)}
+                  >
+                  {Inmueble.NoMatricula} : 
+                    {Inmueble.Tipo} //                    
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Modal.Body>
+          </Modal>
+
     </div>
   );
 };

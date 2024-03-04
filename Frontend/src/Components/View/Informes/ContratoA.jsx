@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { faFilePdf, faFileSignature} from "@fortawesome/free-solid-svg-icons";
+
+
 import Pagination from "react-bootstrap/Pagination";
 import moment from 'moment';
 import 'moment/locale/es';
@@ -66,7 +69,7 @@ export const ContratoA = () => {
         <th>Matricula Inmueble</th>
         <th>Inicio de Contrato</th>
         <th>Fin de Contrato</th>
-        <th>V Deposito</th>
+        <th>Valor Deposito</th>
         <th>Cuotas Pendientes</th>
         <th>Estado</th>
       </tr>
@@ -104,8 +107,19 @@ export const ContratoA = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 
+  
+  function getCurrentDate() {
+    return moment().format('MMMM D, YYYY');
+  }
+
+
+
   //Funcion para generar pdf
+
   const handleGeneratePDF = () => {
+
+console.log(infoarrendatario);
+
     const doc = new jsPDF();
     // Logo-pdf
     doc.addImage(logo, "PNG", 15, 10, 33, 20); // Logo next to the title
@@ -113,23 +127,48 @@ export const ContratoA = () => {
     // titulo pdf
     doc.text("Contrato Arrendatario", 60, 23); // Title next to the logo
 
-    // Columnas-pdf
-    const columns = [
-      { header: "Documento", dataKey: "DocumentoIdentidad" },
-      { header: "Nombre Arrendatario", dataKey: "NombreCompleto" },
-      { header: "Fecha Inicio Contrato", dataKey: "FechaInicioContrato" },
-      { header: "Fecha Fin Contrato", dataKey: "FechaFinContrato" },
-      { header: "Estado", dataKey: "Estado" }
+
+    const date = new Date();
+    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
+    const formattedDate = `${monthNames[date.getMonth()]}/${date.getDate()}/${date.getFullYear()}`;
+    doc.setTextColor(128); // Gris
+    doc.setFontSize(10);
+    doc.text(formattedDate, 190, 10, null, null, "right");
+
+
+
+
+    const columns = [
+      { header: "Id Contrato", dataKey: "IdContrato", },
+      { header: "Documento", dataKey: "DocumentoIdentidad", },
+      { header: "Arrendatario", dataKey: "NombreCompleto", },
+      { header: "Matricula", dataKey: "NoMatricula", },
+      { header: "Fecha Ini_Cont", dataKey: "FechaInicioContrato", },
+      { header: "Fecha Fin_Cont", dataKey: "FechaFinContrato", },
+      { header: "Deposito", dataKey: "ValorDeposito", },
+      { header: "Cuotas Pendientes", dataKey: "CuotasPendientes", },
+      { header: "Estado", dataKey: "Estado", }
+    ];
+
+
 
     // Datos de la tabla
     const data = infoarrendatario.map(arrendatario => ({
+      IdContrato: arrendatario.IdContrato,
       DocumentoIdentidad: arrendatario.DocumentoIdentidad,
-      NombreCompleto: arrendatario.NombreCompleto,
+      NombreCompleto: arrendatario.NombreArrendatario,
+      NoMatricula: arrendatario.NoMatricula,
       FechaInicioContrato: formatDate(arrendatario.FechaInicioContrato),
       FechaFinContrato: formatDate(arrendatario.FechaFinContrato),
-      Estado: arrendatario.Estado
+      ValorDeposito: arrendatario.ValorDeposito,
+      CuotasPendientes: arrendatario.CuotasPendientes,
+      Estado: arrendatario.EstadoContrato
     }));
+
+
+
 
     //informacion en forma de tabla
     autoTable(doc, {
@@ -157,9 +196,12 @@ export const ContratoA = () => {
         { align: "center" }
       );
     }
+
     // nombre de pdf
     doc.save("Contrato_Arrendatario.pdf");
   };
+
+
 
 
 const redireccion = (ruta) => {
