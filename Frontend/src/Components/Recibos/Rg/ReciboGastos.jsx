@@ -8,10 +8,13 @@ import { Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
+import { PDFDocument, rgb,} from "pdf-lib";
 
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [PagoGasto, setPagoGasto] = useState([]);
+  const [formData, setFormData] = useState({});
 
   // Redireccion en caso de confirmar o cancelar
   const handleConfirmSave = () => {
@@ -20,7 +23,7 @@ export const ReciboGastos = () => {
     setShowSaveModal(false); // Cierra el modal
   };
 
-  const { handleSubmit, register, reset } = useForm();
+  const { handleSubmit, register } = useForm();
 
   const handleConfirmCancel = () => {
     window.location.href = "/H_gastos"
@@ -62,45 +65,7 @@ export const ReciboGastos = () => {
     console.log(Valor);
   };
 
-
-   
-  const handleSave = () => {
-    setShowSaveModal(true)
-    // Validar que todos los campos estén llenos antes de guardar
-
-    const notify = (text) => 
-    toast.error(text, {
-      theme: "colored",
-      autoClose: 2000
-    });
  
-    for (const field in formData) {
-      if (formData[field].trim() === "") {
-        notify("No puede haber campos vacíos"); // Llama a la notificación una sola vez
-        return; // Detén la ejecución del bucle al encontrar un campo vacío
-      }
-    }
-    
-    
-    const input = document.getElementById("recibo-gastos");
-    document.className = "todo";
-
-    const options = {
-      margin: 20,
-      filename: "recibo-gastos.pdf",
-      image: { type: "jpeg", quality: 0.2 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    };
-
-    const contenido = input.cloneNode(true);
-    // Clase para el logo pequeño
-    const logoElement = document.createElement("img");
-    logoElement.src = logo;
-    logoElement.className = "logo-pequeno";
-    contenido.prepend(logoElement);
-    html2pdf().from(contenido).set(options).save();
-  };
 
   const handleCancel = () => {
     setShowCancelModal(true);
@@ -149,6 +114,7 @@ export const ReciboGastos = () => {
         
       }else {
         const responseData = await response.json();
+        ReciboGasto()
         return responseData;
       }
     } catch (error) {
@@ -162,6 +128,104 @@ export const ReciboGastos = () => {
   };
 
 
+
+
+
+  const ReciboGasto= async () => {
+  
+    
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const { width, height } = page.getSize();
+      const fontSize = 19;
+      const padding = 50;
+  
+      // Agregar texto con la hora de emisión en la parte inferior de la página
+      const currentTime = new Date().toLocaleTimeString();
+      const footerText = `Hora de emisión: ${currentTime}`;
+  
+      page.drawText(footerText, {
+        x: padding,
+        y: padding,
+        size: 13,
+        color: rgb(0.5, 0.5, 0.5),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+  
+      // Organizamos los campos en dos columnas
+  
+      let yOffset = height - padding - fontSize * 2;
+  
+      // Load the logo image
+      const logoImageBytes = await fetch(logo).then((res) =>
+        res.arrayBuffer()
+      );
+      const logoImage = await pdfDoc.embedPng(logoImageBytes);
+  
+      // Dibujar el logo en el encabezado
+      page.drawImage(logoImage, {
+        x: padding - 10,
+        y: height - padding - fontSize * 0.6,
+        width: 100,
+        height: 50,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+  
+      // Dibujar el título al lado del logo con color gris opaco y posición vertical más alta
+      page.drawText("Adminmuebles", {
+        x: padding + 120,
+        y: height - padding - fontSize * 0.0,
+        size: fontSize + 0,
+        color: rgb(0.8, 0.8, 0.8),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+  
+      // Título del recibo
+      page.drawText("Recibo Gastos", {
+        x: width / 10,
+        y: height - padding - fontSize * 6,
+        size: fontSize + 9,
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+      yOffset -= fontSize * 9;
+
+  
+      // Dibujar línea horizontal en el encabezado
+      page.drawLine({
+        start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
+        end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+  
+      // Dibujar línea horizontal arriba de la hora actual
+      page.drawLine({
+        start: { x: padding, y: padding + fontSize * 0.5 + 20 },
+        end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+  
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "recibo.pdf";
+      link.click();
+
+
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
+  };
+
+
+
+
+
+  
   return (
     <div className="home-2">
       <div className="contenedor-formulario" id="recibo-gastos">
@@ -342,7 +406,7 @@ export const ReciboGastos = () => {
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
             No
           </Button>
-          <Button variant="primary" onClick={() => {handleConfirmSave(); handleSave();}} >
+          <Button variant="primary" onClick={() => {handleConfirmSave();}} >
             Sí
           </Button>
         </Modal.Footer>
