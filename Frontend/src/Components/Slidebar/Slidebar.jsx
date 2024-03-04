@@ -25,7 +25,8 @@ import {
 } from "react-bootstrap";
 import { useEffect } from "react";
 
-export const Slidebar = () => {
+// eslint-disable-next-line react/prop-types
+export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
   const correousuario = localStorage.getItem("items");
   const [nombre, setnombre] = useState("");
   const [apellido, setApellido] = useState("");
@@ -377,15 +378,6 @@ export const Slidebar = () => {
     }
   };
 
-  //Dark Mode
-  const [darkMode, setDarkMode] = useState(false);
-
-  const handleDarkModeToggle = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    document.body.classList.toggle("dark-mode",newDarkMode);
-  };
-
   return (
     <>
       <div
@@ -420,7 +412,7 @@ export const Slidebar = () => {
             <Dropdown.Item onClick={handleDarkModeToggle}>
               <FontAwesomeIcon
                 style={{ marginRight: "10px" }}
-                icon={darkMode ? faSun :faMoon}
+                icon={darkMode ? faSun : faMoon}
               />
               {darkMode ? "Modo Claro" : "Modo Oscuro"}
             </Dropdown.Item>

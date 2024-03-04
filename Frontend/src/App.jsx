@@ -41,7 +41,23 @@ import { EditarDatosIn } from "./Components/Register/EditarDatosInmueble/EditarD
 function App() {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const darkModeEnabled = localStorage.getItem("darkMode");
+    return darkModeEnabled ? JSON.parse(darkModeEnabled) : false;
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
+
+  const handleDarkModeToggle = () => {
+    setDarkMode((prevDarkMode) => !prevDarkMode);
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -61,7 +77,7 @@ function App() {
         <ToastContainer />
         <div className="Contener-todo">
           {location.pathname !== "/" &&
-            location.pathname !== "/EditarPerfil" && <Slidebar />}
+            location.pathname !== "/EditarPerfil" && <Slidebar darkMode={darkMode} handleDarkModeToggle={handleDarkModeToggle} />}
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/inicio" element={<Home />} />
