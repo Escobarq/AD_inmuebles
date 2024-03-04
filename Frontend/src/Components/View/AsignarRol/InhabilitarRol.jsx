@@ -31,7 +31,7 @@ export const InhabilitarRol = () => {
             errores();
         }
     };
-    
+
     //Modal para Inhabilitacion
     const handleOpenModal = (EmpleadosID) => {
         setHarrenndamiento(EmpleadosID);
@@ -90,9 +90,7 @@ export const InhabilitarRol = () => {
         // Mapeo de valores de idrol a textos correspondientes
         const rolesTexto = {
             1: "Administrador",
-            2: "Empleado",
-            3: "Asesor Comercial",
-            4: "Super Usuario",
+            2: "Asistente",
         };
         // Devolver el texto correspondiente al idrol proporcionado
         return rolesTexto[idrol] || "Rol desconocido";
@@ -134,17 +132,19 @@ export const InhabilitarRol = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = infoRol.slice(indexOfFirstItem, indexOfLastItem);
-
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    const redireccion = (ruta) => {
+        window.location.href = ruta;
+    }
+
     return (
         <div className="contener-home">
             <div className="title_view">
                 <h1 className="tittle_propetario">Empleados</h1>
-                <Button variant="dark" className="btn-add-info ">
-                    <Link to="/AsignarRol" className="linkes">
-                        <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-                        Empleados Inabilitados
-                    </Link>
+                <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/AsignarRol")}>
+                    <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
+                    Empleados Inabilitados
                 </Button>
             </div>
 

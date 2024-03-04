@@ -120,7 +120,7 @@ export const Arrendatario = () => {
         <td>{Arrendatarios.Estado}</td>
         <td>{Arrendatarios.Telefono}</td>
         <td>{Arrendatarios.Correo}</td>
-        <td>
+        <td >
           <Button
             className="btn-opciones"
             variant="danger"
@@ -141,7 +141,7 @@ export const Arrendatario = () => {
   };
   //Variables Paginacion
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -188,6 +188,9 @@ const handleEditArrendatario = (ArrendatarioId) => {
   }
 };
 
+const redireccion = (ruta) => {
+  window.location.href = ruta;
+}
 
 
   return (
@@ -227,11 +230,9 @@ const handleEditArrendatario = (ArrendatarioId) => {
             placement="top"
             overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Arrendatario</Tooltip> : <></>}
           >
-            <Button variant="success" className="btn-add">
-              <Link to="/ReArrendatario">
+            <Button variant="success" className="btn-add" onClick={() => redireccion("/ReArrendatario")}>
                 <FontAwesomeIcon className="icon" icon={faUserPlus} />
                 <p className="AgregarPA">Agregar Arrendatario</p>
-              </Link>
             </Button>
           </OverlayTrigger>
 
@@ -240,11 +241,9 @@ const handleEditArrendatario = (ArrendatarioId) => {
             placement="top"
             overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Arrendatarios Inhabilitados</Tooltip> : <></>}
           >
-            <Button variant="dark" className="btn-add-info">
-              <Link to="/Inharrendatario" className="linkes">
+            <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Inharrendatario")}>
                 <FontAwesomeIcon className="icon" icon={faUserSlash} />
                 <p className="AgregarPA">Ver Arrendatarios Inhabilitados</p>
-              </Link>
             </Button>
           </OverlayTrigger>
         </div>

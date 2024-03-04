@@ -1,5 +1,5 @@
-import  { useEffect, useState } from "react";
-import { Table, Button, Modal ,OverlayTrigger ,Tooltip } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useActualizarEstadoInmueble from "../../Hooks/InhabilitarInmueble";
 import NoResultImg from "../../../assets/NoResult.gif";
+import { format, toDate } from "date-fns";
 
 export const Inmueble = () => {
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
@@ -74,7 +75,7 @@ export const Inmueble = () => {
   // Paginacion
   const [infoinmueble, setinfoinmueble] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(9);
+  const [itemsPerPage] = useState(8);
 
   // Actualizar Inmueble
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
@@ -117,12 +118,14 @@ export const Inmueble = () => {
   };
   const fetchDataArren = async () => {
     try {
-      const response = await fetch("http://localhost:3006/Varrendatario?Estado=Libre");
+      const response = await fetch(
+        "http://localhost:3006/Varrendatario?Estado=Libre"
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-          setinfoarrendatario(data);
+      setinfoarrendatario(data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -177,12 +180,58 @@ export const Inmueble = () => {
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
-          <Button className="btn-opciones" variant="warning">
+          <Button
+            className="btn-opciones"
+            variant="warning"
+            onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
       </tr>
     );
+  };
+
+  //Traer Informacion
+  const handleEditInmuebles = (InmuebleId) => {
+    const inmueble = infoinmueble.find((inm) => inm.IdInmueble === InmuebleId);
+    if (!inmueble) {
+      console.error("No se encontró el inmueble con ID:", InmuebleId);
+      return;
+    }
+
+    // Formatear la fecha Aseguramiento antes de agregarla a inmuebleData
+    const aseguramientoDateObject = toDate(new Date(inmueble.Aseguramiento));
+    const formattedAseguramiento = format(
+      aseguramientoDateObject,
+      "yyyy-MM-dd"
+    );
+
+    // Crear objeto con los datos del inmueble, incluyendo la fecha formateada
+    const inmuebleData = {
+      IdInmueble: inmueble.IdInmueble,
+      NoMatricula: inmueble.NoMatricula,
+      Direccion: inmueble.Direccion,
+      Estrato: inmueble.Estrato,
+      Ciudad: inmueble.Ciudad,
+      Barrio: inmueble.Barrio,
+      Tipo: inmueble.Tipo,
+      NoNiveles: inmueble.NoNiveles,
+      NoBanos: inmueble.NoBanos,
+      ServiciosPublicos: inmueble.ServiciosPublicos,
+      NoHabitaciones: inmueble.NoHabitaciones,
+      Estado: inmueble.Estado,
+      NoTerraza: inmueble.NoTerraza,
+      AreaConstruidaM2: inmueble.AreaConstruidaM2,
+      Aseguramiento: formattedAseguramiento, // Usar la fecha formateada
+      ValorInmueble: inmueble.ValorInmueble,
+      Descripcion: inmueble.Descripcion,
+    };
+
+    // Redireccionar a la ruta de edición de inmueble
+    window.location.href = `/EditarDatosIn?${new URLSearchParams(
+      inmuebleData
+    ).toString()}`;
   };
 
   const createrowDetalles = () => {
@@ -348,18 +397,22 @@ export const Inmueble = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoinmueble.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
- //Tooltip 
- const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
+  //Tooltip
+  const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
- useEffect(() => {
-   const updateTooltipVisibility = () => {
-     setShowTooltip(window.innerWidth < 1366);
-   };
+  useEffect(() => {
+    const updateTooltipVisibility = () => {
+      setShowTooltip(window.innerWidth < 1366);
+    };
 
-   window.addEventListener('resize', updateTooltipVisibility);
-   return () => window.removeEventListener('resize', updateTooltipVisibility);
- }, []);
- 
+    window.addEventListener("resize", updateTooltipVisibility);
+    return () => window.removeEventListener("resize", updateTooltipVisibility);
+  }, []);
+
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  };
+
   return (
     <>
       <div className="contener-home">
@@ -420,29 +473,45 @@ export const Inmueble = () => {
           <OverlayTrigger
             key="tooltip-add-inmueble"
             placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Inmueble</Tooltip> : <></>}
+            overlay={
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">Agregar Inmueble</Tooltip>
+              ) : (
+                <></>
+              )
+            }
           >
-            <Button variant="success" className="btn-add">
-              <Link to="/RInmuebleA">
-                <FontAwesomeIcon
-                  icon={faHouseChimneyMedical}
-                  style={{ color: "#ffffff" }}
-                />
-                <p className="AgregarPA">Agregar Inmueble</p>
-              </Link>
+            <Button
+              variant="success"
+              className="btn-add"
+              onClick={() => redireccion("/RInmuebleA")}
+            >
+              <FontAwesomeIcon
+                icon={faHouseChimneyMedical}
+                style={{ color: "#ffffff" }}
+              />
+              <p className="AgregarPA">Agregar Inmueble</p>
             </Button>
           </OverlayTrigger>
 
           <OverlayTrigger
             key="tooltip-ver-inhabilitados"
             placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Inhabilitados</Tooltip> : <></>}
+            overlay={
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">Ver Inhabilitados</Tooltip>
+              ) : (
+                <></>
+              )
+            }
           >
-            <Button variant="dark" className="btn-add-info">
-              <Link to="/InhaInmueble" className="linkes">
-                <FontAwesomeIcon className="icon" icon={faUserSlash} /> 
-                <p className="AgregarPA">Ver Inhabilitados</p>
-              </Link>
+            <Button
+              variant="dark"
+              className="btn-add-info"
+              onClick={() => redireccion("/InhaInmueble")}
+            >
+              <FontAwesomeIcon className="icon" icon={faUserSlash} />
+              <p className="AgregarPA">Ver Inhabilitados</p>
             </Button>
           </OverlayTrigger>
         </div>

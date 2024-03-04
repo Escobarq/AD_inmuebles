@@ -10,6 +10,7 @@ export const RInmuebleB = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
 
+  
   const notify = () =>
     toast.success("Se Registro correctamente", {
       theme: "dark",
@@ -57,6 +58,7 @@ export const RInmuebleB = () => {
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
+  
   return (
     <div className="contener-home contener-rpropietario">
       <h2>Registro Inmueble </h2>
@@ -82,12 +84,8 @@ export const RInmuebleB = () => {
               </Form.Group>
 
               <Form.Group controlId="formNoMatricula">
-                <Form.Label>No. Matricula</Form.Label>
-                <Form.Control
-                  required
-                  {...register("Nmatricula")}
-                  type="number"
-                />
+                <Form.Label>No. Matricula:</Form.Label>
+                <Form.Control required {...register("Nmatricula")}type="number" />
               </Form.Group>
 
               <Form.Group controlId="formDireccion">
@@ -101,27 +99,18 @@ export const RInmuebleB = () => {
               </Form.Group>
 
               <Form.Group controlId="formBarrio">
-                <Form.Label>Barrio</Form.Label>
+                <Form.Label>Barrio:</Form.Label>
                 <Form.Control required {...register("Barrio")} type="text" />
               </Form.Group>
 
               <Form.Group controlId="formNoBanos">
-                <Form.Label>Valor</Form.Label>
+                <Form.Label>Valor:</Form.Label>
                 <Form.Control required {...register("ValorIn")} type="number" />
               </Form.Group>
-
-              </Form>
-            </div>
-
-            <div className="col-md-6">
+         
               <Form.Group controlId="formEstrato">
                 <Form.Label>Estrato</Form.Label>
-                <Form.Select
-                  className="formSelect"
-                  required
-                  {...register("Estrato")}
-                  aria-label="Default select example"
-                >
+                <Form.Select className="formSelect" required {...register("Estrato")} aria-label="Default select example" >
                   <option value="" selected>
                     Seleccione estrato
                   </option>
@@ -146,11 +135,7 @@ export const RInmuebleB = () => {
 
               <Form.Group controlId="formNoNiveles">
                 <Form.Label>Aseguramiento</Form.Label>
-                <Form.Control
-                  required
-                  {...register("aseguraiento")}
-                  type="date"
-                />
+                <Form.Control required {...register("aseguraiento")} type="date" />
               </Form.Group>
 
               <Form.Group controlId="formNoIdentidadPropietario">
@@ -160,15 +145,9 @@ export const RInmuebleB = () => {
 
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Descripción</Form.Label>
-                <Form.Control
-                  required
-                  {...register("Descripcion")}
-                  as="textarea"
-                  rows={2}
-                  style={{ width: "100%", resize: "none" }}
-                />
-              </Form.Group>
-              
+                <Form.Control required {...register("Descripcion")}  as="textarea" />   
+                  </Form.Group>
+                  </Form>
             </div>
 
             <div className="contener-buttons d-flex justify-content-center">

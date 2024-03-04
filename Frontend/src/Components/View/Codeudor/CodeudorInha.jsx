@@ -120,22 +120,23 @@ export const CodeudorInha = () => {
 
   //Variables Paginacion
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoCodeudor.slice(indexOfFirstItem, indexOfLastItem);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  }
+  
   return (
     <>
       <div className="contener-home">
         <div className="conten-filtro">
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/Codeudor" className="linkes">
+          <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Codeudor")}>
               <FontAwesomeIcon className="icon" icon={faEye} /> Ver Habilidatos
-            </Link>
           </Button>
         </div>
         <div className="title_view">

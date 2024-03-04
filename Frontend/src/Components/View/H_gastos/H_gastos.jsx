@@ -1,58 +1,16 @@
-import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Table, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
-  faTrash,
-  faPenToSquare,
-  faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
 import "moment/locale/es";
-import { toast } from "react-toastify";
-import useActualizarEstadoHistorialGasto from "../../Hooks/InhabilitarHgastos";
 
 export const H_gastos = () => {
   const [infoComision, setinfoComision] = useState([]);
-  const { actualizarEstadoHgastos } = useActualizarEstadoHistorialGasto();
-  const [Hgastos, setHgastos] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
-  // Función para inhabilitar los gastos
-  const handleInhabilitarHgastos = async (HgastosId) => {
-    try {
-      await actualizarEstadoHgastos(HgastosId, "false"); // Utilizando la función correcta
-      const updatedHgastos = infoComision.filter(
-        (hgastos) => hgastos.IdComisionPropietario !== HgastosId
-      );
-      setinfoComision(updatedHgastos); // Cambio en el nombre de la variable
-      notify();
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error al inhabilitar codeudor:", error);
-      errores();
-    }
-  };
-  //Modal para Inhabilitacion
-  const handleOpenModal = (HgastosId) => {
-    setHgastos(HgastosId);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  const notify = () =>
-    toast.success("Se Inabilito Correctamente ", {
-      theme: "dark",
-    });
-  const errores = () =>
-    toast.error("Hubo algun error  ", {
-      theme: "dark",
-    });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,7 +44,6 @@ export const H_gastos = () => {
         <th>Forma pago</th>
         <th>Valor pago</th>
         <th>Observaciones</th>
-        <th>Opciones</th>
       </tr>
     );
   };
@@ -117,25 +74,12 @@ export const H_gastos = () => {
         <td>{CPropietario.FormaPago}</td>
         <td>${CPropietario.ValorArriendo}</td>
         <td>{CPropietario.Observaciones}</td>
-        <td>
-          <Button
-            className="btn-opciones"
-            variant="danger"
-            onClick={() => handleOpenModal(CPropietario.IdComisionPropietario)}
-          >
-            <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
-          </Button>
-
-          <Button className="btn-opciones" variant="warning">
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </Button>
-        </td>
       </tr>
     );
   };
   //Variables Paginacion
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -181,19 +125,6 @@ export const H_gastos = () => {
               </Link>
             </Button>
           </OverlayTrigger>
-
-          <OverlayTrigger
-            key="tooltip-ver-inhabilitados-gastos"
-            placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop"> Ver Gastos Inhabilitados</Tooltip> : <></>}
-          >
-            <Button variant="dark" className="btn-add-info">
-              <Link to="/Hgastos" className="linkes">
-                <FontAwesomeIcon className="icon" icon={faUserSlash} />
-                <p className="AgregarPA">Ver Gastos Inhabilitados</p>
-              </Link>
-            </Button>
-          </OverlayTrigger>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">
@@ -236,25 +167,6 @@ export const H_gastos = () => {
           </Pagination>
         </div>
       </div>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          ¿Está seguro de que desea inhabilitar este codeudor?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancelar
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => handleInhabilitarHgastos(Hgastos)}
-          >
-            Confirmar
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

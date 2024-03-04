@@ -128,22 +128,25 @@ export const InhabilitarPropetario = () => {
   };
   //Variables Paginacion
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infopropietario.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  }
+  
   return (
     <>
       <div className="contener-home">
         <div className="conten-filtro">
-          <Button variant="dark" className="btn-add-info ">
-            <Link to="/Propietario" className="linkes">
+          <Button variant="dark" className="btn-add-info " onClick={() => redireccion("/Propietario")}>
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
               Habilitados
-            </Link>
           </Button>
         </div>
         <div className="title_view">

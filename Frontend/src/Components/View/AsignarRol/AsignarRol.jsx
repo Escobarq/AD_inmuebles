@@ -105,7 +105,7 @@ export const AsignarRol = () => {
           <td>{roles.Contrasena}</td>
           <td>{roles.Telefono}</td>
           <td>{convertirIdRolATexto(roles.Idrol)}</td>
-          <td>
+          <td >
             <Button className="btn-opciones"
               variant="danger"
               onClick={() => handleOpenModal(roles.IdTrabajador)}>
@@ -159,6 +159,9 @@ export const AsignarRol = () => {
     }
   };
   
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  }
   
   return (
     <div className="contener-home">
@@ -171,11 +174,9 @@ export const AsignarRol = () => {
             <option value="Asistente">Asistente</option>
           </select>
         </div>
-        <Button variant="dark" className="btn-add-info ">
-          <Link to="/InhabilitarRol" className="linkes">
+        <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/InhabilitarRol")}>
             <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
             Empleados Inhabilitados
-          </Link>
         </Button>
       </div>
 

@@ -26,7 +26,7 @@ export const RInmuebleA = () => {
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
-    let NITPropietario = localStorage.getItem("NITPropie");
+    const NITPropietario = localStorage.getItem("NITPropie");
     fetchData(NITPropietario);
   }, []);
 
@@ -41,7 +41,7 @@ export const RInmuebleA = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setinfopropietario(data);
+        setinfopropietario(data[0]);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -64,18 +64,19 @@ export const RInmuebleA = () => {
     setMostrarModalA(false);
   };
   const handleMostrarAClick = async () => {
-    console.log("Mostrando modal...");
     setMostrarModalA(true);
   };
   
 
   const createrowA = (Propietarios) => {
+    let NITPropietario =  Propietarios.DocumentoIdentidad
     return (
-      <tr key={Propietarios.IdArrendatario}>
+      <tr
+      onClick={() => fetchData(NITPropietario)} 
+        key={Propietarios.IdPropietario}>
         <td>{Propietarios.TipoDocumento}</td>
         <td>{Propietarios.DocumentoIdentidad}</td>
         <td>{Propietarios.NombreCompleto}</td>
-        <td>{Propietarios.Estado}</td>
         <td>{Propietarios.Telefono}</td>
         <td>{Propietarios.Correo}</td>
       </tr>
@@ -101,6 +102,7 @@ export const RInmuebleA = () => {
       }
     }
   };
+  
 
   const handleSelectChange = (event) => {
     const selectedOption = event.target.value;
@@ -121,6 +123,7 @@ export const RInmuebleA = () => {
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
+
 
   return (
     <div className="contener-home contener-rpropietario">
@@ -263,20 +266,19 @@ export const RInmuebleA = () => {
             {NoResult === true ? (
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Propietario del inmueble</Form.Label>
-                <Button
-                  type="button"
-                  variant="success m-2"
+                <Form.Control
+                  placeholder="Seleccione aqui"
                   onClick={() => handleMostrarAClick()}
-                >
-                  <span className="text_button ms-2">Ver Propietarios</span>
-                </Button>
+                  className="InputsRegistros"
+                  type="text"
+                />
               </Form.Group>
             ) : (
               <Form.Group controlId="formNoIdentidadPropietario">
                 <Form.Label>Propietario del inmueble</Form.Label>
                 {infopropietario && infopropietario.NombreCompleto ? (
                   <Form.Control
-                    disabled
+                    onClick={() => handleMostrarAClick()}
                     value={infopropietario.NombreCompleto}
                     className="InputsRegistros"
                     type="text"
@@ -370,7 +372,7 @@ export const RInmuebleA = () => {
               </Button>
             </Modal.Footer>
           </Modal>
-          {infopropietario.length > 0 ? (
+          {infopropietario && infopropietario.length > 0 ? (
             <Modal
               size="lg"
               show={mostrarModalA}
@@ -387,7 +389,6 @@ export const RInmuebleA = () => {
                       <th>Tipo de Documento</th>
                       <th>No. Documento</th>
                       <th>Nombre</th>
-                      <th>Estado</th>
                       <th>Teléfono</th>
                       <th>Correo</th>
                     </tr>
