@@ -70,7 +70,9 @@ export const GastosIn = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = tableData.slice(indexOfFirstItem, indexOfLastItem);
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
 
 
@@ -84,27 +86,44 @@ export const GastosIn = () => {
     // Logo-pdf
     doc.addImage(logo, "PNG", 15, 10, 33, 20); // Logo next to the title
     // titulo pdf
-    doc.text("Contrato Arrendatario", 60, 23); // Title next to the logo
-    // Columnas-pdf
-    const columns = [
-      { header: "N°", dataKey: "IdPropietario" },
-      { header: "Nombre Propietario", dataKey: "NombreCompleto" },
-      { header: "Arrendamiento", dataKey: "ValorArriendo" },
-      { header: "Periodo Pagado", dataKey: "PeriodoPagado" },
-      { header: "Deposito", dataKey: "" },
-      { header: "Forma de Pago", dataKey: "FormaPago" },
-      { header: "Total", dataKey: "" },
-      { header: "Observaciones", dataKey: "Observaciones" }
+
+    doc.text("Comisión de Gastos", 60, 23); // Title next to the logo
+
+
+    const date = new Date();
+    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
-    // Datos de la tabla
-    const data = currentItems.map(item => ({
-      IdPropietario: item.IdPropietario,
-      NombreCompleto: item.NombreCompleto,
-      ValorArriendo: item.ValorArriendo,
-      PeriodoPagado: formatDate(item.PeriodoPagado),
-      FormaPago: item.FormaPago,
-      Observaciones: item.Observaciones
-    }));
+    const formattedDate = `${monthNames[date.getMonth()]}/${date.getDate()}/${date.getFullYear()}`;
+    doc.setTextColor(128); // Gris
+    doc.setFontSize(10);
+    doc.text(formattedDate, 190, 10, null, null, "right");
+
+ // Columnas-pdf
+ const columns = [
+  { header: "N°", dataKey: "IdPropietario" },
+  { header: "Nombre Propietario", dataKey: "NombreCompleto" },
+  { header: "Arrendamiento", dataKey: "ValorArriendo" },
+  { header: "Periodo Pagado", dataKey: "PeriodoPagado" },
+  { header: "Deposito", dataKey: "" },
+  { header: "Forma de Pago", dataKey: "FormaPago" },
+  { header: "Total", dataKey: "" },
+  { header: "Observaciones", dataKey: "Observaciones" }
+];
+
+// Datos de la tabla
+const data = tableData.map(arrendatario => ({
+  IdPropietario: arrendatario.IdPropietario,
+  NombreCompleto: arrendatario.NombreCompleto,
+  ValorArriendo: arrendatario.ValorArriendo,
+  PeriodoPagado: formatDate(arrendatario.PeriodoPagado),
+  FormaPago: arrendatario.FormaPago,
+  Observaciones: arrendatario.Observaciones
+}));
+
+
+
+
 
     //informacion en forma de tabla
     autoTable(doc, {
@@ -113,8 +132,9 @@ export const GastosIn = () => {
       //plain
       columns,
       body: data,
-      startY: 40
+      startY: 40,
     }); // Move the table further down
+
 
 
     // obtener el numero total de paginas
@@ -132,6 +152,7 @@ export const GastosIn = () => {
         { align: "center" }
       );
     }
+
     // Agregar fecha actual en la parte superior derecha
     doc.setFontSize(10);
     doc.setTextColor(100);
@@ -142,8 +163,9 @@ export const GastosIn = () => {
       { align: "right" }
     );
     // nombre de pdf
-    doc.save("Contrato_Arrendatario.pdf");
+     doc.save("Comisión de Gastos.pdf");
   };
+
 
 
   
