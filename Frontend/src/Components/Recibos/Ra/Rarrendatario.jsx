@@ -1,18 +1,14 @@
-
 import { useEffect, useState } from "react";
 import { Button, Form, Modal, ListGroup } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib"; // Importar StandardFonts
-import moment from "moment";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import logo from '../../../assets/Logo.png'
+import logo from "../../../assets/Logo.png";
 
 export const Rarrendatario = () => {
-
-
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const { register, handleSubmit, reset } = useForm();
@@ -20,7 +16,6 @@ export const Rarrendatario = () => {
   const [selectedContrato, setSelectedContrato] = useState("");
   const [ContratosDisponibles, setContratosDisponibles] = useState([]);
   const [PagoArrenda, setPagoArrenda] = useState([]);
-
 
   const handleGuardarClick = async () => {
     // Definir el orden de las claves
@@ -30,25 +25,24 @@ export const Rarrendatario = () => {
       "NoMatricula",
       "FormaPago",
       "ValorPago",
-     "FechaIni",
-     "FechaFin",
-     "FormaPago",
+      "FechaIni",
+      "FechaFin",
+      "FormaPago",
       "Estado",
-      "TipoInmueble"
+      "TipoInmueble",
     ];
-  
+
     try {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage();
       const { width, height } = page.getSize();
       const fontSize = 19;
       const padding = 50;
-  
 
       // Agregar texto con la hora de emisión en la parte inferior de la página
       const currentTime = new Date().toLocaleTimeString();
       const footerText = `Hora de emisión: ${currentTime}`;
-  
+
       page.drawText(footerText, {
         x: padding,
         y: padding,
@@ -56,19 +50,17 @@ export const Rarrendatario = () => {
         color: rgb(0.5, 0.5, 0.5),
         font: await pdfDoc.embedFont("Helvetica"),
       });
-  
+
       // Organizamos los campos en dos columnas
       let leftX = padding;
       let rightX = width / 2 + 20;
-  
+
       let yOffset = height - padding - fontSize * 2;
-  
+
       // Load the logo image
-      const logoImageBytes = await fetch(logo).then((res) =>
-        res.arrayBuffer()
-      );
+      const logoImageBytes = await fetch(logo).then((res) => res.arrayBuffer());
       const logoImage = await pdfDoc.embedPng(logoImageBytes);
-  
+
       // Dibujar el logo en el encabezado
       page.drawImage(logoImage, {
         x: padding - 10,
@@ -77,7 +69,7 @@ export const Rarrendatario = () => {
         height: 50,
         color: rgb(0.7, 0.7, 0.7),
       });
-  
+
       // Dibujar el título al lado del logo con color gris opaco y posición vertical más alta
       page.drawText("Adminmuebles", {
         x: padding + 120,
@@ -86,7 +78,7 @@ export const Rarrendatario = () => {
         color: rgb(0.8, 0.8, 0.8),
         font: await pdfDoc.embedFont("Helvetica"),
       });
-  
+
       // Título del recibo
       page.drawText("Recibo de Arrendatario", {
         x: width / 10,
@@ -95,7 +87,7 @@ export const Rarrendatario = () => {
         font: await pdfDoc.embedFont("Helvetica"),
       });
       yOffset -= fontSize * 9;
-  
+
       // Dibujamos los campos y las respuestas en el orden especificado
       for (const key of order) {
         const element = PagoArrenda[key];
@@ -109,7 +101,7 @@ export const Rarrendatario = () => {
             font: await pdfDoc.embedFont("Helvetica-Bold"),
             align: "right",
           });
-  
+
           // Dibujamos la respuesta debajo del nombre del campo
           page.drawText(`${element}`, {
             x: leftX,
@@ -118,7 +110,7 @@ export const Rarrendatario = () => {
             color: rgb(0, 0, 0),
             align: "left",
           });
-  
+
           if (leftX === padding) {
             leftX = rightX;
           } else {
@@ -138,7 +130,7 @@ export const Rarrendatario = () => {
           }
         }
       }
-  
+
       // Dibujar línea horizontal en el encabezado
       page.drawLine({
         start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
@@ -146,7 +138,7 @@ export const Rarrendatario = () => {
         thickness: 1,
         color: rgb(0.7, 0.7, 0.7),
       });
-  
+
       // Dibujar línea horizontal arriba de la hora actual
       page.drawLine({
         start: { x: padding, y: padding + fontSize * 0.5 + 20 },
@@ -154,7 +146,7 @@ export const Rarrendatario = () => {
         thickness: 1,
         color: rgb(0.7, 0.7, 0.7),
       });
-  
+
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
@@ -164,21 +156,17 @@ export const Rarrendatario = () => {
       link.click();
     } catch (error) {}
   };
-  
-  
-  const success = (text) =>
+
+  const funcional = (text) =>
     toast.success(text, {
       theme: "colored",
     });
+
   const falla = (text) =>
     toast.error(text, {
       theme: "colored",
     });
 
-  const fallo = (text) =>
-    toast.error(text, {
-      theme: "colored",
-    });
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
   // Función para obtener la fecha actual en formato YYYY-MM-DD
   function getCurrentDate() {
@@ -197,7 +185,9 @@ export const Rarrendatario = () => {
 
   const cargarContratosDisponibles = async () => {
     try {
-      const response = await axios.get("http://localhost:3006/contrato-arren-inmue");
+      const response = await axios.get(
+        "http://localhost:3006/contrato-arren-inmue"
+      );
       const Contratos = response.data.map((prop) => prop);
 
       setContratosDisponibles(Contratos);
@@ -205,54 +195,51 @@ export const Rarrendatario = () => {
       console.log(response.data);
     } catch (error) {
       console.error("Error al cargar las matrículas:", error);
-      toast.error("Error al cargar las matrículas. Inténtalo de nuevo más tarde.");
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
     }
   };
 
-
   const onSubmitRegistro = async (data) => {
-    data.NombreArrendatario = selectedContrato.NombreArrendatario
-    data.IdContrato = selectedContrato.IdContrato
-    data.IdArrendatario = selectedContrato.IdArrendatario
-    data.FechaPago = currentDate
-    data.Estado = "Pagado"
-    data.NoDocumento = selectedContrato.DocumentoIdentidad
-    data.NoMatricula = selectedContrato.NoMatricula
-    data.TipoInmueble = selectedContrato.TipoInmueble
-    console.log(data);
-
+    data.NombreArrendatario = selectedContrato.NombreArrendatario;
+    data.IdContrato = selectedContrato.IdContrato;
+    data.IdArrendatario = selectedContrato.IdArrendatario;
+    data.FechaPago = currentDate;
+    data.Estado = "Pagado";
+    data.NoDocumento = selectedContrato.DocumentoIdentidad;
+    data.NoMatricula = selectedContrato.NoMatricula;
+    data.TipoInmueble = selectedContrato.TipoInmueble;
     try {
-      const response = await fetch('http://localhost:3006/RPagoArrendamiento', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3006/RPagoArrendamiento", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data), // Aquí debes asegurarte de que data contenga todos los campos necesarios
       });
       if (response.ok) {
-        setPagoArrenda(data)
-        success(),
-          handleGuardarClick(),
-          setShowSaveModal(false); // Muestra el modal de confirmación
+        setPagoArrenda(data);
+        funcional('se an enviado los datos correctamente'),
+        window.location.href="/H_recibos"
+        handleGuardarClick(), 
+        setShowSaveModal(false); // Muestra el modal de confirmación
         reset();
       }
     } catch (error) {
-      console.error("Error al enviar datos al servidor:", error);
+      falla("Error al enviar datos al servidor:", error);
     }
   };
-
 
   const handleConfirmSave = async () => {
     handleSubmit(onSubmitRegistro)();
     setShowSaveModal(false);
-  }
-
+  };
 
   const handleContratoChange = async (Contrato) => {
     setSelectedContrato(Contrato);
     setShowContratoModal(false);
   };
-
 
   const handleCancelClick = () => {
     setShowCancelModal(true);
@@ -261,14 +248,9 @@ export const Rarrendatario = () => {
   const handleConfirmCancel = () => {
     setShowCancelModal(false);
     // Restablecer los campos del formulario al cancelar
-    setFormData({
-
-    });
+    setFormData({});
     window.location.href = "/H_recibos";
   };
-
-
-
 
   return (
     <div className="contener-home contener-ReArrendatario">
@@ -278,7 +260,8 @@ export const Rarrendatario = () => {
           <div className="form-propietario">
             <Form.Group controlId="fecha">
               <Form.Label>Fecha de Pago:</Form.Label>
-              <Form.Control className="InputsRegistros"
+              <Form.Control
+                className="InputsRegistros"
                 disabled
                 defaultValue={currentDate}
                 type="date"
@@ -287,12 +270,9 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="documentoIdentidad">
               <Form.Label>Contrato:</Form.Label>
-              <Form.Select className="InputsRegistros"
-                value={
-                  selectedContrato
-                    ? selectedContrato.IdContrato
-                    : ""
-                }
+              <Form.Select
+                className="InputsRegistros"
+                value={selectedContrato ? selectedContrato.IdContrato : ""}
                 onChange={(e) => handleContratoChange(e.target.value)}
                 onClick={() => setShowContratoModal(true)}
               >
@@ -307,70 +287,56 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>No Documento Arrendatario:</Form.Label>
-              <Form.Control className="InputsRegistros"
+              <Form.Control
+                className="InputsRegistros"
                 disabled
                 value={
-                  selectedContrato
-                    ? selectedContrato.DocumentoIdentidad
-                    : ""
+                  selectedContrato ? selectedContrato.DocumentoIdentidad : ""
                 }
                 type="text"
-
               />
             </Form.Group>
 
             <Form.Group controlId="nombre">
               <Form.Label>No Matricula Inmueble:</Form.Label>
-              <Form.Control className="InputsRegistros"
+              <Form.Control
+                className="InputsRegistros"
                 disabled
-                value={
-                  selectedContrato
-                    ? selectedContrato.NoMatricula
-                    : ""
-                }
+                value={selectedContrato ? selectedContrato.NoMatricula : ""}
                 type="text"
-
               />
             </Form.Group>
 
             <Form.Group controlId="nombre">
               <Form.Label>Nombre Arrendatario:</Form.Label>
-              <Form.Control className="InputsRegistros"
+              <Form.Control
+                className="InputsRegistros"
                 disabled
                 value={
-                  selectedContrato
-                    ? selectedContrato.NombreArrendatario
-                    : ""
+                  selectedContrato ? selectedContrato.NombreArrendatario : ""
                 }
                 type="text"
-
               />
             </Form.Group>
 
             <Form.Group controlId="nombre">
               <Form.Label>Tipo de Inmueble:</Form.Label>
-              <Form.Control className="InputsRegistros"
+              <Form.Control
+                className="InputsRegistros"
                 disabled
-                value={
-                  selectedContrato
-                    ? selectedContrato.TipoInmueble
-                    : ""
-                }
+                value={selectedContrato ? selectedContrato.TipoInmueble : ""}
                 type="text"
-
               />
             </Form.Group>
 
             <Form.Group controlId="suma">
               <Form.Label>Valor del Pago:</Form.Label>
-              <Form.Control className="InputsRegistros"
+              <Form.Control
+                className="InputsRegistros"
                 type="number"
                 {...register("ValorPago")}
-
               />
             </Form.Group>
-
-
 
             <Form.Group controlId="pagadoCon">
               <Form.Label>Forma de Pagado:</Form.Label>
@@ -385,22 +351,21 @@ export const Rarrendatario = () => {
               </Form.Select>
             </Form.Group>
 
-
             <Form.Group controlId="periodoDesde">
               <Form.Label>Fecha Inicial de Pago:</Form.Label>
-              <Form.Control className="InputsRegistros"
+              <Form.Control
+                className="InputsRegistros"
                 type="date"
                 {...register("FechaIni")}
-
               />
             </Form.Group>
 
             <Form.Group controlId="periodoHasta">
               <Form.Label>Fecha Final Pago:</Form.Label>
-              <Form.Control className="InputsRegistros"
+              <Form.Control
+                className="InputsRegistros"
                 type="date"
                 {...register("FechaFin")}
-
               />
             </Form.Group>
           </div>
@@ -490,5 +455,4 @@ export const Rarrendatario = () => {
       </Modal>
     </div>
   );
-
 };

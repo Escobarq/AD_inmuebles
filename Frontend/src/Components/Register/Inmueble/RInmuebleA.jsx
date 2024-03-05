@@ -70,10 +70,9 @@ export const RInmuebleA = () => {
   };
   const handlePropietarioChange = async (Propietario) => {
     setSelectedPropietario(Propietario);
-    console.log(Propietario)
+    console.log(Propietario);
     setMostrarModalA(false);
   };
-
 
   const handleSelectChange = (event) => {
     const selectedOption = event.target.value;
@@ -163,17 +162,22 @@ export const RInmuebleA = () => {
 
             <Form.Group controlId="formEstrato">
               <Form.Label>Estrato:</Form.Label>
-              <Form.Select className="formSelect InputsRegistros" required {...register("Estrato")} aria-label="Default select example" >
-                  <option value="" selected>
-                    Seleccione estrato
-                  </option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                </Form.Select>
+              <Form.Select
+                className="formSelect InputsRegistros"
+                required
+                {...register("Estrato")}
+                aria-label="Default select example"
+              >
+                <option value="" selected>
+                  Seleccione estrato
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+              </Form.Select>
             </Form.Group>
 
             <Form.Group controlId="formNoBanos">
@@ -238,25 +242,24 @@ export const RInmuebleA = () => {
                 type="date"
               />
             </Form.Group>
-              <Form.Group controlId="formNoIdentidadPropietario">
-                <Form.Label>Propietario del inmueble</Form.Label>
-                <Form.Select className="InputsRegistros"
+            <Form.Group controlId="formNoIdentidadPropietario">
+              <Form.Label>Propietario del inmueble</Form.Label>
+              <Form.Select
+                className="InputsRegistros"
                 value={
-                  selectedPropietario
-                    ? selectedPropietario.IdPropietario
-                    : "a?"
+                  selectedPropietario ? selectedPropietario.IdPropietario : "a?"
                 }
                 onChange={(e) => handlePropietarioChange(e.target.value)}
                 onClick={() => handleMostrarAClick(true)}
               >
                 <option value="">Seleccionar Numero de Propietario</option>
                 {PropietariosDisponibles.map((Propietario, index) => (
-                  <option key={index} value={Propietario.IdPropietario}>               
-                    {Propietario.NombreCompleto}                    
+                  <option key={index} value={Propietario.IdPropietario}>
+                    {Propietario.NombreCompleto}
                   </option>
                 ))}
               </Form.Select>
-              </Form.Group>
+            </Form.Group>
           </div>
           <Form.Group controlId="formNoIdentidadPropietario">
             <Form.Label>Descripción</Form.Label>
@@ -353,9 +356,11 @@ export const RInmuebleA = () => {
                     action
                     onClick={() => handlePropietarioChange(Propietario)}
                   >
-                  {Propietario.TipoDocumento} : 
-                    {Propietario.DocumentoIdentidad} //                    
-                    {Propietario.NombreCompleto}
+                    <span style={{ marginRight: "10px" }}>
+                      🏢 {/* Icono de propietario */}
+                    </span>
+                    {Propietario.TipoDocumento} {Propietario.DocumentoIdentidad}{" "}
+                    - {Propietario.NombreCompleto}
                   </ListGroup.Item>
                 ))}
               </ListGroup>

@@ -489,8 +489,8 @@ router.post("/RPropietario", async (req, res) => {
   const {
     numerodocumento,
     nombrepropietario,
-    telefono,
-    correoelectronico,
+    Telefono,
+    Correo,
     tipocuenta,
     banco,
     direccion,
@@ -501,16 +501,16 @@ router.post("/RPropietario", async (req, res) => {
 
   try {
     connection.query(
-      "INSERT INTO propietario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Direccion,  Correo, Banco, TipoCuenta, Telefono, NumeroCuenta, FechaIngreso) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?,?)",
+      "INSERT INTO propietario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Direccion, Correo, Banco, TipoCuenta, Telefono, NumeroCuenta, FechaIngreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         nombrepropietario,
         TipoDocumento,
         numerodocumento,
         direccion,
-        correoelectronico,
+        Correo,
         banco,
         tipocuenta,
-        telefono,
+        Telefono,
         numerocuenta,
         fechaingreso,
       ],
@@ -520,9 +520,7 @@ router.post("/RPropietario", async (req, res) => {
           res.status(500).json({ error: "Error al añadir propietario" });
         } else {
           console.log("Propietario agregado:", results);
-          res
-            .status(201)
-            .json({ message: "Propietario registrado exitosamente" });
+          res.status(201).json({ message: "Propietario registrado exitosamente" });
         }
       }
     );
@@ -531,6 +529,7 @@ router.post("/RPropietario", async (req, res) => {
     res.status(500).json({ error: "Error al añadir propietario" });
   }
 });
+
 
 // Ruta para registrar un Inmueble
 router.post("/Reinmueble", async (req, res) => {
@@ -886,7 +885,6 @@ router.post("/RPagoArrendamiento", async (req, res) => {
   }
 });
 
-    //Registro de Comision de gastos
 router.post("/RComision", async (req, res) => {
   const {
     IdPropietario,
@@ -901,28 +899,37 @@ router.post("/RComision", async (req, res) => {
   } = req.body;
 
   try {
+    // Validación de valores
+    if (!IdPropietario || !IdInmueble || !FechaPago || !ElaboradoPor) {
+      return res.status(400).json({ error: "Faltan campos obligatorios" });
+    }
+
+    // Valores predeterminados
+    const pagoArriendo = PagoArriendo || 0;
+    const adminInmobiliaria = AdminInmobiliaria || 0;
+    const aseoEntrega = AseoEntrega || 0;
+    const mantenimiento = Mantenimiento || 0;
+
     connection.query(
-      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, PeriodoPagado, ElaboradoPor, FormaPago, PagoArriendo,AdmInmobi,AseoEntrega,Mantenimiento ) VALUES (?, ?, ?, ?,?,?,?,?,?)",
+      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
-    IdPropietario,
-    IdInmueble,
-    FechaPago,
-    ElaboradoPor,
-    FormaPago,
-    PagoArriendo,
-    AdminInmobiliaria,
-    AseoEntrega,
-    Mantenimiento
+        IdPropietario,
+        IdInmueble,
+        FechaPago,
+        ElaboradoPor,
+        FormaPago,
+        pagoArriendo,
+        adminInmobiliaria,
+        aseoEntrega,
+        mantenimiento,
       ],
       (error, results) => {
         if (error) {
-          console.error("Error al añadir arrendatario:", error);
-          res.status(500).json({ error: "Error al añadir La comision" });
+          console.error("Error al añadir la comisión:", error);
+          res.status(500).json({ error: "Error al añadir la comisión" });
         } else {
-          console.log("arrendatario agregado:", results);
-          res
-            .status(201)
-            .json({ message: "contrato registrado exitosamente" });
+          console.log("Comisión agregada:", results);
+          res.status(201).json({ message: "Contrato registrado exitosamente" });
         }
       }
     );
@@ -931,6 +938,8 @@ router.post("/RComision", async (req, res) => {
     res.status(500).json({ error: "Error al añadir propietario" });
   }
 });
+
+
 
 //Metodos Put
 
