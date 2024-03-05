@@ -4,25 +4,15 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 
 export const ReArrendatario = () => {
-  const notify = () =>
-    toast.success("Se registró correctamente", {
-      theme: "dark",
-    });
-
-  const falla = () =>
-    toast.error(
-      "Error al ingresar los datos, complete todos los campos e intente nuevamente.",
-      {
-        theme: "colored",
-      }
-    );
-
+  
+  
   const { register, handleSubmit, reset } = useForm();
 
+  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la alerta
+  const [focusedField, setFocusedField] = useState(""); // Estado para rastrear el campo enfocado
 
   // Modal
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -107,25 +97,75 @@ export const ReArrendatario = () => {
       console.error("Error al enviar datos al servidor:", error);
     }
   };
+  
+  const handleTextChange = (event) => {
+    const fieldValue = event.target.value;
+    const fieldName = event.target.name;
+
+    // Expresión regular para permitir solo letras y espacios
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/;
+
+    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
+    if (!regex.test(fieldValue) && focusedField === fieldName) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+
+    // Actualiza los datos del propietario
+    setarrendatarioData({ ...arrendatarioData, [fieldName]: fieldValue });
+  };
+
+  const handleNumberChange = (event) => {
+    const fieldValue = event.target.value;
+    const fieldName = event.target.name;
+
+    // Expresión regular para permitir solo números
+    const regex = /^[0-9]*$/;
+
+    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
+    if (!regex.test(fieldValue) && focusedField === fieldName) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+
+    // Actualiza los datos del propietario
+    setarrendatarioData({ ...arrendatarioData, [fieldName]: fieldValue });
+  };
+
+  const handleFieldFocus = (fieldName) => {
+    setFocusedField(fieldName);
+  };
+
   return (
     <div className="contener-home contener-ReArrendatario">
       <h2>Registro Arrendatario</h2>
       <div className="container">
         <Form className="" onSubmit={handleSubmit(onSubmitRegistro)}>
           <div className="form-propietario">
+
+
             <Form.Group controlId="nombrearrendatario">
-              <Form.Label className="text_normal">Nombre Completo:</Form.Label>
-              <Form.Control
-                className="InputsRegistros"
-                type="text"
-                maxLength={50}
-                {...register("nombrearrendatario")}
+              <Form.Label >Nombre arrendatario:</Form.Label>
+              <Form.Control className="InputsRegistros"              
+               {...register("nombrearrendatario")}
                 defaultValue={arrendatarioData.NombreCompleto}
+
+
+                onChange={handleTextChange}
+                onFocus={() => handleFieldFocus("nombrearrendatario")}
+                required
               />
+              {focusedField === "nombrearrendatario" && showWarning && (
+                <span className="error-message">
+                  Solo se permiten letras y espacios
+                </span>
+              )}
             </Form.Group>
 
-            <Form.Group controlId="tipodocumento">
-              <Form.Label className="text_normal">Tipo Documento:</Form.Label>
+            <Form.Group controlId="formtipodocumento">
+              <Form.Label >Tipo Documento:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 as="select"
@@ -134,39 +174,43 @@ export const ReArrendatario = () => {
               >
                 <option value={"CC"}>Cédula de Ciudadanía</option>
                 <option value={"CE"}>Cédula de Extranjería</option>
-                <option value={"PASS"}>Pasaporte</option>
               </Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="numerodocumento">
-              <Form.Label className="text_normal">Número identidad:</Form.Label>
-              <Form.Control
-                required
+            <Form.Group controlId="formnumerodocumento">
+              <Form.Label >N° Documento Identidad:</Form.Label>
+              <Form.Control                
                 className="InputsRegistros"
-                type="number"
-                max={9999999999}
-                {...register("numerodocumento")}
-                defaultValue={arrendatarioData.DocumentoIdentidad.trim()} 
+                 {...register("numerodocumento")}
+                defaultValue={arrendatarioData.DocumentoIdentidad} 
+                onChange={handleNumberChange}
+                onFocus={() => handleFieldFocus("numerodocumento")}
+                required
               />
+              {focusedField === "numerodocumento" && showWarning && (
+                <span className="error-message">Solo se permiten números</span>
+              )}
             </Form.Group>
 
-            <Form.Group controlId="telefono">
-              <Form.Label className="text_normal">
-                Teléfono Arrendatario:
-              </Form.Label>
+            <Form.Group controlId="formtelefono">
+              <Form.Label > Teléfono Arrendatario: </Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                type="number"
-                max={9999999999}
+                
                 {...register("telefono")}
-                defaultValue={arrendatarioData.Telefono.trim()}
+                defaultValue={arrendatarioData.Telefono}
+
+                onChange={handleNumberChange}
+                onFocus={() => handleFieldFocus("telefono")}
+                required
               />
+              {focusedField === "telefono" && showWarning && (
+                <span className="error-message">Solo se permiten números</span>
+              )}
             </Form.Group>
 
             <Form.Group controlId="correo">
-              <Form.Label className="text_normal">
-                Correo Arrendatario:
-              </Form.Label>
+              <Form.Label > Correo Arrendatario:  </Form.Label>
               <Form.Control
                 controlId="correo"
                 className="InputsRegistros"
@@ -176,12 +220,12 @@ export const ReArrendatario = () => {
               />
             </Form.Group>
 
-            <Form.Group controlId="estadocontrato">
-              <Form.Label className="text_normal">Estado:</Form.Label>
+            <Form.Group controlId="estado">
+              <Form.Label >Estado:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 type="text"
-                {...register("estadocontrato")}
+                {...register("estado")}
                 defaultValue={arrendatarioData.Estado}
               />
             </Form.Group>

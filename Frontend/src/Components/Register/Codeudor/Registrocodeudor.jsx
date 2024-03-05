@@ -7,6 +7,10 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 
 export const Registrocodeudor = () => {
+
+  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la alerta
+  const [focusedField, setFocusedField] = useState(""); // Estado para rastrear el campo enfocado
+
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
@@ -32,6 +36,9 @@ export const Registrocodeudor = () => {
     toast.error("Hubo algún error al enviar los datos al servidor", {
       theme: "dark",
     });
+
+
+
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const {
@@ -111,6 +118,47 @@ export const Registrocodeudor = () => {
     window.location.href = "/Codeudor";
     setShowCancelModal(false);
   };
+  
+  const handleTextChange = (event) => {
+    const fieldValue = event.target.value;
+    const fieldName = event.target.name;
+
+    // Expresión regular para permitir solo letras y espacios
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/;
+
+    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
+    if (!regex.test(fieldValue) && focusedField === fieldName) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+
+    // Actualiza los datos del propietario
+    setCodeudorData({ ...codeudorData, [fieldName]: fieldValue });
+  };
+
+  const handleNumberChange = (event) => {
+    const fieldValue = event.target.value;
+    const fieldName = event.target.name;
+
+    // Expresión regular para permitir solo números
+    const regex = /^[0-9]*$/;
+
+    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
+    if (!regex.test(fieldValue) && focusedField === fieldName) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+
+    // Actualiza los datos del propietario
+    setcodeudorData({ ...codeudorData, [fieldName]: fieldValue });
+  };
+
+  const handleFieldFocus = (fieldName) => {
+    setFocusedField(fieldName);
+  };
+
 
   return (
     <div className="contener-home contener-rpropietario">
@@ -126,7 +174,16 @@ export const Registrocodeudor = () => {
               type="text"
               {...register("nombrecompleto")}
               defaultValue={codeudorData.NombreCompleto}
+            
+              onChange={handleTextChange}
+              onFocus={() => handleFieldFocus("nombrecompleto")}
+              required
             />
+            {focusedField === "nombrecompleto" && showWarning && (
+              <span className="error-message">
+                Solo se permiten letras y espacios
+              </span>
+            )}
           </Form.Group>
 
           <Form.Group controlId="TipoDocumento">
@@ -147,31 +204,40 @@ export const Registrocodeudor = () => {
             </Form.Control>
           </Form.Group>
 
-          <Form.Group controlId="documentoidentidad">
+          <Form.Group controlId="DocumentoIdentidad">
             <Form.Label>Número de identidad:</Form.Label>
             <Form.Control
-              type="number"
-              {...register("documentoidentidad")}
-              max={9999999999}
+              {...register("DocumentoIdentidad")}
               defaultValue={codeudorData.DocumentoIdentidad}
+              
+              onChange={handleNumberChange}
+              onFocus={() => handleFieldFocus("DocumentoIdentidad")}
+              required
             />
+            {focusedField === "DocumentoIdentidad" && showWarning && (
+              <span className="error-message">Solo se permiten números</span>
+            )}
           </Form.Group>
 
           <Form.Group controlId="telefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
-              type="number"
               {...register("telefono")}
-              max={9999999999}
               defaultValue={codeudorData.Telefono}
+              onChange={handleNumberChange}
+              onFocus={() => handleFieldFocus("telefono")}
+              required
             />
+            {focusedField === "telefono" && showWarning && (
+              <span className="error-message">Solo se permiten números</span>
+            )}
           </Form.Group>
 
-          <Form.Group controlId="correoElectronico">
+          <Form.Group controlId="correo">
             <Form.Label>Correo:</Form.Label>
             <Form.Control
               type="email"
-              {...register("correoelectronico")}
+              {...register("correo")}
               defaultValue={codeudorData.Correo}
             />
           </Form.Group>
