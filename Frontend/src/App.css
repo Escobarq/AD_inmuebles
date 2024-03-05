@@ -63,3 +63,16 @@
   background-color: #222 !important;
   color: #ffff !important;
 }
+.dark-mode .notification-button {
+  background-color: #222 !important;
+  color: #ffff !important;
+}
+.dark-mode .notification-popover{
+  background-color: #222 !important;
+  color: #ffff !important;
+}
+
+.dark-mode .BodyPoppins{
+  background-color: #222 !important;
+  color: #ffff !important;
+}

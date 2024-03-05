@@ -58,3 +58,12 @@ input:checked + .slider:before {
 .jeison{
      font-size: 1.3rem !important;
 }
+.logoSena{
+    width: 10%;
+    position: relative;
+    right: 90%;
+}
+.ModalNosotros{
+    color: #000;
+    text-decoration-color: none;
+}
