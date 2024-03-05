@@ -44,23 +44,23 @@ export const Switch = () => {
               <Card style={{ width: "18rem", margin: "10px" ,boxShadow:'0px 4px 8px rgba(0, 0, 0, 0.1)'}}>
                 <Card.Img variant="top" src="../../../public/escobar.png" style={{height:"260px"}}/>
                 <Card.Body>
-                  <Card.Title>Juan David Escobar Quezada</Card.Title>
+                  <Card.Title><a href="https://github.com/Escobarq" className="ModalNosotros">Juan David Escobar Quezada</a></Card.Title>
                   <Card.Text>Frontend Desing</Card.Text>
                 </Card.Body>
               </Card>
               <Card style={{ width: "18rem", margin: "10px",boxShadow:'0px 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 <Card.Img variant="top" src="../../../public/arenas.jpg" style={{height:"260px"}} />
                 <Card.Body>
-                  <Card.Title>Juan David Arenas Martinez</Card.Title>
+                  <Card.Title><a href="https://github.com/Arenasssss" className="ModalNosotros">Juan David Arenas Martinez</a></Card.Title>
                   <Card.Text>Backend Developver</Card.Text>
                 </Card.Body>
               </Card>
             </Col>
             <Col md={6}>
               <Card style={{ width: "18rem", margin: "10px" ,boxShadow:'0px 4px 8px rgba(0, 0, 0, 0.1)'}}>
-                <Card.Img variant="top" src="../../../public/ingri.jpeg" style={{height:"260px"}}/>
+                <Card.Img variant="top" src="../../../public/ingri.png" style={{height:"260px"}}/>
                 <Card.Body>
-                  <Card.Title>Ingrid Vannesa Segura Montaño </Card.Title>
+                  <Card.Title><a href="https://github.com/IngSg" className="ModalNosotros">Ingrid Vannesa Segura Montaño </a></Card.Title>
                   <Card.Text>Ux Ui Desing</Card.Text>
                 </Card.Body>
               </Card>
@@ -71,14 +71,14 @@ export const Switch = () => {
                   style={{height:"260px"}}
                 />
                 <Card.Body>
-                  <Card.Title className="jeison">Jeison Waldir Ortiz Ardila</Card.Title>
+                  <Card.Title className="jeison"><a href="https://github.com/jeisonwaldir" className="ModalNosotros">Jeison Waldir Ortiz Ardila</a></Card.Title>
                   <Card.Text>Frontend Design</Card.Text>
                 </Card.Body>
               </Card>
             </Col>
           </Row>
         </Modal.Body>
-        <ModalFooter className="ModalSobreNosotros"></ModalFooter>
+        <ModalFooter className="ModalSobreNosotros"><img className="logoSena"src="../../../public/logoSena.png" alt="Logo"/></ModalFooter>
       </Modal>
     </>
   );
