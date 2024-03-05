@@ -1,5 +1,5 @@
-import  { useEffect, useState } from "react";
-import { Table, Button, Modal ,OverlayTrigger ,Tooltip } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useActualizarEstadoInmueble from "../../Hooks/InhabilitarInmueble";
 import NoResultImg from "../../../assets/NoResult.gif";
+import { format, toDate } from "date-fns";
 
 export const Inmueble = () => {
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
@@ -80,7 +81,7 @@ export const Inmueble = () => {
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
 
   useEffect(() => {
-    fetchDataArren();
+    
     fetchData();
   }, [filtroData]);
 
@@ -115,18 +116,7 @@ export const Inmueble = () => {
       console.error("Error fetching products:", error);
     }
   };
-  const fetchDataArren = async () => {
-    try {
-      const response = await fetch("http://localhost:3006/Varrendatario?Estado=Libre");
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-          setinfoarrendatario(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
+
 
   const createheader = () => {
     return (
@@ -155,7 +145,7 @@ export const Inmueble = () => {
         <td>{inmueble.Barrio}</td>
         <td>{inmueble.Tipo}</td>
         <td>{inmueble.Estado}</td>
-        <td >
+        <td>
           <Button
             className="btn-opciones"
             variant="primary"
@@ -177,12 +167,58 @@ export const Inmueble = () => {
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
-          <Button className="btn-opciones" variant="warning">
+          <Button
+            className="btn-opciones"
+            variant="warning"
+            onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
       </tr>
     );
+  };
+
+  //Traer Informacion
+  const handleEditInmuebles = (InmuebleId) => {
+    const inmueble = infoinmueble.find((inm) => inm.IdInmueble === InmuebleId);
+    if (!inmueble) {
+      console.error("No se encontró el inmueble con ID:", InmuebleId);
+      return;
+    }
+
+    // Formatear la fecha Aseguramiento antes de agregarla a inmuebleData
+    const aseguramientoDateObject = toDate(new Date(inmueble.Aseguramiento));
+    const formattedAseguramiento = format(
+      aseguramientoDateObject,
+      "yyyy-MM-dd"
+    );
+
+    // Crear objeto con los datos del inmueble, incluyendo la fecha formateada
+    const inmuebleData = {
+      IdInmueble: inmueble.IdInmueble,
+      NoMatricula: inmueble.NoMatricula,
+      Direccion: inmueble.Direccion,
+      Estrato: inmueble.Estrato,
+      Ciudad: inmueble.Ciudad,
+      Barrio: inmueble.Barrio,
+      Tipo: inmueble.Tipo,
+      NoNiveles: inmueble.NoNiveles,
+      NoBanos: inmueble.NoBanos,
+      ServiciosPublicos: inmueble.ServiciosPublicos,
+      NoHabitaciones: inmueble.NoHabitaciones,
+      Estado: inmueble.Estado,
+      NoTerraza: inmueble.NoTerraza,
+      AreaConstruidaM2: inmueble.AreaConstruidaM2,
+      Aseguramiento: formattedAseguramiento, // Usar la fecha formateada
+      ValorInmueble: inmueble.ValorInmueble,
+      Descripcion: inmueble.Descripcion,
+    };
+
+    // Redireccionar a la ruta de edición de inmueble
+    window.location.href = `/EditarDatosIn?${new URLSearchParams(
+      inmuebleData
+    ).toString()}`;
   };
 
   const createrowDetalles = () => {
@@ -202,106 +238,9 @@ export const Inmueble = () => {
       return null; // Otra opción es retornar un mensaje de carga o cualquier otro contenido que desees mostrar mientras se carga la información
     }
   };
-  const existe = () => {
-    if (inmuebleseleccion) {
-      if (inmuebleseleccion.IdArrendatario >= 1) {
-        return (
-          <>
-            <p>Alerta Ya se encuentra un arrendador asignado</p>
-            <p>
-              Su nombre es {inmuebleseleccion.NombreCompleto}, con No de
-              identidad : {inmuebleseleccion.DocumentoIdentidad}
-            </p>
-            <p>
-              Para cambiar de arrendatario solo seleccionelo en la siguiente
-              lista:
-            </p>
-          </>
-        );
-      } else {
-        return null;
-      }
-    } else {
-      return null; // Otra opción es retornar un mensaje de carga o cualquier otro contenido que desees mostrar mientras se carga la información
-    }
-  };
 
-  const createrowA = (Arrendatarios) => {
-    return (
-      <tr
-        onClick={() => handleRowClickAndUpdate(Arrendatarios)}
-        key={Arrendatarios.IdArrendatario}
-      >
-        <td>{Arrendatarios.TipoDocumento}</td>
-        <td>{Arrendatarios.DocumentoIdentidad}</td>
-        <td>{Arrendatarios.NombreCompleto}</td>
-        <td>{Arrendatarios.Estado}</td>
-        <td>{Arrendatarios.Telefono}</td>
-        <td>{Arrendatarios.Correo}</td>
-      </tr>
-    );
-  };
 
-  const handleRowClickAndUpdate = async (Arrendatarios) => {
-    try {
-      console.log(inmuebleseleccion);
-      const IdInmueble = inmuebleseleccion.IdInmueble;
-      const { IdArrendatario } = Arrendatarios;
 
-      const response = await fetch(
-        `http://localhost:3006/actualizarInmueble?IdInmueble=${IdInmueble}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            IdArrendatario: IdArrendatario,
-            Estado: "Ocupado",
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Error al actualizar el inmueble");
-      }
-
-      notify();
-      console.log("Inmueble actualizado correctamente");
-    } catch (error) {
-      console.error("Error al actualizar el inmueble:", error);
-    }
-  };
-  const handleRowClickAndDelete = async () => {
-    try {
-      console.log(inmuebleseleccion);
-      const IdInmueble = inmuebleseleccion.IdInmueble;
-      const { IdArrendatario } = 0;
-
-      const response = await fetch(
-        `http://localhost:3006/actualizarInmueble?IdInmueble=${IdInmueble}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            IdArrendatario: IdArrendatario,
-            Estado: "Disponible",
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Error al actualizar el inmueble");
-      }
-
-      notify();
-      console.log("Inmueble actualizado correctamente");
-    } catch (error) {
-      console.error("Error al actualizar el inmueble:", error);
-    }
-  };
 
   const handleMostrarModalClick = async (inmueble) => {
     setinmuebleseleccion(inmueble);
@@ -339,27 +278,29 @@ export const Inmueble = () => {
     }
   };
 
-  const handleCloseModalA = () => {
-    setMostrarModalA(false);
-  };
+
 
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoinmueble.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
- //Tooltip 
- const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
+  //Tooltip
+  const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
- useEffect(() => {
-   const updateTooltipVisibility = () => {
-     setShowTooltip(window.innerWidth < 1366);
-   };
+  useEffect(() => {
+    const updateTooltipVisibility = () => {
+      setShowTooltip(window.innerWidth < 1366);
+    };
 
-   window.addEventListener('resize', updateTooltipVisibility);
-   return () => window.removeEventListener('resize', updateTooltipVisibility);
- }, []);
- 
+    window.addEventListener("resize", updateTooltipVisibility);
+    return () => window.removeEventListener("resize", updateTooltipVisibility);
+  }, []);
+
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  };
+
   return (
     <>
       <div className="contener-home">
@@ -420,29 +361,45 @@ export const Inmueble = () => {
           <OverlayTrigger
             key="tooltip-add-inmueble"
             placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Inmueble</Tooltip> : <></>}
+            overlay={
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">Agregar Inmueble</Tooltip>
+              ) : (
+                <></>
+              )
+            }
           >
-            <Button variant="success" className="btn-add">
-              <Link to="/RInmuebleA">
-                <FontAwesomeIcon
-                  icon={faHouseChimneyMedical}
-                  style={{ color: "#ffffff" }}
-                />
-                <p className="AgregarPA">Agregar Inmueble</p>
-              </Link>
+            <Button
+              variant="success"
+              className="btn-add"
+              onClick={() => redireccion("/RInmuebleA")}
+            >
+              <FontAwesomeIcon
+                icon={faHouseChimneyMedical}
+                style={{ color: "#ffffff" }}
+              />
+              <p className="AgregarPA">Agregar Inmueble</p>
             </Button>
           </OverlayTrigger>
 
           <OverlayTrigger
             key="tooltip-ver-inhabilitados"
             placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Inhabilitados</Tooltip> : <></>}
+            overlay={
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">Ver Inhabilitados</Tooltip>
+              ) : (
+                <></>
+              )
+            }
           >
-            <Button variant="dark" className="btn-add-info">
-              <Link to="/InhaInmueble" className="linkes">
-                <FontAwesomeIcon className="icon" icon={faUserSlash} /> 
-                <p className="AgregarPA">Ver Inhabilitados</p>
-              </Link>
+            <Button
+              variant="dark"
+              className="btn-add-info"
+              onClick={() => redireccion("/InhaInmueble")}
+            >
+              <FontAwesomeIcon className="icon" icon={faUserSlash} />
+              <p className="AgregarPA">Ver Inhabilitados</p>
             </Button>
           </OverlayTrigger>
         </div>
@@ -452,7 +409,7 @@ export const Inmueble = () => {
         <div className="view_esp">
           {NoResult == true ? (
             <div>
-              <img src={NoResultImg} alt="" />
+              <img className="Noresult" src={NoResultImg} alt="" />
             </div>
           ) : (
             <div className="table-container">
@@ -518,45 +475,6 @@ export const Inmueble = () => {
           </Modal.Body>
         </Modal>
 
-        <Modal
-          size="lg"
-          show={mostrarModalA}
-          onHide={handleCloseModalA}
-          aria-labelledby="example-modal-sizes-title-lg"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Arrendatarios Disponibles</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {existe()}
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Tipo de Documento</th>
-                  <th>No. Documento</th>
-                  <th>Nombre</th>
-                  <th>Estado</th>
-                  <th>Teléfono</th>
-                  <th>Correo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {infoarrendatario.map((Arrendatarios) =>
-                  createrowA(Arrendatarios)
-                )}
-                <Link to="/ReArrendatario">
-                  <Button variant="primary">Otro</Button>
-                </Link>
-                <Button
-                  variant="danger"
-                  onClick={() => handleRowClickAndDelete()}
-                >
-                  Quitar Arrendatario
-                </Button>
-              </tbody>
-            </Table>
-          </Modal.Body>
-        </Modal>
       </div>
       <Modal show={showModal} onHide={handleCloseModals}>
         <Modal.Header closeButton>

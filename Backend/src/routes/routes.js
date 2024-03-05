@@ -98,10 +98,10 @@ router.get("/Varrendatario", (req, res) => {
 });
 
 router.get("/Vinmueble", (req, res) => {
-  const { tipo, estrato, estado } = req.query;
+  const { tipo, estrato, estado, IdPropietario } = req.query;
 
   try {
-    let query = "SELECT * FROM inmueble WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
+    let query = "SELECT * FROM inmueble  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
 
     const queryParams = []; // Almacena los valores de los parámetros
 
@@ -117,6 +117,10 @@ router.get("/Vinmueble", (req, res) => {
     if (estrato) {
       query += " AND Estrato = ?";
       queryParams.push(estrato);
+    }
+    if (IdPropietario) {
+      query += " AND IdPropietario = ?";
+      queryParams.push(IdPropietario);
     }
 
     query += "ORDER BY IdInmueble ASC";
@@ -136,7 +140,7 @@ router.get("/Vinmueble", (req, res) => {
     );
   } catch (error) {}
 });
-//traer propietarios con el id del inmueble
+
 router.get("/propietarios-inmuebles", (req, res) => {
   try {
     const query = `
@@ -167,6 +171,43 @@ router.get("/propietarios-inmuebles", (req, res) => {
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
+
+
+router.get("/propietarios-inmuebles/:idInmueble", (req, res) => {
+  try {
+    const { idInmueble } = req.params;
+    const query = `
+      SELECT 
+        p.*, 
+        i.IdInmueble,
+        i.Direccion AS DireccionInmueble,
+        i.Ciudad,
+        i.Barrio,
+        i.Tipo AS TipoInmueble,
+        i.NoMatricula
+      FROM 
+        propietario p
+      LEFT JOIN 
+        inmueble i ON p.IdPropietario = i.IdPropietario
+      WHERE
+        i.NoMatricula = ?
+      ORDER BY 
+        p.IdPropietario ASC`;
+    
+    connection.query(query, [idInmueble], (error, results) => {
+      if (error) {
+        console.error("Error al obtener datos de la base de datos:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+
 
 //traer Arrendatarios con id del codeudor:
 router.get("/arrendatarios-codeudores", (req, res) => {
@@ -315,6 +356,80 @@ router.get("/VComisionPropie", (req, res) => {
   );
 });
 
+router.get('/contratoFiltro', (req, res) => {
+  // Obtén los parámetros de consulta
+  const { FechaFinMIN, FechaFinMAX, NContrato } = req.query;
+  // Construye la consulta SQL base
+  let query = `
+    SELECT 
+      contratoarrendamiento.*,
+      arrendatario.DocumentoIdentidad,
+      arrendatario.Nombrecompleto AS NombreArrendatario,
+      inmueble.NoMatricula
+    FROM contratoarrendamiento
+    JOIN arrendatario ON contratoarrendamiento.IdArrendatario = arrendatario.IdArrendatario
+    JOIN inmueble ON contratoarrendamiento.idInmueble = inmueble.IdInmueble
+  `;
+
+  // Construye la parte de la consulta para aplicar los filtros
+  const filtroConditions = [];
+
+  if (FechaFinMIN) {
+    filtroConditions.push(`contratoarrendamiento.FechaFinContrato >= '${FechaFinMIN}'`);
+  }
+
+  if (FechaFinMAX) {
+    filtroConditions.push(`contratoarrendamiento.FechaFinContrato <= '${FechaFinMAX}'`);
+  }
+
+  if (NContrato) {
+    filtroConditions.push(`contratoarrendamiento.IdContrato = '${NContrato}'`);
+  }
+
+  // Agrega los filtros a la consulta si hay alguno
+  if (filtroConditions.length > 0) {
+    query += ' WHERE ' + filtroConditions.join(' AND ');
+  }
+
+  // Ejecuta la consulta SQL
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+router.get('/contrato-arren-inmue', (req, res) => {
+  const query = `
+  SELECT 
+  contratoarrendamiento.IdContrato,
+  contratoarrendamiento.EstadoContrato,
+  contratoarrendamiento.ValorDeposito,
+  arrendatario.IdArrendatario,
+  arrendatario.DocumentoIdentidad,
+  arrendatario.Nombrecompleto AS NombreArrendatario,
+  inmueble.IdInmueble,
+  inmueble.NoMatricula,
+  inmueble.Tipo AS TipoInmueble
+FROM contratoarrendamiento
+JOIN arrendatario ON contratoarrendamiento.IdArrendatario = arrendatario.IdArrendatario
+JOIN inmueble ON contratoarrendamiento.idInmueble = inmueble.IdInmueble
+WHERE contratoarrendamiento.EstadoContrato = 'Vigente';
+  `;
+
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error('Error al ejecutar la consulta:', error);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
   const { correousuario } = req.query; // Datos del formulario
@@ -343,14 +458,39 @@ router.get("/Vroles", (req, res) => {
 });
 
 //Metodos Post
+// Ruta para manejar la solicitud de creación de un nuevo contrato de arrendamiento
+router.post('/contratoarrendamiento', (req, res) => {
+  const { IdArrendatario, IdInmueble, FechaInicioContrato, FechaFinContrato, EstadoContrato, ValorDeposito } = req.body;
+
+  const contrato = {
+    IdArrendatario,
+    IdInmueble,
+    FechaInicioContrato,
+    FechaFinContrato,
+    EstadoContrato,
+    ValorDeposito
+  };
+
+  const sql = 'INSERT INTO contratoarrendamiento SET ?';
+
+  connection.query(sql, contrato, (err, result) => {
+    if (err) {
+      console.error('Error al insertar el nuevo contrato:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+      return;
+    }
+    console.log('Nuevo contrato insertado correctamente');
+    res.status(201).json({ message: 'Contrato de arrendamiento creado correctamente', contratoId: result.insertId });
+  });
+});
 
 // Ruta para registrar un propietario
 router.post("/RPropietario", async (req, res) => {
   const {
     numerodocumento,
     nombrepropietario,
-    telefono,
-    correoelectronico,
+    Telefono,
+    Correo,
     tipocuenta,
     banco,
     direccion,
@@ -361,16 +501,16 @@ router.post("/RPropietario", async (req, res) => {
 
   try {
     connection.query(
-      "INSERT INTO propietario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Direccion,  Correo, Banco, TipoCuenta, Telefono, NumeroCuenta, FechaIngreso) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?,?)",
+      "INSERT INTO propietario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Direccion, Correo, Banco, TipoCuenta, Telefono, NumeroCuenta, FechaIngreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         nombrepropietario,
         TipoDocumento,
         numerodocumento,
         direccion,
-        correoelectronico,
+        Correo,
         banco,
         tipocuenta,
-        telefono,
+        Telefono,
         numerocuenta,
         fechaingreso,
       ],
@@ -380,9 +520,7 @@ router.post("/RPropietario", async (req, res) => {
           res.status(500).json({ error: "Error al añadir propietario" });
         } else {
           console.log("Propietario agregado:", results);
-          res
-            .status(201)
-            .json({ message: "Propietario registrado exitosamente" });
+          res.status(201).json({ message: "Propietario registrado exitosamente" });
         }
       }
     );
@@ -391,6 +529,7 @@ router.post("/RPropietario", async (req, res) => {
     res.status(500).json({ error: "Error al añadir propietario" });
   }
 });
+
 
 // Ruta para registrar un Inmueble
 router.post("/Reinmueble", async (req, res) => {
@@ -417,9 +556,10 @@ router.post("/Reinmueble", async (req, res) => {
   try {
     if (Tipo == "Bodega") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           Nmatricula,
+          Id_Propietario,
           Direccion,
           Estrato,
           Ciudad,
@@ -435,9 +575,10 @@ router.post("/Reinmueble", async (req, res) => {
       );
     } else if (Tipo == "Casa") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           Nmatricula,
+          Id_Propietario,
           Direccion,
           Estrato,
           Ciudad,
@@ -475,9 +616,10 @@ router.post("/Reinmueble", async (req, res) => {
       );
     } else if (Tipo == "Oficina") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           Nmatricula,
+          Id_Propietario,
           Direccion,
           Estrato,
           Ciudad,
@@ -493,9 +635,10 @@ router.post("/Reinmueble", async (req, res) => {
       );
     } else if (Tipo == "Local") {
       connection.query(
-        "INSERT INTO inmueble (NoMatricula, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, NoHabitaciones, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, NoHabitaciones, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           Nmatricula,
+          Id_Propietario,
           Direccion,
           Estrato,
           Ciudad,
@@ -697,35 +840,96 @@ router.post("/RConArrendamiento", async (req, res) => {
   }
 });
 
-    //Registro de Comision de gastos
-router.post("/RComision", async (req, res) => {
+// Ruta para registar Pago de Arrendamiento --------------------------------------------------
+router.post("/RPagoArrendamiento", async (req, res) => {
   const {
-    IdPropietario,
+    IdArrendatario,
+    IdContrato,
     FechaPago,
-    ElaboradoPor,
+    FechaIni,
+    FechaFin,
+    ValorPago,
     FormaPago,
-    Observaciones,
+    Estado
+
   } = req.body;
 
   try {
     connection.query(
-      "INSERT INTO comision_propietario (IdPropietario, PeriodoPagado, ElaboradoPor, FormaPago, Observaciones) VALUES (?, ?, ?, ?,?)",
+      "INSERT INTO pagos_arrendamiento (IdArrendatario, IdContrato,  FechaPago, FechaInicio, FechaFin, ValorPago, FormaPago, Estado) VALUES (?,?,?, ?, ?, ?,?,?)",
       [
-    IdPropietario,
+    IdArrendatario,
+    IdContrato,
     FechaPago,
-    ElaboradoPor,
+    FechaIni,
+    FechaFin,
+    ValorPago,
     FormaPago,
-    Observaciones,
+    Estado
       ],
       (error, results) => {
         if (error) {
-          console.error("Error al añadir arrendatario:", error);
-          res.status(500).json({ error: "Error al añadir La comision" });
+          console.error("Error al añadir Un pago de arrendamiento:", error);
+          res.status(500).json({ error: "Error al añadir Pago de arrendamiento" });
         } else {
-          console.log("arrendatario agregado:", results);
+          console.log(" Pago Arrenmiento agregado:", results);
           res
             .status(201)
-            .json({ message: "contrato registrado exitosamente" });
+            .json({ message: "Pago Arrenmiento registrado exitosamente" });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error al añadir Pago Arrenmiento: ", error);
+    res.status(500).json({ error: "Error al Pago Arrenmiento" });
+  }
+});
+
+router.post("/RComision", async (req, res) => {
+  const {
+    IdPropietario,
+    IdInmueble,
+    FechaPago,
+    ElaboradoPor,
+    FormaPago,
+    PagoArriendo,
+    AdminInmobiliaria,
+    AseoEntrega,
+    Mantenimiento,
+  } = req.body;
+
+  try {
+    // Validación de valores
+    if (!IdPropietario || !IdInmueble || !FechaPago || !ElaboradoPor) {
+      return res.status(400).json({ error: "Faltan campos obligatorios" });
+    }
+
+    // Valores predeterminados
+    const pagoArriendo = PagoArriendo || 0;
+    const adminInmobiliaria = AdminInmobiliaria || 0;
+    const aseoEntrega = AseoEntrega || 0;
+    const mantenimiento = Mantenimiento || 0;
+
+    connection.query(
+      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [
+        IdPropietario,
+        IdInmueble,
+        FechaPago,
+        ElaboradoPor,
+        FormaPago,
+        pagoArriendo,
+        adminInmobiliaria,
+        aseoEntrega,
+        mantenimiento,
+      ],
+      (error, results) => {
+        if (error) {
+          console.error("Error al añadir la comisión:", error);
+          res.status(500).json({ error: "Error al añadir la comisión" });
+        } else {
+          console.log("Comisión agregada:", results);
+          res.status(201).json({ message: "Contrato registrado exitosamente" });
         }
       }
     );
@@ -734,6 +938,8 @@ router.post("/RComision", async (req, res) => {
     res.status(500).json({ error: "Error al añadir propietario" });
   }
 });
+
+
 
 //Metodos Put
 
@@ -1103,6 +1309,70 @@ router.put("/RPropietario/:id", async (req, res) => {
   } catch (error) {
     console.error("Error al actualizar propietario:", error);
     res.status(500).json({ error: "Error al actualizar propietario" });
+  }
+});
+
+// Ruta para actualizar un Inmueble
+router.put("/Reinmueble/:id", async (req, res) => {
+  const IdInmueble = req.params.id;
+
+  const {
+    NoMatricula,
+    Direccion,
+    Ciudad,
+    Barrio,
+    Tipo,
+    NoNiveles,
+    ValorInmueble,
+    Estrato,
+    NoHabitaciones,
+    Estado,
+    NoTerraza,
+    AreaConstruidaM2,
+    Descripcion,
+    NoBanos,
+    ServiciosPublicos,
+    Aseguramiento,
+    Id_Propietario,
+  } = req.body;
+
+  try {
+    // Construir el objeto de actualización
+    const updateFields = {};
+    if (NoMatricula) updateFields.NoMatricula = NoMatricula;
+    if (Direccion) updateFields.Direccion = Direccion;
+    if (Ciudad) updateFields.Ciudad = Ciudad;
+    if (Barrio) updateFields.Barrio = Barrio;
+    if (Tipo) updateFields.Tipo = Tipo;
+    if (NoNiveles) updateFields.NoNiveles = NoNiveles;
+    if (ValorInmueble) updateFields.ValorInmueble = ValorInmueble;
+    if (Estrato) updateFields.Estrato = Estrato;
+    if (NoHabitaciones) updateFields.NoHabitaciones = NoHabitaciones;
+    if (Estado) updateFields.Estado = Estado;
+    if (NoTerraza) updateFields.NoTerraza = NoTerraza;
+    if (AreaConstruidaM2) updateFields.AreaConstruidaM2 = AreaConstruidaM2;
+    if (Descripcion) updateFields.Descripcion = Descripcion;
+    if (NoBanos) updateFields.NoBanos = NoBanos;
+    if (ServiciosPublicos) updateFields.ServiciosPublicos = ServiciosPublicos;
+    if (Aseguramiento) updateFields.Aseguramiento = Aseguramiento;
+    if (Id_Propietario) updateFields.Id_Propietario = Id_Propietario;
+
+    // Verificar si hay al menos un campo para actualizar
+    const camposActualizar = Object.keys(updateFields);
+    if (camposActualizar.length > 0) {
+      // Hay campos para actualizar, proceder con la consulta de actualización
+      await connection.query(
+        "UPDATE inmueble SET ? WHERE IdInmueble = ?",
+        [updateFields, IdInmueble]
+      );
+      res.status(200).json({ message: "Inmueble actualizado exitosamente" });
+    } else {
+      // No hay campos para actualizar, enviar una respuesta con un mensaje de error
+      res.status(400).json({ error: "No se proporcionaron campos para actualizar" });
+    }
+  } catch (error) {
+    console.error("Error al actualizar inmueble:", error);
+    res.status(500).json({ error: "Error al actualizar inmueble" });
   }
 });
 

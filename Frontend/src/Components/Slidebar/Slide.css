@@ -20,7 +20,11 @@
 .Links_Icons{
   font-size: 0.9rem;
 }
-
+.Drowon{
+  position: relative !important;
+  display: flex !important;
+  justify-content: center !important;
+}
 @media (width <= 1440px) {
   .sliderbard {
     width: 70px !important; /* Ajusta el ancho automáticamente */
@@ -45,5 +49,8 @@
   .sliderbard .modal-body {
     text-align: center; /* Centra el texto dentro del cuerpo del modal */
   }
-
+  .dark-mode {
+    background-color: #222; /* Color de fondo oscuro */
+    color: #fff; /* Texto en color blanco */
+  }
 }

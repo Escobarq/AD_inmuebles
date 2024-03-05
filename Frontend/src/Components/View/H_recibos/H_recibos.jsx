@@ -1,9 +1,7 @@
-import { Table, Button ,OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Table, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
@@ -23,19 +21,6 @@ export const H_recibos = () => {
 
   //Mostrar informaicon
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/VPagoArren");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        const Harrendamiento = data.filter((item) => item.booleanos === "true");
-        setinfoPArrendamiento(Harrendamiento);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     fetchData();
   }, [filtroData]);
 
@@ -54,7 +39,8 @@ export const H_recibos = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      setinfoPArrendamiento(data);
+      const Harrendamiento = data.filter((item) => item.booleanos === "true");
+      setinfoPArrendamiento(Harrendamiento);
 
       if (data.length == 0) {
         setNoResult(true);
@@ -122,17 +108,17 @@ export const H_recibos = () => {
   function formatDate(fechaString) {
     return moment(fechaString).format("MMMM , D , YYYY");
   }
-    //Tooltip
-    const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
+  //Tooltip
+  const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
-    useEffect(() => {
-      const updateTooltipVisibility = () => {
-        setShowTooltip(window.innerWidth < 1366);
-      };
-  
-      window.addEventListener("resize", updateTooltipVisibility);
-      return () => window.removeEventListener("resize", updateTooltipVisibility);
-    }, []);
+  useEffect(() => {
+    const updateTooltipVisibility = () => {
+      setShowTooltip(window.innerWidth < 1366);
+    };
+
+    window.addEventListener("resize", updateTooltipVisibility);
+    return () => window.removeEventListener("resize", updateTooltipVisibility);
+  }, []);
 
   return (
     <>
@@ -188,12 +174,18 @@ export const H_recibos = () => {
           <OverlayTrigger
             key="tooltip-add-arrendamiento"
             placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Pago arrendamiento</Tooltip> : <></>}
+            overlay={
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">Agregar Pago arrendamiento</Tooltip>
+              ) : (
+                <></>
+              )
+            }
           >
             <Button variant="success" className="btn-add">
-              <Link  to="/ReArrendamiento">
-                <FontAwesomeIcon className="icon" icon={faUserPlus} /> 
-               <p className="AgregarPA">Agregar Pago Arrendamiento</p> 
+              <Link to="/ReArrendamiento">
+                <FontAwesomeIcon className="icon" icon={faUserPlus} />
+                <p className="AgregarPA">Agregar Pago Arrendamiento</p>
               </Link>
             </Button>
           </OverlayTrigger>
@@ -204,8 +196,8 @@ export const H_recibos = () => {
 
         <div className="view_esp">
           {NoResult == true ? (
-            <div>
-              <img src={NoResultImg} alt="" />
+            <div className="Noresult">
+              <img className="Noresult" src={NoResultImg} alt="" />
             </div>
           ) : (
             <div className="table-container">

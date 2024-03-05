@@ -20,11 +20,7 @@ export const H_gastos = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-
-        const Historial = data.filter(
-          (Historial) => Historial.booleanos === "true"
-        );
-        setinfoComision(Historial);
+        setinfoComision(data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }

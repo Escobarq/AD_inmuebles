@@ -55,5 +55,15 @@ input:checked + .slider:before {
     transform: translateX(1.3em);
 }
 
-
-  
+.jeison{
+     font-size: 1.3rem !important;
+}
+.logoSena{
+    width: 10%;
+    position: relative;
+    right: 90%;
+}
+.ModalNosotros{
+    color: #000;
+    text-decoration-color: none;
+}

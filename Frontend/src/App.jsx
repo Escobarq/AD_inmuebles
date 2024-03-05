@@ -1,4 +1,3 @@
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Home from "./Components/Home/Home";
@@ -35,10 +34,29 @@ import { InhabilitarRol } from "./Components/View/AsignarRol/InhabilitarRol";
 import ContactForm from "./Components/Register/EditarPerfil/ContactForm";
 import { Contrato } from "./Components/Register/Contrato/Contrato";
 import { Switch } from "./Components/ToggleSwitche/Switch";
+import { EditarDatosIn } from "./Components/Register/EditarDatosInmueble/EditarDatosIn";
+import { Notifi } from "./Components/Notifi/Notifi";
 
 function App() {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    const darkModeEnabled = localStorage.getItem("darkMode");
+    return darkModeEnabled ? JSON.parse(darkModeEnabled) : false;
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
+
+  const handleDarkModeToggle = () => {
+    setDarkMode((prevDarkMode) => !prevDarkMode);
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -56,9 +74,16 @@ function App() {
     return (
       <>
         <ToastContainer />
+        <Notifi />
         <div className="Contener-todo">
           {location.pathname !== "/" &&
-            location.pathname !== "/EditarPerfil" && <Slidebar />}
+            location.pathname !== "/EditarPerfil" && (
+              <Slidebar
+                darkMode={darkMode}
+                handleDarkModeToggle={handleDarkModeToggle}
+              />
+            )}
+            
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/inicio" element={<Home />} />
@@ -91,8 +116,10 @@ function App() {
             <Route path="/InhabilitarRol" element={<InhabilitarRol />} />
             <Route path="/EditarPerfil" element={<ContactForm />} />
             <Route path="/Generar" element={<Contrato />} />
+            <Route path="/EditarDatosIn" element={<EditarDatosIn />} />
           </Routes>
-          <Switch/>
+
+          <Switch />
         </div>
       </>
     );

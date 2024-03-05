@@ -1,0 +1,19 @@
+.notification-container {
+    position: fixed; /* Fija la posición del contenedor en la pantalla */
+    top: 20px; /* Ajusta la distancia desde la parte superior */
+    right: 20px; /* Ajusta la distancia desde el borde derecho */
+    z-index: 999; /* Asegura que el componente esté encima de otros elementos */
+  }
+  .notification-popover {
+    width: 270px;
+    position: absolute;
+    top: calc(100% + 1px); /* Coloca el popover debajo del botón de notificación */
+    left: -100%;
+    transform: translateX(-50%); /* Centra el popover horizontalmente */
+    z-index: 999; /* Asegura que el popover esté encima de todos los demás componentes */
+  }
+  .popover-arrow{
+    display: none !important;
+  }
+  
+  
