@@ -17,7 +17,10 @@ export const Rarrendatario = () => {
   const [ContratosDisponibles, setContratosDisponibles] = useState([]);
   const [PagoArrenda, setPagoArrenda] = useState([]);
 
-  const handleGuardarClick = async () => {
+
+
+
+  const handleGuardarClick = async (data) => {
     // Definir el orden de las claves
     const order = [
       "NoDocumento",
@@ -90,8 +93,9 @@ export const Rarrendatario = () => {
 
       // Dibujamos los campos y las respuestas en el orden especificado
       for (const key of order) {
-        const element = PagoArrenda[key];
+        const element = data[key];
         if (element) {
+          
           // Dibujamos el nombre del campo en negrita y centrado
           page.drawText(`${key}:`, {
             x: leftX,
@@ -154,6 +158,7 @@ export const Rarrendatario = () => {
       link.href = url;
       link.download = "recibo.pdf";
       link.click();
+      window.location.href="/H_recibos"
     } catch (error) {}
   };
 
@@ -227,9 +232,8 @@ export const Rarrendatario = () => {
       });
       if (response.ok) {
         setPagoArrenda(data);
-        funcional('se an enviado los datos correctamente'),
-        window.location.href="/H_recibos"
-        handleGuardarClick(), 
+        handleGuardarClick(data), 
+        funcional('se an enviado los datos correctamente'),        
         setShowSaveModal(false); // Muestra el modal de confirmación
         reset();
       }
