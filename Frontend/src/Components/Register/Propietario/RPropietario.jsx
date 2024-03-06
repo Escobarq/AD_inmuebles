@@ -232,7 +232,6 @@ export const RPropietario = () => {
             <Form.Control
               className="InputsRegistros"
               {...register("numerodocumento")}
-              type="number"
               defaultValue={propetarioData.DocumentoIdentidad}
               onChange={handleNumberChange}
               onFocus={() => handleFieldFocus("numerodocumento")}
