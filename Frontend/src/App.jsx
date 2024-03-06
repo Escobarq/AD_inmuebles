@@ -1,4 +1,3 @@
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Home from "./Components/Home/Home";
@@ -36,7 +35,7 @@ import ContactForm from "./Components/Register/EditarPerfil/ContactForm";
 import { Contrato } from "./Components/Register/Contrato/Contrato";
 import { Switch } from "./Components/ToggleSwitche/Switch";
 import { EditarDatosIn } from "./Components/Register/EditarDatosInmueble/EditarDatosIn";
-
+import { Notifi } from "./Components/Notifi/Notifi";
 
 function App() {
   const location = useLocation();
@@ -75,14 +74,24 @@ function App() {
     return (
       <>
         <ToastContainer />
+        <Notifi />
         <div className="Contener-todo">
           {location.pathname !== "/" &&
-            location.pathname !== "/EditarPerfil" && <Slidebar darkMode={darkMode} handleDarkModeToggle={handleDarkModeToggle} />}
+            location.pathname !== "/EditarPerfil" && (
+              <Slidebar
+                darkMode={darkMode}
+                handleDarkModeToggle={handleDarkModeToggle}
+              />
+            )}
+            
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/inicio" element={<Home />} />
             <Route path="/Propietario" element={<Propietarios />} />
-            <Route path="/InhaPropietarios" element={<InhabilitarPropetario />}/>
+            <Route
+              path="/InhaPropietarios"
+              element={<InhabilitarPropetario />}
+            />
             <Route path="/Arrendatario" element={<Arrendatario />} />
             <Route path="/Inharrendatario" element={<InhabilitarArren />} />
             <Route path="/Inmueble" element={<Inmueble />} />
@@ -109,7 +118,8 @@ function App() {
             <Route path="/Generar" element={<Contrato />} />
             <Route path="/EditarDatosIn" element={<EditarDatosIn />} />
           </Routes>
-          <Switch/>
+
+          <Switch />
         </div>
       </>
     );

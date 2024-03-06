@@ -5,7 +5,9 @@ import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Button, Modal, ListGroup, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+
 import logo from '../../../assets/Logo.png';
+
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
 import { PDFDocument, rgb,} from "pdf-lib";
 import axios from "axios";
@@ -91,23 +93,24 @@ export const ReciboGastos = () => {
   const handleSave = () => {
     setShowSaveModal(true)
     // Validar que todos los campos estén llenos antes de guardar
-
-    const notify = (text) => 
-    toast.error(text, {
-      theme: "colored",
-      autoClose: 2000
-    });
- 
   };
-
+  
+  const notify = (text) => 
+  toast.success(text, {
+    theme: "colored",
+    autoClose: 2000
+  });
 
   const handleCancel = () => {
     setShowCancelModal(true);
     // Limpiar los datos del formulario al hacer clic en Cancelar
   };
 
-
-
+  const errores = (text) => 
+  toast.error(text, {
+    theme: "colored",
+    autoClose: 2000
+  });
 
   const onsubmitGastos = async (data) => {
     data.IdPropietario = selectedPropietario.IdPropietario;
@@ -131,11 +134,18 @@ export const ReciboGastos = () => {
         setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
         ReciboGasto(data.numerogasto, data); // Pasa los datos actualizados al PDF
         console.log(data)
+
+        notify('se enviaron correctamente los datos');
+        window.location.href="/H_gastos"
+        
+        return responseData;
+
       }
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
         console.log("funciona")
       } else {
+        errores('A ocurrido un error ');
         console.error("Error al crear usuario:", error);
         throw error; // Re-lanza el error para que pueda ser manejado en el componente
       }
@@ -449,14 +459,14 @@ page.drawText(sectionText, {
                 type="text"
                 className="form-control"
                 name="AseoEntrega"
-                defaultValue={"0"}
+                defaultValue={0}
                 {...register("AseoEntrega")}
               />
               <input
                 type="text"
                 className="form-control"
                 name="Mantenimiento:"
-                defaultValue={"0"}
+                defaultValue={0}
                 {...register("Mantenimiento")}
               />
             </div>
@@ -538,7 +548,7 @@ page.drawText(sectionText, {
                     onClick={() => handlePropietarioChange(Propietario)}
                   >
                   {Propietario.TipoDocumento} : 
-                    {Propietario.DocumentoIdentidad} //                    
+                    {Propietario.DocumentoIdentidad}                 
                     {Propietario.NombreCompleto}
                   </ListGroup.Item>
                 ))}
@@ -563,7 +573,7 @@ page.drawText(sectionText, {
                     onClick={() => handleInmuebleChange(Inmueble)}
                   >
                   {Inmueble.NoMatricula} : 
-                    {Inmueble.Tipo} //                    
+                    {Inmueble.Tipo}                   
                   </ListGroup.Item>
                 ))}
               </ListGroup>

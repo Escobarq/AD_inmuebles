@@ -21,7 +21,6 @@ export const H_gastos = () => {
         }
         const data = await response.json();
         setinfoComision(data);
-        console.log(data)
       } catch (error) {
         console.error("Error fetching products:", error);
       }

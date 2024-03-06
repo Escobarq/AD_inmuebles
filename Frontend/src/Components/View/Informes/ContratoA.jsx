@@ -243,7 +243,7 @@ const redireccion = (ruta) => {
             />
           </div>
 
-          <Button variant="primary"  onClick={() => redireccion("/Generar")}>
+          <Button variant="primary" className="NewContract" onClick={() => redireccion("/Generar")}>
             <FontAwesomeIcon icon={faFileSignature}/>
               Generar Nuevo contrato
               </Button>
