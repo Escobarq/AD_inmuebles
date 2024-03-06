@@ -227,9 +227,9 @@ export const Rarrendatario = () => {
       });
       if (response.ok) {
         setPagoArrenda(data);
+        handleGuardarClick(), 
         funcional('se an enviado los datos correctamente'),
         window.location.href="/H_recibos"
-        handleGuardarClick(), 
         setShowSaveModal(false); // Muestra el modal de confirmación
         reset();
       }

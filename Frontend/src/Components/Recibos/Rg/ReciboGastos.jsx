@@ -134,10 +134,8 @@ export const ReciboGastos = () => {
         setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
         ReciboGasto(data.numerogasto, data); // Pasa los datos actualizados al PDF
         console.log(data)
-
         notify('se enviaron correctamente los datos');
-        window.location.href="/H_gastos"
-        
+        window.location.href="/H_gastos"        
         return responseData;
 
       }
