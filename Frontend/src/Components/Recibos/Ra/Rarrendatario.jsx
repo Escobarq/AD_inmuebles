@@ -179,6 +179,7 @@ export const Rarrendatario = () => {
     toast.error(text, {
       theme: "colored",
     });
+    
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
   // Función para obtener la fecha actual en formato YYYY-MM-DD
   function getCurrentDate() {

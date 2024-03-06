@@ -5,15 +5,16 @@ import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Button, Modal, ListGroup, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-
+import logo from '../../../assets/Logo.png';
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
 import { PDFDocument, rgb,} from "pdf-lib";
 import axios from "axios";
 
+
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-
+  const [infogastos, setinfogastos] = useState([]);
   const [PagoGasto, setPagoGasto] = useState([]);
   const [Nombre, setNombre] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
@@ -125,8 +126,10 @@ export const ReciboGastos = () => {
         
       }else {
         const responseData = await response.json();
-        ReciboGasto()
-        return responseData;
+        
+        setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
+        ReciboGasto(data.numerogasto, data); // Pasa los datos actualizados al PDF
+        console.log(data)
       }
     } catch (error) {
       if (error.message.includes("correo ya registrado")) {
@@ -150,95 +153,163 @@ export const ReciboGastos = () => {
 
 
 
-  const ReciboGasto= async () => {
-  
-    
+
+
+
+
+
+
+
+
+
+
+const ReciboGasto = async (data) => {
     try {
-      const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage();
-      const { width, height } = page.getSize();
-      const fontSize = 19;
-      const padding = 50;
-  
-      // Agregar texto con la hora de emisión en la parte inferior de la página
-      const currentTime = new Date().toLocaleTimeString();
-      const footerText = `Hora de emisión: ${currentTime}`;
-  
-      page.drawText(footerText, {
-        x: padding,
-        y: padding,
-        size: 13,
-        color: rgb(0.5, 0.5, 0.5),
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-  
-      // Organizamos los campos en dos columnas
-  
-      let yOffset = height - padding - fontSize * 2;
-  
-      // Load the logo image
-      const logoImageBytes = await fetch(logo).then((res) =>
-        res.arrayBuffer()
-      );
-      const logoImage = await pdfDoc.embedPng(logoImageBytes);
-  
-      // Dibujar el logo en el encabezado
-      page.drawImage(logoImage, {
-        x: padding - 10,
-        y: height - padding - fontSize * 0.6,
-        width: 100,
-        height: 50,
-        color: rgb(0.7, 0.7, 0.7),
-      });
-  
-      // Dibujar el título al lado del logo con color gris opaco y posición vertical más alta
-      page.drawText("Adminmuebles", {
-        x: padding + 120,
-        y: height - padding - fontSize * 0.0,
-        size: fontSize + 0,
-        color: rgb(0.8, 0.8, 0.8),
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-  
-      // Título del recibo
-      page.drawText("Recibo Gastos", {
-        x: width / 10,
-        y: height - padding - fontSize * 6,
-        size: fontSize + 9,
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-      yOffset -= fontSize * 9;
+        const pdfDoc = await PDFDocument.create();
+        const page = pdfDoc.addPage();
+        const { width, height } = page.getSize();
+        const fontSize = 19;
+        const padding = 50;
+        const middle = width / 2; // Punto medio de la página
 
-  
-      // Dibujar línea horizontal en el encabezado
-      page.drawLine({
-        start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
-        end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
-        thickness: 1,
-        color: rgb(0.7, 0.7, 0.7),
-      });
-  
-      // Dibujar línea horizontal arriba de la hora actual
-      page.drawLine({
-        start: { x: padding, y: padding + fontSize * 0.5 + 20 },
-        end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
-        thickness: 1,
-        color: rgb(0.7, 0.7, 0.7),
-      });
-  
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "recibo.pdf";
-      link.click();
+        // Footer text with current time
+        const currentTime = new Date().toLocaleTimeString();
+        const footerText = `Hora de emisión: ${currentTime}`;
+
+        // Draw footer text
+        page.drawText(footerText, {
+            x: padding,
+            y: padding,
+            size: 13,
+            color: rgb(0.5, 0.5, 0.5),
+            font: await pdfDoc.embedFont("Helvetica"),
+        });
+
+        // Load and embed the logo image
+        const logoImageBytes = await fetch(logo).then((res) =>
+            res.arrayBuffer()
+        );
+        const logoImage = await pdfDoc.embedPng(logoImageBytes);
+
+        // Draw logo in the header
+        page.drawImage(logoImage, {
+            x: padding - 10,
+            y: height - padding - fontSize * 0.6,
+            width: 100,
+            height: 50,
+            color: rgb(0.7, 0.7, 0.7),
+        });
+
+        // Draw company name beside the logo
+        page.drawText("Adminmuebles", {
+            x: padding + 120,
+            y: height - padding - fontSize * 0.0,
+            size: fontSize + 0,
+            color: rgb(0.8, 0.8, 0.8),
+            font: await pdfDoc.embedFont("Helvetica"),
+        });
+
+        // Title of the receipt
+        page.drawText("Recibo Gastos", {
+            x: width / 10,
+            y: height - padding - fontSize * 6,
+            size: fontSize + 9,
+            font: await pdfDoc.embedFont("Helvetica"),
+        });
+
+        // Draw horizontal line in the header
+        page.drawLine({
+            start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
+            end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
+            thickness: 1,
+            color: rgb(0.7, 0.7, 0.7),
+        });
+
+        // Draw horizontal line above the current time
+        page.drawLine({
+            start: { x: padding, y: padding + fontSize * 0.5 + 20 },
+            end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
+            thickness: 1,
+            color: rgb(0.7, 0.7, 0.7),
+        });
+
+        // Left section: Gasto N°, Propietario, Inmueble
+        const leftSectionText = `
+        Gasto N°:
+        ${infogastos.numerogasto}
 
 
+        Propietario del Inmueble:
+        ${selectedPropietario.NombreCompleto}
+
+
+        Inmueble:
+        ${selectedInmueble.IdInmueble}
+        `;
+
+        page.drawText(leftSectionText, {
+          x: padding - 37,
+            y: height - padding - fontSize * 9, // Adjust as needed
+            size: fontSize,
+            font: await pdfDoc.embedFont("Helvetica"),
+        });
+
+        // Right section: Fecha de pago, Forma de pago, Elaborado por
+        const rightSectionText = `
+        Fecha de pago:
+        ${infogastos.FechaPago}
+
+
+        Forma de Pago:
+        ${infogastos.FormaPago}
+
+        
+        Elaborado Por:
+        ${infogastos.ElaboradoPor}
+        `;
+
+        page.drawText(rightSectionText, {
+          x: middle + padding - 50, 
+            y: height - padding - fontSize * 9, // Adjust as needed
+            size: fontSize,
+            font: await pdfDoc.embedFont("Helvetica"),
+        });
+// Sección izquierda: Gasto N°, Propietario, Inmueble
+const sectionText = `
+Concepto                       Valor
+                   
+Admin Inmobiliaria             ${infogastos.AdminInmobiliaria}
+Aseo Entrega                   ${infogastos.AseoEntrega}
+Mantenimiento                  ${infogastos.Mantenimiento}
+`;
+
+page.drawText(sectionText, {
+    x: padding - 37,
+    y: height - padding - fontSize * 30, // Ajustar según sea necesario
+    size: fontSize,
+    font: await pdfDoc.embedFont("Helvetica"),
+});
+
+        // Save PDF and trigger download
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "recibo.pdf";
+        link.click();
     } catch (error) {
-      console.error("Error al generar el PDF:", error);
+        console.error("Error al generar el PDF:", error);
     }
-  };
+};
+
+
+
+
+
+
+
+
 
 
 
@@ -257,6 +328,7 @@ export const ReciboGastos = () => {
                 type="text"
                 className="form-control"
                 id="numeroGasto"
+                {...register("numerogasto")}
               />
               <label htmlFor="fecha">Fecha de Pago:</label>
               <input
