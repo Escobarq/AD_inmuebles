@@ -11,6 +11,7 @@ import { PDFDocument, rgb,} from "pdf-lib";
 import axios from "axios";
 
 
+
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -274,21 +275,25 @@ const ReciboGasto = async (data) => {
             size: fontSize,
             font: await pdfDoc.embedFont("Helvetica"),
         });
+
+        
 // Sección izquierda: Gasto N°, Propietario, Inmueble
 const sectionText = `
-Concepto                       Valor
+    Concepto                                     Valor
                    
-Admin Inmobiliaria             ${infogastos.AdminInmobiliaria}
-Aseo Entrega                   ${infogastos.AseoEntrega}
-Mantenimiento                  ${infogastos.Mantenimiento}
+  Admin Inmobiliaria                        ${infogastos.AdminInmobiliaria}
+  Aseo Entrega                                ${infogastos.AseoEntrega}
+  Mantenimiento                              ${infogastos.Mantenimiento}
 `;
 
 page.drawText(sectionText, {
-    x: padding - 37,
-    y: height - padding - fontSize * 30, // Ajustar según sea necesario
+    x: padding - 2,
+    y: height - padding - fontSize * 24, // Ajustar según sea necesario
     size: fontSize,
     font: await pdfDoc.embedFont("Helvetica"),
 });
+
+
 
         // Save PDF and trigger download
         const pdfBytes = await pdfDoc.save();
@@ -302,17 +307,6 @@ page.drawText(sectionText, {
         console.error("Error al generar el PDF:", error);
     }
 };
-
-
-
-
-
-
-
-
-
-
-
 
 
   
