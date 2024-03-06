@@ -286,7 +286,7 @@ export const Propietarios = () => {
         <div className="view_esp">
           {NoResult == true ? (
             <div>
-              <img src={NoResultImg} alt="" />
+              <img className="Noresult" src={NoResultImg} alt="" />
             </div>
           ) : (
             <div className="table-container">

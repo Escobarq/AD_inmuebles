@@ -29,7 +29,7 @@ export const RPropietario = () => {
     NumeroCuenta: "",
     FechaIngreso: "",
     Direccion: "",
-    IdPropietario: "" // Agregamos el campo IdPropietario
+    IdPropietario: "", // Agregamos el campo IdPropietario
   });
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export const RPropietario = () => {
     } else {
       // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo propietario
       setpropetarioData({
-        IdPropietario: "" ,// Agregamos el campo IdPropietario
+        IdPropietario: "", // Agregamos el campo IdPropietario
         NombreCompleto: "",
         TipoDocumento: "",
         DocumentoIdentidad: "",
@@ -86,7 +86,7 @@ export const RPropietario = () => {
       if (response.ok) {
         setShowSaveModal(false); // Muestra el modal de confirmación
         localStorage.setItem("NITPropie", data.numerodocumento); // Suponiendo que DocumentoIdentidad es el campo correcto
-        reset(); 
+        reset();
       }
     } catch (error) {
       console.error("Error al enviar datos al servidor:", error);
@@ -94,9 +94,8 @@ export const RPropietario = () => {
   };
 
   const handleConfirmSave = () => {
-    
-    handleSubmit(onSubmitRegistro)(); 
-    
+    handleSubmit(onSubmitRegistro)();
+
     const method = propetarioData.IdPropietario ? "PUT" : "POST";
 
     if (method === "PUT") {
@@ -104,7 +103,7 @@ export const RPropietario = () => {
     } else {
       window.location.href = "/RInmuebleA";
     }
-    
+
     setShowSaveModal(false); // Cierra el modal
   };
 
@@ -172,10 +171,14 @@ export const RPropietario = () => {
     <div className="contener-home contener-rpropietario">
       <h2>Registro Propietario</h2>
       <div className="container">
-        <Form className="form-propietario" onSubmit={handleSubmit(onSubmitRegistro)}>
+        <Form
+          className="form-propietario"
+          onSubmit={handleSubmit(onSubmitRegistro)}
+        >
           <Form.Group controlId="formnombrepropietario" className="formSelect">
             <Form.Label>Nombre de Propietario:</Form.Label>
-            <Form.Control className="InputsRegistros"
+            <Form.Control
+              className="InputsRegistros"
               {...register("nombrepropietario")}
               type="text"
               defaultValue={propetarioData.NombreCompleto}
@@ -184,14 +187,30 @@ export const RPropietario = () => {
               required
             />
             {focusedField === "nombrepropietario" && showWarning && (
-              <span className="error-message">Solo se permiten letras y espacios</span>
+              <span className="error-message">
+                Solo se permiten letras y espacios
+              </span>
             )}
           </Form.Group>
 
           <Form.Group controlId="formTipoDocumento" className="formSelect">
             <Form.Label>Tipo De Documento</Form.Label>
-            <Form.Select className="InputsRegistros" {...register("TipoDocumento")} defaultValue={propetarioData.TipoDocumento} required  onChange={(e) => setpropetarioData({ ...propetarioData, TipoDocumento: e.target.value })} >
-              <option defaultValue="" disabled hidden> Seleccione Tipo de Documento </option>
+            <Form.Select
+              className="InputsRegistros"
+              {...register("TipoDocumento")}
+              defaultValue={propetarioData.TipoDocumento}
+              required
+              onChange={(e) =>
+                setpropetarioData({
+                  ...propetarioData,
+                  TipoDocumento: e.target.value,
+                })
+              }
+            >
+              <option defaultValue="" disabled hidden>
+                {" "}
+                Seleccione Tipo de Documento{" "}
+              </option>
               <option value="Cedula Ciudadania">Cedula Ciudadania</option>
               <option value="Cedula Extranjera">Cedula Extranjera</option>
               <option value="Pasaporte">Pasaporte</option>
@@ -200,15 +219,19 @@ export const RPropietario = () => {
 
           <Form.Group controlId="formdireccion">
             <Form.Label>Dirección Del Propietario:</Form.Label>
-            <Form.Control className="InputsRegistros" {...register("direccion")}  type="text"  defaultValue={propetarioData.Direccion}  />           
+            <Form.Control
+              className="InputsRegistros"
+              {...register("direccion")}
+              type="text"
+              defaultValue={propetarioData.Direccion}
+            />
           </Form.Group>
 
           <Form.Group controlId="formnumerodocumento">
             <Form.Label>N° Documento Identidad:</Form.Label>
-            <Form.Control className="InputsRegistros"
-            
+            <Form.Control
+              className="InputsRegistros"
               {...register("numerodocumento")}
-              type="number"
               defaultValue={propetarioData.DocumentoIdentidad}
               onChange={handleNumberChange}
               onFocus={() => handleFieldFocus("numerodocumento")}
@@ -221,12 +244,13 @@ export const RPropietario = () => {
 
           <Form.Group controlId="formtelefono">
             <Form.Label>Teléfono:</Form.Label>
-            <Form.Control className="InputsRegistros"
-              {...register("telefono")}
+            <Form.Control
+              className="InputsRegistros"
+              {...register("Telefono")}
               type="text"
               defaultValue={propetarioData.Telefono}
               onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("telefono")}
+              onFocus={() => handleFieldFocus("Telefono")}
               required
             />
             {focusedField === "telefono" && showWarning && (
@@ -234,21 +258,25 @@ export const RPropietario = () => {
             )}
           </Form.Group>
 
-          <Form.Group controlId="formcorreoelectronico" >
+          <Form.Group controlId="formcorreoelectronico">
             <Form.Label>Correo Electrónico:</Form.Label>
-            <Form.Control className="InputsRegistros"
+            <Form.Control
+              className="InputsRegistros"
               type="email"
               name="correo"
-              {...register("correoelectronico")}
+              {...register("Correo")}
               defaultValue={propetarioData.Correo}
               required
-              onChange={(e) => setpropetarioData({ ...propetarioData, Correo: e.target.value })}
+              onChange={(e) =>
+                setpropetarioData({ ...propetarioData, Correo: e.target.value })
+              }
             />
           </Form.Group>
 
           <Form.Group controlId="formbanco">
             <Form.Label>Banco:</Form.Label>
-            <Form.Control className="InputsRegistros"
+            <Form.Control
+              className="InputsRegistros"
               {...register("banco")}
               type="text"
               defaultValue={propetarioData.Banco}
@@ -257,7 +285,9 @@ export const RPropietario = () => {
               required
             />
             {focusedField === "banco" && showWarning && (
-              <span className="error-message">Solo se permiten letras y espacios</span>
+              <span className="error-message">
+                Solo se permiten letras y espacios
+              </span>
             )}
           </Form.Group>
 
@@ -269,7 +299,12 @@ export const RPropietario = () => {
               aria-label="Default select example"
               defaultValue={propetarioData.TipoCuenta}
               required
-              onChange={(e) => setpropetarioData({ ...propetarioData, TipoCuenta: e.target.value })}
+              onChange={(e) =>
+                setpropetarioData({
+                  ...propetarioData,
+                  TipoCuenta: e.target.value,
+                })
+              }
             >
               <option defaultValue="" disabled hidden>
                 Seleccione Tipo de Cuenta
@@ -281,7 +316,8 @@ export const RPropietario = () => {
 
           <Form.Group controlId="formnumerocuenta">
             <Form.Label>Número de Cuenta:</Form.Label>
-            <Form.Control className="InputsRegistros"
+            <Form.Control
+              className="InputsRegistros"
               type="number"
               name="numerocuenta"
               {...register("numerocuenta")}
@@ -298,19 +334,21 @@ export const RPropietario = () => {
 
           <Form.Group controlId="formfechaingreso">
             <Form.Label>Fecha de Ingreso:</Form.Label>
-            <Form.Control className="InputsRegistros"
-            disabled
+            <Form.Control
+              className="InputsRegistros"
               {...register("fechaingreso")}
               type="date"
-              value={currentDate}
-              defaultValue={propetarioData.FechaIngreso}
-              required
-              onChange={(e) => setpropetarioData({ ...propetarioData, FechaIngreso: e.target.value })}
+              defaultValue={propetarioData.FechaIngreso || currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate
+              onChange={(e) =>
+                setpropetarioData({
+                  ...propetarioData,
+                  FechaIngreso: e.target.value,
+                })
+              }
             />
           </Form.Group>
 
           {/* Aquí irían los demás campos del formulario */}
-          
         </Form>
       </div>
 
@@ -365,7 +403,10 @@ export const RPropietario = () => {
             ¿Estás seguro de que deseas cancelar la operación?
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => setShowCancelModal(false)}
+            >
               No
             </Button>
             <Button variant="primary" onClick={handleConfirmCancel}>

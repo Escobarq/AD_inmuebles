@@ -13,6 +13,8 @@ export const RInmuebleA = () => {
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [selectedPropietario, setSelectedPropietario] = useState("");
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
+  const [focusedField, setFocusedField] = useState(""); // Agregar esta línea antes de usar focusedField
+  const [showWarning, setShowWarning] = useState(false); // Agregar esta línea antes de usar showWarning
 
   const notify = () =>
     toast.success("Se Registró correctamente", {
@@ -70,10 +72,9 @@ export const RInmuebleA = () => {
   };
   const handlePropietarioChange = async (Propietario) => {
     setSelectedPropietario(Propietario);
-    console.log(Propietario)
+    console.log(Propietario);
     setMostrarModalA(false);
   };
-
 
   const handleSelectChange = (event) => {
     const selectedOption = event.target.value;
@@ -93,6 +94,48 @@ export const RInmuebleA = () => {
     window.location.href = "/Inmueble";
     setShowCancelModal(false); // Cierra el modal
   };
+
+  
+  const handleTextChange = (event) => {
+    const fieldValue = event.target.value;
+    const fieldName = event.target.name;
+
+    // Expresión regular para permitir solo letras y espacios
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/;
+
+    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
+    if (!regex.test(fieldValue) && focusedField === fieldName) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+
+    // Actualiza los datos del propietario
+    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+  };
+
+  const handleNumberChange = (event) => {
+    const fieldValue = event.target.value;
+    const fieldName = event.target.name;
+
+    // Expresión regular para permitir solo números
+    const regex = /^[0-9]*$/;
+
+    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
+    if (!regex.test(fieldValue) && focusedField === fieldName) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+
+    // Actualiza los datos del propietario
+    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+  };
+
+  const handleFieldFocus = (fieldName) => {
+    setFocusedField(fieldName);
+  };
+
 
   return (
     <div className="contener-home contener-rpropietario">
@@ -129,9 +172,15 @@ export const RInmuebleA = () => {
               <Form.Label>No. Matricula:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("Nmatricula")}
-                type="number"
+                {...register("NoMatricula")}
+               
+                onChange={handleNumberChange}
+                onFocus={() => handleFieldFocus("NoMatricula")}
+                required
               />
+              {focusedField === "NoMatricula" && showWarning && (
+                <span className="error-message">Solo se permiten números</span>
+              )}
             </Form.Group>
 
             <Form.Group controlId="formDireccion">
@@ -139,77 +188,116 @@ export const RInmuebleA = () => {
               <Form.Control
                 className="InputsRegistros"
                 {...register("Direccion")}
-                type="text"
-              />
-            </Form.Group>
+                onChange={handleTextChange}
+                 />
+                 </Form.Group>
 
             <Form.Group controlId="formCiudad">
               <Form.Label>Ciudad:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 {...register("Ciudad")}
-                type="text"
-              />
-            </Form.Group>
+                onChange={handleTextChange}
+              onFocus={() => handleFieldFocus("Ciudad")}
+              required
+            />
+            {focusedField === "Ciudad" && showWarning && (
+              <span className="error-message">
+                Solo se permiten letras y espacios
+              </span>
+            )}
+          </Form.Group>
 
             <Form.Group controlId="formBarrio">
               <Form.Label>Barrio:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 {...register("Barrio")}
-                type="text"
-              />
-            </Form.Group>
+                onChange={handleTextChange}
+              onFocus={() => handleFieldFocus("Barrio")}
+              required
+            />
+            {focusedField === "Barrio" && showWarning && (
+              <span className="error-message">
+                Solo se permiten letras y espacios
+              </span>
+            )}
+          </Form.Group>
 
             <Form.Group controlId="formEstrato">
               <Form.Label>Estrato:</Form.Label>
-              <Form.Select className="formSelect InputsRegistros" required {...register("Estrato")} aria-label="Default select example" >
-                  <option value="" selected>
-                    Seleccione estrato
-                  </option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                </Form.Select>
+              <Form.Select
+                className="formSelect InputsRegistros"
+                required
+                {...register("Estrato")}
+                aria-label="Default select example"
+              >
+                <option value="" selected>
+                  Seleccione estrato
+                </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+              </Form.Select>
             </Form.Group>
 
-            <Form.Group controlId="formNoBanos">
+            <Form.Group controlId="formNBanos">
               <Form.Label>No. Baños:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("Nbanos")}
-                type="number"
-              />
-            </Form.Group>
+                {...register("NBanos")}
+                onChange={handleNumberChange}
+              onFocus={() => handleFieldFocus("NBanos")}
+              required
+            />
+            {focusedField === "NBanos" && showWarning && (
+              <span className="error-message">Solo se permiten números</span>
+            )}
+          </Form.Group>
 
-            <Form.Group controlId="formNoBanos">
+            <Form.Group controlId="formValorIn">
               <Form.Label>Valor:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 {...register("ValorIn")}
-                type="number"
-              />
-            </Form.Group>
+                onChange={handleNumberChange}
+              onFocus={() => handleFieldFocus("ValorIn")}
+              required
+            />
+            {focusedField === "ValorIn" && showWarning && (
+              <span className="error-message">Solo se permiten números</span>
+            )}
+          </Form.Group>
 
             <Form.Group controlId="formNoHabitaciones">
               <Form.Label>No. Habitaciones:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("NHabita")}
-                type="number"
-              />
-            </Form.Group>
+                {...register("NoHabitaciones")}
+                onChange={handleNumberChange}
+              onFocus={() => handleFieldFocus("NoHabitaciones")}
+              required
+            />
+            {focusedField === "NoHabitaciones" && showWarning && (
+              <span className="error-message">Solo se permiten números</span>
+            )}
+          </Form.Group>
 
             <Form.Group controlId="formNoNiveles">
               <Form.Label>No. Niveles:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 {...register("NoNiveles")}
-                type="number"
+                onChange={handleNumberChange}
+                onFocus={() => handleFieldFocus("NoNiveles")}
+                required
               />
+              {focusedField === "NoNiveles" && showWarning && (
+                <span className="error-message">Solo se permiten números</span>
+              )}
             </Form.Group>
 
             <Form.Group controlId="formTerraza">
@@ -217,18 +305,30 @@ export const RInmuebleA = () => {
               <Form.Control
                 className="InputsRegistros"
                 {...register("NoTerraza")}
-                type="number"
-              />
-            </Form.Group>
+                onChange={handleNumberChange}
+              onFocus={() => handleFieldFocus("NoTerraza")}
+              required
+            />
+            {focusedField === "NoTerraza" && showWarning && (
+              <span className="error-message">Solo se permiten números</span>
+            )}
+          </Form.Group>
 
             <Form.Group controlId="formServiciosPublicos">
               <Form.Label>Servicios Publicos:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 {...register("Spublicos")}
-                type="text"
-              />
-            </Form.Group>
+                onChange={handleTextChange}
+              onFocus={() => handleFieldFocus("ServiciosPublicos")}
+              required
+            />
+            {focusedField === "ServiciosPublicos" && showWarning && (
+              <span className="error-message">
+                Solo se permiten letras y espacios
+              </span>
+            )}
+          </Form.Group>
 
             <Form.Group controlId="formAseguramiento">
               <Form.Label>Vencimiento de Aseguramiento:</Form.Label>
@@ -238,25 +338,24 @@ export const RInmuebleA = () => {
                 type="date"
               />
             </Form.Group>
-              <Form.Group controlId="formNoIdentidadPropietario">
-                <Form.Label>Propietario del inmueble</Form.Label>
-                <Form.Select className="InputsRegistros"
+            <Form.Group controlId="formNoIdentidadPropietario">
+              <Form.Label>Propietario del inmueble</Form.Label>
+              <Form.Select
+                className="InputsRegistros"
                 value={
-                  selectedPropietario
-                    ? selectedPropietario.IdPropietario
-                    : "a?"
+                  selectedPropietario ? selectedPropietario.IdPropietario : "a?"
                 }
                 onChange={(e) => handlePropietarioChange(e.target.value)}
                 onClick={() => handleMostrarAClick(true)}
               >
                 <option value="">Seleccionar Numero de Propietario</option>
                 {PropietariosDisponibles.map((Propietario, index) => (
-                  <option key={index} value={Propietario.IdPropietario}>               
-                    {Propietario.NombreCompleto}                    
+                  <option key={index} value={Propietario.IdPropietario}>
+                    {Propietario.NombreCompleto}
                   </option>
                 ))}
               </Form.Select>
-              </Form.Group>
+            </Form.Group>
           </div>
           <Form.Group controlId="formNoIdentidadPropietario">
             <Form.Label>Descripción</Form.Label>
@@ -353,9 +452,11 @@ export const RInmuebleA = () => {
                     action
                     onClick={() => handlePropietarioChange(Propietario)}
                   >
-                  {Propietario.TipoDocumento} : 
-                    {Propietario.DocumentoIdentidad} //                    
-                    {Propietario.NombreCompleto}
+                    <span style={{ marginRight: "10px" }}>
+                      🏢 {/* Icono de propietario */}
+                    </span>
+                    {Propietario.TipoDocumento} {Propietario.DocumentoIdentidad}{" "}
+                    - {Propietario.NombreCompleto}
                   </ListGroup.Item>
                 ))}
               </ListGroup>

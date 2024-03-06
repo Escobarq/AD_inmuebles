@@ -9,7 +9,7 @@ import moment from 'moment';
 import 'moment/locale/es';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import logo from '../../../assets/Logo.png'
+import logo from '../../../assets/Logo.png';
 import Button from 'react-bootstrap/Button';
 
 export const ContratoA = () => {
@@ -69,7 +69,7 @@ export const ContratoA = () => {
         <th>Matricula Inmueble</th>
         <th>Inicio de Contrato</th>
         <th>Fin de Contrato</th>
-        <th>V Deposito</th>
+        <th>Valor Deposito</th>
         <th>Cuotas Pendientes</th>
         <th>Estado</th>
       </tr>
@@ -115,8 +115,10 @@ export const ContratoA = () => {
 
 
   //Funcion para generar pdf
+
   const handleGeneratePDF = () => {
 
+console.log(infoarrendatario);
 
     const doc = new jsPDF();
     // Logo-pdf
@@ -138,23 +140,35 @@ export const ContratoA = () => {
 
 
 
-    // Columnas-pdf
     const columns = [
-      { header: "Documento", dataKey: "DocumentoIdentidad" },
-      { header: "Nombre Arrendatario", dataKey: "NombreCompleto" },
-      { header: "Fecha Inicio Contrato", dataKey: "FechaInicioContrato" },
-      { header: "Fecha Fin Contrato", dataKey: "FechaFinContrato" },
-      { header: "Estado", dataKey: "Estado" }
+      { header: "Id Contrato", dataKey: "IdContrato", },
+      { header: "Documento", dataKey: "DocumentoIdentidad", },
+      { header: "Arrendatario", dataKey: "NombreCompleto", },
+      { header: "Matricula", dataKey: "NoMatricula", },
+      { header: "Fecha Ini_Cont", dataKey: "FechaInicioContrato", },
+      { header: "Fecha Fin_Cont", dataKey: "FechaFinContrato", },
+      { header: "Deposito", dataKey: "ValorDeposito", },
+      { header: "Cuotas Pendientes", dataKey: "CuotasPendientes", },
+      { header: "Estado", dataKey: "Estado", }
     ];
+
+
 
     // Datos de la tabla
     const data = infoarrendatario.map(arrendatario => ({
+      IdContrato: arrendatario.IdContrato,
       DocumentoIdentidad: arrendatario.DocumentoIdentidad,
-      NombreCompleto: arrendatario.NombreCompleto,
+      NombreCompleto: arrendatario.NombreArrendatario,
+      NoMatricula: arrendatario.NoMatricula,
       FechaInicioContrato: formatDate(arrendatario.FechaInicioContrato),
       FechaFinContrato: formatDate(arrendatario.FechaFinContrato),
-      Estado: arrendatario.Estado
+      ValorDeposito: arrendatario.ValorDeposito,
+      CuotasPendientes: arrendatario.CuotasPendientes,
+      Estado: arrendatario.EstadoContrato
     }));
+
+
+
 
     //informacion en forma de tabla
     autoTable(doc, {
@@ -183,23 +197,11 @@ export const ContratoA = () => {
       );
     }
 
-
-
-  // Agregar fecha actual en la parte superior derecha
-  doc.setFontSize(10);
-  doc.setTextColor(100);
-  doc.text(
-    getCurrentDate(),
-    doc.internal.pageSize.getWidth() - 30,
-    10,
-    { align: "right" }
-  );
-
-
-
     // nombre de pdf
     doc.save("Contrato_Arrendatario.pdf");
   };
+
+
 
 
 const redireccion = (ruta) => {
@@ -241,7 +243,7 @@ const redireccion = (ruta) => {
             />
           </div>
 
-          <Button variant="primary"  onClick={() => redireccion("/Generar")}>
+          <Button variant="primary" className="NewContract" onClick={() => redireccion("/Generar")}>
             <FontAwesomeIcon icon={faFileSignature}/>
               Generar Nuevo contrato
               </Button>
