@@ -311,39 +311,10 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Comisiones Gastos</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/Ginmuebles"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faTableList}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Comisiones Gastos
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
+         
         </>
       );
+
     } else if (roleId === 2) {
       return (
         <>
@@ -634,6 +605,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
       </Nav.Item>
         </>
       );
+
     }
   };
 
