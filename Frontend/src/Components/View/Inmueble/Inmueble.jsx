@@ -155,7 +155,7 @@ export const Inmueble = () => {
           </Button>
           <Button
             className="btn-opciones"
-            onClick={() => handleMostrarAClick(inmueble)}
+            onClick={() => redireccion("/Generar")}
             variant="success"
           >
             <FontAwesomeIcon icon={faUserPlus} />
@@ -251,31 +251,8 @@ export const Inmueble = () => {
     setMostrarModal(false);
   };
 
-  const handleMostrarAClick = async (inmueble) => {
-    const IdInmueble = inmueble.IdInmueble;
-
-    if (inmueble.Estado === "Ocupado") {
-      const ValidarInmArr = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:3006/VinmuArren?IdInmueble=${IdInmueble}`
-          );
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          const data = await response.json();
-          setinmuebleseleccion(data[0]);
-          setMostrarModalA(true);
-        } catch (error) {
-          console.error("Error fetching products:", error);
-        }
-      };
-      ValidarInmArr();
-    } else {
-      setMostrarModalA(true);
-
-      setinmuebleseleccion(inmueble);
-    }
+  const handleMostrarAClick = async () => {
+        
   };
 
 
