@@ -6,7 +6,7 @@ import { Button, Modal, ListGroup, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-import logo from '../../../assets/Logo.png';
+import logo from '../../../assets/Logo.jpg';
 
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
 import { PDFDocument, rgb,} from "pdf-lib";

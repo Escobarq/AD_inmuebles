@@ -4,12 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { crearUser } from "../Hooks/RegisterUser";
 import { userLogin } from "../Hooks/Userlogin";
 
 export const Login = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
 
   const notify = () =>
@@ -66,27 +64,6 @@ export const Login = () => {
     setMostrarModal(false);
   };
 
-  //Registro Usuario //
-  // const onsubmitNewUser = async (data) => {
-  //   try {
-  //     await crearUser(data);
-  //     setMostrarModal(false);
-  //     notify("Registro Exitoso");
-  //     reset;
-  //   } catch (error) {
-  //     if (
-  //       error.message ===
-  //       "El correo electrónico o la contraseña ya están en uso"
-  //     ) {
-  //       toast.error("El correo electrónico o la contraseña ya están en uso", {
-  //         theme: "colored",
-  //       });
-  //     } else {
-  //       falla();
-  //       console.error("Error al crear usuario:", error);
-  //     }
-  //   }
-  // };
 
   return (
     <>

@@ -6,7 +6,7 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib"; // Importar StandardF
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import logo from "../../../assets/Logo.png";
+import logo from "../../../assets/Logo.jpg";
 
 export const Rarrendatario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
