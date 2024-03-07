@@ -37,6 +37,8 @@ import { Switch } from "./Components/ToggleSwitche/Switch";
 import { EditarDatosIn } from "./Components/Register/EditarDatosInmueble/EditarDatosIn";
 import { Notifi } from "./Components/Notifi/Notifi";
 import useRoleInfo from "./Components/Hooks/useRoleInfo";
+import Crearuser from "./Components/Register/EditarPerfil/Crearuser";
+
 
 function App() {
   const location = useLocation();
@@ -121,6 +123,7 @@ function App() {
               <>
                 <Route path="/AsignarRol" element={<AsignarRol />} />
                 <Route path="/EditarPerfil" element={<ContactForm />} />
+                <Route path="/Crearperfil" element={<Crearuser />} />
               </>
             )}
             <Route path="/InhabilitarRol" element={<InhabilitarRol />} />

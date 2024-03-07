@@ -175,7 +175,7 @@ export const AsignarRol = () => {
             <option value="Asistente">Asistente</option>
           </select>
         </div>
-        <Button variant="success" className="btn-add-success" onClick={() => redireccion("/EditarPerfil")}>
+        <Button variant="success" className="btn-add-success" onClick={() => redireccion("/Crearperfil")}>
             <FontAwesomeIcon className="icon" icon={faUserPlus} /> Agregar Empleado
         </Button>
         <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/InhabilitarRol")}>
