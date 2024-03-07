@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
+import bcrypt from "bcryptjs";
+
 
 
 
 function ContactForm() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const [nuevaContrasena, setNuevaContrasena] = useState("");
 
 
   const [Empleadosdata, setEmpleadosdata] = useState({
@@ -25,6 +28,7 @@ function ContactForm() {
   const [rol, setRol] = useState("");
   const [showSaveModal, setShowSaveModal] = useState(false); // Estado para mostrar/ocultar el modal de guardar
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const saltRounds = 10;
 
   useEffect(() => {
     if (location.search) {
@@ -64,9 +68,11 @@ function ContactForm() {
   };
 
   const handleConfirmSave = async () => {
-    const { Nombre, Apellido, DocumentoIdentidad, Correo, Contrasena, Telefono } = Empleadosdata;
-
+    const { Nombre, Apellido, Correo, Contrasena, Telefono } = Empleadosdata;
     try {
+      // Encriptar la nueva contraseña antes de enviarla al servidor
+      const hashedPassword = await bcrypt.hash(Contrasena, saltRounds);
+
       const response = await fetch(
         `http://localhost:3006/empleados/${Empleadosdata.IdTrabajador}`,
         {
@@ -77,11 +83,10 @@ function ContactForm() {
           body: JSON.stringify({
             Nombre,
             Apellido,
-            DocumentoIdentidad,
             Correo,
-            Contrasena,
+            Contrasena: hashedPassword,
             Telefono,
-            Idrol: rol,
+            Idrol: rol, // Enviar el valor de rol seleccionado en la solicitud
           }),
         }
       );
@@ -89,11 +94,13 @@ function ContactForm() {
         throw new Error("Error al actualizar el empleado");
       }
       notify();
+
       window.location.href = "/AsignarRol"
     } catch (error) {
       console.error("Error al enviar la solicitud PUT:", error);
     }
   };
+
 
   const {
     reset,
@@ -105,11 +112,15 @@ function ContactForm() {
   const RedireccionForms = () => {
     window.location.assign = "/AsignarRol" // Actualiza el estado para ocultar el modal
   };
+
   const handleChange = (event) => {
-    setRol(event.target.value);
+    const selectedRoleId = parseInt(event.target.value);
+    setRol(selectedRoleId); // Establecer el valor del rol seleccionado
+    console.log("Valor de rol en handleChange:", selectedRoleId);
+    setEmpleadosdata({ ...Empleadosdata, Idrol: selectedRoleId }); // Actualizar el Idrol en el estado Empleadosdata
   };
-
-
+  
+  
   return (
     <div className="contener-home contener-rpropietario">
       <h2> Actualizar Informacion de  Empleados</h2>
@@ -152,16 +163,17 @@ function ContactForm() {
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>Contraseña:</Form.Label>
+            <Form.Label>Nueva Contraseña:</Form.Label>
             <Form.Control
               className="form-control"
-              id="Contraseña"
+              id="NuevaContraseña"
               type="password"
-              placeholder="Contraseña"
-              value={Empleadosdata.Contrasena}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Contrasena: e.target.value })}
+              placeholder="Nueva Contraseña"
+              value={nuevaContrasena}
+              onChange={(e) => setNuevaContrasena(e.target.value)}
             />
           </Form.Group>
+
           <Form.Group>
             <Form.Label>Telefono:</Form.Label>
             <Form.Control
@@ -175,18 +187,19 @@ function ContactForm() {
           </Form.Group>
 
           <Form.Group controlId="TipoDocumento">
-            <Form.Label>Selecione Rol </Form.Label>
+            <Form.Label>Seleccione Rol </Form.Label>
             <Form.Control
               as="select"
               className="form-control"
               name="Rol"
               id="Rol"
-              value={rol}
-              onChange={handleChange}
+              value={rol} // Establece el valor del select como el estado actual
+              onChange={handleChange} // Maneja el cambio de valor del select
             >
               <option value="2">Asistente</option>
               <option value="1">Administrador</option>
             </Form.Control>
+
           </Form.Group>
         </Form>
       </div>
