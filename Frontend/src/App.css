@@ -76,3 +76,14 @@
   background-color: #222 !important;
   color: #ffff !important;
 }
+.dark-mode  .text-muted {
+  background-color: #222 !important;
+  color: #ffff !important;
+}
+.dark-mode .editar-perfil{
+  background-color: #222 !important;
+  color: #ffff !important;
+}
+.dark-mode label{
+  color: #ffffff !important;
+}

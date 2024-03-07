@@ -5,8 +5,8 @@ import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Button, Modal, ListGroup, Form, FormGroup } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import logo from "../../../assets/Logo.png";
 import { PDFDocument, rgb, values } from "pdf-lib";
+import logo from '../../../assets/Logo.jpg';
 import axios from "axios";
 
 export const ReciboGastos = () => {
@@ -41,7 +41,9 @@ export const ReciboGastos = () => {
   useEffect(() => {
     let a = localStorage.getItem("user");
     let b = localStorage.getItem("apellido");
+
     setNombre(a + " " + b);    
+
     fetchData();
     setCurrentDate(getCurrentDate());
   }, []);
@@ -99,6 +101,14 @@ export const ReciboGastos = () => {
     // Validar que todos los campos estén llenos antes de guardar
   };
 
+
+  const notify = (text) =>
+    toast.success(text, {
+      theme: "colored",
+      autoClose: 2000
+    });
+
+
   const notify = (text) =>
     toast.success(text, {
       theme: "colored",
@@ -128,6 +138,7 @@ export const ReciboGastos = () => {
   const errores = (text) =>
     toast.error(text, {
       theme: "colored",
+
       autoClose: 2000,
     });
 
@@ -155,6 +166,23 @@ export const ReciboGastos = () => {
           body: JSON.stringify(data),
         });
 
+
+      if (!response.ok) {
+        throw new Error(`Error al crear usuario. Código de estado: ${response.status}`);
+
+      } else {
+        const responseData = await response.json();
+
+        setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
+        ReciboGasto(data); // Pasa los datos actualizados al PDF
+        console.log(data)
+        notify('se enviaron correctamente los datos');
+
+        window.location.href="/H_gastos"        
+
+        return responseData;
+
+
         if (!response.ok) {
           throw new Error(
             `Error al crear usuario. Código de estado: ${response.status}`
@@ -165,7 +193,6 @@ export const ReciboGastos = () => {
           setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
           ReciboGasto(data.numerogasto, data); // Pasa los datos actualizados al PDF
           notify("se enviaron correctamente los datos");
-          window.location.href = "/H_gastos";
           return responseData;
         }
       } catch (error) {
@@ -188,6 +215,22 @@ export const ReciboGastos = () => {
     setSelectedInmueble(Inmueble);
     setMostrarModalB(false);
   };
+  //AQUI EMPIEZA FUNCION PARA PDF
+  const ReciboGasto = async (data) => {
+    const order = [
+      "Documento",
+      "Nombre",
+      "Tipo",
+      "FormaPago",
+      "FechaPago",
+      "Matricula",
+      "AdminInmobiliaria",
+      "PagoArriendo",
+      "AseoEntrega",
+      "Mantenimiento",
+      "ElaboradoPor"
+    ];
+
 
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
   // Función para obtener la fecha actual en formato YYYY-MM-DD
@@ -202,19 +245,22 @@ export const ReciboGastos = () => {
   }
 
   const ReciboGasto = async (data) => {
+   
     try {
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage();
+      const page = pdfDoc.addPage(); 
       const { width, height } = page.getSize();
-      const fontSize = 19;
-      const padding = 50;
-      const middle = width / 2; // Punto medio de la página
+      const fontSize = 19; 
+      const padding = 50; 
+      const middle = width / 2; 
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString(); 
+      const footerText = `Hora de emisión: ${currentTime}`; 
+      const textWidth = (await pdfDoc.embedFont("Helvetica")).widthOfTextAtSize(currentDate, fontSize);
+      const textX = width - padding - textWidth;
 
-      // Footer text with current time
-      const currentTime = new Date().toLocaleTimeString();
-      const footerText = `Hora de emisión: ${currentTime}`;
+      //texto en el pie de página
 
-      // Draw footer text
       page.drawText(footerText, {
         x: padding,
         y: padding,
@@ -223,11 +269,15 @@ export const ReciboGastos = () => {
         font: await pdfDoc.embedFont("Helvetica"),
       });
 
-      // Load and embed the logo image
-      const logoImageBytes = await fetch(logo).then((res) => res.arrayBuffer());
+
+      //la imagen del logo
+      const logoImageBytes = await fetch(logo).then((res) =>
+        res.arrayBuffer()
+      );
       const logoImage = await pdfDoc.embedPng(logoImageBytes);
 
-      // Draw logo in the header
+      //logo en el encabezado
+
       page.drawImage(logoImage, {
         x: padding - 10,
         y: height - padding - fontSize * 0.6,
@@ -236,7 +286,18 @@ export const ReciboGastos = () => {
         color: rgb(0.7, 0.7, 0.7),
       });
 
-      // Draw company name beside the logo
+
+      //fecha actual
+      page.drawText(`${currentDate}`, {
+        x: textX,
+        y: height - padding - fontSize * 0.1, 
+        size: fontSize - 2,
+        color: rgb(0.5, 0.5, 0.5),
+        font: await pdfDoc.embedFont("Helvetica"),
+
+      });
+      // Dibujar el nombre de la empresa junto al logo
+
       page.drawText("Adminmuebles", {
         x: padding + 120,
         y: height - padding - fontSize * 0.0,
@@ -245,15 +306,16 @@ export const ReciboGastos = () => {
         font: await pdfDoc.embedFont("Helvetica"),
       });
 
-      // Title of the receipt
+
+      // Título del recibo
       page.drawText("Recibo Gastos", {
         x: width / 10,
-        y: height - padding - fontSize * 6,
+        y: height - padding - fontSize * 4.5,
         size: fontSize + 9,
         font: await pdfDoc.embedFont("Helvetica"),
       });
+      //línea horizontal en el encabezado
 
-      // Draw horizontal line in the header
       page.drawLine({
         start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
         end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
@@ -261,7 +323,6 @@ export const ReciboGastos = () => {
         color: rgb(0.7, 0.7, 0.7),
       });
 
-      // Draw horizontal line above the current time
       page.drawLine({
         start: { x: padding, y: padding + fontSize * 0.5 + 20 },
         end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
@@ -269,72 +330,65 @@ export const ReciboGastos = () => {
         color: rgb(0.7, 0.7, 0.7),
       });
 
-      // Left section: Gasto N°, Propietario, Inmueble
-      const leftSectionText = `
-        Gasto N°:
-        ${infogastos.numerogasto}
+      //campos en dos columnas
+      let leftX = padding;
+      let rightX = width / 2 + 20;
+      let yOffset = height - padding - fontSize * 8;
+ 
+      for (const key of order) {
+        if (key !== "IdPropietario" && key !== "IdInmueble") {
+          const value = data[key];
+          if (value) {
+            //Nombre del campo en negrita y centrado
+            page.drawText(`${key}:`, {
+              x: leftX,
+              y: yOffset,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              font: await pdfDoc.embedFont("Helvetica-Bold"),
+              align: "right",
+            });
+            //la respuesta debajo del nombre del campo
+            page.drawText(`${value}`, {
+              x: leftX,
+              y: yOffset - fontSize * 1.5,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              align: "left",
+            });
+            // Alternamos entre columnas izquierda y derecha
+            if (leftX === padding) {
+              leftX = rightX;
+            } else {
+              leftX = padding;
+              yOffset -= fontSize * 5;
+              if (yOffset < padding) {
+                // Si llegamos al límite de la página, continuamos en la siguiente página
+                page.drawText(`${key}:`, {
+                  x: leftX,
+                  y: yOffset,
+                  size: fontSize,
+                  color: rgb(0, 0, 0),
+                  font: await pdfDoc.embedFont("Helvetica"),
+                  align: "center",
+                });
+              }
+            }
+          }
+        }
+      }
+      // Guardar el PDF y descargarlo
 
-
-        Propietario del Inmueble:
-        ${selectedPropietario.NombreCompleto}
-
-
-        Inmueble:
-        ${selectedInmueble.IdInmueble}
-        `;
-
-      page.drawText(leftSectionText, {
-        x: padding - 37,
-        y: height - padding - fontSize * 9, // Adjust as needed
-        size: fontSize,
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-
-      // Right section: Fecha de pago, Forma de pago, Elaborado por
-      const rightSectionText = `
-        Fecha de pago:
-        ${infogastos.FechaPago}
-
-
-        Forma de Pago:
-        ${infogastos.FormaPago}
-
-        
-        Elaborado Por:
-        ${infogastos.ElaboradoPor}
-        `;
-
-      page.drawText(rightSectionText, {
-        x: middle + padding - 50,
-        y: height - padding - fontSize * 9, // Adjust as needed
-        size: fontSize,
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-
-      // Sección izquierda: Gasto N°, Propietario, Inmueble
-      const sectionText = `
-    Concepto                                     Valor
-                   
-  Admin Inmobiliaria                        ${infogastos.AdminInmobiliaria}
-  Aseo Entrega                                ${infogastos.AseoEntrega}
-  Mantenimiento                              ${infogastos.Mantenimiento}
-`;
-
-      page.drawText(sectionText, {
-        x: padding - 2,
-        y: height - padding - fontSize * 24, // Ajustar según sea necesario
-        size: fontSize,
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-
-      // Save PDF and trigger download
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "recibo.pdf";
+
+      link.download = "Recibo Gastos_pdf";
       link.click();
+      window.location.href = "/H_gastos"
+
     } catch (error) {
       console.error("Error al generar el PDF:", error);
     }
@@ -366,12 +420,14 @@ export const ReciboGastos = () => {
                 defaultValue={Nombre}
                 disabled
               />
+
             </Form.Group>
 
             <Form.Group>
               <Form.Label>Propietario del inmueble</Form.Label>
               <Form.Select
                 className="InputsRegistros"
+
                 value={
                   selectedPropietario ? selectedPropietario.IdPropietario : "a?"
                 }
@@ -389,30 +445,37 @@ export const ReciboGastos = () => {
 
             <Form.Group>
               <Form.Label>Inmueble</Form.Label>
+
               <Form.Select
                 className="InputsRegistros"
                 value={selectedInmueble ? selectedInmueble.IdInmueble : "a?"}
+
                 onChange={(e) => handleInmuebleChange(e.target.value)}
                 onClick={() => handleMostrarBClick(true)}
               >
                 <option value="">Seleccionar Numero de Matricula</option>
                 {InmueblesDisponibles.map((Inmueble, index) => (
                   <option key={index} value={Inmueble.IdInmueble}>
+
                     {Inmueble.NoMatricula} {Inmueble.Tipo}
+
                   </option>
                 ))}
               </Form.Select>
             </Form.Group>
           </div>
+
           <label>Forma de pago</label>
           <select
             className="InputsRegistros"
             {...register("FormaPago")}
             id="seleccionGasto3"
+
           >
             <option value="">Seleccione Forma de Pago</option>
             <option value="Efectivo">Efectivo</option>
             <option value="Transferencia">Transferencia</option>
+
           </select>
 
           <div className="fila-formulario">
@@ -446,6 +509,7 @@ export const ReciboGastos = () => {
                 className="form-control InputsRegistros"
                 id="valor2"
               />
+
             </div>
             <div className="valor">
               <label htmlFor="valor">Valor</label>
@@ -508,19 +572,23 @@ export const ReciboGastos = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          ¿Estás seguro de que deseas guardar los cambios? Recuerda que si
-          confirmas no se podran editar
+
+          ¿Estás seguro de que deseas guardar los cambios?
+          Recuerda que si confirmas no se podran editar
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
             No
           </Button>
+
           <Button
             variant="primary"
             onClick={() => {
               handleConfirmSave();
             }}
           >
+
             Sí
           </Button>
         </Modal.Footer>
@@ -538,6 +606,7 @@ export const ReciboGastos = () => {
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
             No
           </Button>
+
           <Button
             variant="primary"
             onClick={() => {
@@ -545,6 +614,7 @@ export const ReciboGastos = () => {
               handleCancel();
             }}
           >
+
             Sí
           </Button>
         </Modal.Footer>
@@ -567,7 +637,9 @@ export const ReciboGastos = () => {
                 action
                 onClick={() => handlePropietarioChange(Propietario)}
               >
+
                 {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
+
                 {Propietario.NombreCompleto}
               </ListGroup.Item>
             ))}
@@ -591,12 +663,15 @@ export const ReciboGastos = () => {
                 action
                 onClick={() => handleInmuebleChange(Inmueble)}
               >
+
                 {Inmueble.NoMatricula} :{Inmueble.Tipo}
+
               </ListGroup.Item>
             ))}
           </ListGroup>
         </Modal.Body>
       </Modal>
+
     </div>
   );
 };

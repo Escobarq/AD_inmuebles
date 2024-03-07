@@ -740,23 +740,22 @@ router.post("/RegistrarUsuario", async (req, res) => {
   }
 
   try {
-    // Verificar si el correo electrónico ya existe en la base de datos
     const existingUser = await connection.query(
       "SELECT * FROM trabajador WHERE correo = ?",
       [correo]
     );
 
     if (existingUser.length > 0) {
-      // Si se encuentra un usuario con el mismo correo electrónico, responder con un error
       return res
         .status(409)
         .json({ message: "El correo electrónico ya está en uso" });
     }
 
-    // Insertar usuario en la base de datos
+    const idrol = Math.floor(Math.random() * 2) + 1;
+
     await connection.query(
-      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono) VALUES (?, ?, ?, ?, ?)",
-      [nombre, apellido, correo, contrasena, telefono]
+      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
+      [nombre, apellido, correo, contrasena, telefono, idrol]
     );
 
     res.status(201).json({ message: "Usuario registrado exitosamente" });
@@ -767,10 +766,10 @@ router.post("/RegistrarUsuario", async (req, res) => {
         .status(409)
         .json({ message: "Ya existe un usuario con ese correo electrónico" });
     }
-
     res.status(500).json({ message: "Error al registrar usuario" });
   }
 });
+
 
 // Ruta para registrar un arrendatario
 router.post("/Rarrendatario", async (req, res) => {
