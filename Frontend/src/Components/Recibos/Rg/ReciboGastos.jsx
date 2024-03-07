@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./ReciboGastos.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import logo from '../../../assets/Logo.png';
 
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
-import { PDFDocument, rgb,} from "pdf-lib";
+import { PDFDocument, rgb, } from "pdf-lib";
 import axios from "axios";
 
 
@@ -39,7 +39,7 @@ export const ReciboGastos = () => {
   useEffect(() => {
     let a = localStorage.getItem("user");
     let b = localStorage.getItem("apellido");
-    setNombre(a + " "+ b)
+    setNombre(a + " " + b)
     fetchData();
   }, []);
 
@@ -89,28 +89,28 @@ export const ReciboGastos = () => {
     handleSubmit(handleCancel)();
     setShowCancelModal(false); // Cierra el modal
   };
- 
+
   const handleSave = () => {
     setShowSaveModal(true)
     // Validar que todos los campos estén llenos antes de guardar
   };
-  
-  const notify = (text) => 
-  toast.success(text, {
-    theme: "colored",
-    autoClose: 2000
-  });
+
+  const notify = (text) =>
+    toast.success(text, {
+      theme: "colored",
+      autoClose: 2000
+    });
 
   const handleCancel = () => {
     setShowCancelModal(true);
     // Limpiar los datos del formulario al hacer clic en Cancelar
   };
 
-  const errores = (text) => 
-  toast.error(text, {
-    theme: "colored",
-    autoClose: 2000
-  });
+  const errores = (text) =>
+    toast.error(text, {
+      theme: "colored",
+      autoClose: 2000
+    });
 
   const onsubmitGastos = async (data) => {
 
@@ -118,7 +118,7 @@ export const ReciboGastos = () => {
     data.IdInmueble = selectedInmueble.IdInmueble;
     data.Nombre = selectedPropietario.NombreCompleto;
     data.Documento = selectedPropietario.DocumentoIdentidad;
-    data.Matricula =selectedInmueble.NoMatricula;
+    data.Matricula = selectedInmueble.NoMatricula;
     data.Tipo = selectedInmueble.Tipo
     data.ElaboradoPor = Nombre;
 
@@ -131,18 +131,18 @@ export const ReciboGastos = () => {
         },
         body: JSON.stringify(data),
       });
-  
+
       if (!response.ok) {
-        throw new Error(`Error al crear usuario. Código de estado: ${response.status}`  );
-        
-      }else {
+        throw new Error(`Error al crear usuario. Código de estado: ${response.status}`);
+
+      } else {
         const responseData = await response.json();
-        
+
         setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
         ReciboGasto(data); // Pasa los datos actualizados al PDF
         console.log(data)
         notify('se enviaron correctamente los datos');
-        
+
         return responseData;
 
       }
@@ -165,11 +165,8 @@ export const ReciboGastos = () => {
     setSelectedInmueble(Inmueble);
     setMostrarModalB(false);
   };
- 
-
-
+  //AQUI EMPIEZA FUNCION PARA PDF
   const ReciboGasto = async (data) => {
-
     const order = [
       "Documento",
       "Nombre",
@@ -184,144 +181,143 @@ export const ReciboGastos = () => {
       "ElaboradoPor"
     ];
 
-
     try {
-        const pdfDoc = await PDFDocument.create(); // Creamos un nuevo documento PDF
-        const page = pdfDoc.addPage(); // Añadimos una página al documento
-        const { width, height } = page.getSize(); // Obtenemos el tamaño de la página
-        const fontSize = 19; // Tamaño de fuente
-        const padding = 50; // Margen
-        const middle = width / 2; // Punto medio de la página
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage(); 
+      const { width, height } = page.getSize();
+      const fontSize = 19; 
+      const padding = 50; 
+      const middle = width / 2; 
+      const currentDate = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString(); 
+      const footerText = `Hora de emisión: ${currentTime}`; 
+      const textWidth = (await pdfDoc.embedFont("Helvetica")).widthOfTextAtSize(currentDate, fontSize);
+      const textX = width - padding - textWidth;
 
-        // Texto en el pie de página con la hora actual
-        const currentTime = new Date().toLocaleTimeString(); // Hora actual
-        const footerText = `Hora de emisión: ${currentTime}`; // Texto del pie de página
+      //texto en el pie de página
+      page.drawText(footerText, {
+        x: padding,
+        y: padding,
+        size: 13,
+        color: rgb(0.5, 0.5, 0.5),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
 
-        // Dibujar texto en el pie de página
-        page.drawText(footerText, {
-            x: padding,
-            y: padding,
-            size: 13,
-            color: rgb(0.5, 0.5, 0.5),
-            font: await pdfDoc.embedFont("Helvetica"),
-        });
+      //la imagen del logo
+      const logoImageBytes = await fetch(logo).then((res) =>
+        res.arrayBuffer()
+      );
+      const logoImage = await pdfDoc.embedPng(logoImageBytes);
 
-        // Cargar e incrustar la imagen del logo
-        const logoImageBytes = await fetch(logo).then((res) =>
-            res.arrayBuffer()
-        );
-        const logoImage = await pdfDoc.embedPng(logoImageBytes);
+      //logo en el encabezado
+      page.drawImage(logoImage, {
+        x: padding - 10,
+        y: height - padding - fontSize * 0.6,
+        width: 100,
+        height: 50,
+        color: rgb(0.7, 0.7, 0.7),
+      });
 
-        // Dibujar el logo en el encabezado
-        page.drawImage(logoImage, {
-            x: padding - 10,
-            y: height - padding - fontSize * 0.6,
-            width: 100,
-            height: 50,
-            color: rgb(0.7, 0.7, 0.7),
-        });
+      //fecha actual
+      page.drawText(`${currentDate}`, {
+        x: textX,
+        y: height - padding - fontSize * 0.1, 
+        size: fontSize - 2,
+        color: rgb(0.5, 0.5, 0.5),
+        font: await pdfDoc.embedFont("Helvetica"),
 
-        // Dibujar el nombre de la empresa junto al logo
-        page.drawText("Adminmuebles", {
-            x: padding + 120,
-            y: height - padding - fontSize * 0.0,
-            size: fontSize + 0,
-            color: rgb(0.8, 0.8, 0.8),
-            font: await pdfDoc.embedFont("Helvetica"),
-        });
+      });
+      // Dibujar el nombre de la empresa junto al logo
+      page.drawText("Adminmuebles", {
+        x: padding + 120,
+        y: height - padding - fontSize * 0.0,
+        size: fontSize + 0,
+        color: rgb(0.8, 0.8, 0.8),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
 
-        // Título del recibo
-        page.drawText("Recibo Gastos", {
-            x: width / 10,
-            y: height - padding - fontSize * 4.5,
-            size: fontSize + 9,
-            font: await pdfDoc.embedFont("Helvetica"),
-        });
-
-        // Dibujar línea horizontal en el encabezado
-        page.drawLine({
-            start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
-            end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
-            thickness: 1,
-            color: rgb(0.7, 0.7, 0.7),
-        });
-
-        // Dibujar línea horizontal sobre la hora actual
-        page.drawLine({
-            start: { x: padding, y: padding + fontSize * 0.5 + 20 },
-            end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
-            thickness: 1,
-            color: rgb(0.7, 0.7, 0.7),
-        });
-
-        // Organizamos los campos en dos columnas
-        let leftX = padding;
-        let rightX = width / 2 + 20;
-        let yOffset = height - padding - fontSize * 8;
-
-        // Dibujamos los campos y las respuestas en el orden especificado
-        for (const key of order) {
-            // Excluimos IdPropietario e IdInmueble
-            if (key !== "IdPropietario" && key !== "IdInmueble") {
-                const value  = data[key];
-                if (value) {
-                    // Dibujamos el nombre del campo en negrita y centrado
-                    page.drawText(`${key}:`, {
-                        x: leftX,
-                        y: yOffset,
-                        size: fontSize,
-                        color: rgb(0, 0, 0),
-                        font: await pdfDoc.embedFont("Helvetica-Bold"),
-                        align: "right",
-                    });
-
-                    // Dibujamos la respuesta debajo del nombre del campo
-                    page.drawText(`${value}`, {
-                        x: leftX,
-                        y: yOffset - fontSize * 1.5,
-                        size: fontSize,
-                        color: rgb(0, 0, 0),
-                        align: "left",
-                    });
-
-                    // Alternamos entre columnas izquierda y derecha
-                    if (leftX === padding) {
-                        leftX = rightX;
-                    } else {
-                        leftX = padding;
-                        yOffset -= fontSize * 5;
-                        if (yOffset < padding) {
-                            // Si llegamos al límite de la página, continuamos en la siguiente página
-                            page.drawText(`${key}:`, {
-                                x: leftX,
-                                y: yOffset,
-                                size: fontSize,
-                                color: rgb(0, 0, 0),
-                                font: await pdfDoc.embedFont("Helvetica"),
-                                align: "center",
-                            });
-                        }
-                    }
-                }
+      // Título del recibo
+      page.drawText("Recibo Gastos", {
+        x: width / 10,
+        y: height - padding - fontSize * 4.5,
+        size: fontSize + 9,
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+      //línea horizontal en el encabezado
+      page.drawLine({
+        start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
+        end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+      //línea horizontal sobre la hora actual
+      page.drawLine({
+        start: { x: padding, y: padding + fontSize * 0.5 + 20 },
+        end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+      //campos en dos columnas
+      let leftX = padding;
+      let rightX = width / 2 + 20;
+      let yOffset = height - padding - fontSize * 8;
+ 
+      for (const key of order) {
+        if (key !== "IdPropietario" && key !== "IdInmueble") {
+          const value = data[key];
+          if (value) {
+            //Nombre del campo en negrita y centrado
+            page.drawText(`${key}:`, {
+              x: leftX,
+              y: yOffset,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              font: await pdfDoc.embedFont("Helvetica-Bold"),
+              align: "right",
+            });
+            //la respuesta debajo del nombre del campo
+            page.drawText(`${value}`, {
+              x: leftX,
+              y: yOffset - fontSize * 1.5,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              align: "left",
+            });
+            // Alternamos entre columnas izquierda y derecha
+            if (leftX === padding) {
+              leftX = rightX;
+            } else {
+              leftX = padding;
+              yOffset -= fontSize * 5;
+              if (yOffset < padding) {
+                // Si llegamos al límite de la página, continuamos en la siguiente página
+                page.drawText(`${key}:`, {
+                  x: leftX,
+                  y: yOffset,
+                  size: fontSize,
+                  color: rgb(0, 0, 0),
+                  font: await pdfDoc.embedFont("Helvetica"),
+                  align: "center",
+                });
+              }
             }
+          }
         }
-
-        // Guardar el PDF y descargarlo
-        const pdfBytes = await pdfDoc.save();
-        const blob = new Blob([pdfBytes], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "recibo.pdf";
-        link.click();
-        window.location.href="/H_gastos"
+      }
+      // Guardar el PDF y descargarlo
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Recibo Gastos_pdf";
+      link.click();
+      window.location.href = "/H_gastos"
     } catch (error) {
-        console.error("Error al generar el PDF:", error);
+      console.error("Error al generar el PDF:", error);
     }
-};
-
-
-  
+  };
+//AQUI TERMINA PDF
   return (
     <div className="home-2">
       <div className="contenedor-formulario" id="recibo-gastos">
@@ -346,8 +342,8 @@ export const ReciboGastos = () => {
               />
             </div>
             <div className="grupo2">
-            <Form.Label>Propietario del inmueble</Form.Label>
-                <Form.Select className="InputsRegistros"
+              <Form.Label>Propietario del inmueble</Form.Label>
+              <Form.Select className="InputsRegistros"
                 value={
                   selectedPropietario
                     ? selectedPropietario.IdPropietario
@@ -358,14 +354,14 @@ export const ReciboGastos = () => {
               >
                 <option value="">Seleccionar Numero de Propietario</option>
                 {PropietariosDisponibles.map((Propietario, index) => (
-                  <option key={index} value={Propietario.IdPropietario}>               
-                    {Propietario.NombreCompleto}                    
+                  <option key={index} value={Propietario.IdPropietario}>
+                    {Propietario.NombreCompleto}
                   </option>
                 ))}
               </Form.Select>
 
               <Form.Label>Inmueble</Form.Label>
-                <Form.Select className="InputsRegistros"
+              <Form.Select className="InputsRegistros"
                 value={
                   selectedInmueble
                     ? selectedInmueble.IdInmueble
@@ -376,8 +372,8 @@ export const ReciboGastos = () => {
               >
                 <option value="">Seleccionar Numero de Matricula</option>
                 {InmueblesDisponibles.map((Inmueble, index) => (
-                  <option key={index} value={Inmueble.IdInmueble}>               
-                    {Inmueble.NoMatricula}                    
+                  <option key={index} value={Inmueble.IdInmueble}>
+                    {Inmueble.NoMatricula}
                   </option>
                 ))}
               </Form.Select>
@@ -393,55 +389,55 @@ export const ReciboGastos = () => {
               defaultValue={Nombre}
               disabled
             />
-          </div>        
+          </div>
           <label>Forma de pago</label>
-              <select
-              {...register("FormaPago")}
-                id="seleccionGasto3"
+          <select
+            {...register("FormaPago")}
+            id="seleccionGasto3"
 
-              >
-                <option value="">Seleccione Forma de Pago</option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Transferencia">Transferencia</option>
-              
-              </select>
+          >
+            <option value="">Seleccione Forma de Pago</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+
+          </select>
 
           <div className="fila-formulario">
             <div className="grupo-formulario">
               <label htmlFor="seleccionGasto">Concepto:</label>
               <input
-              disabled
+                disabled
                 defaultValue={"Pago arriendo mes"}
                 type="text"
                 className="form-control"
                 id="valor2"
               />
               <input
-              disabled
+                disabled
                 defaultValue={"Administracion Inmobiliaria"}
                 type="text"
                 className="form-control"
                 id="valor2"
               />
               <input
-              disabled
+                disabled
                 defaultValue={"Aseo entrega casa"}
                 type="text"
                 className="form-control"
                 id="valor2"
               />
               <input
-              disabled
+                disabled
                 defaultValue={"Mantenimiento"}
                 type="text"
                 className="form-control"
                 id="valor2"
               />
-              
+
             </div>
             <div className="valor">
               <label htmlFor="valor">Valor</label>
-              
+
               <input
                 type="text"
                 className="form-control"
@@ -502,13 +498,13 @@ export const ReciboGastos = () => {
         </Modal.Header>
         <Modal.Body>
           ¿Estás seguro de que deseas guardar los cambios?
-          Recuerda que si confirmas no se podran editar 
+          Recuerda que si confirmas no se podran editar
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
             No
           </Button>
-          <Button variant="primary" onClick={() => {handleConfirmSave();}} >
+          <Button variant="primary" onClick={() => { handleConfirmSave(); }} >
             Sí
           </Button>
         </Modal.Footer>
@@ -526,61 +522,61 @@ export const ReciboGastos = () => {
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
             No
           </Button>
-          <Button variant="primary" onClick={() => {handleConfirmCancel(); handleCancel();}}>
+          <Button variant="primary" onClick={() => { handleConfirmCancel(); handleCancel(); }}>
             Sí
           </Button>
         </Modal.Footer>
       </Modal>
 
       <Modal
-            size="lg"
-            show={mostrarModalA}
-            onHide={handleCloseModalA}
-            aria-labelledby="example-modal-sizes-title-lg"
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Seleccionar Propietario</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <ListGroup>
-                {PropietariosDisponibles.map((Propietario, index) => (
-                  <ListGroup.Item
-                    key={index}
-                    action
-                    onClick={() => handlePropietarioChange(Propietario)}
-                  >
-                  {Propietario.TipoDocumento} : 
-                    {Propietario.DocumentoIdentidad}                 
-                    {Propietario.NombreCompleto}
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Modal.Body>
-          </Modal>
+        size="lg"
+        show={mostrarModalA}
+        onHide={handleCloseModalA}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Propietario</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {PropietariosDisponibles.map((Propietario, index) => (
+              <ListGroup.Item
+                key={index}
+                action
+                onClick={() => handlePropietarioChange(Propietario)}
+              >
+                {Propietario.TipoDocumento} :
+                {Propietario.DocumentoIdentidad}
+                {Propietario.NombreCompleto}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
       <Modal
-            size="lg"
-            show={mostrarModalB}
-            onHide={handleCloseModalB}
-            aria-labelledby="example-modal-sizes-title-lg"
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Seleccionar Inmueble</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <ListGroup>
-                {InmueblesDisponibles.map((Inmueble, index) => (
-                  <ListGroup.Item
-                    key={index}
-                    action
-                    onClick={() => handleInmuebleChange(Inmueble)}
-                  >
-                  {Inmueble.NoMatricula} : 
-                    {Inmueble.Tipo}                   
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Modal.Body>
-          </Modal>
+        size="lg"
+        show={mostrarModalB}
+        onHide={handleCloseModalB}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Inmueble</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {InmueblesDisponibles.map((Inmueble, index) => (
+              <ListGroup.Item
+                key={index}
+                action
+                onClick={() => handleInmuebleChange(Inmueble)}
+              >
+                {Inmueble.NoMatricula} :
+                {Inmueble.Tipo}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
 
     </div>
   );

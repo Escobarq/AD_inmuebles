@@ -20,147 +20,7 @@ export const Rarrendatario = () => {
 
 
 
-  const handleGuardarClick = async (data) => {
-    // Definir el orden de las claves
-    const order = [
-      "NoDocumento",
-      "NombreArrendatario",
-      "NoMatricula",
-      "FormaPago",
-      "ValorPago",
-      "FechaIni",
-      "FechaFin",
-      "FormaPago",
-      "Estado",
-      "TipoInmueble",
-    ];
 
-    try {
-      const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage();
-      const { width, height } = page.getSize();
-      const fontSize = 19;
-      const padding = 50;
-
-      // Agregar texto con la hora de emisión en la parte inferior de la página
-      const currentTime = new Date().toLocaleTimeString();
-      const footerText = `Hora de emisión: ${currentTime}`;
-
-      page.drawText(footerText, {
-        x: padding,
-        y: padding,
-        size: 13,
-        color: rgb(0.5, 0.5, 0.5),
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-
-      // Organizamos los campos en dos columnas
-      let leftX = padding;
-      let rightX = width / 2 + 20;
-
-      let yOffset = height - padding - fontSize * 2;
-
-      // Load the logo image
-      const logoImageBytes = await fetch(logo).then((res) => res.arrayBuffer());
-      const logoImage = await pdfDoc.embedPng(logoImageBytes);
-
-      // Dibujar el logo en el encabezado
-      page.drawImage(logoImage, {
-        x: padding - 10,
-        y: height - padding - fontSize * 0.6,
-        width: 100,
-        height: 50,
-        color: rgb(0.7, 0.7, 0.7),
-      });
-
-      // Dibujar el título al lado del logo con color gris opaco y posición vertical más alta
-      page.drawText("Adminmuebles", {
-        x: padding + 120,
-        y: height - padding - fontSize * 0.0,
-        size: fontSize + 0,
-        color: rgb(0.8, 0.8, 0.8),
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-
-      // Título del recibo
-      page.drawText("Recibo de Arrendatario", {
-        x: width / 10,
-        y: height - padding - fontSize * 6,
-        size: fontSize + 9,
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-      yOffset -= fontSize * 9;
-
-      // Dibujamos los campos y las respuestas en el orden especificado
-      for (const key of order) {
-        const element = data[key];
-        if (element) {
-          
-          // Dibujamos el nombre del campo en negrita y centrado
-          page.drawText(`${key}:`, {
-            x: leftX,
-            y: yOffset,
-            size: fontSize,
-            color: rgb(0, 0, 0),
-            font: await pdfDoc.embedFont("Helvetica-Bold"),
-            align: "right",
-          });
-
-          // Dibujamos la respuesta debajo del nombre del campo
-          page.drawText(`${element}`, {
-            x: leftX,
-            y: yOffset - fontSize * 1.5,
-            size: fontSize,
-            color: rgb(0, 0, 0),
-            align: "left",
-          });
-
-          if (leftX === padding) {
-            leftX = rightX;
-          } else {
-            leftX = padding;
-            yOffset -= fontSize * 5;
-            if (yOffset < padding) {
-              page.drawText(`${key}:`, {
-                x: leftX,
-                y: yOffset,
-                size: fontSize,
-                color: rgb(0, 0, 0),
-
-                font: await pdfDoc.embedFont("Helvetica"),
-                align: "center",
-              });
-            }
-          }
-        }
-      }
-
-      // Dibujar línea horizontal en el encabezado
-      page.drawLine({
-        start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
-        end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
-        thickness: 1,
-        color: rgb(0.7, 0.7, 0.7),
-      });
-
-      // Dibujar línea horizontal arriba de la hora actual
-      page.drawLine({
-        start: { x: padding, y: padding + fontSize * 0.5 + 20 },
-        end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
-        thickness: 1,
-        color: rgb(0.7, 0.7, 0.7),
-      });
-
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "recibo.pdf";
-      link.click();
-      window.location.href="/H_recibos"
-    } catch (error) {}
-  };
 
   const funcional = (text) =>
     toast.success(text, {
@@ -177,9 +37,11 @@ export const Rarrendatario = () => {
     toast.error(text, {
       theme: "colored",
     });
-    
+
 
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
+
+
   // Función para obtener la fecha actual en formato YYYY-MM-DD
   function getCurrentDate() {
     const date = new Date();
@@ -190,6 +52,7 @@ export const Rarrendatario = () => {
     day = day.length > 1 ? day : "0" + day;
     return `${year}-${month}-${day}`;
   }
+
   useEffect(() => {
     cargarContratosDisponibles();
     setCurrentDate(getCurrentDate());
@@ -232,15 +95,21 @@ export const Rarrendatario = () => {
       });
       if (response.ok) {
         setPagoArrenda(data);
-        handleGuardarClick(data), 
-        funcional('se an enviado los datos correctamente'),        
-        setShowSaveModal(false); // Muestra el modal de confirmación
+        handleGuardarClick(data),
+          funcional('se an enviado los datos correctamente'),
+          setShowSaveModal(false); // Muestra el modal de confirmación
         reset();
       }
     } catch (error) {
       falla("Error al enviar datos al servidor:", error);
     }
   };
+
+
+
+
+
+
 
   const handleConfirmSave = async () => {
     handleSubmit(onSubmitRegistro)();
@@ -262,6 +131,147 @@ export const Rarrendatario = () => {
     setFormData({});
     window.location.href = "/H_recibos";
   };
+
+  //FUNCION PARA GENERAR PDF
+  const handleGuardarClick = async (data) => {
+    const order = [
+      "NoDocumento",
+      "NombreArrendatario",
+      "NoMatricula",
+      "TipoInmueble",
+      "FormaPago",
+      "ValorPago",
+      "FechaInicio",
+      "FechaFin",
+      "Estado",
+    ];
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const { width, height } = page.getSize();
+      const fontSize = 19;
+      const padding = 50;
+      const currentfech = new Date().toLocaleDateString();
+      const currentTime = new Date().toLocaleTimeString();
+      const footerText = `Hora de emisión: ${currentTime}`;
+      const textWidth = (await pdfDoc.embedFont("Helvetica")).widthOfTextAtSize(currentfech, fontSize);
+      const textX = width - padding - textWidth;
+
+      page.drawText(footerText, {
+        x: padding,
+        y: padding,
+        size: 13,
+        color: rgb(0.5, 0.5, 0.5),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+
+      let leftX = padding;
+      let rightX = width / 2 + 20;
+      let yOffset = height - padding - fontSize * 2;
+      const logoImageBytes = await fetch(logo).then((res) => res.arrayBuffer());
+      const logoImage = await pdfDoc.embedPng(logoImageBytes);
+
+      //encabezado-pdf
+      page.drawImage(logoImage, {
+        x: padding - 10,
+        y: height - padding - fontSize * 0.6,
+        width: 100,
+        height: 50,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+
+      page.drawText("Adminmuebles", {
+        x: padding + 120,
+        y: height - padding - fontSize * 0.0,
+        size: fontSize + 0,
+        color: rgb(0.8, 0.8, 0.8),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+
+      page.drawText(`${currentfech}`, {
+        x: textX,
+        y: height - padding - fontSize * 0.1,
+        size: fontSize - 2,
+        color: rgb(0.5, 0.5, 0.5),
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+
+      // Título del recibo
+      page.drawText("Recibo de Arrendatario", {
+        x: width / 10,
+        y: height - padding - fontSize * 6,
+        size: fontSize + 9,
+        font: await pdfDoc.embedFont("Helvetica"),
+      });
+      yOffset -= fontSize * 9;
+
+      // los campos y las respuestas en el orden especificado
+      for (const key of order) {
+        const element = data[key];
+        if (element) {
+          //el nombre del campo en negrita y centrado
+          page.drawText(`${key}:`, {
+            x: leftX,
+            y: yOffset,
+            size: fontSize,
+            color: rgb(0, 0, 0),
+            font: await pdfDoc.embedFont("Helvetica-Bold"),
+            align: "right",
+          });
+          //la respuesta debajo del nombre del campo
+          page.drawText(`${element}`, {
+            x: leftX,
+            y: yOffset - fontSize * 1.5,
+            size: fontSize,
+            color: rgb(0, 0, 0),
+            align: "left",
+          });
+
+          if (leftX === padding) {
+            leftX = rightX;
+          } else {
+            leftX = padding;
+            yOffset -= fontSize * 5;
+            if (yOffset < padding) {
+              page.drawText(`${key}:`, {
+                x: leftX,
+                y: yOffset,
+                size: fontSize,
+                color: rgb(0, 0, 0),
+
+                font: await pdfDoc.embedFont("Helvetica"),
+                align: "center",
+              });
+            }
+          }
+        }
+      }
+      // línea encabezado
+      page.drawLine({
+        start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
+        end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+
+      //línea arriba de la hora actual
+      page.drawLine({
+        start: { x: padding, y: padding + fontSize * 0.5 + 20 },
+        end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
+        thickness: 1,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Recibo.Arrendatario_pdf";
+      link.click();
+      window.location.href = "/H_recibos"
+    } catch (error) { }
+  };
+  //AQUI TERMINA PDF
 
   return (
     <div className="contener-home contener-ReArrendatario">
@@ -367,7 +377,7 @@ export const Rarrendatario = () => {
               <Form.Control
                 className="InputsRegistros"
                 type="date"
-                {...register("FechaIni")}
+                {...register("FechaInicio")}
               />
             </Form.Group>
 
