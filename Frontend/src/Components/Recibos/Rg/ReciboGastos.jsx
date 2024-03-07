@@ -2,23 +2,17 @@ import { useEffect, useState } from "react";
 import "./ReciboGastos.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Button, Modal, ListGroup, Form } from "react-bootstrap";
+import { Button, Modal, ListGroup, Form, FormGroup } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-
+import { PDFDocument, rgb, values } from "pdf-lib";
 import logo from '../../../assets/Logo.jpg';
-
-import { InfoPropietario } from "../../Hooks/InfoPropietario";
-import { PDFDocument, rgb, } from "pdf-lib";
 import axios from "axios";
-
-
 
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [infogastos, setinfogastos] = useState([]);
-  const [PagoGasto, setPagoGasto] = useState([]);
   const [Nombre, setNombre] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [mostrarModalB, setMostrarModalB] = useState(false);
@@ -26,21 +20,32 @@ export const ReciboGastos = () => {
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [selectedInmueble, setSelectedInmueble] = useState("");
   const [InmueblesDisponibles, setInmueblesDisponibles] = useState([]);
-
+  const [valorPA, setvalorPA] = useState();
+  const [valorAI, setvalorAI] = useState();
+  const [valorAE, setvalorAE] = useState();
+  const [valorM, setvalorM] = useState();
+  
   // Redireccion en caso de confirmar o cancelar
   const handleConfirmSave = () => {
     // Lógica para confirmar el guardado
     handleSubmit(onsubmitGastos)(); // Envia los datos
     setShowSaveModal(false); // Cierra el modal
   };
+  const alertError = () =>
+    toast.error("Alerta el los valores de los conceptos no coinciden ", {
+      theme: "dark",
+    });
 
   const { handleSubmit, register } = useForm();
 
   useEffect(() => {
     let a = localStorage.getItem("user");
     let b = localStorage.getItem("apellido");
-    setNombre(a + " " + b)
+
+    setNombre(a + " " + b);    
+
     fetchData();
+    setCurrentDate(getCurrentDate());
   }, []);
 
   const fetchData = async () => {
@@ -58,10 +63,12 @@ export const ReciboGastos = () => {
 
   const fetchData2 = async (Propietario) => {
     try {
-      const response = await axios.get(`http://localhost:3006/Vinmueble?IdPropietario=${Propietario.IdPropietario}`);
+      const response = await axios.get(
+        `http://localhost:3006/Vinmueble?IdPropietario=${Propietario.IdPropietario}`
+      );
       const Inmuebles = response.data.map((prop) => prop);
       setInmueblesDisponibles(Inmuebles);
-      console.log("hola", Inmuebles)
+      console.log("hola", Inmuebles);
     } catch (error) {
       console.error("Error al cargar las matrículas:", error);
       toast.error(
@@ -69,7 +76,6 @@ export const ReciboGastos = () => {
       );
     }
   };
-
 
   const handleCloseModalA = () => {
     setMostrarModalA(false);
@@ -85,15 +91,16 @@ export const ReciboGastos = () => {
   };
 
   const handleConfirmCancel = () => {
-    window.location.href = "/H_gastos"
+    window.location.href = "/H_gastos";
     handleSubmit(handleCancel)();
     setShowCancelModal(false); // Cierra el modal
   };
 
   const handleSave = () => {
-    setShowSaveModal(true)
+    setShowSaveModal(true);
     // Validar que todos los campos estén llenos antes de guardar
   };
+
 
   const notify = (text) =>
     toast.success(text, {
@@ -101,6 +108,28 @@ export const ReciboGastos = () => {
       autoClose: 2000
     });
 
+
+  const notify = (text) =>
+    toast.success(text, {
+      theme: "colored",
+      autoClose: 2000,
+    });
+
+  const handleCalcular = (e) => {     
+    const { name, value } = e;     
+     if(name == "PagoArriendo") {
+        setvalorPA(value)
+      }
+      if(name == "AseoEntrega") {
+        setvalorAE(value)
+      }
+      if(name == "AdmInmobi") {
+        setvalorAI(value)
+      }
+      if(name == "Mantenimiento") {
+        setvalorM(value)
+      };
+  };
   const handleCancel = () => {
     setShowCancelModal(true);
     // Limpiar los datos del formulario al hacer clic en Cancelar
@@ -109,28 +138,34 @@ export const ReciboGastos = () => {
   const errores = (text) =>
     toast.error(text, {
       theme: "colored",
-      autoClose: 2000
+
+      autoClose: 2000,
     });
 
   const onsubmitGastos = async (data) => {
+    let Total = valorPA - valorAE - valorAI - valorM;;
+    if (Total < 0) {
+      alertError();
+      console.log(Total);
+    } else {
+      data.FechaPago = currentDate
+      data.PagoArriendo = valorPA;
+      data.AdminInmobiliaria = valorAI;
+      data.AseoEntrega = valorAE;
+      data.Mantenimiento =valorM;
+      data.ValorTotal =Total;
+      data.IdPropietario = selectedPropietario.IdPropietario;
+      data.IdInmueble = selectedInmueble.IdInmueble;
+      data.ElaboradoPor = Nombre;
+      try {
+        const response = await fetch("http://localhost:3006/RComision", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
 
-    data.IdPropietario = selectedPropietario.IdPropietario;
-    data.IdInmueble = selectedInmueble.IdInmueble;
-    data.Nombre = selectedPropietario.NombreCompleto;
-    data.Documento = selectedPropietario.DocumentoIdentidad;
-    data.Matricula = selectedInmueble.NoMatricula;
-    data.Tipo = selectedInmueble.Tipo
-    data.ElaboradoPor = Nombre;
-
-
-    try {
-      const response = await fetch("http://localhost:3006/RComision", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
 
       if (!response.ok) {
         throw new Error(`Error al crear usuario. Código de estado: ${response.status}`);
@@ -147,20 +182,33 @@ export const ReciboGastos = () => {
 
         return responseData;
 
-      }
-    } catch (error) {
-      if (error.message.includes("correo ya registrado")) {
-        console.log("funciona")
-      } else {
-        errores('A ocurrido un error ');
-        console.error("Error al crear usuario:", error);
-        throw error; // Re-lanza el error para que pueda ser manejado en el componente
+
+        if (!response.ok) {
+          throw new Error(
+            `Error al crear usuario. Código de estado: ${response.status}`
+          );
+        } else {
+          const responseData = await response.json();
+
+          setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
+          ReciboGasto(data.numerogasto, data); // Pasa los datos actualizados al PDF
+          notify("se enviaron correctamente los datos");
+          return responseData;
+        }
+      } catch (error) {
+        if (error.message.includes("correo ya registrado")) {
+          console.log("funciona");
+        } else {
+          errores("A ocurrido un error ");
+          console.error("Error al crear usuario:", error);
+          throw error; // Re-lanza el error para que pueda ser manejado en el componente
+        }
       }
     }
   };
   const handlePropietarioChange = async (Propietario) => {
     setSelectedPropietario(Propietario);
-    fetchData2(Propietario)
+    fetchData2(Propietario);
     setMostrarModalA(false);
   };
   const handleInmuebleChange = async (Inmueble) => {
@@ -183,6 +231,21 @@ export const ReciboGastos = () => {
       "ElaboradoPor"
     ];
 
+
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
+  // Función para obtener la fecha actual en formato YYYY-MM-DD
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
+
+  const ReciboGasto = async (data) => {
+   
     try {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage(); 
@@ -197,6 +260,7 @@ export const ReciboGastos = () => {
       const textX = width - padding - textWidth;
 
       //texto en el pie de página
+
       page.drawText(footerText, {
         x: padding,
         y: padding,
@@ -205,6 +269,7 @@ export const ReciboGastos = () => {
         font: await pdfDoc.embedFont("Helvetica"),
       });
 
+
       //la imagen del logo
       const logoImageBytes = await fetch(logo).then((res) =>
         res.arrayBuffer()
@@ -212,6 +277,7 @@ export const ReciboGastos = () => {
       const logoImage = await pdfDoc.embedPng(logoImageBytes);
 
       //logo en el encabezado
+
       page.drawImage(logoImage, {
         x: padding - 10,
         y: height - padding - fontSize * 0.6,
@@ -219,6 +285,7 @@ export const ReciboGastos = () => {
         height: 50,
         color: rgb(0.7, 0.7, 0.7),
       });
+
 
       //fecha actual
       page.drawText(`${currentDate}`, {
@@ -230,6 +297,7 @@ export const ReciboGastos = () => {
 
       });
       // Dibujar el nombre de la empresa junto al logo
+
       page.drawText("Adminmuebles", {
         x: padding + 120,
         y: height - padding - fontSize * 0.0,
@@ -237,6 +305,7 @@ export const ReciboGastos = () => {
         color: rgb(0.8, 0.8, 0.8),
         font: await pdfDoc.embedFont("Helvetica"),
       });
+
 
       // Título del recibo
       page.drawText("Recibo Gastos", {
@@ -246,19 +315,21 @@ export const ReciboGastos = () => {
         font: await pdfDoc.embedFont("Helvetica"),
       });
       //línea horizontal en el encabezado
+
       page.drawLine({
         start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
         end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
         thickness: 1,
         color: rgb(0.7, 0.7, 0.7),
       });
-      //línea horizontal sobre la hora actual
+
       page.drawLine({
         start: { x: padding, y: padding + fontSize * 0.5 + 20 },
         end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
         thickness: 1,
         color: rgb(0.7, 0.7, 0.7),
       });
+
       //campos en dos columnas
       let leftX = padding;
       let rightX = width / 2 + 20;
@@ -307,49 +378,58 @@ export const ReciboGastos = () => {
         }
       }
       // Guardar el PDF y descargarlo
+
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
+
       link.download = "Recibo Gastos_pdf";
       link.click();
       window.location.href = "/H_gastos"
+
     } catch (error) {
       console.error("Error al generar el PDF:", error);
     }
   };
-//AQUI TERMINA PDF
+
   return (
     <div className="home-2">
       <div className="contenedor-formulario" id="recibo-gastos">
         <h1 className="tit">Recibo de Gastos</h1>
         <form onSubmit={handleSubmit(onsubmitGastos)} className="tod">
           <div className="fila-formulario1">
-            <div className="grupo1">
-              <label htmlFor="numeroGasto">Gasto N°:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="numeroGasto"
-                {...register("numerogasto")}
-              />
+            <Form.Group>
               <label htmlFor="fecha">Fecha de Pago:</label>
               <input
                 type="date"
-                className="form-control"
+                className="form-control InputsRegistros"
                 id="fecha"
-                {...register("FechaPago")}
-
+                defaultValue={currentDate}
+                disabled                
               />
-            </div>
-            <div className="grupo2">
+            </Form.Group>
+
+            <Form.Group>
+              <label htmlFor="entregadoPor">Entregado por:</label>
+              <input
+                type="text"
+                className="form-control InputsRegistros"
+                id="entregadoPor"
+                defaultValue={Nombre}
+                disabled
+              />
+
+            </Form.Group>
+
+            <Form.Group>
               <Form.Label>Propietario del inmueble</Form.Label>
-              <Form.Select className="InputsRegistros"
+              <Form.Select
+                className="InputsRegistros"
+
                 value={
-                  selectedPropietario
-                    ? selectedPropietario.IdPropietario
-                    : "a?"
+                  selectedPropietario ? selectedPropietario.IdPropietario : "a?"
                 }
                 onChange={(e) => handlePropietarioChange(e.target.value)}
                 onClick={() => handleMostrarAClick(true)}
@@ -361,39 +441,33 @@ export const ReciboGastos = () => {
                   </option>
                 ))}
               </Form.Select>
+            </Form.Group>
 
+            <Form.Group>
               <Form.Label>Inmueble</Form.Label>
-              <Form.Select className="InputsRegistros"
-                value={
-                  selectedInmueble
-                    ? selectedInmueble.IdInmueble
-                    : "a?"
-                }
+
+              <Form.Select
+                className="InputsRegistros"
+                value={selectedInmueble ? selectedInmueble.IdInmueble : "a?"}
+
                 onChange={(e) => handleInmuebleChange(e.target.value)}
                 onClick={() => handleMostrarBClick(true)}
               >
                 <option value="">Seleccionar Numero de Matricula</option>
                 {InmueblesDisponibles.map((Inmueble, index) => (
                   <option key={index} value={Inmueble.IdInmueble}>
-                    {Inmueble.NoMatricula}
+
+                    {Inmueble.NoMatricula} {Inmueble.Tipo}
+
                   </option>
                 ))}
               </Form.Select>
-            </div>
+            </Form.Group>
           </div>
 
-          <div className="entregadopor">
-            <label htmlFor="entregadoPor">Entregado por:</label>
-            <input
-              type="text"
-              className="form-control"
-              id="entregadoPor"
-              defaultValue={Nombre}
-              disabled
-            />
-          </div>
           <label>Forma de pago</label>
           <select
+            className="InputsRegistros"
             {...register("FormaPago")}
             id="seleccionGasto3"
 
@@ -411,28 +485,28 @@ export const ReciboGastos = () => {
                 disabled
                 defaultValue={"Pago arriendo mes"}
                 type="text"
-                className="form-control"
+                className="form-control InputsRegistros"
                 id="valor2"
               />
               <input
                 disabled
                 defaultValue={"Administracion Inmobiliaria"}
                 type="text"
-                className="form-control"
+                className="form-control InputsRegistros"
                 id="valor2"
               />
               <input
                 disabled
                 defaultValue={"Aseo entrega casa"}
                 type="text"
-                className="form-control"
+                className="form-control InputsRegistros"
                 id="valor2"
               />
               <input
                 disabled
                 defaultValue={"Mantenimiento"}
                 type="text"
-                className="form-control"
+                className="form-control InputsRegistros"
                 id="valor2"
               />
 
@@ -441,34 +515,33 @@ export const ReciboGastos = () => {
               <label htmlFor="valor">Valor</label>
 
               <input
-                type="text"
-                className="form-control"
-                name="Pago Arriendo:"
-                defaultValue={"0"}
-                {...register("PagoArriendo")}
+                type="number"
+                className="form-control InputsRegistros"
+                name="PagoArriendo"
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
               />
               <input
-                type="text"
-                className="form-control"
+                type="number"
+                className="form-control InputsRegistros"
                 name="AdmInmobi"
-                defaultValue={"0"}
-                {...register("AdminInmobiliaria")}
-
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
               />
               <input
-                type="text"
-                className="form-control"
+                type="number"
+                className="form-control InputsRegistros"
                 name="AseoEntrega"
                 defaultValue={0}
-                {...register("AseoEntrega")}
+                onChange={(e) => handleCalcular(e.target)}
               />
               <input
-                type="text"
-                className="form-control"
-                name="Mantenimiento:"
+                type="numnumberber"
+                className="form-control InputsRegistros"
+                name="Mantenimiento"
                 defaultValue={0}
-                {...register("Mantenimiento")}
-              />
+                onChange={(e) => handleCalcular(e.target)}
+              />              
             </div>
           </div>
         </form>
@@ -499,14 +572,23 @@ export const ReciboGastos = () => {
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+
           ¿Estás seguro de que deseas guardar los cambios?
           Recuerda que si confirmas no se podran editar
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
             No
           </Button>
-          <Button variant="primary" onClick={() => { handleConfirmSave(); }} >
+
+          <Button
+            variant="primary"
+            onClick={() => {
+              handleConfirmSave();
+            }}
+          >
+
             Sí
           </Button>
         </Modal.Footer>
@@ -524,7 +606,15 @@ export const ReciboGastos = () => {
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
             No
           </Button>
-          <Button variant="primary" onClick={() => { handleConfirmCancel(); handleCancel(); }}>
+
+          <Button
+            variant="primary"
+            onClick={() => {
+              handleConfirmCancel();
+              handleCancel();
+            }}
+          >
+
             Sí
           </Button>
         </Modal.Footer>
@@ -547,8 +637,9 @@ export const ReciboGastos = () => {
                 action
                 onClick={() => handlePropietarioChange(Propietario)}
               >
-                {Propietario.TipoDocumento} :
-                {Propietario.DocumentoIdentidad}
+
+                {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
+
                 {Propietario.NombreCompleto}
               </ListGroup.Item>
             ))}
@@ -572,8 +663,9 @@ export const ReciboGastos = () => {
                 action
                 onClick={() => handleInmuebleChange(Inmueble)}
               >
-                {Inmueble.NoMatricula} :
-                {Inmueble.Tipo}
+
+                {Inmueble.NoMatricula} :{Inmueble.Tipo}
+
               </ListGroup.Item>
             ))}
           </ListGroup>
