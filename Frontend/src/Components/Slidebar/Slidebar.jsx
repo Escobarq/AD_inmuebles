@@ -223,7 +223,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
               placement="right"
               overlay={
                 showTooltip ? (
-                  <Tooltip id="tooltip-prop">Recibo Arrendatarios</Tooltip>
+                  <Tooltip id="tooltip-prop">Pagos Arrendamiento</Tooltip>
                 ) : (
                   <></>
                 )
@@ -244,7 +244,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
                   icon={faReceipt}
                 />
                 <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Recibo Arrendatarios
+                Pagos Arrendamiento
                 </p>
               </Nav.Link>
             </OverlayTrigger>
@@ -254,7 +254,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
               placement="right"
               overlay={
                 showTooltip ? (
-                  <Tooltip id="tooltip-prop">Recibo Gasto</Tooltip>
+                  <Tooltip id="tooltip-prop">Comision Propietario</Tooltip>
                 ) : (
                   <></>
                 )
@@ -275,7 +275,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
                   icon={faReceipt}
                 />
                 <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Recibo Gastos
+                Comision Propietario
                 </p>
               </Nav.Link>
             </OverlayTrigger>
@@ -285,7 +285,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
               placement="right"
               overlay={
                 showTooltip ? (
-                  <Tooltip id="tooltip-prop">Informe Arrendamiento</Tooltip>
+                  <Tooltip id="tooltip-prop">Contrato Arrendamiento</Tooltip>
                 ) : (
                   <></>
                 )
@@ -306,7 +306,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
                   icon={faTable}
                 />
                 <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Informe Arrendamiento
+                 Contrato Arrendamiento
                 </p>
               </Nav.Link>
             </OverlayTrigger>
