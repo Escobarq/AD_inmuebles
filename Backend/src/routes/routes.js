@@ -1,9 +1,9 @@
 // src/routes/routes.js
-
+const bcrypt = require("bcrypt");
 const express = require("express");
 const router = express.Router();
 const connection = require("../db");
-
+const saltRounds = 10;
 //Metodos Get
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
@@ -22,7 +22,11 @@ router.get("/Infouser", (req, res) => {
 });
 
 router.get("/Vpropietarios", (req, res) => {
-  const { Cedula, FechaIngresoMIN, FechaIngresoMAX } = req.query;
+  const { Cedula, FechaIngresoMIN, FechaIngresoMAX } = req.query;  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+  };
+
   try {
     let query = "SELECT * FROM propietario  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
 
@@ -358,7 +362,7 @@ router.get("/VComisionPropie", (req, res) => {
 
 router.get('/contratoFiltro', (req, res) => {
   // Obtén los parámetros de consulta
-  const { FechaFinMIN, FechaFinMAX, NContrato } = req.query;
+  const { FechaFinMIN, FechaFinMAX, NContrato, Estado, } = req.query;
   // Construye la consulta SQL base
   let query = `
     SELECT 
@@ -386,6 +390,10 @@ router.get('/contratoFiltro', (req, res) => {
     filtroConditions.push(`contratoarrendamiento.IdContrato = '${NContrato}'`);
   }
 
+  if (Estado) {
+    filtroConditions.push(`contratoarrendamiento.EstadoContrato = '${Estado}'`);
+  }
+
   // Agrega los filtros a la consulta si hay alguno
   if (filtroConditions.length > 0) {
     query += ' WHERE ' + filtroConditions.join(' AND ');
@@ -397,6 +405,7 @@ router.get('/contratoFiltro', (req, res) => {
       console.error('Error al ejecutar la consulta:', error);
       res.status(500).send('Error interno del servidor');
     } else {
+      console.log(NContrato);
       res.json(results);
     }
   });
@@ -693,19 +702,22 @@ router.post("/Rcodeudor", async (req, res) => {
 /*
   Funcion para logear
   */
-router.post("/Login_user", (req, res) => {
+
+router.post("/Login_user", async (req, res) => {
   const { correousuario, contrausuario } = req.body; // Datos del formulario
 
   const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
 
-  connection.query(sql, [correousuario], (error, results) => {
+  connection.query(sql, [correousuario], async (error, results) => {
     if (error) {
       console.error("Error al realizar la consulta:", error);
       res.status(500).json({ message: "Error del servidor" });
     } else {
       if (results.length > 0) {
         const user = results[0];
-        if (user.Contrasena === contrausuario) {
+        // Comparar la contraseña proporcionada con el hash almacenado en la base de datos
+        const passwordMatch = await bcrypt.compare(contrausuario, user.Contrasena);
+        if (passwordMatch) {
           res.status(200).json({ message: "Inicio de sesión exitoso" });
         } else {
           res.status(401).json({ message: "Contraseña incorrecta" });
@@ -719,6 +731,7 @@ router.post("/Login_user", (req, res) => {
   });
 });
 
+
 // Registrar Usuario
 router.post("/RegistrarUsuario", async (req, res) => {
   const { nombre, apellido, correo, contrasena, telefono } = req.body;
@@ -731,23 +744,25 @@ router.post("/RegistrarUsuario", async (req, res) => {
   }
 
   try {
-    // Verificar si el correo electrónico ya existe en la base de datos
     const existingUser = await connection.query(
       "SELECT * FROM trabajador WHERE correo = ?",
       [correo]
     );
 
     if (existingUser.length > 0) {
-      // Si se encuentra un usuario con el mismo correo electrónico, responder con un error
       return res
         .status(409)
         .json({ message: "El correo electrónico ya está en uso" });
     }
 
-    // Insertar usuario en la base de datos
+    const idrol = Math.floor(Math.random() * 2) + 1;
+
+    // Encriptar la contraseña antes de almacenarla en la base de datos
+    const hashedPassword = await bcrypt.hash(contrasena, 10); // 10 es el coste de hashing
+
     await connection.query(
-      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono) VALUES (?, ?, ?, ?, ?)",
-      [nombre, apellido, correo, contrasena, telefono]
+      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
+      [nombre, apellido, correo, hashedPassword, telefono, idrol]
     );
 
     res.status(201).json({ message: "Usuario registrado exitosamente" });
@@ -758,10 +773,10 @@ router.post("/RegistrarUsuario", async (req, res) => {
         .status(409)
         .json({ message: "Ya existe un usuario con ese correo electrónico" });
     }
-
     res.status(500).json({ message: "Error al registrar usuario" });
   }
 });
+
 
 // Ruta para registrar un arrendatario
 router.post("/Rarrendatario", async (req, res) => {
@@ -896,6 +911,7 @@ router.post("/RComision", async (req, res) => {
     AdminInmobiliaria,
     AseoEntrega,
     Mantenimiento,
+    ValorTotal,
   } = req.body;
 
   try {
@@ -911,7 +927,7 @@ router.post("/RComision", async (req, res) => {
     const mantenimiento = Mantenimiento || 0;
 
     connection.query(
-      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento, ValorTotal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         IdPropietario,
         IdInmueble,
@@ -922,6 +938,7 @@ router.post("/RComision", async (req, res) => {
         adminInmobiliaria,
         aseoEntrega,
         mantenimiento,
+        ValorTotal,
       ],
       (error, results) => {
         if (error) {
@@ -1191,40 +1208,28 @@ const fields = [
   "Idrol",
 ];
 
-router.put("/empleados/:id", (req, res) => {
-  const id = req.params.id; // ID del empleado a actualizar
+router.put("/empleados/:id", async (req, res) => {
+  const { Nombre, Apellido, Correo, Contrasena, Telefono, Idrol } = req.body;
+  const id = req.params.id;
 
-  // Construimos el array de valores a actualizar
-  const updateValues = [];
-  const updateFields = [];
+  try {
+    // Encriptar la nueva contraseña antes de actualizarla en la base de datos
+    const hashedPassword = await bcrypt.hash(Contrasena, saltRounds);
 
-  fields.forEach((field) => {
-    if (req.body[field]) {
-      updateValues.push(req.body[field]);
-      updateFields.push(`${field} = ?`);
-    }
-  });
+    const sql = `UPDATE trabajador SET Nombre=?, Apellido=?, Correo=?, Contrasena=?, Telefono=?, Idrol=? WHERE IdTrabajador=?`;
 
-  // Si no hay campos para actualizar, respondemos con un error
-  if (updateValues.length === 0) {
-    return res
-      .status(400)
-      .json({ error: "No se han proporcionado campos para actualizar" });
-  }
-
-  // Realiza la actualización en la base de datos
-  connection.query(
-    `UPDATE trabajador SET ${updateFields.join(", ")} WHERE IdTrabajador = ?`,
-    [...updateValues, id],
-    (error, results) => {
+    connection.query(sql, [Nombre, Apellido, Correo, hashedPassword, Telefono, Idrol, id], (error, results) => {
       if (error) {
         console.error("Error al actualizar el empleado:", error);
-        res.status(500).json({ error: "Error interno del servidor" });
+        res.status(500).json({ message: "Error al actualizar el empleado" });
       } else {
-        res.status(200).json({ message: "Empleado actualizado exitosamente" });
+        res.status(200).json({ message: "Empleado actualizado correctamente" });
       }
-    }
-  );
+    });
+  } catch (error) {
+    console.error("Error al encriptar la contraseña:", error);
+    res.status(500).json({ message: "Error al encriptar la contraseña" });
+  }
 });
 
 // Ruta para actualizar un propietario existente
