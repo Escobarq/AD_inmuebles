@@ -9,7 +9,7 @@ import moment from 'moment';
 import 'moment/locale/es';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import logo from '../../../assets/Logo.png';
+import logo from '../../../assets/Logo.jpg';
 import Button from 'react-bootstrap/Button';
 
 export const ContratoA = () => {

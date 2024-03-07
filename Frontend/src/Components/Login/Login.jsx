@@ -1,17 +1,13 @@
 import login from "../../assets/login.png";
 import "./login.css";
-import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { crearUser } from "../Hooks/RegisterUser";
 import { userLogin } from "../Hooks/Userlogin";
 
 export const Login = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
 
   const notify = () =>
@@ -68,27 +64,6 @@ export const Login = () => {
     setMostrarModal(false);
   };
 
-  //Registro Usuario //
-  const onsubmitNewUser = async (data) => {
-    try {
-      await crearUser(data);
-      setMostrarModal(false);
-      notify("Registro Exitoso");
-      reset;
-    } catch (error) {
-      if (
-        error.message ===
-        "El correo electrónico o la contraseña ya están en uso"
-      ) {
-        toast.error("El correo electrónico o la contraseña ya están en uso", {
-          theme: "colored",
-        });
-      } else {
-        falla();
-        console.error("Error al crear usuario:", error);
-      }
-    }
-  };
 
   return (
     <>
@@ -165,23 +140,6 @@ export const Login = () => {
                           Iniciar Sesión
                         </button>
                       </div>
-
-                      <div className="footer_login d-flex justify-content-between mt-3 p-auto">
-                        <div className="d-flex align-items-center">
-                          <a
-                            href="#!"
-                            onClick={handleMostrarModalClick}
-                            className="btn btn-link"
-                            style={{ color: "#393f81" }}
-                          >
-                            ¿No tienes Cuenta? Regístrate{" "}
-                            <FontAwesomeIcon
-                              icon={faUserPlus}
-                              className="ms-1"
-                            />
-                          </a>
-                        </div>
-                      </div>
                     </form>
                   </div>
                 </div>
@@ -190,75 +148,6 @@ export const Login = () => {
           </div>
         </div>
       </section>
-      {/* Modal */}
-      <Modal
-        size="lg"
-        show={mostrarModal}
-        onHide={handleCloseModal}
-        aria-labelledby="example-modal-sizes-title-lg"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Registrate</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form method="post" onSubmit={handleSubmit(onsubmitNewUser)}>
-            <div className="row">
-              <div className="col">
-                <input
-                  type="text"
-                  className="form-control border border-dark"
-                  placeholder="Ingresa Nombre"
-                  {...register("nombre")}
-                  required
-                />
-                <input
-                  type="text"
-                  className="form-control border border-dark"
-                  placeholder="Ingresa Apellido"
-                  {...register("apellido")}
-                  required
-                />
-                <input
-                  type="email"
-                  className="form-control border border-dark"
-                  placeholder="Ingresa Correo"
-                  {...register("correo")}
-                  required
-                />
-              </div>
-              <div className="col">
-                <input
-                  type="number"
-                  className="form-control border border-dark"
-                  placeholder="Ingresa Telefono celular"
-                  {...register("telefono")}
-                  required
-                  maxLength={12}
-                />
-                <div className="input-group">
-                  <div className="input-group">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      id="contrausuario"
-                      name="contrausuario"
-                      className="form-control form-control-lg border border-dark"
-                      {...register("contrasena")}
-                      required
-                      placeholder="Ingresa una Contraseña"
-                      max={12}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="container d-flex flex-row justify-content-around">
-              <button type="submit" className="btn btn-success w-50">
-                Enviar Datos
-              </button>
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal>
     </>
   );
 };
