@@ -22,7 +22,11 @@ router.get("/Infouser", (req, res) => {
 });
 
 router.get("/Vpropietarios", (req, res) => {
-  const { Cedula, FechaIngresoMIN, FechaIngresoMAX } = req.query;
+  const { Cedula, FechaIngresoMIN, FechaIngresoMAX } = req.query;  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+  };
+
   try {
     let query = "SELECT * FROM propietario  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
 
@@ -358,7 +362,7 @@ router.get("/VComisionPropie", (req, res) => {
 
 router.get('/contratoFiltro', (req, res) => {
   // Obtén los parámetros de consulta
-  const { FechaFinMIN, FechaFinMAX, NContrato } = req.query;
+  const { FechaFinMIN, FechaFinMAX, NContrato, Estado, } = req.query;
   // Construye la consulta SQL base
   let query = `
     SELECT 
@@ -386,6 +390,10 @@ router.get('/contratoFiltro', (req, res) => {
     filtroConditions.push(`contratoarrendamiento.IdContrato = '${NContrato}'`);
   }
 
+  if (Estado) {
+    filtroConditions.push(`contratoarrendamiento.EstadoContrato = '${Estado}'`);
+  }
+
   // Agrega los filtros a la consulta si hay alguno
   if (filtroConditions.length > 0) {
     query += ' WHERE ' + filtroConditions.join(' AND ');
@@ -397,6 +405,7 @@ router.get('/contratoFiltro', (req, res) => {
       console.error('Error al ejecutar la consulta:', error);
       res.status(500).send('Error interno del servidor');
     } else {
+      console.log(NContrato);
       res.json(results);
     }
   });
@@ -896,6 +905,7 @@ router.post("/RComision", async (req, res) => {
     AdminInmobiliaria,
     AseoEntrega,
     Mantenimiento,
+    ValorTotal,
   } = req.body;
 
   try {
@@ -911,7 +921,7 @@ router.post("/RComision", async (req, res) => {
     const mantenimiento = Mantenimiento || 0;
 
     connection.query(
-      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento, ValorTotal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         IdPropietario,
         IdInmueble,
@@ -922,6 +932,7 @@ router.post("/RComision", async (req, res) => {
         adminInmobiliaria,
         aseoEntrega,
         mantenimiento,
+        ValorTotal,
       ],
       (error, results) => {
         if (error) {

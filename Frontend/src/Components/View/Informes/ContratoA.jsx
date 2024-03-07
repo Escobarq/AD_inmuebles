@@ -19,14 +19,15 @@ export const ContratoA = () => {
     FechaFinMIN: "",
     FechaFinMAX: "",
     NContrato: "",
+    Estado: "",
   });
 
   useEffect(() => {
     fetchData();
   }, [filtroData]);
 
-  const fetchData = async (filtroData) => {
-    console.log(filtroData);
+  const fetchData = async () => {
+    console.log("fitro",filtroData);
     const queryParams = new URLSearchParams(filtroData);
     try {
       const response = await fetch(`http://localhost:3006/contratoFiltro?${queryParams.toString()}`);
@@ -57,6 +58,7 @@ export const ContratoA = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
+    console.log(filtroData)
   };
 
 
@@ -117,8 +119,6 @@ export const ContratoA = () => {
   //Funcion para generar pdf
 
   const handleGeneratePDF = () => {
-
-console.log(infoarrendatario);
 
     const doc = new jsPDF();
     // Logo-pdf
@@ -241,6 +241,20 @@ const redireccion = (ruta) => {
               name="FechaFinMAX"
               id=""
             />
+              <label className="l1">Estado Contrato: </label>
+             <select
+              className="input-filtroRe"
+              value={filtroData.Estado}
+              onChange={handleChange}
+              name="Estado"
+              id=""
+            >
+              <option selected value="">
+                Seleccione el estado
+              </option>
+              <option value="Vigente">Vigente</option>
+              <option value="Finalizado">Finalizado</option>
+            </select>
           </div>
 
           <Button variant="primary" className="NewContract" onClick={() => redireccion("/Generar")}>
