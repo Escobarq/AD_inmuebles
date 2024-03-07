@@ -74,7 +74,7 @@ function App() {
     return (
       <>
         <ToastContainer />
-        <Notifi />
+
         <div className="Contener-todo">
           {location.pathname !== "/" &&
             location.pathname !== "/EditarPerfil" && (
@@ -83,7 +83,9 @@ function App() {
                 handleDarkModeToggle={handleDarkModeToggle}
               />
             )}
-            
+          {location.pathname !== "/" && location.pathname !== "/login" && (
+            <Notifi />
+          )}
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/inicio" element={<Home />} />
@@ -118,7 +120,6 @@ function App() {
             <Route path="/Generar" element={<Contrato />} />
             <Route path="/EditarDatosIn" element={<EditarDatosIn />} />
           </Routes>
-
           <Switch />
         </div>
       </>
