@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Home from "./Components/Home/Home";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { Propietarios } from "./Components/View/Propietarios/propietarios";
 import { Arrendatario } from "./Components/View/Arrendatario/Arrendatario";
 import { Inmueble } from "./Components/View/Inmueble/Inmueble";
@@ -36,9 +36,11 @@ import { Contrato } from "./Components/Register/Contrato/Contrato";
 import { Switch } from "./Components/ToggleSwitche/Switch";
 import { EditarDatosIn } from "./Components/Register/EditarDatosInmueble/EditarDatosIn";
 import { Notifi } from "./Components/Notifi/Notifi";
+import useRoleInfo from "./Components/Hooks/useRoleInfo";
 
 function App() {
   const location = useLocation();
+  const roleId = useRoleInfo();
   const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(() => {
     const darkModeEnabled = localStorage.getItem("darkMode");
@@ -74,18 +76,19 @@ function App() {
     return (
       <>
         <ToastContainer />
-
         <div className="Contener-todo">
-          {location.pathname !== "/" &&
-            location.pathname !== "/EditarPerfil" && (
-              <Slidebar
-                darkMode={darkMode}
-                handleDarkModeToggle={handleDarkModeToggle}
-              />
-            )}
-          {location.pathname !== "/" && location.pathname !== "/login" && (
-            <Notifi />
+          {location.pathname !== "/" && (
+            <Slidebar
+              darkMode={darkMode}
+              handleDarkModeToggle={handleDarkModeToggle}
+            />
           )}
+
+          {roleId !== 2 &&
+            roleId !== 3 &&
+            location.pathname !== "/" &&
+            location.pathname !== "/login" && <Notifi />}
+
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/inicio" element={<Home />} />
@@ -114,11 +117,16 @@ function App() {
             <Route path="/RInmuebleO" element={<RInmuebleO />} />
             <Route path="/Carrendatario" element={<ContratoA />} />
             <Route path="/Ginmuebles" element={<GastosIn />} />
-            <Route path="/AsignarRol" element={<AsignarRol />} />
+            {roleId === 3 && (
+              <>
+                <Route path="/AsignarRol" element={<AsignarRol />} />
+                <Route path="/EditarPerfil" element={<ContactForm />} />
+              </>
+            )}
             <Route path="/InhabilitarRol" element={<InhabilitarRol />} />
-            <Route path="/EditarPerfil" element={<ContactForm />} />
             <Route path="/Generar" element={<Contrato />} />
             <Route path="/EditarDatosIn" element={<EditarDatosIn />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
           <Switch />
         </div>

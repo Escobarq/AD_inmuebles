@@ -95,7 +95,7 @@ function ContactForm() {
     <Container className=" conteniendo px-5 my-5">
       <Row className="justify-content-center">
         <Col lg={8}>
-          <Card border="0" className="rounded-3 shadow-lg">
+          <Card border="0" className=" editar-perfil rounded-3 shadow-lg">
             <Card.Body className="p-4">
               <div className="text-center">
                 <h1 className="h1 fw-light">Editar Perfil Empleados</h1>

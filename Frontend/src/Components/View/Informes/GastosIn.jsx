@@ -4,7 +4,7 @@ import { Table } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "react-bootstrap/Pagination";
-import logo from "../../../assets/Logo.png";
+import logo from "../../../assets/Logo.jpg";
 import moment from 'moment';
 import 'moment/locale/es';
 import jsPDF from 'jspdf';
@@ -174,6 +174,10 @@ const data = tableData.map(arrendatario => ({
       <div className="contener-home" >
         <div className="title_views">
           <h1 className="ContArrendatario">Comisión de Gastos</h1>
+          <button className="bottom-button" onClick={handleGeneratePDF} >
+          <FontAwesomeIcon icon={faFilePdf} />
+          Generar PDF
+        </button>
         </div>
 
         <div className="view_esp">
@@ -222,10 +226,6 @@ const data = tableData.map(arrendatario => ({
             />
           </Pagination>
         </div>
-        <button className="bottom-button" onClick={handleGeneratePDF} >
-          <FontAwesomeIcon icon={faFilePdf} />
-          Generar PDF
-        </button>
       </div>
     </>
   );
