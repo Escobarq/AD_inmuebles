@@ -111,7 +111,7 @@ export const RInmuebleA = () => {
     }
 
     // Actualiza los datos del propietario
-    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+    setPropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
   const handleNumberChange = (event) => {
@@ -129,7 +129,7 @@ export const RInmuebleA = () => {
     }
 
     // Actualiza los datos del propietario
-    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+    setPropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
   const handleFieldFocus = (fieldName) => {
@@ -172,8 +172,7 @@ export const RInmuebleA = () => {
               <Form.Label>No. Matricula:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("Nmatricula")}
-               
+                {...register("NMatricula")}
                 onChange={handleNumberChange}
                 onFocus={() => handleFieldFocus("Nmatricula")}
                 required
@@ -244,7 +243,7 @@ export const RInmuebleA = () => {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group controlId="formNBanos">
+            <Form.Group controlId="formNbanos">
               <Form.Label>No. Baños:</Form.Label>
               <Form.Control
                 className="InputsRegistros"

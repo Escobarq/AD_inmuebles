@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +11,7 @@ export const RPropietario = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la alerta
   const [focusedField, setFocusedField] = useState(""); // Estado para rastrear el campo enfocado
+  const [identidadesRegistradas, setIdentidadesRegistradas] = useState([]);
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -67,8 +68,29 @@ export const RPropietario = () => {
     }
   }, [location.search]);
 
+  useEffect(() => {
+    setCurrentDate(getCurrentDate());
+  }, []);
+
+  // Función para obtener la fecha actual en formato YYYY-MM-DD
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
+
   const onSubmitRegistro = async (data) => {
     try {
+      // Verificar si el número de identidad ya está registrado
+      if (identidadesRegistradas.includes(data.DocumentoIdentidad)) {
+        alert('Esta persona ya está registrada con este número de identidad.');
+        return;
+      }
+
       const url = propetarioData.IdPropietario
         ? `http://localhost:3006/RPropietario/${propetarioData.IdPropietario}`
         : "http://localhost:3006/RPropietario";
@@ -85,8 +107,9 @@ export const RPropietario = () => {
       console.log(data);
       if (response.ok) {
         setShowSaveModal(false); // Muestra el modal de confirmación
-        localStorage.setItem("NITPropie", data.numerodocumento); // Suponiendo que DocumentoIdentidad es el campo correcto
+        localStorage.setItem("NITPropie", data.DocumentoIdentidad); // Suponiendo que DocumentoIdentidad es el campo correcto
         reset();
+        setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
       }
     } catch (error) {
       console.error("Error al enviar datos al servidor:", error);
@@ -95,71 +118,21 @@ export const RPropietario = () => {
 
   const handleConfirmSave = () => {
     handleSubmit(onSubmitRegistro)();
-
-    const method = propetarioData.IdPropietario ? "PUT" : "POST";
-
-    if (method === "PUT") {
-      window.location.href = "/Propietario";
-    } else {
-      window.location.href = "/RInmuebleA";
-    }
-
-    setShowSaveModal(false); // Cierra el modal
   };
 
   const handleConfirmCancel = () => {
-    window.location.href = "/Propietario";
     setShowCancelModal(false); // Cierra el modal
   };
-
-  useEffect(() => {
-    setCurrentDate(getCurrentDate());
-  }, []);
-
-  // Función para obtener la fecha actual en formato YYYY-MM-DD
-  function getCurrentDate() {
-    const date = new Date();
-    const year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : "0" + month;
-    let day = date.getDate().toString();
-    day = day.length > 1 ? day : "0" + day;
-    return `${year}-${month}-${day}`;
-  }
 
   const handleTextChange = (event) => {
     const fieldValue = event.target.value;
     const fieldName = event.target.name;
-
-    // Expresión regular para permitir solo letras y espacios
-    const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/;
-
-    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
-    if (!regex.test(fieldValue) && focusedField === fieldName) {
-      setShowWarning(true);
-    } else {
-      setShowWarning(false);
-    }
-
-    // Actualiza los datos del propietario
     setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
   const handleNumberChange = (event) => {
     const fieldValue = event.target.value;
     const fieldName = event.target.name;
-
-    // Expresión regular para permitir solo números
-    const regex = /^[0-9]*$/;
-
-    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
-    if (!regex.test(fieldValue) && focusedField === fieldName) {
-      setShowWarning(true);
-    } else {
-      setShowWarning(false);
-    }
-
-    // Actualiza los datos del propietario
     setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
@@ -186,11 +159,6 @@ export const RPropietario = () => {
               onFocus={() => handleFieldFocus("nombrepropietario")}
               required
             />
-            {focusedField === "nombrepropietario" && showWarning && (
-              <span className="error-message">
-                Solo se permiten letras y espacios
-              </span>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formTipoDocumento" className="formSelect">
@@ -217,7 +185,7 @@ export const RPropietario = () => {
             </Form.Select>
           </Form.Group>
 
-          <Form.Group controlId="formdireccion">
+          <Form.Group controlId="formDireccion">
             <Form.Label>Dirección Del Propietario:</Form.Label>
             <Form.Control
               className="InputsRegistros"
@@ -227,35 +195,28 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formnumerodocumento">
-            <Form.Label>N° Documento Identidad:</Form.Label>
+          <Form.Group controlId="formDocumentoIdentidad">
+            <Form.Label>Número de Identidad:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("numerodocumento")}
+              {...register("DocumentoIdentidad")}
               defaultValue={propetarioData.DocumentoIdentidad}
-              onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("numerodocumento")}
+              onChange={(e) => handleNumberChange(e)}
+              onFocus={() => handleFieldFocus("DocumentoIdentidad")}
               required
             />
-            {focusedField === "numerodocumento" && showWarning && (
-              <span className="error-message">Solo se permiten números</span>
-            )}
           </Form.Group>
 
-          <Form.Group controlId="formtelefono">
+          <Form.Group controlId="formTelefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
               className="InputsRegistros"
               {...register("Telefono")}
-              type="text"
               defaultValue={propetarioData.Telefono}
-              onChange={handleNumberChange}
+              onChange={(e) => handleNumberChange(e)}
               onFocus={() => handleFieldFocus("Telefono")}
               required
             />
-            {focusedField === "telefono" && showWarning && (
-              <span className="error-message">Solo se permiten números</span>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formcorreoelectronico">
@@ -284,11 +245,6 @@ export const RPropietario = () => {
               onFocus={() => handleFieldFocus("banco")}
               required
             />
-            {focusedField === "banco" && showWarning && (
-              <span className="error-message">
-                Solo se permiten letras y espacios
-              </span>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formTipoCuenta">
@@ -318,8 +274,6 @@ export const RPropietario = () => {
             <Form.Label>Número de Cuenta:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              type="number"
-              name="numerocuenta"
               {...register("numerocuenta")}
               max={9999999999}
               defaultValue={propetarioData.NumeroCuenta}
@@ -327,9 +281,6 @@ export const RPropietario = () => {
               onChange={handleNumberChange}
               onFocus={() => handleFieldFocus("numerocuenta")}
             />
-            {focusedField === "numerocuenta" && showWarning && (
-              <span className="error-message">Solo se permiten números</span>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formfechaingreso">
@@ -348,72 +299,72 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
-          {/* Aquí irían los demás campos del formulario */}
+          {/* Resto de los campos del formulario */}
+
+          {/* Botones de guardar y cancelar */}
+          <div className="col-md-12">
+            <div className="save_deleter">
+              <Button
+                type="button"
+                variant="success m-2"
+                onClick={() => setShowSaveModal(true)}
+              >
+                <FontAwesomeIcon icon={faSave} />
+                <span className="text_button ms-2">Guardar</span>
+              </Button>
+
+              {/* Botón de cancelar */}
+              <Button
+                type="button"
+                variant="danger m-2"
+                onClick={() => setShowCancelModal(true)}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+                <span className="text_button ms-2">Cancelar</span>
+              </Button>
+            </div>
+
+            {/* Modales */}
+            {/* Modal de confirmación de guardar */}
+            <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirmación</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¿Estás seguro de que deseas guardar los cambios?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
+                  No
+                </Button>
+                <Button variant="primary" onClick={handleConfirmSave}>
+                  Sí
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
+            {/* Modal de confirmación de cancelar */}
+            <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirmación</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¿Estás seguro de que deseas cancelar la operación?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowCancelModal(false)}
+                >
+                  No
+                </Button>
+                <Button variant="primary" onClick={handleConfirmCancel}>
+                  Sí
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </div>
         </Form>
-      </div>
-
-      {/* Botones de guardar y cancelar */}
-      <div className="col-md-12">
-        <div className="save_deleter">
-          <Button
-            type="button"
-            variant="success m-2"
-            onClick={() => setShowSaveModal(true)}
-          >
-            <FontAwesomeIcon icon={faSave} />
-            <span className="text_button ms-2">Guardar</span>
-          </Button>
-
-          {/* Botón de cancelar */}
-          <Button
-            type="button"
-            variant="danger m-2"
-            onClick={() => setShowCancelModal(true)}
-          >
-            <FontAwesomeIcon icon={faTimes} />
-            <span className="text_button ms-2">Cancelar</span>
-          </Button>
-        </div>
-
-        {/* Modales */}
-        {/* Modal de confirmación de guardar */}
-        <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Confirmación</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            ¿Estás seguro de que deseas guardar los cambios?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
-              No
-            </Button>
-            <Button variant="primary" onClick={handleConfirmSave}>
-              Sí
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/* Modal de confirmación de cancelar */}
-        <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Confirmación</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            ¿Estás seguro de que deseas cancelar la operación?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => setShowCancelModal(false)}
-            >
-              No
-            </Button>
-            <Button variant="primary" onClick={handleConfirmCancel}>
-              Sí
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </div>
     </div>
   );
