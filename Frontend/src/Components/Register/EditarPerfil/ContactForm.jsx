@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Modal, Button, Form } from "react-bootstrap";
+import { InputGroup, Modal, Button, Form } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-
-
+import {
+  faSave,
+  faTimes,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 
 function ContactForm() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-
-
+  const [password, setPassword] = useState("");
+  const [shown, setShown] = useState(false);
   const [Empleadosdata, setEmpleadosdata] = useState({
     Nombre: "",
     Apellido: "",
@@ -55,7 +58,7 @@ function ContactForm() {
   const notify = () =>
     toast.success("Se Actualizo Correctamente ", {
       theme: "dark",
-      autoClose: 1000
+      autoClose: 1000,
     });
 
   const handleSubmit = (event) => {
@@ -64,7 +67,14 @@ function ContactForm() {
   };
 
   const handleConfirmSave = async () => {
-    const { Nombre, Apellido, DocumentoIdentidad, Correo, Contrasena, Telefono } = Empleadosdata;
+    const {
+      Nombre,
+      Apellido,
+      DocumentoIdentidad,
+      Correo,
+      Contrasena,
+      Telefono,
+    } = Empleadosdata;
 
     try {
       const response = await fetch(
@@ -89,35 +99,32 @@ function ContactForm() {
         throw new Error("Error al actualizar el empleado");
       }
       notify();
-      window.location.href = "/AsignarRol"
+      window.location.href = "/AsignarRol";
     } catch (error) {
       console.error("Error al enviar la solicitud PUT:", error);
     }
   };
 
-  const {
-    reset,
-  } = useForm({ mode: "onChange" });
+  const { reset } = useForm({ mode: "onChange" });
 
   const RedireccionForm = () => {
     setShowCancelModal(true); // Actualiza el estado para ocultar el modal
   };
   const RedireccionForms = () => {
-    window.location.assign = "/AsignarRol" // Actualiza el estado para ocultar el modal
+    window.location.href = "/AsignarRol"; // Actualiza el estado para ocultar el modal
   };
   const handleChange = (event) => {
     setRol(event.target.value);
   };
 
+  const onChange = ({ currentTarget }) => setPassword(currentTarget.value);
+  const switchShown = () => setShown(!shown);
 
   return (
     <div className="contener-home contener-rpropietario">
-      <h2> Actualizar Informacion de  Empleados</h2>
+      <h2> Actualizar Informacion de Empleados</h2>
       <div className="container">
-        <Form
-          className="form-propietario"
-          onSubmit={handleSubmit}
-        >
+        <Form className="form-propietario" onSubmit={handleSubmit}>
           <Form.Group>
             <Form.Label>Nombre:</Form.Label>
             <Form.Control
@@ -126,7 +133,9 @@ function ContactForm() {
               type="text"
               placeholder="Nombre"
               value={Empleadosdata.Nombre}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Nombre: e.target.value })}
+              onChange={(e) =>
+                setEmpleadosdata({ ...Empleadosdata, Nombre: e.target.value })
+              }
             />
           </Form.Group>
           <Form.Group>
@@ -137,7 +146,9 @@ function ContactForm() {
               type="text"
               placeholder="Apellido"
               value={Empleadosdata.Apellido}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Apellido: e.target.value })}
+              onChange={(e) =>
+                setEmpleadosdata({ ...Empleadosdata, Apellido: e.target.value })
+              }
             />
           </Form.Group>
           <Form.Group>
@@ -148,19 +159,32 @@ function ContactForm() {
               type="email"
               placeholder="Correo"
               value={Empleadosdata.Correo}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Correo: e.target.value })}
+              onChange={(e) =>
+                setEmpleadosdata({ ...Empleadosdata, Correo: e.target.value })
+              }
             />
           </Form.Group>
           <Form.Group>
             <Form.Label>Contraseña:</Form.Label>
-            <Form.Control
-              className="form-control"
-              id="Contraseña"
-              type="password"
-              placeholder="Contraseña"
-              value={Empleadosdata.Contrasena}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Contrasena: e.target.value })}
-            />
+            <div className="password-input">
+              <Form.Control
+                className="form-control"
+                id="Contraseña"
+                onBlur={onChange}
+                type={shown ? "text" : "password"}
+                placeholder="Contraseña"
+                value={Empleadosdata.Contrasena}
+                onChange={(e) =>
+                  setEmpleadosdata({
+                    ...Empleadosdata,
+                    Contrasena: e.target.value,
+                  })
+                }
+              />
+              <Button style={{margin:'1%'}} variant="success" onClick={switchShown}>
+                {shown ? "Ocultar" : "Mostrar"}
+              </Button>
+            </div>
           </Form.Group>
           <Form.Group>
             <Form.Label>Telefono:</Form.Label>
@@ -170,12 +194,14 @@ function ContactForm() {
               type="tel"
               placeholder="Telefono"
               value={Empleadosdata.Telefono}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Telefono: e.target.value })}
+              onChange={(e) =>
+                setEmpleadosdata({ ...Empleadosdata, Telefono: e.target.value })
+              }
             />
           </Form.Group>
 
           <Form.Group controlId="TipoDocumento">
-            <Form.Label>Selecione Rol </Form.Label>
+            <Form.Label>Selecione Rol</Form.Label>
             <Form.Control
               as="select"
               className="form-control"
@@ -184,6 +210,7 @@ function ContactForm() {
               value={rol}
               onChange={handleChange}
             >
+              <option value="">Seleccione un rol</option>
               <option value="2">Asistente</option>
               <option value="1">Administrador</option>
             </Form.Control>
@@ -207,7 +234,9 @@ function ContactForm() {
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Estás seguro de que deseas guardar los cambios?</Modal.Body>
+        <Modal.Body>
+          ¿Estás seguro de que deseas guardar los cambios?
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
             No
@@ -222,7 +251,9 @@ function ContactForm() {
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Estás seguro de que deseas cancelar la operación?</Modal.Body>
+        <Modal.Body>
+          ¿Estás seguro de que deseas cancelar la operación?
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
             No
