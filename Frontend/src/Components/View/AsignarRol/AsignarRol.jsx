@@ -173,9 +173,10 @@ export const AsignarRol = () => {
         <h1 className="tittle_propetario">Empleados</h1>
         <div className="conten-inputs">
           <label className="l1">Rol</label>
-          <select className="input-filtroRe" value="" onChange="" name="rol" id="rol">
+          <select className="input-filtroRe"name="rol" id="rol">
             <option selected value="">Seleccione el tipo</option>
             <option value="Asistente">Asistente</option>
+            <option value="Administrador">Administrador</option>
           </select>
         </div>
         <Button variant="success" className="btn-add-success" onClick={() => redireccion("/Crearperfil")}>

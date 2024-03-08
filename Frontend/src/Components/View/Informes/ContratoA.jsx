@@ -24,7 +24,6 @@ export const ContratoA = () => {
   }, [filtroData]);
 
   const fetchData = async () => {
-    console.log("fitro", filtroData);
     const queryParams = new URLSearchParams(filtroData);
     try {
       const response = await fetch(

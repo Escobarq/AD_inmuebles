@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, InputGroup  } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSave,
+  faTimes,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import { crearUser } from "../../Hooks/RegisterUser";
 
 const Crearuser = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const { reset } = useForm({ mode: "onChange" });
+  const [password, setPassword] = useState("");
+  const [shown, setShown] = useState(false);
 
   const RedireccionForm = () => {
     setShowCancelModal(true);
@@ -43,7 +49,7 @@ const Crearuser = () => {
       await crearUser(data);
       setShowSaveModal(false);
       notify("Registro Exitoso");
-      window.location.href = "/AsignarRol"
+      window.location.href = "/AsignarRol";
       reset();
     } catch (error) {
       if (
@@ -71,6 +77,9 @@ const Crearuser = () => {
 
     onsubmitNewUser(formData);
   };
+
+  const onChange = ({ currentTarget }) => setPassword(currentTarget.value);
+  const switchShown = () => setShown(!shown);
 
   return (
     <div className="contener-home contener-rpropietario">
@@ -116,18 +125,35 @@ const Crearuser = () => {
               placeholder="Ingresa Correo"
               required
             />
+            <div className="email-hint">
+              <p className="text-danger">
+                Por favor, recuerde muy bien su correo.
+              </p>
+            </div>
           </Form.Group>
+
           <Form.Group>
             <Form.Label>Contraseña:</Form.Label>
-            <Form.Control
-              type={showPassword ? "text" : "password"}
-              id="contrausuario"
-              name="contrausuario"
-              className="form-control form-control-lg border border-dark"
-              placeholder="Ingresa una Contraseña"
-              required
-              max={12}
-            />
+            <div className="password-input">
+              <Form.Control
+                onChange={onChange}
+                type={shown ? "text" : "password"}
+                id="contrausuario"
+                name="contrausuario"
+                className="form-control form-control-lg border border-dark"
+                placeholder="Ingresa una Contraseña"
+                required
+                max={12}
+              />
+              <Button variant="success" onClick={switchShown}>
+                {shown ? "Ocultar" : "Mostrar"}
+              </Button>
+            </div>
+            <div className="password-hint">
+              <p className="text-danger">
+                Por favor, recuerde muy bien su contraseña.
+              </p>
+            </div>
           </Form.Group>
         </Form>
       </div>
@@ -148,7 +174,9 @@ const Crearuser = () => {
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Estás seguro de que deseas guardar los cambios?</Modal.Body>
+        <Modal.Body>
+          ¿Estás seguro de que deseas guardar los cambios?
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
             No
@@ -162,7 +190,9 @@ const Crearuser = () => {
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Estás seguro de que deseas cancelar la operación?</Modal.Body>
+        <Modal.Body>
+          ¿Estás seguro de que deseas cancelar la operación?
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
             No
