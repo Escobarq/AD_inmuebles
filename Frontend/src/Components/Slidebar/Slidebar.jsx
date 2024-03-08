@@ -22,11 +22,15 @@ import {
   OverlayTrigger,
   Tooltip,
   Dropdown,
+  DropdownMenu,
+  DropdownItem,
 } from "react-bootstrap";
 import { useEffect } from "react";
+import useRoleInfo from "../Hooks/useRoleInfo";
 
 // eslint-disable-next-line react/prop-types
 export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
+  const roleId = useRoleInfo();
   const correousuario = localStorage.getItem("items");
   const [nombre, setnombre] = useState("");
   const [apellido, setApellido] = useState("");
@@ -53,6 +57,8 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
           setTTiporol("Administrador");
         } else if (data[0].Idrol == 2) {
           setTTiporol("Asistente");
+        } else if (data[0].Idrol == 3) {
+          setTTiporol("SuperUsuario");
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -87,8 +93,232 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
   const renderMenuItems = () => {
     const roleId = parseInt(Rol);
 
-    if (roleId === 1 || roleId === 2) {
+    if (roleId === 1) {
       //Administrador
+      return (
+        <>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Propietarios</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Propietario"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  className="icons_sliderbard"
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faUserTie}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Propietarios
+                </p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Inmuebles</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Inmueble"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faHouseUser}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Inmuebles
+                </p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Arrendatarios</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Arrendatario"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faPersonShelter}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Arrendatarios
+                </p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Codeudores</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Codeudor"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faPeopleRoof}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Codeudores
+                </p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Pagos Arrendamiento</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/H_recibos"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faReceipt}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Pagos Arrendamiento
+                </p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Comision Propietario</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/H_gastos"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faReceipt}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Comision Propietario
+                </p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Informe Arrendamiento</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Carrendatario"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faTable}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Informe Arrendamiento
+                </p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+        </>
+      );
+
+    } else if (roleId === 2) {
       return (
         <>
           <Nav.Item>
@@ -278,105 +508,51 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Informe Arrendamiento</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/Carrendatario"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faTable}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Informe Arrendamiento
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Comisiones Gastos</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/Ginmuebles"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faTableList}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Comisiones Gastos
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Asignar Rol Empleados</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/AsignarRol"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faUserShield}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Asignar Rol Empleados
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
         </>
       );
-    } else {
-      return null;
+    } else if (roleId === 3) {
+      return (
+        <>
+      <Nav.Item>
+        <OverlayTrigger
+          placement="right"
+          overlay={
+            showTooltip ? (
+              <Tooltip id="tooltip-prop">Asignar Rol Empleados</Tooltip>
+            ) : (
+              <></>
+            )
+          }
+        >
+          <Nav.Link
+            as={NavLink}
+            to="/AsignarRol"
+            className="nav-link text-white"
+            aria-current="page"
+            exact={undefined}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <FontAwesomeIcon
+              width="32"
+              height="32"
+              style={{ color: "#ffffff" }}
+              icon={faUserShield}
+            />
+            <p className="Links_Icons" style={{ margin: "2%" }}>
+              Asignar Rol Empleados
+            </p>
+          </Nav.Link>
+        </OverlayTrigger>
+      </Nav.Item>
+        </>
+      );
+
     }
   };
+
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  }
 
   return (
     <>
@@ -394,30 +570,41 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
           {renderMenuItems()}
         </Nav>
         <hr />
-        <Dropdown className="Drowon">
-          <Dropdown.Toggle
-            variant="link"
-            className="nav-link text-white"
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <FontAwesomeIcon
-              width="32"
-              height="32"
-              style={{ color: "#ffffff" }}
-              icon={darkMode ? faMoon : faSun}
-            />
+        {(roleId === 1 || roleId === 2) && (
+        <Dropdown style={{ display: "flex", justifyContent: "center" }}>
+          <Dropdown.Toggle variant="link" className="nav-link text-white">
+            <FontAwesomeIcon width="32" height="32" style={{ color: "#ffffff" }} icon={darkMode ? faMoon : faSun} />
             <strong>Opciones</strong>
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item onClick={handleDarkModeToggle}>
-              <FontAwesomeIcon
-                style={{ marginRight: "10px" }}
-                icon={darkMode ? faSun : faMoon}
-              />
+              <FontAwesomeIcon style={{ marginRight: "10px" }} icon={darkMode ? faSun : faMoon} />
+              {darkMode ? "Modo Claro" : "Modo Oscuro"}
+            </Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item>
+              <Button variant="white" onClick={() => redireccion("/Contraseñanew")}>
+                Cambiar Contraseña
+              </Button>
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      )}
+
+      {roleId === 3 && (
+        <Dropdown style={{ display: "flex", justifyContent: "center" }}>
+          <Dropdown.Toggle variant="link" className="nav-link text-white">
+            <FontAwesomeIcon width="32" height="32" style={{ color: "#ffffff" }} icon={faMoon} />
+            <strong>Opciones</strong>
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+          <Dropdown.Item onClick={handleDarkModeToggle}>
+              <FontAwesomeIcon style={{ marginRight: "10px" }} icon={darkMode ? faSun : faMoon} />
               {darkMode ? "Modo Claro" : "Modo Oscuro"}
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+      )}
         <hr />
         <Button
           variant="link"

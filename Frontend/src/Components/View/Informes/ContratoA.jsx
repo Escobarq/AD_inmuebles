@@ -1,16 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { faFilePdf, faFileSignature} from "@fortawesome/free-solid-svg-icons";
-
-
+import { faFilePdf, faFileSignature } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "react-bootstrap/Pagination";
-import moment from 'moment';
-import 'moment/locale/es';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import logo from '../../../assets/Logo.png'
-import Button from 'react-bootstrap/Button';
+import moment from "moment";
+import "moment/locale/es";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import logo from "../../../assets/Logo.jpg";
+import { Button, Table ,Col, Form ,Row } from "react-bootstrap";
 
 export const ContratoA = () => {
   const [infoarrendatario, setinfoarrendatario] = useState([]);
@@ -19,17 +16,19 @@ export const ContratoA = () => {
     FechaFinMIN: "",
     FechaFinMAX: "",
     NContrato: "",
+    Estado: "",
   });
 
   useEffect(() => {
     fetchData();
   }, [filtroData]);
 
-  const fetchData = async (filtroData) => {
-    console.log(filtroData);
+  const fetchData = async () => {
     const queryParams = new URLSearchParams(filtroData);
     try {
-      const response = await fetch(`http://localhost:3006/contratoFiltro?${queryParams.toString()}`);
+      const response = await fetch(
+        `http://localhost:3006/contratoFiltro?${queryParams.toString()}`
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -40,25 +39,28 @@ export const ContratoA = () => {
       console.error("Error fetching products:", error);
     }
   };
-  //formatear fecha 
+  //formatear fecha
   function formatDate(fechaString) {
-    return moment(fechaString).format('MMMM , D , YYYY');
+    return moment(fechaString).format("MMMM , D , YYYY");
   }
 
-  moment.updateLocale('es', {
-    months: 'enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre'.split('_'),
-    monthsShort: 'ene.feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.'.split(''),
-    weekdays: 'domingo_lunes_martes_miércoles_jueves_viernes_sábado'.split('_'),
-    weekdaysShort: 'dom.lun._mar._mié._jue._vie._sáb.'.split(''),
-    weekdaysMin: 'do_lu_ma_mi_ju_vi_sá'.split('_')
+  moment.updateLocale("es", {
+    months:
+      "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split(
+        "_"
+      ),
+    monthsShort:
+      "ene.feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split(""),
+    weekdays: "domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),
+    weekdaysShort: "dom.lun._mar._mié._jue._vie._sáb.".split(""),
+    weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
   });
-
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
+    console.log(filtroData);
   };
-
 
   const createheader = () => {
     return (
@@ -106,56 +108,64 @@ export const ContratoA = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-
-  
   function getCurrentDate() {
-    return moment().format('MMMM D, YYYY');
+    return moment().format("MMMM D, YYYY");
   }
-
-
-
-  //Funcion para generar pdf
-
+  //AQUI EMPIEZA GENERACION DE PDF
   const handleGeneratePDF = () => {
-
-console.log(infoarrendatario);
-
     const doc = new jsPDF();
-    // Logo-pdf
+    const addHoraEmision = () => {
+      const currentDate = new Date();
+      const formattedTime = currentDate.toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      doc.setTextColor(128); // Gris
+      doc.setFontSize(8);
+      doc.text(
+        `Hora de Emisión: ${formattedTime}`,
+        20,
+        doc.internal.pageSize.getHeight() - 10
+      );
+    };
     doc.addImage(logo, "PNG", 15, 10, 33, 20); // Logo next to the title
-
-    // titulo pdf
     doc.text("Contrato Arrendatario", 60, 23); // Title next to the logo
-
-
+    addHoraEmision();
     const date = new Date();
-    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    const monthNames = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
     ];
-    const formattedDate = `${monthNames[date.getMonth()]}/${date.getDate()}/${date.getFullYear()}`;
+    const formattedDate = `${
+      monthNames[date.getMonth()]
+    }/${date.getDate()}/${date.getFullYear()}`;
     doc.setTextColor(128); // Gris
     doc.setFontSize(10);
-    doc.text(formattedDate, 190, 10, null, null, "right");
-
-
-
+    doc.text(formattedDate, 190, 18, null, null, "right");
 
     const columns = [
-      { header: "Id Contrato", dataKey: "IdContrato", },
-      { header: "Documento", dataKey: "DocumentoIdentidad", },
-      { header: "Arrendatario", dataKey: "NombreCompleto", },
-      { header: "Matricula", dataKey: "NoMatricula", },
-      { header: "Fecha Ini_Cont", dataKey: "FechaInicioContrato", },
-      { header: "Fecha Fin_Cont", dataKey: "FechaFinContrato", },
-      { header: "Deposito", dataKey: "ValorDeposito", },
-      { header: "Cuotas Pendientes", dataKey: "CuotasPendientes", },
-      { header: "Estado", dataKey: "Estado", }
+      { header: "Id Contrato", dataKey: "IdContrato" },
+      { header: "Documento", dataKey: "DocumentoIdentidad" },
+      { header: "Arrendatario", dataKey: "NombreCompleto" },
+      { header: "Matricula", dataKey: "NoMatricula" },
+      { header: "Fecha Ini_Cont", dataKey: "FechaInicioContrato" },
+      { header: "Fecha Fin_Cont", dataKey: "FechaFinContrato" },
+      { header: "Deposito", dataKey: "ValorDeposito" },
+      { header: "Cuotas Pendientes", dataKey: "CuotasPendientes" },
+      { header: "Estado", dataKey: "Estado" },
     ];
-
-
-
     // Datos de la tabla
-    const data = infoarrendatario.map(arrendatario => ({
+    const data = infoarrendatario.map((arrendatario) => ({
       IdContrato: arrendatario.IdContrato,
       DocumentoIdentidad: arrendatario.DocumentoIdentidad,
       NombreCompleto: arrendatario.NombreArrendatario,
@@ -164,106 +174,135 @@ console.log(infoarrendatario);
       FechaFinContrato: formatDate(arrendatario.FechaFinContrato),
       ValorDeposito: arrendatario.ValorDeposito,
       CuotasPendientes: arrendatario.CuotasPendientes,
-      Estado: arrendatario.EstadoContrato
+      Estado: arrendatario.EstadoContrato,
     }));
 
+    const itemsPerPage = 21;
+    let startY = 45;
 
-
-
-    //informacion en forma de tabla
-    autoTable(doc, {
-      // theme: 'plain',
-      //grid
-      //plain
-      columns,
-      body: data,
-      startY: 40
-    }); // Move the table further down
-
-
-    // obtener el numero total de paginas
+    for (let i = 0; i < Math.ceil(data.length / itemsPerPage); i++) {
+      const currentPageData = data.slice(
+        i * itemsPerPage,
+        (i + 1) * itemsPerPage
+      );
+      // Información en forma de tabla
+      autoTable(doc, {
+        columns,
+        body: currentPageData,
+        startY: startY,
+        styles: { fontSize: 8 },
+        margin: { top: 30 },
+      });
+      // Si hay más páginas, añadir una nueva página
+      if (i < Math.ceil(data.length / itemsPerPage) - 1) {
+        doc.addPage();
+        startY = 40;
+      }
+      addHoraEmision();
+      doc.addImage(logo, "PNG", 15, 10, 20, 15);
+      doc.setFontSize(13);
+      doc.text("Adminmuebles", 45, 20);
+    }
     const totalPages = doc.internal.getNumberOfPages();
-
-    // numeracion de paginas
-    for (let i = 1; i <= totalPages; i++) {
-      doc.setPage(i);
+    // Numeración de páginas
+    for (let j = 1; j <= totalPages; j++) {
+      doc.setPage(j);
       doc.setFontSize(8);
       doc.setTextColor(100);
       doc.text(
-        `Pág ${i} / ${totalPages}`,
+        `Pág ${j} / ${totalPages}`,
         doc.internal.pageSize.getWidth() / 2,
         doc.internal.pageSize.getHeight() - 10,
         { align: "center" }
       );
     }
-
-    // nombre de pdf
     doc.save("Contrato_Arrendatario.pdf");
   };
-
-
-
-
-const redireccion = (ruta) => {
-  window.location.href = ruta;
-}
+  //AQUI TERMINA PDF
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  };
 
   return (
-    <div className="contenerhom">
-       <div className="conten-filtro">
-          <div className="conten-inputs">
-            <label className="l1">No. Contrato: </label>
-            <input
-              value={filtroData.NContrato}
-              onChange={handleChange}
-              className="input-filtroRe"
-              type="number"
-              name="NContrato"
-              max={9999999999}
-              id=""
-            />
-            <label className="l1">Fecha Final Minimo: </label>
-            <input
-              className="input-filtroRe"
-              value={filtroData.FechaFinMIN}
-              onChange={handleChange}
-              type="date"
-              name="FechaFinMIN"
-              id=""
-            />
-
-            <label className="l1">Fecha Final Maxima: </label>
-            <input
-              className="input-filtroRe"
-              value={filtroData.FechaFinMAX}
-              onChange={handleChange}
-              type="date"
-              name="FechaFinMAX"
-              id=""
-            />
-          </div>
-
-          <Button variant="primary" className="NewContract" onClick={() => redireccion("/Generar")}>
-            <FontAwesomeIcon icon={faFileSignature}/>
-              Generar Nuevo contrato
-              </Button>
-            <button className="bottom-button" onClick={handleGeneratePDF}>
-              <FontAwesomeIcon icon={faFilePdf} />
-              Generar PDF
-            </button>
+    <div className="contener-home">
+      <div className="conten-filtro">
+        <div className="conten-inputs">
+          <label className="l1">No. Contrato: </label>
+          <input
+            value={filtroData.NContrato}
+            onChange={handleChange}
+            className="input-filtroRe"
+            type="number"
+            name="NContrato"
+            max={9999999999}
+            id=""
+          />
+          <label className="l1">Fecha Final Minimo: </label>
+          <input
+            className="input-filtroRe"
+            value={filtroData.FechaFinMIN}
+            onChange={handleChange}
+            type="date"
+            name="FechaFinMIN"
+            id=""
+          />
+          <label className="l1">Fecha Final Maxima: </label>
+          <input
+            className="input-filtroRe"
+            value={filtroData.FechaFinMAX}
+            onChange={handleChange}
+            type="date"
+            name="FechaFinMAX"
+            id=""
+          />
+          <label className="l1">Estado Contrato: </label>
+          <select
+            className="input-filtroRe"
+            value={filtroData.Estado}
+            onChange={handleChange}
+            name="Estado"
+            id=""
+          >
+            <option value="">Seleccione el estado</option>
+            <option value="Vigente">Vigente</option>
+            <option value="Finalizado">Finalizado</option>
+          </select>
+          <label className="l1">Fecha Final Maxima: </label>
+        <input
+          className="input-filtroRe"
+          value={filtroData.FechaFinMAX}
+          onChange={handleChange}
+          type="date"
+          name="FechaFinMAX"
+          id=""
+        />
         </div>
+      </div>
+      <Button
+        variant="primary"
+        className="NewContract"
+        onClick={() => redireccion("/Generar")}
+      >
+        <FontAwesomeIcon icon={faFileSignature} />
+        Generar Nuevo contrato
+      </Button>
+      <Button
+        variant="success"
+        className="bottom-button"
+        onClick={handleGeneratePDF}
+      >
+        <FontAwesomeIcon icon={faFilePdf} />
+        Generar PDF
+      </Button>
       <div className="container__arrendatario">
         <div className="ContArrendatario">
           <h1>Contrato Arrendatario</h1>
         </div>
-
         <div className="table-container" ref={pdfContentRef}>
-          <table className="table">
+          <Table striped bordered hover>
             <thead>{createheader()}</thead>
-            <tbody>
-              {currentItems.map((Contrato) => createrow(Contrato))}
-            </tbody>
-          </table>
+            <tbody>{currentItems.map((Contrato) => createrow(Contrato))}</tbody>
+          </Table>
         </div>
       </div>
       <div className="paginador">

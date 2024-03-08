@@ -4,7 +4,7 @@ import { Table } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "react-bootstrap/Pagination";
-import logo from "../../../assets/Logo.png";
+import logo from "../../../assets/Logo.jpg";
 import moment from 'moment';
 import 'moment/locale/es';
 import jsPDF from 'jspdf';
@@ -75,71 +75,77 @@ export const GastosIn = () => {
 
 
 
-
   function getCurrentDate() {
     return moment().format('MMMM D, YYYY');
   }
-
-  //Funcion para generar pdf
+  
+//AQUI EMPIEZA GENERACION DE PDF
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
-    // Logo-pdf
-    doc.addImage(logo, "PNG", 15, 10, 33, 20); // Logo next to the title
-    // titulo pdf
 
-    doc.text("Comisión de Gastos", 60, 23); // Title next to the logo
-
-
+    const addHoraEmision = () => {
+    const currentDate = new Date();
+    const formattedTime = currentDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    doc.setTextColor(128); // Gris
+    doc.setFontSize(8);
+    doc.text(`Hora de Emisión: ${formattedTime}`, 20, doc.internal.pageSize.getHeight() - 10);
+    };
+    doc.addImage(logo, "PNG", 15, 10, 33, 20); 
+    doc.text("Comisión de Gastos", 60, 23); 
+    addHoraEmision();
     const date = new Date();
     const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
     const formattedDate = `${monthNames[date.getMonth()]}/${date.getDate()}/${date.getFullYear()}`;
     doc.setTextColor(128); // Gris
     doc.setFontSize(10);
-    doc.text(formattedDate, 190, 10, null, null, "right");
+    doc.text(formattedDate, 190, 18, null, null, "right");
 
- // Columnas-pdf
- const columns = [
-  { header: "N°", dataKey: "IdPropietario" },
-  { header: "Nombre Propietario", dataKey: "NombreCompleto" },
-  { header: "Arrendamiento", dataKey: "ValorArriendo" },
-  { header: "Periodo Pagado", dataKey: "PeriodoPagado" },
-  { header: "Deposito", dataKey: "" },
-  { header: "Forma de Pago", dataKey: "FormaPago" },
-  { header: "Total", dataKey: "" },
-  { header: "Observaciones", dataKey: "Observaciones" }
-];
+    // Columnas-pdf
+    const columns = [
+      { header: "N°", dataKey: "IdPropietario" },
+      { header: "Nombre Propietario", dataKey: "NombreCompleto" },
+      { header: "Arrendamiento", dataKey: "ValorArriendo" },
+      { header: "Periodo Pagado", dataKey: "PeriodoPagado" },
+      { header: "Deposito", dataKey: "" },
+      { header: "Forma de Pago", dataKey: "FormaPago" },
+      { header: "Total", dataKey: "" },
+      { header: "Observaciones", dataKey: "Observaciones" }
+    ];
 
-// Datos de la tabla
-const data = tableData.map(arrendatario => ({
-  IdPropietario: arrendatario.IdPropietario,
-  NombreCompleto: arrendatario.NombreCompleto,
-  ValorArriendo: arrendatario.ValorArriendo,
-  PeriodoPagado: formatDate(arrendatario.PeriodoPagado),
-  FormaPago: arrendatario.FormaPago,
-  Observaciones: arrendatario.Observaciones
-}));
+    // Datos de la tabla
+    const data = tableData.map(arrendatario => ({
+      IdPropietario: arrendatario.IdPropietario,
+      NombreCompleto: arrendatario.NombreCompleto,
+      ValorArriendo: arrendatario.ValorArriendo,
+      PeriodoPagado: formatDate(arrendatario.PeriodoPagado),
+      FormaPago: arrendatario.FormaPago,
+      Observaciones: arrendatario.Observaciones
+    }));
+    const itemsPerPage = 33; 
+    let startY = 45; 
 
-
-
-
-
-    //informacion en forma de tabla
-    autoTable(doc, {
-      // theme: 'plain',
-      //grid
-      //plain
-      columns,
-      body: data,
-      startY: 40,
-    }); // Move the table further down
-
-
-
-    // obtener el numero total de paginas
+    for (let i = 0; i < Math.ceil(data.length / itemsPerPage); i++) {
+      const currentPageData = data.slice(i * itemsPerPage, (i + 1) * itemsPerPage);
+      autoTable(doc, {
+        columns,
+        body: currentPageData,
+        startY: startY, 
+        styles: { fontSize: 8 }, 
+        margin: { top: 30 }
+      });
+      // Si hay más páginas, añadir una nueva página
+      if (i < Math.ceil(data.length / itemsPerPage) - 1) {
+        doc.addPage();
+        startY = 40; 
+      }
+      addHoraEmision();
+      doc.addImage(logo, "PNG", 15, 10, 20, 15);
+      doc.setFontSize(13);
+      doc.text("Adminmuebles", 45, 20); // Title next to the logo
+    }
     const totalPages = doc.internal.getNumberOfPages();
-
     // numeracion de paginas
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
@@ -152,7 +158,6 @@ const data = tableData.map(arrendatario => ({
         { align: "center" }
       );
     }
-
     // Agregar fecha actual en la parte superior derecha
     doc.setFontSize(10);
     doc.setTextColor(100);
@@ -163,17 +168,19 @@ const data = tableData.map(arrendatario => ({
       { align: "right" }
     );
     // nombre de pdf
-     doc.save("Comisión de Gastos.pdf");
+    doc.save("Comisión de Gastos.pdf");
   };
+//AQUI TERMINA PDF
 
-
-
-  
   return (
     <>
       <div className="contener-home" >
         <div className="title_views">
           <h1 className="ContArrendatario">Comisión de Gastos</h1>
+          <button className="bottom-button" onClick={handleGeneratePDF} >
+          <FontAwesomeIcon icon={faFilePdf} />
+          Generar PDF
+        </button>
         </div>
 
         <div className="view_esp">
@@ -222,10 +229,6 @@ const data = tableData.map(arrendatario => ({
             />
           </Pagination>
         </div>
-        <button className="bottom-button" onClick={handleGeneratePDF} >
-          <FontAwesomeIcon icon={faFilePdf} />
-          Generar PDF
-        </button>
       </div>
     </>
   );
