@@ -17,7 +17,6 @@ import { RInmuebleC } from "./Components/Register/Inmueble/RInmuebleC";
 import { RInmuebleL } from "./Components/Register/Inmueble/RInmuebleL";
 import { RInmuebleO } from "./Components/Register/Inmueble/RinmuebleO";
 import { ContratoA } from "./Components/View/Informes/ContratoA";
-import { GastosIn } from "./Components/View/Informes/GastosIn";
 import { Rarrendatario } from "./Components/Recibos/Ra/Rarrendatario";
 import { ReciboGastos } from "./Components/Recibos/Rg/ReciboGastos";
 import { Login } from "./Components/Login/Login";
@@ -118,7 +117,6 @@ function App() {
             <Route path="/RInmuebleL" element={<RInmuebleL />} />
             <Route path="/RInmuebleO" element={<RInmuebleO />} />
             <Route path="/Carrendatario" element={<ContratoA />} />
-            <Route path="/Ginmuebles" element={<GastosIn />} />
             {roleId === 3 && (
               <>
                 <Route path="/AsignarRol" element={<AsignarRol />} />

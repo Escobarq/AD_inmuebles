@@ -74,7 +74,7 @@ export const Login = () => {
               className="card login-card"
               style={{ boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.1)" }}
             >
-              <div className="row g-0">
+              <div className="Login row g-0">
                 <div className="col-md-6 col-lg-5 d-none d-md-block">
                   <img
                     src={login}
@@ -84,7 +84,7 @@ export const Login = () => {
                   />
                 </div>
                 <div className="col-md-6 col-lg-7 d-flex align-items-center">
-                  <div className="card-body p-4 p-lg-5 text-black">
+                  <div className="contenido card-body p-4 p-lg-5">
                     <form
                       onSubmit={handleSubmit(onsubmitLoginUser)}
                       method="post"

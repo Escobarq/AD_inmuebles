@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Form, Modal, ListGroup } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib"; // Importar StandardFonts
+import { PDFDocument, rgb } from "pdf-lib"; // Importar StandardFonts
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -17,6 +17,11 @@ export const Rarrendatario = () => {
   const [ContratosDisponibles, setContratosDisponibles] = useState([]);
   const [PagoArrenda, setPagoArrenda] = useState([]);
 
+
+
+
+
+
   const funcional = (text) =>
     toast.success(text, {
       theme: "colored",
@@ -27,31 +32,10 @@ export const Rarrendatario = () => {
       theme: "colored",
     });
 
-
-  const fallo = (text) =>
-    toast.error(text, {
-      theme: "colored",
-    });
-
-
-  const [currentDate, setCurrentDate] = useState(getCurrentDate());
-
-
-  // Función para obtener la fecha actual en formato YYYY-MM-DD
-  function getCurrentDate() {
-    const date = new Date();
-    const year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : "0" + month;
-    let day = date.getDate().toString();
-    day = day.length > 1 ? day : "0" + day;
-    return `${year}-${month}-${day}`;
-  }
-
-  useEffect(() => {
-    cargarContratosDisponibles();
-    setCurrentDate(getCurrentDate());
-  }, []);
+    useEffect(() => {
+      cargarContratosDisponibles();
+      setCurrentDate(getCurrentDate());
+    }, []);
 
   const cargarContratosDisponibles = async () => {
     try {
@@ -101,11 +85,6 @@ export const Rarrendatario = () => {
   };
 
 
-
-
-
-
-
   const handleConfirmSave = async () => {
     handleSubmit(onSubmitRegistro)();
     setShowSaveModal(false);
@@ -126,6 +105,7 @@ export const Rarrendatario = () => {
     setFormData({});
     window.location.href = "/H_recibos";
   };
+  
 
   //FUNCION PARA GENERAR PDF
   const handleGuardarClick = async (data) => {
