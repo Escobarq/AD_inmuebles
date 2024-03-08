@@ -12,8 +12,11 @@ import Pagination from "react-bootstrap/Pagination";
 import ActualizarArrendatario from "../../Hooks/InhabilitarArren";
 import { toast } from "react-toastify";
 import NoResultImg from "../../../assets/NoResult.gif";
+import useRoleInfo from "../../Hooks/useRoleInfo";
+
 
 export const Arrendatario = () => {
+  const roleId = useRoleInfo();
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [arrendatarioIdToDelete, setarrendatarioIdToDelete] = useState(null);
@@ -106,7 +109,7 @@ export const Arrendatario = () => {
         <th>Estado</th>
         <th>Teléfono</th>
         <th>Correo</th>
-        <th>Opciones</th>
+        {roleId !== 2 && <th>Opciones</th>}
       </tr>
     );
   };
@@ -120,7 +123,7 @@ export const Arrendatario = () => {
         <td>{Arrendatarios.Estado}</td>
         <td>{Arrendatarios.Telefono}</td>
         <td>{Arrendatarios.Correo}</td>
-        <td >
+        <td style={{ display: roleId === 2 ? "none" : "table-cell" }}>
           <Button
             className="btn-opciones"
             variant="danger"

@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 
 
 export const CodeudorInha = () => {
+  
   const [infoCodeudor, setinfoCodeudor] = useState([]);
   const { actualizarEstadoCodeudor } = ActualizarCodeudor();
   const [showModal, setShowModal] = useState(false);

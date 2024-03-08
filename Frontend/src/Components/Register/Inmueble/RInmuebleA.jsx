@@ -172,13 +172,13 @@ export const RInmuebleA = () => {
               <Form.Label>No. Matricula:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("NoMatricula")}
+                {...register("Nmatricula")}
                
                 onChange={handleNumberChange}
-                onFocus={() => handleFieldFocus("NoMatricula")}
+                onFocus={() => handleFieldFocus("Nmatricula")}
                 required
               />
-              {focusedField === "NoMatricula" && showWarning && (
+              {focusedField === "Nmatricula" && showWarning && (
                 <span className="error-message">Solo se permiten números</span>
               )}
             </Form.Group>
@@ -248,12 +248,12 @@ export const RInmuebleA = () => {
               <Form.Label>No. Baños:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("NBanos")}
+                {...register("Nbanos")}
                 onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("NBanos")}
+              onFocus={() => handleFieldFocus("Nbanos")}
               required
             />
-            {focusedField === "NBanos" && showWarning && (
+            {focusedField === "Nbanos" && showWarning && (
               <span className="error-message">Solo se permiten números</span>
             )}
           </Form.Group>
@@ -276,12 +276,12 @@ export const RInmuebleA = () => {
               <Form.Label>No. Habitaciones:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("NoHabitaciones")}
+                {...register("NoHabita")}
                 onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("NoHabitaciones")}
+              onFocus={() => handleFieldFocus("NoHabita")}
               required
             />
-            {focusedField === "NoHabitaciones" && showWarning && (
+            {focusedField === "NoHabita" && showWarning && (
               <span className="error-message">Solo se permiten números</span>
             )}
           </Form.Group>
