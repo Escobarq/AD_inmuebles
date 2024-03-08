@@ -95,6 +95,8 @@ export const AsignarRol = () => {
   };
 
   const createRowRol = (roles) => {
+    const truncatedPassword = roles.Contrasena.length > 10 ? roles.Contrasena.substring(0, 10) + '...' : roles.Contrasena;
+  
     if (roles.Idrol === 1 || roles.Idrol === 2) {
       return (
         <tr key={roles.IdTrabajador}>
@@ -102,7 +104,7 @@ export const AsignarRol = () => {
           <td>{roles.Nombre}</td>
           <td>{roles.Apellido}</td>
           <td>{roles.Correo}</td>
-          <td>{roles.Contrasena}</td>
+          <td>{truncatedPassword}</td>
           <td>{roles.Telefono}</td>
           <td>{convertirIdRolATexto(roles.Idrol)}</td>
           <td >
@@ -123,6 +125,7 @@ export const AsignarRol = () => {
       return null;
     }
   };
+  
   
 
   //Variables Paginacion
