@@ -17,11 +17,6 @@ export const Rarrendatario = () => {
   const [ContratosDisponibles, setContratosDisponibles] = useState([]);
   const [PagoArrenda, setPagoArrenda] = useState([]);
 
-
-
-
-
-
   const funcional = (text) =>
     toast.success(text, {
       theme: "colored",
@@ -274,108 +269,7 @@ export const Rarrendatario = () => {
     } catch (error) {}
   };
 
-  const funcional = (text) =>
-    toast.success(text, {
-      theme: "colored",
-    });
-
-  const falla = (text) =>
-    toast.error(text, {
-      theme: "colored",
-    });
-
-
-  const fallo = (text) =>
-    toast.error(text, {
-      theme: "colored",
-    });
-    
-
-  const [currentDate, setCurrentDate] = useState(getCurrentDate());
-  // Función para obtener la fecha actual en formato YYYY-MM-DD
-  function getCurrentDate() {
-    const date = new Date();
-    const year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : "0" + month;
-    let day = date.getDate().toString();
-    day = day.length > 1 ? day : "0" + day;
-    return `${year}-${month}-${day}`;
-  }
-  useEffect(() => {
-    cargarContratosDisponibles();
-    setCurrentDate(getCurrentDate());
-  }, []);
-
-  const cargarContratosDisponibles = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3006/contrato-arren-inmue"
-      );
-      const Contratos = response.data.map((prop) => prop);
-
-      setContratosDisponibles(Contratos);
-
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error al cargar las matrículas:", error);
-      toast.error(
-        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
-      );
-    }
-  };
-
-  const onSubmitRegistro = async (data) => {
-    data.NombreArrendatario = selectedContrato.NombreArrendatario;
-    data.IdContrato = selectedContrato.IdContrato;
-    data.IdArrendatario = selectedContrato.IdArrendatario;
-    data.FechaPago = currentDate;
-    data.Estado = "Pagado";
-    data.NoDocumento = selectedContrato.DocumentoIdentidad;
-    data.NoMatricula = selectedContrato.NoMatricula;
-    data.TipoInmueble = selectedContrato.TipoInmueble;
-    try {
-      const response = await fetch("http://localhost:3006/RPagoArrendamiento", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data), // Aquí debes asegurarte de que data contenga todos los campos necesarios
-      });
-      if (response.ok) {
-        setPagoArrenda(data);
-        handleGuardarClick(), 
-        funcional('se an enviado los datos correctamente'),
-        window.location.href="/H_recibos"
-        setShowSaveModal(false); // Muestra el modal de confirmación
-        reset();
-      }
-    } catch (error) {
-      falla("Error al enviar datos al servidor:", error);
-    }
-  };
-
-  const handleConfirmSave = async () => {
-    handleSubmit(onSubmitRegistro)();
-    setShowSaveModal(false);
-  };
-
-  const handleContratoChange = async (Contrato) => {
-    setSelectedContrato(Contrato);
-    setShowContratoModal(false);
-  };
-
-  const handleCancelClick = () => {
-    setShowCancelModal(true);
-  };
-
-  const handleConfirmCancel = () => {
-    setShowCancelModal(false);
-    // Restablecer los campos del formulario al cancelar
-    setFormData({});
-    window.location.href = "/H_recibos";
-
-  };
+  
   //AQUI TERMINA PDF
 
   return (
