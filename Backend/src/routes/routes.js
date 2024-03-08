@@ -599,7 +599,24 @@ router.post("/RPropietario", async (req, res) => {
     res.status(500).json({ error: "Error al añadir propietario" });
   }
 });
+// Ruta para cambiar la contraseña del trabajador
+router.post("/api/changePassword", (req, res) => {
+  const { oldPassword, newPassword } = req.body;
 
+  // Consulta SQL para buscar el trabajador por su contraseña anterior
+  const sql = `UPDATE trabajador SET Contrasena = ? WHERE Contrasena = ?`;
+
+  // Ejecutar la consulta SQL
+  connection.query(sql, [newPassword, oldPassword], (err, result) => {
+    if (err) {
+      console.error("Error al cambiar la contraseña:", err);
+      res.status(500).json({ error: "Error al cambiar la contraseña" });
+    } else {
+      console.log("Contraseña actualizada exitosamente");
+      res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+    }
+  });
+});
 // Ruta para registrar un Inmueble
 router.post("/Reinmueble", async (req, res) => {
   const {
@@ -730,12 +747,13 @@ router.post("/Reinmueble", async (req, res) => {
         );
       }
       res.status(201).json({ message: "Inmueble Registrado exitosamente" });
-
+    }
   } catch (error) {
     console.error("Error al añadir propietario:", error);
     res.status(500).json({ error: "Error al Registrar inmueble" });
   }
 });
+
 
 // Ruta para la creación de un nuevo codeudor
 router.post("/Rcodeudor", async (req, res) => {
