@@ -16,8 +16,10 @@ import {
 import useActualizarEstadoInmueble from "../../Hooks/InhabilitarInmueble";
 import NoResultImg from "../../../assets/NoResult.gif";
 import { format, toDate } from "date-fns";
+import useRoleInfo from "../../Hooks/useRoleInfo";
 
 export const Inmueble = () => {
+  const roleId = useRoleInfo();
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
   const [NoResult, setNoResult] = useState(false);
   const [filtroData, setFiltroData] = useState({
@@ -59,19 +61,13 @@ export const Inmueble = () => {
     toast.error("Hubo algun error  ", {
       theme: "dark",
     });
-  const notify = () =>
-    toast.success("Se Asigno el arrendatario Exitosamente", {
-      theme: "dark",
-    });
+
   const notifi = () =>
     toast.success("Se Inabilito Correctamente ", {
       theme: "dark",
     });
   // Mostrar Modal
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [mostrarModalA, setMostrarModalA] = useState(false);
-  // Mostrar informacion arrendatario
-  const [infoarrendatario, setinfoarrendatario] = useState([]);
   // Paginacion
   const [infoinmueble, setinfoinmueble] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -81,7 +77,6 @@ export const Inmueble = () => {
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
 
   useEffect(() => {
-    
     fetchData();
   }, [filtroData]);
 
@@ -116,7 +111,6 @@ export const Inmueble = () => {
       console.error("Error fetching products:", error);
     }
   };
-
 
   const createheader = () => {
     return (
@@ -155,25 +149,29 @@ export const Inmueble = () => {
           </Button>
           <Button
             className="btn-opciones"
-            onClick={() => handleMostrarAClick(inmueble)}
+            onClick={() => redireccion("/Generar")}
             variant="success"
           >
             <FontAwesomeIcon icon={faUserPlus} />
           </Button>
-          <Button
-            className="btn-opciones"
-            variant="danger"
-            onClick={() => handleOpenModal(inmueble.IdInmueble)}
-          >
-            <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
-          </Button>
-          <Button
-            className="btn-opciones"
-            variant="warning"
-            onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </Button>
+          {roleId !== 2 && (
+            <>
+              <Button
+                className="btn-opciones"
+                variant="danger"
+                onClick={() => handleOpenModal(inmueble.IdInmueble)}
+              >
+                <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
+              </Button>
+              <Button
+                className="btn-opciones"
+                variant="warning"
+                onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
+              >
+                <FontAwesomeIcon icon={faPenToSquare} />
+              </Button>
+            </>
+          )}
         </td>
       </tr>
     );
@@ -239,9 +237,6 @@ export const Inmueble = () => {
     }
   };
 
-
-
-
   const handleMostrarModalClick = async (inmueble) => {
     setinmuebleseleccion(inmueble);
     setMostrarModal(true);
@@ -250,34 +245,6 @@ export const Inmueble = () => {
   const handleCloseModal = () => {
     setMostrarModal(false);
   };
-
-  const handleMostrarAClick = async (inmueble) => {
-    const IdInmueble = inmueble.IdInmueble;
-
-    if (inmueble.Estado === "Ocupado") {
-      const ValidarInmArr = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:3006/VinmuArren?IdInmueble=${IdInmueble}`
-          );
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          const data = await response.json();
-          setinmuebleseleccion(data[0]);
-          setMostrarModalA(true);
-        } catch (error) {
-          console.error("Error fetching products:", error);
-        }
-      };
-      ValidarInmArr();
-    } else {
-      setMostrarModalA(true);
-
-      setinmuebleseleccion(inmueble);
-    }
-  };
-
 
 
   // Paginación
@@ -474,7 +441,6 @@ export const Inmueble = () => {
             </Table>
           </Modal.Body>
         </Modal>
-
       </div>
       <Modal show={showModal} onHide={handleCloseModals}>
         <Modal.Header closeButton>
