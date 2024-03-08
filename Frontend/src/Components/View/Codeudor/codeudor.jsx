@@ -7,15 +7,13 @@ import {
   faPenToSquare,
   faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import ActualizarCodeudor from "../../Hooks/Inhabilitarcodeudor";
 import { toast } from "react-toastify";
 import NoResultImg from "../../../assets/NoResult.gif";
-import useRoleInfo from "../../Hooks/useRoleInfo";
 
 export const Codeudor = () => {
-  const roleId = useRoleInfo();
   const [infoCodeudor, setinfoCodeudor] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const { actualizarEstadoCodeudor } = ActualizarCodeudor();
@@ -104,7 +102,7 @@ export const Codeudor = () => {
         <th>Dirección</th>
         <th>Teléfono</th>
         <th>Correo</th>
-        {roleId !== 2 && <th>Opciones</th>}
+        <th>Opciones</th>
       </tr>
     );
   };
@@ -113,7 +111,7 @@ export const Codeudor = () => {
     const codeudor = infoCodeudor.find(
       (codeudor) => codeudor.IdCodeudor === codeudorId
     );
-
+  
     if (codeudor) {
       const urlParams = new URLSearchParams({
         IdCodeudor: codeudor.IdCodeudor,
@@ -122,16 +120,17 @@ export const Codeudor = () => {
         NombreCompleto: codeudor.NombreCompleto,
         Direccion: codeudor.Direccion,
         Telefono: codeudor.Telefono,
-        Correo: codeudor.Correo,
+        Correo: codeudor.Correo
       });
-
+  
       const url = `/Registrocodeudor?${urlParams.toString()}`;
-
+  
       window.location.href = url;
     } else {
       console.error("No se encontró el codeudor con ID:", codeudorId);
     }
   };
+  
 
   const createrow = (Codeudor) => {
     return (
@@ -143,7 +142,7 @@ export const Codeudor = () => {
         <td>{Codeudor.Direccion}</td>
         <td>{Codeudor.Telefono}</td>
         <td>{Codeudor.Correo}</td>
-        <td style={{ display: roleId === 2 ? "none" : "table-cell" }}>
+        <td >
           <Button
             className="btn-opciones"
             variant="danger"
@@ -171,22 +170,22 @@ export const Codeudor = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoCodeudor.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  //Tooltip
+ //Tooltip 
   const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
   useEffect(() => {
     const updateTooltipVisibility = () => {
       setShowTooltip(window.innerWidth < 1366);
     };
-
-    window.addEventListener("resize", updateTooltipVisibility);
-    return () => window.removeEventListener("resize", updateTooltipVisibility);
+ 
+    window.addEventListener('resize', updateTooltipVisibility);
+    return () => window.removeEventListener('resize', updateTooltipVisibility);
   }, []);
 
   const redireccion = (ruta) => {
     window.location.href = ruta;
-  };
-
+  }
+  
   return (
     <>
       <div className="contener-home">
@@ -206,44 +205,22 @@ export const Codeudor = () => {
           <OverlayTrigger
             key="tooltip-add-codeudor"
             placement="top"
-            overlay={
-              showTooltip ? (
-                <Tooltip id="tooltip-prop">Agregar Codeudor</Tooltip>
-              ) : (
-                <></>
-              )
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Codeudor</Tooltip> : <></>}
           >
-            <Button
-              variant="success"
-              className="btn-add"
-              onClick={() => redireccion("/Registrocodeudor")}
-            >
-              <FontAwesomeIcon className="icon" icon={faUserPlus} />
-              <p className="AgregarPA">Agregar Codeudor</p>
+            <Button variant="success" className="btn-add" onClick={() => redireccion("/Registrocodeudor")}>
+                <FontAwesomeIcon className="icon" icon={faUserPlus} />
+                <p className="AgregarPA">Agregar Codeudor</p>
             </Button>
           </OverlayTrigger>
 
           <OverlayTrigger
             key="tooltip-ver-inhabilitados-codeudores"
             placement="top"
-            overlay={
-              showTooltip ? (
-                <Tooltip id="tooltip-prop">
-                  Ver Codeudores Inhabilitados
-                </Tooltip>
-              ) : (
-                <></>
-              )
-            }
+            overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Codeudores Inhabilitados</Tooltip> : <></>}
           >
-            <Button
-              variant="dark"
-              className="btn-add-info"
-              onClick={() => redireccion("/Codeudores")}
-            >
-              <FontAwesomeIcon className="icon" icon={faUserSlash} />
-              <p className="AgregarPA">Ver Codeudores Inhabilitados</p>
+            <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Codeudores")}>
+                <FontAwesomeIcon className="icon" icon={faUserSlash} />
+                <p className="AgregarPA">Ver Codeudores Inhabilitados</p>
             </Button>
           </OverlayTrigger>
         </div>

@@ -17,10 +17,8 @@ import { toast } from "react-toastify";
 import InhabilitarPropetario from "../../Hooks/InhabilitarPropetarios";
 import NoResultImg from "../../../assets/NoResult.gif";
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
-import useRoleInfo from "../../Hooks/useRoleInfo";
 
 export const Propietarios = () => {
-  const roleId = useRoleInfo();
   const [infopropietario, setinfopropietario] = useState([]);
   const [Rol, setRol] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -123,7 +121,7 @@ export const Propietarios = () => {
         <th>Banco</th>
         <th>Tipo de cuenta</th>
         <th>Número de cuenta</th>
-        {roleId !== 2 && <th>Opciones</th>}
+        <th>Opciones</th>
       </tr>
     );
   };
@@ -139,7 +137,7 @@ export const Propietarios = () => {
         <td>{Propietario.Banco}</td>
         <td>{Propietario.TipoCuenta}</td>
         <td>{Propietario.NumeroCuenta}</td>
-        <td style={{ display: roleId === 2 ? "none" : "table-cell" }}>
+        <td >
           <Button
             className="btn-opciones"
             variant="danger"

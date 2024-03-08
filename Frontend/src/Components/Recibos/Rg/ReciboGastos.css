@@ -37,12 +37,15 @@
 }
 
 .fila-formulario1 {
-   display: grid;
-   grid-template-columns: repeat(2, 1fr);
-   column-gap: 50px;
+    display: flex;
+    justify-content: space-between;
 }
 
-
+.grupo1,
+.grupo2 {
+    flex-basis: 48%;
+    /* Se establece el ancho de cada grupo */
+}
 
 .grupo-formulario,
 .valor {

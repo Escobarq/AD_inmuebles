@@ -219,7 +219,6 @@ export const Contrato = () => {
             </InputGroup>
           </Form.Group>
 
-        </Form>
           <div className="contener-buttons d-flex justify-content-center">
             <div className="save_deleter">
               <Button
@@ -241,6 +240,7 @@ export const Contrato = () => {
               </Button>
             </div>
           </div>
+        </Form>
       </div>
 
       {/* Modal para seleccionar la matrícula */}

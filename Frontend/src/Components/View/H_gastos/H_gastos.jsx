@@ -32,16 +32,14 @@ export const H_gastos = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>No Comision</th>
-        <th>Propietario</th>
+        <th>ID Comision Propietario</th>
+        <th>ID Propietario</th>
+        <th>Periodo de pago</th>
         <th>Fecha Elaboracion</th>
+        <th>Fecha final</th>
         <th>Forma pago</th>
-        <th>Elaborado Por</th>
-        <th>Pago Arriendo</th>
-        <th>Administracion</th>
-        <th>Aseo Entrega</th>
-        <th>Mantenimiento</th>
-        <th>Valor Total</th>
+        <th>Valor pago</th>
+        <th>Observaciones</th>
       </tr>
     );
   };
@@ -65,15 +63,13 @@ export const H_gastos = () => {
     return (
       <tr key={CPropietario.IdComisionPropietario}>
         <td>{CPropietario.IdComisionPropietario}</td>
-        <td>{CPropietario.NombreCompleto}</td>
+        <td>{CPropietario.IdPropietario}</td>
+        <td>{formatDate(CPropietario.Periodo_Pagado)}</td>
         <td>{formatDate(CPropietario.FechaElaboracion)}</td>
-        <td>{CPropietario.FormaPago}</td>
         <td>{CPropietario.ElaboradoPor}</td>
-        <td>${CPropietario.PagoArriendo}</td>
-        <td>${CPropietario.AdmInmobi}</td>
-        <td>${CPropietario.AseoEntrega}</td>
-        <td>${CPropietario.Mantenimiento}</td>
-        <td>${CPropietario.ValorTotal}</td>
+        <td>{CPropietario.FormaPago}</td>
+        <td>${CPropietario.ValorArriendo}</td>
+        <td>{CPropietario.Observaciones}</td>
       </tr>
     );
   };
