@@ -111,7 +111,7 @@ export const RInmuebleA = () => {
     }
 
     // Actualiza los datos del propietario
-    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+    setPropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
   const handleNumberChange = (event) => {
@@ -129,7 +129,7 @@ export const RInmuebleA = () => {
     }
 
     // Actualiza los datos del propietario
-    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+    setPropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
   const handleFieldFocus = (fieldName) => {
@@ -172,7 +172,7 @@ export const RInmuebleA = () => {
               <Form.Label>No. Matricula:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("NoMatricula")}
+                {...register("NMatricula")}
                
                 onChange={handleNumberChange}
                 onFocus={() => handleFieldFocus("NoMatricula")}
@@ -244,13 +244,13 @@ export const RInmuebleA = () => {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group controlId="formNBanos">
+            <Form.Group controlId="formNbanos">
               <Form.Label>No. Baños:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("NBanos")}
+                {...register("Nbanos")}
                 onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("NBanos")}
+              onFocus={() => handleFieldFocus("Nbanos")}
               required
             />
             {focusedField === "NBanos" && showWarning && (

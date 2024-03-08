@@ -38,14 +38,11 @@ export const Registrocodeudor = () => {
     });
 
 
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({ mode: "onChange" });
 
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    reset,
-  } = useForm({ mode: "onChange" });
+ 
 
   useEffect(() => {
     // Si hay parámetros de consulta en la URL, significa que se está editando un codeudor existente
@@ -152,7 +149,7 @@ export const Registrocodeudor = () => {
     }
 
     // Actualiza los datos del propietario
-    setcodeudorData({ ...codeudorData, [fieldName]: fieldValue });
+    setCodeudorData({ ...codeudorData, [fieldName]: fieldValue });
   };
 
   const handleFieldFocus = (fieldName) => {
@@ -168,7 +165,7 @@ export const Registrocodeudor = () => {
           className="form-propietario"
           onSubmit={handleSubmit(onsubmitRegistro)}
         >
-          <Form.Group controlId="nombre" >
+          <Form.Group controlId="formnombre" >
             <Form.Label>Nombre:</Form.Label>
             <Form.Control
               type="text"
@@ -185,13 +182,14 @@ export const Registrocodeudor = () => {
               </span>
             )}
           </Form.Group>
-
-          <Form.Group controlId="TipoDocumento">
-            <Form.Label>Tipo Documento:</Form.Label>
-            <Form.Control
-              as="select"
+          
+          <Form.Group controlId="formTipoDocumento" className="formSelect">
+            <Form.Label>Tipo De Documento</Form.Label>
+            <Form.Select
+              className="InputsRegistros"
               {...register("TipoDocumento")}
-              value={codeudorData.TipoDocumento}
+              defaultValue={codeudorData.TipoDocumento}
+              required
               onChange={(e) =>
                 setCodeudorData({
                   ...codeudorData,
@@ -199,15 +197,19 @@ export const Registrocodeudor = () => {
                 })
               }
             >
-              <option value={'CC'}>Cédula de Ciudadanía</option>
-              <option value={'CE'}>Cédula de Extranjería</option>
-            </Form.Control>
+              <option defaultValue="" disabled hidden>
+                {" "}
+                Seleccione Tipo de Documento{" "}
+              </option>
+              <option value="Cedula Ciudadania">Cedula Ciudadania</option>
+              <option value="Cedula Extranjera">Cedula Extranjera</option>
+            </Form.Select>
           </Form.Group>
 
-          <Form.Group controlId="DocumentoIdentidad">
+          <Form.Group controlId="formDocumentoIdentidad">
             <Form.Label>Número de identidad:</Form.Label>
             <Form.Control
-              {...register("DocumentoIdentidad")}
+              {...register("documentoidentidad")}
               defaultValue={codeudorData.DocumentoIdentidad}
               
               onChange={handleNumberChange}
@@ -219,11 +221,13 @@ export const Registrocodeudor = () => {
             )}
           </Form.Group>
 
-          <Form.Group controlId="telefono">
+          <Form.Group controlId="formtelefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
               {...register("telefono")}
               defaultValue={codeudorData.Telefono}
+
+
               onChange={handleNumberChange}
               onFocus={() => handleFieldFocus("telefono")}
               required
@@ -233,7 +237,7 @@ export const Registrocodeudor = () => {
             )}
           </Form.Group>
 
-          <Form.Group controlId="correo">
+          <Form.Group controlId="formcorreo">
             <Form.Label>Correo:</Form.Label>
             <Form.Control
               type="email"
@@ -242,10 +246,10 @@ export const Registrocodeudor = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="direccion">
+          <Form.Group controlId="formdireccion">
             <Form.Label>Dirección:</Form.Label>
             <Form.Control
-              type="text"
+              
               {...register("direccion")}
               defaultValue={codeudorData.Direccion}
             />
