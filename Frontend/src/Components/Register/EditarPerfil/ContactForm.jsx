@@ -1,21 +1,14 @@
 import { useEffect, useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import bcrypt from "bcryptjs";
-
-
 
 
 function ContactForm() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const [nuevaContrasena, setNuevaContrasena] = useState("");
 
-
+  // Estado para almacenar los datos del empleado y el rol seleccionado
   const [Empleadosdata, setEmpleadosdata] = useState({
     Nombre: "",
     Apellido: "",
@@ -25,10 +18,7 @@ function ContactForm() {
     Telefono: "",
     Idrol: "",
   });
-  const [rol, setRol] = useState("");
-  const [showSaveModal, setShowSaveModal] = useState(false); // Estado para mostrar/ocultar el modal de guardar
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const saltRounds = 10;
+  const [rol, setRol] = useState(""); // Estado para almacenar el rol seleccionado
 
   useEffect(() => {
     if (location.search) {
@@ -57,22 +47,17 @@ function ContactForm() {
   }, [location.search]);
 
   const notify = () =>
-    toast.success("Se Actualizo Correctamente ", {
-      theme: "dark",
-      autoClose: 1000
-    });
+  toast.success("Se Actualizo Correctamente ", {
+    theme: "dark",
+    autoClose: 1000
+  });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    setShowSaveModal(true);
-  };
-
-  const handleConfirmSave = async () => {
-    const { Nombre, Apellido, Correo, Contrasena, Telefono } = Empleadosdata;
+  
+    const { Nombre, Apellido, DocumentoIdentidad, Correo, Contrasena, Telefono } = Empleadosdata;
+  
     try {
-      // Encriptar la nueva contraseña antes de enviarla al servidor
-      const hashedPassword = await bcrypt.hash(Contrasena, saltRounds);
-
       const response = await fetch(
         `http://localhost:3006/empleados/${Empleadosdata.IdTrabajador}`,
         {
@@ -83,10 +68,11 @@ function ContactForm() {
           body: JSON.stringify({
             Nombre,
             Apellido,
+            DocumentoIdentidad,
             Correo,
-            Contrasena: hashedPassword,
+            Contrasena,
             Telefono,
-            Idrol: rol, // Enviar el valor de rol seleccionado en la solicitud
+            Idrol: rol,
           }),
         }
       );
@@ -94,158 +80,117 @@ function ContactForm() {
         throw new Error("Error al actualizar el empleado");
       }
       notify();
-
       window.location.href = "/AsignarRol"
     } catch (error) {
       console.error("Error al enviar la solicitud PUT:", error);
     }
   };
-
-
-  const {
-    reset,
-  } = useForm({ mode: "onChange" });
-
-  const RedireccionForm = () => {
-    setShowCancelModal(true); // Actualiza el estado para ocultar el modal
-  };
-  const RedireccionForms = () => {
-    window.location.assign = "/AsignarRol" // Actualiza el estado para ocultar el modal
-  };
+  
 
   const handleChange = (event) => {
-    const selectedRoleId = parseInt(event.target.value);
-    setRol(selectedRoleId); // Establecer el valor del rol seleccionado
-    console.log("Valor de rol en handleChange:", selectedRoleId);
-    setEmpleadosdata({ ...Empleadosdata, Idrol: selectedRoleId }); // Actualizar el Idrol en el estado Empleadosdata
+    setRol(event.target.value); // Manejar los cambios en el select y actualizar el estado del rol
   };
-  
-  
+
   return (
-    <div className="contener-home contener-rpropietario">
-      <h2> Actualizar Informacion de  Empleados</h2>
-      <div className="container">
-        <Form
-          className="form-propietario"
-          onSubmit={handleSubmit}
-        >
-          <Form.Group>
-            <Form.Label>Nombre:</Form.Label>
-            <Form.Control
-              className="form-control"
-              id="Nombre"
-              type="text"
-              placeholder="Nombre"
-              value={Empleadosdata.Nombre}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Nombre: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Apellido:</Form.Label>
-            <Form.Control
-              className="form-control"
-              id="Apellido"
-              type="text"
-              placeholder="Apellido"
-              value={Empleadosdata.Apellido}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Apellido: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Correo:</Form.Label>
-            <Form.Control
-              className="form-control"
-              id="Correo"
-              type="email"
-              placeholder="Correo"
-              value={Empleadosdata.Correo}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Correo: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Nueva Contraseña:</Form.Label>
-            <Form.Control
-              className="form-control"
-              id="NuevaContraseña"
-              type="password"
-              placeholder="Nueva Contraseña"
-              value={nuevaContrasena}
-              onChange={(e) => setNuevaContrasena(e.target.value)}
-            />
-          </Form.Group>
+    <Container className=" conteniendo px-5 my-5">
+      <Row className="justify-content-center">
+        <Col lg={8}>
+          <Card border="0" className="rounded-3 shadow-lg">
+            <Card.Body className="p-4">
+              <div className="text-center">
+                <h1 className="h1 fw-light">Editar Perfil Empleados</h1>
+                <p className="mb-4 text-muted">
+                  Estas Modificando Perfil de Empleado
+                </p>
+              </div>
 
-          <Form.Group>
-            <Form.Label>Telefono:</Form.Label>
-            <Form.Control
-              className="form-control"
-              id="Telefono"
-              type="tel"
-              placeholder="Telefono"
-              value={Empleadosdata.Telefono}
-              onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Telefono: e.target.value })}
-            />
-          </Form.Group>
+              <form id="contactForm" onSubmit={handleSubmit}>
+                <div className="form-floating mb-3">
+                  <input
+                    className="form-control"
+                    id="name"
+                    type="text"
+                    placeholder="Nombre"
+                    value={Empleadosdata.Nombre}
+                    onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Nombre: e.target.value })}
+                  />
+                  <label htmlFor="name">Nombre</label>
+                </div>
 
-          <Form.Group controlId="TipoDocumento">
-            <Form.Label>Seleccione Rol </Form.Label>
-            <Form.Control
-              as="select"
-              className="form-control"
-              name="Rol"
-              id="Rol"
-              value={rol} // Establece el valor del select como el estado actual
-              onChange={handleChange} // Maneja el cambio de valor del select
-            >
-              <option value="2">Asistente</option>
-              <option value="1">Administrador</option>
-            </Form.Control>
+                <div className="form-floating mb-3">
+                  <input
+                    className="form-control"
+                    id="lastname"
+                    type="text"
+                    placeholder="Apellido"
+                    value={Empleadosdata.Apellido}
+                    onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Apellido: e.target.value })}
+                  />
+                  <label htmlFor="lastname">Apellido</label>
+                </div>
 
-          </Form.Group>
-        </Form>
-      </div>
-      <div className="contener-buttons d-flex justify-content-center">
-        <div className="save_deleter">
-          <Button type="button" variant="success m-2" onClick={handleSubmit}>
-            <FontAwesomeIcon icon={faSave} />
-            <span className="text_button ms-2">Guardar</span>
-          </Button>
+                <div className="form-floating mb-3">
+                  <input
+                    className="form-control"
+                    id="emailAddress"
+                    type="email"
+                    placeholder="Correo"
+                    value={Empleadosdata.Correo}
+                    onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Correo: e.target.value })}
+                  />
+                  <label htmlFor="emailAddress">Correo</label>
+                </div>
 
-          <Button type="button" variant="danger m-2" onClick={RedireccionForm}>
-            <FontAwesomeIcon icon={faTimes} />
-            <span className="text_button ms-2">Cancelar</span>
-          </Button>
-        </div>
-      </div>
-      <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>¿Estás seguro de que deseas guardar los cambios?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
-            No
-          </Button>
-          <Button variant="primary" onClick={handleConfirmSave}>
-            Sí
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      {/* Modal de confirmación de cancelar */}
-      <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>¿Estás seguro de que deseas cancelar la operación?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
-            No
-          </Button>
-          <Button variant="primary" onClick={RedireccionForms}>
-            Sí
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+                <div className="form-floating mb-3">
+                  <input
+                    className="form-control"
+                    id="password"
+                    type="password"
+                    placeholder="Contraseña"
+                    value={Empleadosdata.Contrasena}
+                    onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Contrasena: e.target.value })}
+                  />
+                  <label htmlFor="password">Contraseña</label>
+                </div>
+
+                <div className="form-floating mb-3">
+                  <input
+                    className="form-control"
+                    id="phone"
+                    type="tel"
+                    placeholder="Telefono"
+                    value={Empleadosdata.Telefono}
+                    onChange={(e) => setEmpleadosdata({ ...Empleadosdata, Telefono: e.target.value })}
+                  />
+                  <label htmlFor="phone">Telefono</label>
+                </div>
+
+                <div className="form-floating mb-3">
+                  <select
+                    className="form-control"
+                    name="rol"
+                    id="rol"
+                    value={rol}
+                    onChange={handleChange}
+                  >
+                    <option value="">Seleccione el tipo</option>
+                    <option value="2">Asistente</option>
+                    <option value="1">Administrador</option>
+                  </select>
+                  <label htmlFor="rol">Rol</label>
+                </div>
+
+                <div className="d-grid">
+                  <Button variant="primary" type="submit" id="submitButton">
+                    Enviar
+                  </Button>
+                </div>
+              </form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
