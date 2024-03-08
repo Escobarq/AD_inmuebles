@@ -623,12 +623,6 @@ router.post("/Reinmueble", async (req, res) => {
   } = req.body;
 
   try {
-    // Verificar si el número de matrícula ya existe en la base de datos
-    const [existingInmueble] = await connection.execute(
-      "SELECT * FROM inmueble WHERE NoMatricula = ?",
-      [Nmatricula]
-    );
-
     // Si el número de matrícula ya existe, devolver un error
     if (existingInmueble.length > 0) {
       return res.status(400).json({
@@ -736,7 +730,7 @@ router.post("/Reinmueble", async (req, res) => {
         );
       }
       res.status(201).json({ message: "Inmueble Registrado exitosamente" });
-    }
+
   } catch (error) {
     console.error("Error al añadir propietario:", error);
     res.status(500).json({ error: "Error al Registrar inmueble" });
