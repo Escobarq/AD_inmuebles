@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import "./ReciboGastos.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Button, Modal, ListGroup, Form, FormGroup } from "react-bootstrap";
+import { Button, Modal, ListGroup, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { PDFDocument, rgb, values } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
 import logo from '../../../assets/Logo.jpg';
 import axios from "axios";
 
@@ -101,35 +101,6 @@ export const ReciboGastos = () => {
     // Validar que todos los campos estén llenos antes de guardar
   };
 
-
-  const notify = (text) =>
-    toast.success(text, {
-      theme: "colored",
-      autoClose: 2000
-    });
-
-
-  const notify = (text) =>
-    toast.success(text, {
-      theme: "colored",
-      autoClose: 2000,
-    });
-
-  const handleCalcular = (e) => {     
-    const { name, value } = e;     
-     if(name == "PagoArriendo") {
-        setvalorPA(value)
-      }
-      if(name == "AseoEntrega") {
-        setvalorAE(value)
-      }
-      if(name == "AdmInmobi") {
-        setvalorAI(value)
-      }
-      if(name == "Mantenimiento") {
-        setvalorM(value)
-      };
-  };
   const handleCancel = () => {
     setShowCancelModal(true);
     // Limpiar los datos del formulario al hacer clic en Cancelar
@@ -137,6 +108,13 @@ export const ReciboGastos = () => {
 
   const errores = (text) =>
     toast.error(text, {
+      theme: "colored",
+
+      autoClose: 2000,
+    });
+
+  const notify = (text) =>
+    toast.success(text, {
       theme: "colored",
 
       autoClose: 2000,
@@ -165,23 +143,6 @@ export const ReciboGastos = () => {
           },
           body: JSON.stringify(data),
         });
-
-
-      if (!response.ok) {
-        throw new Error(`Error al crear usuario. Código de estado: ${response.status}`);
-
-      } else {
-        const responseData = await response.json();
-
-        setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
-        ReciboGasto(data); // Pasa los datos actualizados al PDF
-        console.log(data)
-        notify('se enviaron correctamente los datos');
-
-        window.location.href="/H_gastos"        
-
-        return responseData;
-
 
         if (!response.ok) {
           throw new Error(
@@ -663,15 +624,12 @@ export const ReciboGastos = () => {
                 action
                 onClick={() => handleInmuebleChange(Inmueble)}
               >
-
                 {Inmueble.NoMatricula} :{Inmueble.Tipo}
-
               </ListGroup.Item>
             ))}
           </ListGroup>
         </Modal.Body>
       </Modal>
-
     </div>
-  );
-};
+)};
+}

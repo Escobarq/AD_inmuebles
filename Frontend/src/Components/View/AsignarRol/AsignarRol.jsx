@@ -93,24 +93,29 @@ export const AsignarRol = () => {
     };
     return rolesTexto[idrol] || "Rol desconocido";
   };
-  
+
   const createRowRol = (roles) => {
+    const truncatedPassword = roles.Contrasena.length > 10 ? roles.Contrasena.substring(0, 10) + '...' : roles.Contrasena;
+  
     if (roles.Idrol === 1 || roles.Idrol === 2) {
-      const asteriscos = '*'.repeat(Math.min(10, roles.Contrasena.length)); // Genera una cadena de asteriscos del mismo tamaño que la contraseña
       return (
         <tr key={roles.IdTrabajador}>
           <td>{roles.IdTrabajador}</td>
           <td>{roles.Nombre}</td>
           <td>{roles.Apellido}</td>
           <td>{roles.Correo}</td>
-          <td>{asteriscos}</td> {/* Muestra asteriscos en lugar de la contraseña real */}
+          <td>{truncatedPassword}</td>
           <td>{roles.Telefono}</td>
           <td>{convertirIdRolATexto(roles.Idrol)}</td>
           <td >
-            <Button className="btn-opciones" variant="danger" onClick={() => handleOpenModal(roles.IdTrabajador)}>
+            <Button className="btn-opciones"
+              variant="danger"
+              onClick={() => handleOpenModal(roles.IdTrabajador)}>
               <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
             </Button>
-            <Button className="btn-opciones" variant="warning" onClick={() => EditarPerfil(roles.IdTrabajador)}>
+            <Button className="btn-opciones"
+              variant="warning"
+              onClick={() => EditarPerfil(roles.IdTrabajador)}>
               <FontAwesomeIcon icon={faPenToSquare} />
             </Button>
           </td>

@@ -1,9 +1,8 @@
 // src/routes/routes.js
-const bcrypt = require("bcrypt");
 const express = require("express");
 const router = express.Router();
 const connection = require("../db");
-const saltRounds = 10;
+
 //Metodos Get
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
@@ -702,22 +701,19 @@ router.post("/Rcodeudor", async (req, res) => {
 /*
   Funcion para logear
   */
-
-router.post("/Login_user", async (req, res) => {
+router.post("/Login_user", (req, res) => {
   const { correousuario, contrausuario } = req.body; // Datos del formulario
 
   const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
 
-  connection.query(sql, [correousuario], async (error, results) => {
+  connection.query(sql, [correousuario], (error, results) => {
     if (error) {
       console.error("Error al realizar la consulta:", error);
       res.status(500).json({ message: "Error del servidor" });
     } else {
       if (results.length > 0) {
         const user = results[0];
-        // Comparar la contraseña proporcionada con el hash almacenado en la base de datos
-        const passwordMatch = await bcrypt.compare(contrausuario, user.Contrasena);
-        if (passwordMatch) {
+        if (user.Contrasena === contrausuario) {
           res.status(200).json({ message: "Inicio de sesión exitoso" });
         } else {
           res.status(401).json({ message: "Contraseña incorrecta" });
@@ -730,7 +726,6 @@ router.post("/Login_user", async (req, res) => {
     }
   });
 });
-
 
 // Registrar Usuario
 router.post("/RegistrarUsuario", async (req, res) => {
@@ -757,12 +752,9 @@ router.post("/RegistrarUsuario", async (req, res) => {
 
     const idrol = Math.floor(Math.random() * 2) + 1;
 
-    // Encriptar la contraseña antes de almacenarla en la base de datos
-    const hashedPassword = await bcrypt.hash(contrasena, 10); // 10 es el coste de hashing
-
     await connection.query(
       "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
-      [nombre, apellido, correo, hashedPassword, telefono, idrol]
+      [nombre, apellido, correo, contrasena, telefono, idrol]
     );
 
     res.status(201).json({ message: "Usuario registrado exitosamente" });
@@ -1208,28 +1200,40 @@ const fields = [
   "Idrol",
 ];
 
-router.put("/empleados/:id", async (req, res) => {
-  const { Nombre, Apellido, Correo, Contrasena, Telefono, Idrol } = req.body;
-  const id = req.params.id;
+router.put("/empleados/:id", (req, res) => {
+  const id = req.params.id; // ID del empleado a actualizar
 
-  try {
-    // Encriptar la nueva contraseña antes de actualizarla en la base de datos
-    const hashedPassword = await bcrypt.hash(Contrasena, saltRounds);
+  // Construimos el array de valores a actualizar
+  const updateValues = [];
+  const updateFields = [];
 
-    const sql = `UPDATE trabajador SET Nombre=?, Apellido=?, Correo=?, Contrasena=?, Telefono=?, Idrol=? WHERE IdTrabajador=?`;
+  fields.forEach((field) => {
+    if (req.body[field]) {
+      updateValues.push(req.body[field]);
+      updateFields.push(`${field} = ?`);
+    }
+  });
 
-    connection.query(sql, [Nombre, Apellido, Correo, hashedPassword, Telefono, Idrol, id], (error, results) => {
+  // Si no hay campos para actualizar, respondemos con un error
+  if (updateValues.length === 0) {
+    return res
+      .status(400)
+      .json({ error: "No se han proporcionado campos para actualizar" });
+  }
+
+  // Realiza la actualización en la base de datos
+  connection.query(
+    `UPDATE trabajador SET ${updateFields.join(", ")} WHERE IdTrabajador = ?`,
+    [...updateValues, id],
+    (error, results) => {
       if (error) {
         console.error("Error al actualizar el empleado:", error);
-        res.status(500).json({ message: "Error al actualizar el empleado" });
+        res.status(500).json({ error: "Error interno del servidor" });
       } else {
-        res.status(200).json({ message: "Empleado actualizado correctamente" });
+        res.status(200).json({ message: "Empleado actualizado exitosamente" });
       }
-    });
-  } catch (error) {
-    console.error("Error al encriptar la contraseña:", error);
-    res.status(500).json({ message: "Error al encriptar la contraseña" });
-  }
+    }
+  );
 });
 
 // Ruta para actualizar un propietario existente
