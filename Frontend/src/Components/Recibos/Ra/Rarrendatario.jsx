@@ -6,7 +6,7 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib"; // Importar StandardF
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import logo from "../../../assets/Logo.jpg";
+import logo from "../../../assets/Logo.png";
 
 export const Rarrendatario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -17,145 +17,31 @@ export const Rarrendatario = () => {
   const [ContratosDisponibles, setContratosDisponibles] = useState([]);
   const [PagoArrenda, setPagoArrenda] = useState([]);
 
-
-
-
-
-
-  const funcional = (text) =>
-    toast.success(text, {
-      theme: "colored",
-    });
-
-  const falla = (text) =>
-    toast.error(text, {
-      theme: "colored",
-    });
-
-
-  const fallo = (text) =>
-    toast.error(text, {
-      theme: "colored",
-    });
-
-
-  const [currentDate, setCurrentDate] = useState(getCurrentDate());
-
-
-  // Función para obtener la fecha actual en formato YYYY-MM-DD
-  function getCurrentDate() {
-    const date = new Date();
-    const year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : "0" + month;
-    let day = date.getDate().toString();
-    day = day.length > 1 ? day : "0" + day;
-    return `${year}-${month}-${day}`;
-  }
-
-  useEffect(() => {
-    cargarContratosDisponibles();
-    setCurrentDate(getCurrentDate());
-  }, []);
-
-  const cargarContratosDisponibles = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3006/contrato-arren-inmue"
-      );
-      const Contratos = response.data.map((prop) => prop);
-
-      setContratosDisponibles(Contratos);
-
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error al cargar las matrículas:", error);
-      toast.error(
-        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
-      );
-    }
-  };
-
-  const onSubmitRegistro = async (data) => {
-    data.NombreArrendatario = selectedContrato.NombreArrendatario;
-    data.IdContrato = selectedContrato.IdContrato;
-    data.IdArrendatario = selectedContrato.IdArrendatario;
-    data.FechaPago = currentDate;
-    data.Estado = "Pagado";
-    data.NoDocumento = selectedContrato.DocumentoIdentidad;
-    data.NoMatricula = selectedContrato.NoMatricula;
-    data.TipoInmueble = selectedContrato.TipoInmueble;
-    try {
-      const response = await fetch("http://localhost:3006/RPagoArrendamiento", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data), // Aquí debes asegurarte de que data contenga todos los campos necesarios
-      });
-      if (response.ok) {
-        setPagoArrenda(data);
-        handleGuardarClick(data),
-          funcional('se an enviado los datos correctamente'),
-          setShowSaveModal(false); // Muestra el modal de confirmación
-        reset();
-      }
-    } catch (error) {
-      falla("Error al enviar datos al servidor:", error);
-    }
-  };
-
-
-
-
-
-
-
-  const handleConfirmSave = async () => {
-    handleSubmit(onSubmitRegistro)();
-    setShowSaveModal(false);
-  };
-
-  const handleContratoChange = async (Contrato) => {
-    setSelectedContrato(Contrato);
-    setShowContratoModal(false);
-  };
-
-  const handleCancelClick = () => {
-    setShowCancelModal(true);
-  };
-
-  const handleConfirmCancel = () => {
-    setShowCancelModal(false);
-    // Restablecer los campos del formulario al cancelar
-    setFormData({});
-    window.location.href = "/H_recibos";
-  };
-
-  //FUNCION PARA GENERAR PDF
-  const handleGuardarClick = async (data) => {
+  const handleGuardarClick = async () => {
+    // Definir el orden de las claves
     const order = [
       "NoDocumento",
       "NombreArrendatario",
       "NoMatricula",
-      "TipoInmueble",
       "FormaPago",
       "ValorPago",
-      "FechaInicio",
+      "FechaIni",
       "FechaFin",
+      "FormaPago",
       "Estado",
+      "TipoInmueble",
     ];
+
     try {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage();
       const { width, height } = page.getSize();
       const fontSize = 19;
       const padding = 50;
-      const currentfech = new Date().toLocaleDateString();
+
+      // Agregar texto con la hora de emisión en la parte inferior de la página
       const currentTime = new Date().toLocaleTimeString();
       const footerText = `Hora de emisión: ${currentTime}`;
-      const textWidth = (await pdfDoc.embedFont("Helvetica")).widthOfTextAtSize(currentfech, fontSize);
-      const textX = width - padding - textWidth;
 
       page.drawText(footerText, {
         x: padding,
@@ -165,13 +51,17 @@ export const Rarrendatario = () => {
         font: await pdfDoc.embedFont("Helvetica"),
       });
 
+      // Organizamos los campos en dos columnas
       let leftX = padding;
       let rightX = width / 2 + 20;
+
       let yOffset = height - padding - fontSize * 2;
+
+      // Load the logo image
       const logoImageBytes = await fetch(logo).then((res) => res.arrayBuffer());
       const logoImage = await pdfDoc.embedPng(logoImageBytes);
 
-      //encabezado-pdf
+      // Dibujar el logo en el encabezado
       page.drawImage(logoImage, {
         x: padding - 10,
         y: height - padding - fontSize * 0.6,
@@ -180,19 +70,12 @@ export const Rarrendatario = () => {
         color: rgb(0.7, 0.7, 0.7),
       });
 
+      // Dibujar el título al lado del logo con color gris opaco y posición vertical más alta
       page.drawText("Adminmuebles", {
         x: padding + 120,
         y: height - padding - fontSize * 0.0,
         size: fontSize + 0,
         color: rgb(0.8, 0.8, 0.8),
-        font: await pdfDoc.embedFont("Helvetica"),
-      });
-
-      page.drawText(`${currentfech}`, {
-        x: textX,
-        y: height - padding - fontSize * 0.1,
-        size: fontSize - 2,
-        color: rgb(0.5, 0.5, 0.5),
         font: await pdfDoc.embedFont("Helvetica"),
       });
 
@@ -205,11 +88,11 @@ export const Rarrendatario = () => {
       });
       yOffset -= fontSize * 9;
 
-      // los campos y las respuestas en el orden especificado
+      // Dibujamos los campos y las respuestas en el orden especificado
       for (const key of order) {
-        const element = data[key];
+        const element = PagoArrenda[key];
         if (element) {
-          //el nombre del campo en negrita y centrado
+          // Dibujamos el nombre del campo en negrita y centrado
           page.drawText(`${key}:`, {
             x: leftX,
             y: yOffset,
@@ -218,7 +101,8 @@ export const Rarrendatario = () => {
             font: await pdfDoc.embedFont("Helvetica-Bold"),
             align: "right",
           });
-          //la respuesta debajo del nombre del campo
+
+          // Dibujamos la respuesta debajo del nombre del campo
           page.drawText(`${element}`, {
             x: leftX,
             y: yOffset - fontSize * 1.5,
@@ -246,7 +130,8 @@ export const Rarrendatario = () => {
           }
         }
       }
-      // línea encabezado
+
+      // Dibujar línea horizontal en el encabezado
       page.drawLine({
         start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
         end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
@@ -254,23 +139,21 @@ export const Rarrendatario = () => {
         color: rgb(0.7, 0.7, 0.7),
       });
 
-      //línea arriba de la hora actual
+      // Dibujar línea horizontal arriba de la hora actual
       page.drawLine({
         start: { x: padding, y: padding + fontSize * 0.5 + 20 },
         end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
         thickness: 1,
         color: rgb(0.7, 0.7, 0.7),
       });
+
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "Recibo.Arrendatario_pdf";
+      link.download = "recibo.pdf";
       link.click();
-
-      window.location.href = "/H_recibos"
-
     } catch (error) {}
   };
 
@@ -283,13 +166,6 @@ export const Rarrendatario = () => {
     toast.error(text, {
       theme: "colored",
     });
-
-
-  const fallo = (text) =>
-    toast.error(text, {
-      theme: "colored",
-    });
-    
 
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
   // Función para obtener la fecha actual en formato YYYY-MM-DD
@@ -344,9 +220,9 @@ export const Rarrendatario = () => {
       });
       if (response.ok) {
         setPagoArrenda(data);
-        handleGuardarClick(), 
         funcional('se an enviado los datos correctamente'),
         window.location.href="/H_recibos"
+        handleGuardarClick(), 
         setShowSaveModal(false); // Muestra el modal de confirmación
         reset();
       }
@@ -374,9 +250,7 @@ export const Rarrendatario = () => {
     // Restablecer los campos del formulario al cancelar
     setFormData({});
     window.location.href = "/H_recibos";
-
   };
-  //AQUI TERMINA PDF
 
   return (
     <div className="contener-home contener-ReArrendatario">
@@ -482,7 +356,7 @@ export const Rarrendatario = () => {
               <Form.Control
                 className="InputsRegistros"
                 type="date"
-                {...register("FechaInicio")}
+                {...register("FechaIni")}
               />
             </Form.Group>
 
