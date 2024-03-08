@@ -105,6 +105,23 @@ export const ReciboGastos = () => {
     setShowCancelModal(true);
     // Limpiar los datos del formulario al hacer clic en Cancelar
   };
+  const handleCalcular = (e) => {
+    const { name, value } = e;
+    
+    if(name == "AseoEntrega") {
+      setvalorAE(value)
+    }
+    if(name == "AdmInmobi") {
+      setvalorAI(value)
+    }
+    if(name == "PagoArriendo") {
+      setvalorPA(value)
+    }
+    if(name == "Mantenimiento") {
+      setvalorM(value)
+    }
+  };
+
 
   const errores = (text) =>
     toast.error(text, {

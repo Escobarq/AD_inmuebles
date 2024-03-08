@@ -82,8 +82,8 @@ export const Rarrendatario = () => {
       if (response.ok) {
         setPagoArrenda(data);
         handleGuardarClick(data),
-          funcional('se an enviado los datos correctamente'),
-          setShowSaveModal(false); // Muestra el modal de confirmación
+        funcional('se an enviado los datos correctamente'),
+        setShowSaveModal(false); // Muestra el modal de confirmación
         reset();
       }
     } catch (error) {
@@ -116,6 +116,7 @@ export const Rarrendatario = () => {
 
   //FUNCION PARA GENERAR PDF
   const handleGuardarClick = async (data) => {
+    
     const order = [
       "NoDocumento",
       "NombreArrendatario",
@@ -250,10 +251,11 @@ export const Rarrendatario = () => {
       link.href = url;
       link.download = "Recibo.Arrendatario_pdf";
       link.click();
-
+      console.log("imprima");
       window.location.href = "/H_recibos"
-
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   
