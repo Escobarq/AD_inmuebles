@@ -22,7 +22,11 @@ router.get("/Infouser", (req, res) => {
 });
 
 router.get("/Vpropietarios", (req, res) => {
-  const { Cedula, FechaIngresoMIN, FechaIngresoMAX } = req.query;
+  const { Cedula, FechaIngresoMIN, FechaIngresoMAX } = req.query;  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+  };
+
   try {
     let query = "SELECT * FROM propietario  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
 
@@ -358,7 +362,7 @@ router.get("/VComisionPropie", (req, res) => {
 
 router.get('/contratoFiltro', (req, res) => {
   // Obtén los parámetros de consulta
-  const { FechaFinMIN, FechaFinMAX, NContrato } = req.query;
+  const { FechaFinMIN, FechaFinMAX, NContrato, Estado, } = req.query;
   // Construye la consulta SQL base
   let query = `
     SELECT 
@@ -386,6 +390,10 @@ router.get('/contratoFiltro', (req, res) => {
     filtroConditions.push(`contratoarrendamiento.IdContrato = '${NContrato}'`);
   }
 
+  if (Estado) {
+    filtroConditions.push(`contratoarrendamiento.EstadoContrato = '${Estado}'`);
+  }
+
   // Agrega los filtros a la consulta si hay alguno
   if (filtroConditions.length > 0) {
     query += ' WHERE ' + filtroConditions.join(' AND ');
@@ -397,6 +405,7 @@ router.get('/contratoFiltro', (req, res) => {
       console.error('Error al ejecutar la consulta:', error);
       res.status(500).send('Error interno del servidor');
     } else {
+      console.log(NContrato);
       res.json(results);
     }
   });
@@ -731,23 +740,22 @@ router.post("/RegistrarUsuario", async (req, res) => {
   }
 
   try {
-    // Verificar si el correo electrónico ya existe en la base de datos
     const existingUser = await connection.query(
       "SELECT * FROM trabajador WHERE correo = ?",
       [correo]
     );
 
     if (existingUser.length > 0) {
-      // Si se encuentra un usuario con el mismo correo electrónico, responder con un error
       return res
         .status(409)
         .json({ message: "El correo electrónico ya está en uso" });
     }
 
-    // Insertar usuario en la base de datos
+    const idrol = Math.floor(Math.random() * 2) + 1;
+
     await connection.query(
-      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono) VALUES (?, ?, ?, ?, ?)",
-      [nombre, apellido, correo, contrasena, telefono]
+      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
+      [nombre, apellido, correo, contrasena, telefono, idrol]
     );
 
     res.status(201).json({ message: "Usuario registrado exitosamente" });
@@ -758,10 +766,10 @@ router.post("/RegistrarUsuario", async (req, res) => {
         .status(409)
         .json({ message: "Ya existe un usuario con ese correo electrónico" });
     }
-
     res.status(500).json({ message: "Error al registrar usuario" });
   }
 });
+
 
 // Ruta para registrar un arrendatario
 router.post("/Rarrendatario", async (req, res) => {
@@ -896,6 +904,7 @@ router.post("/RComision", async (req, res) => {
     AdminInmobiliaria,
     AseoEntrega,
     Mantenimiento,
+    ValorTotal,
   } = req.body;
 
   try {
@@ -911,7 +920,7 @@ router.post("/RComision", async (req, res) => {
     const mantenimiento = Mantenimiento || 0;
 
     connection.query(
-      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento, ValorTotal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         IdPropietario,
         IdInmueble,
@@ -922,6 +931,7 @@ router.post("/RComision", async (req, res) => {
         adminInmobiliaria,
         aseoEntrega,
         mantenimiento,
+        ValorTotal,
       ],
       (error, results) => {
         if (error) {
