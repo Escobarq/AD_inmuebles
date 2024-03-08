@@ -148,20 +148,27 @@ router.get("/Vinmueble", (req, res) => {
 router.get("/propietarios-inmuebles", (req, res) => {
   try {
     const query = `
-      SELECT 
-        p.*, 
-        i.IdInmueble,
-        i.Direccion AS DireccionInmueble,
-        i.Ciudad,
-        i.Barrio,
-        i.Tipo AS TipoInmueble,
-        i.NoMatricula
-      FROM 
-        propietario p
-      LEFT JOIN 
-        inmueble i ON p.IdPropietario = i.IdPropietario
-      ORDER BY 
-        p.IdPropietario ASC`;
+    SELECT 
+    p.*, 
+    i.IdInmueble,
+    i.Direccion AS DireccionInmueble,
+    i.Ciudad,
+    i.Barrio,
+    i.Tipo AS TipoInmueble,
+    i.NoMatricula
+FROM 
+    propietario p
+LEFT JOIN 
+    inmueble i ON p.IdPropietario = i.IdPropietario
+WHERE 
+    i.IdInmueble IS NOT NULL
+    AND i.Direccion IS NOT NULL
+    AND i.Ciudad IS NOT NULL
+    AND i.Barrio IS NOT NULL
+    AND i.Tipo IS NOT NULL
+    AND i.NoMatricula IS NOT NULL
+ORDER BY 
+    p.IdPropietario ASC`;
 
     connection.query(query, (error, results) => {
       if (error) {
@@ -501,12 +508,10 @@ router.post("/contratoarrendamiento", (req, res) => {
       return;
     }
     console.log("Nuevo contrato insertado correctamente");
-    res
-      .status(201)
-      .json({
-        message: "Contrato de arrendamiento creado correctamente",
-        contratoId: result.insertId,
-      });
+    res.status(201).json({
+      message: "Contrato de arrendamiento creado correctamente",
+      contratoId: result.insertId,
+    });
   });
 });
 
@@ -589,12 +594,10 @@ router.post("/Reinmueble", async (req, res) => {
 
     // Si el número de matrícula ya existe, devolver un error
     if (existingInmueble.length > 0) {
-      return res
-        .status(400)
-        .json({
-          error: "El número de matrícula ya existe en la base de datos",
-        });
-    }else {
+      return res.status(400).json({
+        error: "El número de matrícula ya existe en la base de datos",
+      });
+    } else {
       if (Tipo == "Bodega") {
         connection.query(
           "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
