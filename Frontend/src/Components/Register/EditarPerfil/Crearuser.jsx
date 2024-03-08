@@ -100,7 +100,7 @@ const Crearuser = () => {
           <Form.Group>
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
-              type="number"
+              type="tel"
               id="telefono"
               className="form-control border border-dark"
               placeholder="Ingresa Teléfono celular"
