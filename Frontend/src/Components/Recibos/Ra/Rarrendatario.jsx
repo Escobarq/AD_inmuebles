@@ -17,6 +17,16 @@ export const Rarrendatario = () => {
   const [ContratosDisponibles, setContratosDisponibles] = useState([]);
   const [PagoArrenda, setPagoArrenda] = useState([]);
 
+
+
+
+
+
+  const funcional = (text) =>
+    toast.success(text, {
+      theme: "colored",
+    });
+
   const falla = (text) =>
     toast.error(text, {
       theme: "colored",
@@ -73,11 +83,6 @@ export const Rarrendatario = () => {
       falla("Error al enviar datos al servidor:", error);
     }
   };
-
-
-
-
-
 
 
   const handleConfirmSave = async () => {
@@ -244,24 +249,7 @@ export const Rarrendatario = () => {
     } catch (error) {}
   };
 
-  const funcional = (text) =>
-    toast.success(text, {
-      theme: "colored",
-    });
-
   
-  const [currentDate, setCurrentDate] = useState(getCurrentDate());
-  // Función para obtener la fecha actual en formato YYYY-MM-DD
-  function getCurrentDate() {
-    const date = new Date();
-    const year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : "0" + month;
-    let day = date.getDate().toString();
-    day = day.length > 1 ? day : "0" + day;
-    return `${year}-${month}-${day}`;
-  }
-
   //AQUI TERMINA PDF
 
   return (
