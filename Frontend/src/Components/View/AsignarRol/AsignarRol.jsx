@@ -95,6 +95,8 @@ export const AsignarRol = () => {
   };
 
   const createRowRol = (roles) => {
+    const truncatedPassword = roles.Contrasena.length > 10 ? roles.Contrasena.substring(0, 10) + '...' : roles.Contrasena;
+  
     if (roles.Idrol === 1 || roles.Idrol === 2) {
       return (
         <tr key={roles.IdTrabajador}>
@@ -102,7 +104,7 @@ export const AsignarRol = () => {
           <td>{roles.Nombre}</td>
           <td>{roles.Apellido}</td>
           <td>{roles.Correo}</td>
-          <td>{roles.Contrasena}</td>
+          <td>{truncatedPassword}</td>
           <td>{roles.Telefono}</td>
           <td>{convertirIdRolATexto(roles.Idrol)}</td>
           <td >
@@ -123,6 +125,7 @@ export const AsignarRol = () => {
       return null;
     }
   };
+  
   
 
   //Variables Paginacion
@@ -170,9 +173,10 @@ export const AsignarRol = () => {
         <h1 className="tittle_propetario">Empleados</h1>
         <div className="conten-inputs">
           <label className="l1">Rol</label>
-          <select className="input-filtroRe" value="" onChange="" name="rol" id="rol">
+          <select className="input-filtroRe"name="rol" id="rol">
             <option selected value="">Seleccione el tipo</option>
             <option value="Asistente">Asistente</option>
+            <option value="Administrador">Administrador</option>
           </select>
         </div>
         <Button variant="success" className="btn-add-success" onClick={() => redireccion("/Crearperfil")}>

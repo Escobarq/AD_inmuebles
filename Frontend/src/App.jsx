@@ -116,10 +116,7 @@ function App() {
             <Route path="/RInmuebleC" element={<RInmuebleC />} />
             <Route path="/RInmuebleL" element={<RInmuebleL />} />
             <Route path="/RInmuebleO" element={<RInmuebleO />} />
-
-
             <Route path="/Carrendatario" element={<ContratoA />} />
-            
             {roleId === 3 && (
               <>
                 <Route path="/AsignarRol" element={<AsignarRol />} />
@@ -127,7 +124,6 @@ function App() {
                 <Route path="/Crearperfil" element={<Crearuser />} />
               </>
             )}
-
             <Route path="/InhabilitarRol" element={<InhabilitarRol />} />
             <Route path="/Generar" element={<Contrato />} />
             <Route path="/EditarDatosIn" element={<EditarDatosIn />} />
