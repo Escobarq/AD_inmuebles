@@ -1,12 +1,19 @@
 import login from "../../assets/login.png";
 import "./login.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { userLogin } from "../Hooks/Userlogin";
 
 export const Login = () => {
+  const [mostrarModal, setMostrarModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const notify = () =>
+    toast.success("Se Registro correctamente", {
+      theme: "dark",
+    });
 
   const a = () =>
     toast.success("Se inicio correctamente", {
@@ -47,6 +54,16 @@ export const Login = () => {
       }
     }
   };
+
+  // Modal //
+  const handleMostrarModalClick = () => {
+    setMostrarModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setMostrarModal(false);
+  };
+
 
   return (
     <>
