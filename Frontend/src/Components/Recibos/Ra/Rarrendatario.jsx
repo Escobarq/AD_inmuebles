@@ -18,10 +18,6 @@ export const Rarrendatario = () => {
   const [PagoArrenda, setPagoArrenda] = useState([]);
 
 
-
-
-
-
   const funcional = (text) =>
     toast.success(text, {
       theme: "colored",
@@ -31,6 +27,17 @@ export const Rarrendatario = () => {
     toast.error(text, {
       theme: "colored",
     });
+    const [currentDate, setCurrentDate] = useState(getCurrentDate());
+    // Función para obtener la fecha actual en formato YYYY-MM-DD
+    function getCurrentDate() {
+      const date = new Date();
+      const year = date.getFullYear();
+      let month = (1 + date.getMonth()).toString();
+      month = month.length > 1 ? month : "0" + month;
+      let day = date.getDate().toString();
+      day = day.length > 1 ? day : "0" + day;
+      return `${year}-${month}-${day}`;
+    }
 
     useEffect(() => {
       cargarContratosDisponibles();
