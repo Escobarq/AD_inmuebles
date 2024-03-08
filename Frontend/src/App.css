@@ -87,3 +87,12 @@
 .dark-mode label{
   color: #ffffff !important;
 }
+
+.dark-mode .Login {
+  background-color: #222 !important;
+  color: #fff;
+}
+.dark-mode .contenido{
+  background-color: #222 !important;
+  color: #fff;
+}

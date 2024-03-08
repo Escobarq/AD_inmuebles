@@ -280,6 +280,37 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                showTooltip ? (
+                  <Tooltip id="tooltip-prop">Informe Arrendamiento</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Carrendatario"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faTable}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Informe Arrendamiento
+                </p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
         </>
       );
 
@@ -469,37 +500,6 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
                 />
                 <p className="Links_Icons" style={{ margin: "2%" }}>
                   Recibo Gastos
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Informe Arrendamiento</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/Carrendatario"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faTable}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Informe Arrendamiento
                 </p>
               </Nav.Link>
             </OverlayTrigger>
