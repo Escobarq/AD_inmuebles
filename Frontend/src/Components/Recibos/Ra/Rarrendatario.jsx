@@ -17,10 +17,27 @@ export const Rarrendatario = () => {
   const [ContratosDisponibles, setContratosDisponibles] = useState([]);
   const [PagoArrenda, setPagoArrenda] = useState([]);
 
+
+  const funcional = (text) =>
+    toast.success(text, {
+      theme: "colored",
+    });
+
   const falla = (text) =>
     toast.error(text, {
       theme: "colored",
     });
+    const [currentDate, setCurrentDate] = useState(getCurrentDate());
+    // Función para obtener la fecha actual en formato YYYY-MM-DD
+    function getCurrentDate() {
+      const date = new Date();
+      const year = date.getFullYear();
+      let month = (1 + date.getMonth()).toString();
+      month = month.length > 1 ? month : "0" + month;
+      let day = date.getDate().toString();
+      day = day.length > 1 ? day : "0" + day;
+      return `${year}-${month}-${day}`;
+    }
 
     useEffect(() => {
       cargarContratosDisponibles();
@@ -65,19 +82,14 @@ export const Rarrendatario = () => {
       if (response.ok) {
         setPagoArrenda(data);
         handleGuardarClick(data),
-          funcional('se an enviado los datos correctamente'),
-          setShowSaveModal(false); // Muestra el modal de confirmación
+        funcional('se an enviado los datos correctamente'),
+        setShowSaveModal(false); // Muestra el modal de confirmación
         reset();
       }
     } catch (error) {
       falla("Error al enviar datos al servidor:", error);
     }
   };
-
-
-
-
-
 
 
   const handleConfirmSave = async () => {
@@ -104,6 +116,7 @@ export const Rarrendatario = () => {
 
   //FUNCION PARA GENERAR PDF
   const handleGuardarClick = async (data) => {
+    
     const order = [
       "NoDocumento",
       "NombreArrendatario",
@@ -238,30 +251,14 @@ export const Rarrendatario = () => {
       link.href = url;
       link.download = "Recibo.Arrendatario_pdf";
       link.click();
-
+      console.log("imprima");
       window.location.href = "/H_recibos"
-
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   };
 
-  const funcional = (text) =>
-    toast.success(text, {
-      theme: "colored",
-    });
-
   
-  const [currentDate, setCurrentDate] = useState(getCurrentDate());
-  // Función para obtener la fecha actual en formato YYYY-MM-DD
-  function getCurrentDate() {
-    const date = new Date();
-    const year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : "0" + month;
-    let day = date.getDate().toString();
-    day = day.length > 1 ? day : "0" + day;
-    return `${year}-${month}-${day}`;
-  }
-
   //AQUI TERMINA PDF
 
   return (

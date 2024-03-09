@@ -17,10 +17,11 @@ export const crearInmueble = async (data) => {
         return responseData;
 
     } catch (error) {
-        if (error.message.includes('correo ya registrado')) {
+        if (error.message.includes('Numero de Matricula duplicado')) {
             console.log('XD')
+            throw error;
         } else {
-            console.error('Error al crear usuario:', error);
+            console.error('Error en el registro del inmueble', error);
             throw error; // Re-lanza el error para que pueda ser manejado en el componente
         }
     }

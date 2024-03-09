@@ -96,3 +96,7 @@
   background-color: #222 !important;
   color: #fff;
 }
+.dark-mode .notification-body {
+  background-color: #222 !important;
+  color: #fff;
+}

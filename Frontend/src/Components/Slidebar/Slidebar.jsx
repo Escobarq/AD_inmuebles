@@ -22,11 +22,15 @@ import {
   OverlayTrigger,
   Tooltip,
   Dropdown,
+  DropdownMenu,
+  DropdownItem,
 } from "react-bootstrap";
 import { useEffect } from "react";
+import useRoleInfo from "../Hooks/useRoleInfo";
 
 // eslint-disable-next-line react/prop-types
 export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
+  const roleId = useRoleInfo();
   const correousuario = localStorage.getItem("items");
   const [nombre, setnombre] = useState("");
   const [apellido, setApellido] = useState("");
@@ -546,6 +550,10 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
     }
   };
 
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  }
+
   return (
     <>
       <div
@@ -562,30 +570,41 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
           {renderMenuItems()}
         </Nav>
         <hr />
-        <Dropdown className="Drowon">
-          <Dropdown.Toggle
-            variant="link"
-            className="nav-link text-white"
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <FontAwesomeIcon
-              width="32"
-              height="32"
-              style={{ color: "#ffffff" }}
-              icon={darkMode ? faMoon : faSun}
-            />
+        {(roleId === 1 || roleId === 2) && (
+        <Dropdown style={{ display: "flex", justifyContent: "center" }}>
+          <Dropdown.Toggle variant="link" className="nav-link text-white">
+            <FontAwesomeIcon width="32" height="32" style={{ color: "#ffffff" }} icon={darkMode ? faMoon : faSun} />
             <strong>Opciones</strong>
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item onClick={handleDarkModeToggle}>
-              <FontAwesomeIcon
-                style={{ marginRight: "10px" }}
-                icon={darkMode ? faSun : faMoon}
-              />
+              <FontAwesomeIcon style={{ marginRight: "10px" }} icon={darkMode ? faSun : faMoon} />
+              {darkMode ? "Modo Claro" : "Modo Oscuro"}
+            </Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item>
+              <Button variant="white" onClick={() => redireccion("/Contraseñanew")}>
+                Cambiar Contraseña
+              </Button>
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      )}
+
+      {roleId === 3 && (
+        <Dropdown style={{ display: "flex", justifyContent: "center" }}>
+          <Dropdown.Toggle variant="link" className="nav-link text-white">
+            <FontAwesomeIcon width="32" height="32" style={{ color: "#ffffff" }} icon={faMoon} />
+            <strong>Opciones</strong>
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+          <Dropdown.Item onClick={handleDarkModeToggle}>
+              <FontAwesomeIcon style={{ marginRight: "10px" }} icon={darkMode ? faSun : faMoon} />
               {darkMode ? "Modo Claro" : "Modo Oscuro"}
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+      )}
         <hr />
         <Button
           variant="link"

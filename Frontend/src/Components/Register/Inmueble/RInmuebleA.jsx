@@ -61,8 +61,8 @@ export const RInmuebleA = () => {
       reset();
       window.location.href = "/Inmueble";
     } catch (error) {
-      if (error.message.includes("correo ya registrado")) {
-        alert("El correo ya está registrado");
+      if (error.message.includes("Numero de Matricula duplicado")) {
+        alert("Numero de Matricula duplicado");
       } else {
         falla();
         console.error("Error al crear usuario:", error);
@@ -111,7 +111,7 @@ export const RInmuebleA = () => {
     }
 
     // Actualiza los datos del propietario
-    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+    setPropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
   const handleNumberChange = (event) => {
@@ -129,7 +129,7 @@ export const RInmuebleA = () => {
     }
 
     // Actualiza los datos del propietario
-    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
+    setPropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
   const handleFieldFocus = (fieldName) => {
@@ -173,7 +173,6 @@ export const RInmuebleA = () => {
               <Form.Control
                 className="InputsRegistros"
                 {...register("Nmatricula")}
-               
                 onChange={handleNumberChange}
                 onFocus={() => handleFieldFocus("Nmatricula")}
                 required
@@ -244,7 +243,7 @@ export const RInmuebleA = () => {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group controlId="formNBanos">
+            <Form.Group controlId="formNbanos">
               <Form.Label>No. Baños:</Form.Label>
               <Form.Control
                 className="InputsRegistros"

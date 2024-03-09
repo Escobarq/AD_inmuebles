@@ -105,6 +105,23 @@ export const ReciboGastos = () => {
     setShowCancelModal(true);
     // Limpiar los datos del formulario al hacer clic en Cancelar
   };
+  const handleCalcular = (e) => {
+    const { name, value } = e;
+    
+    if(name == "AseoEntrega") {
+      setvalorAE(value)
+    }
+    if(name == "AdmInmobi") {
+      setvalorAI(value)
+    }
+    if(name == "PagoArriendo") {
+      setvalorPA(value)
+    }
+    if(name == "Mantenimiento") {
+      setvalorM(value)
+    }
+  };
+
 
   const errores = (text) =>
     toast.error(text, {
@@ -176,6 +193,17 @@ export const ReciboGastos = () => {
     setSelectedInmueble(Inmueble);
     setMostrarModalB(false);
   };
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
+  // Función para obtener la fecha actual en formato YYYY-MM-DD
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
   //AQUI EMPIEZA FUNCION PARA PDF
   const ReciboGasto = async (data) => {
     const order = [
@@ -193,19 +221,8 @@ export const ReciboGastos = () => {
     ];
 
 
-  const [currentDate, setCurrentDate] = useState(getCurrentDate());
-  // Función para obtener la fecha actual en formato YYYY-MM-DD
-  function getCurrentDate() {
-    const date = new Date();
-    const year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : "0" + month;
-    let day = date.getDate().toString();
-    day = day.length > 1 ? day : "0" + day;
-    return `${year}-${month}-${day}`;
-  }
 
-  const ReciboGasto = async (data) => {
+
    
     try {
       const pdfDoc = await PDFDocument.create();
@@ -354,282 +371,281 @@ export const ReciboGastos = () => {
       console.error("Error al generar el PDF:", error);
     }
   };
+return (
+  <div className="home-2">
+    <div className="contenedor-formulario" id="recibo-gastos">
+      <h1 className="tit">Recibo de Gastos</h1>
+      <form onSubmit={handleSubmit(onsubmitGastos)} className="tod">
+        <div className="fila-formulario1">
+          <Form.Group>
+            <label htmlFor="fecha">Fecha de Pago:</label>
+            <input
+              type="date"
+              className="form-control InputsRegistros"
+              id="fecha"
+              defaultValue={currentDate}
+              disabled                
+            />
+          </Form.Group>
 
-  return (
-    <div className="home-2">
-      <div className="contenedor-formulario" id="recibo-gastos">
-        <h1 className="tit">Recibo de Gastos</h1>
-        <form onSubmit={handleSubmit(onsubmitGastos)} className="tod">
-          <div className="fila-formulario1">
-            <Form.Group>
-              <label htmlFor="fecha">Fecha de Pago:</label>
-              <input
-                type="date"
-                className="form-control InputsRegistros"
-                id="fecha"
-                defaultValue={currentDate}
-                disabled                
-              />
-            </Form.Group>
+          <Form.Group>
+            <label htmlFor="entregadoPor">Entregado por:</label>
+            <input
+              type="text"
+              className="form-control InputsRegistros"
+              id="entregadoPor"
+              defaultValue={Nombre}
+              disabled
+            />
 
-            <Form.Group>
-              <label htmlFor="entregadoPor">Entregado por:</label>
-              <input
-                type="text"
-                className="form-control InputsRegistros"
-                id="entregadoPor"
-                defaultValue={Nombre}
-                disabled
-              />
+          </Form.Group>
 
-            </Form.Group>
+          <Form.Group>
+            <Form.Label>Propietario del inmueble</Form.Label>
+            <Form.Select
+              className="InputsRegistros"
 
-            <Form.Group>
-              <Form.Label>Propietario del inmueble</Form.Label>
-              <Form.Select
-                className="InputsRegistros"
+              value={
+                selectedPropietario ? selectedPropietario.IdPropietario : "a?"
+              }
+              onChange={(e) => handlePropietarioChange(e.target.value)}
+              onClick={() => handleMostrarAClick(true)}
+            >
+              <option value="">Seleccionar Numero de Propietario</option>
+              {PropietariosDisponibles.map((Propietario, index) => (
+                <option key={index} value={Propietario.IdPropietario}>
+                  {Propietario.NombreCompleto}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
 
-                value={
-                  selectedPropietario ? selectedPropietario.IdPropietario : "a?"
-                }
-                onChange={(e) => handlePropietarioChange(e.target.value)}
-                onClick={() => handleMostrarAClick(true)}
-              >
-                <option value="">Seleccionar Numero de Propietario</option>
-                {PropietariosDisponibles.map((Propietario, index) => (
-                  <option key={index} value={Propietario.IdPropietario}>
-                    {Propietario.NombreCompleto}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
+          <Form.Group>
+            <Form.Label>Inmueble</Form.Label>
 
-            <Form.Group>
-              <Form.Label>Inmueble</Form.Label>
+            <Form.Select
+              className="InputsRegistros"
+              value={selectedInmueble ? selectedInmueble.IdInmueble : "a?"}
 
-              <Form.Select
-                className="InputsRegistros"
-                value={selectedInmueble ? selectedInmueble.IdInmueble : "a?"}
+              onChange={(e) => handleInmuebleChange(e.target.value)}
+              onClick={() => handleMostrarBClick(true)}
+            >
+              <option value="">Seleccionar Numero de Matricula</option>
+              {InmueblesDisponibles.map((Inmueble, index) => (
+                <option key={index} value={Inmueble.IdInmueble}>
 
-                onChange={(e) => handleInmuebleChange(e.target.value)}
-                onClick={() => handleMostrarBClick(true)}
-              >
-                <option value="">Seleccionar Numero de Matricula</option>
-                {InmueblesDisponibles.map((Inmueble, index) => (
-                  <option key={index} value={Inmueble.IdInmueble}>
+                  {Inmueble.NoMatricula} {Inmueble.Tipo}
 
-                    {Inmueble.NoMatricula} {Inmueble.Tipo}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </div>
 
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-          </div>
+        <label>Forma de pago</label>
+        <select
+          className="InputsRegistros"
+          {...register("FormaPago")}
+          id="seleccionGasto3"
 
-          <label>Forma de pago</label>
-          <select
-            className="InputsRegistros"
-            {...register("FormaPago")}
-            id="seleccionGasto3"
-
-          >
-            <option value="">Seleccione Forma de Pago</option>
-            <option value="Efectivo">Efectivo</option>
-            <option value="Transferencia">Transferencia</option>
-
-          </select>
-
-          <div className="fila-formulario">
-            <div className="grupo-formulario">
-              <label htmlFor="seleccionGasto">Concepto:</label>
-              <input
-                disabled
-                defaultValue={"Pago arriendo mes"}
-                type="text"
-                className="form-control InputsRegistros"
-                id="valor2"
-              />
-              <input
-                disabled
-                defaultValue={"Administracion Inmobiliaria"}
-                type="text"
-                className="form-control InputsRegistros"
-                id="valor2"
-              />
-              <input
-                disabled
-                defaultValue={"Aseo entrega casa"}
-                type="text"
-                className="form-control InputsRegistros"
-                id="valor2"
-              />
-              <input
-                disabled
-                defaultValue={"Mantenimiento"}
-                type="text"
-                className="form-control InputsRegistros"
-                id="valor2"
-              />
-
-            </div>
-            <div className="valor">
-              <label htmlFor="valor">Valor</label>
-
-              <input
-                type="number"
-                className="form-control InputsRegistros"
-                name="PagoArriendo"
-                defaultValue={0}
-                onChange={(e) => handleCalcular(e.target)}
-              />
-              <input
-                type="number"
-                className="form-control InputsRegistros"
-                name="AdmInmobi"
-                defaultValue={0}
-                onChange={(e) => handleCalcular(e.target)}
-              />
-              <input
-                type="number"
-                className="form-control InputsRegistros"
-                name="AseoEntrega"
-                defaultValue={0}
-                onChange={(e) => handleCalcular(e.target)}
-              />
-              <input
-                type="numnumberber"
-                className="form-control InputsRegistros"
-                name="Mantenimiento"
-                defaultValue={0}
-                onChange={(e) => handleCalcular(e.target)}
-              />              
-            </div>
-          </div>
-        </form>
-      </div>
-      <div className="btns">
-        <Button
-          type="button"
-          variant="success m-2"
-          onClick={() => setShowSaveModal(true)}
         >
-          <FontAwesomeIcon icon={faSave} />
-          <span className="text_button ms-2">Guardar</span>
-        </Button>
+          <option value="">Seleccione Forma de Pago</option>
+          <option value="Efectivo">Efectivo</option>
+          <option value="Transferencia">Transferencia</option>
 
-        {/* Botón de cancelar */}
-        <Button
-          type="button"
-          variant="danger m-2"
-          onClick={() => setShowCancelModal(true)}
-        >
-          <FontAwesomeIcon icon={faTimes} />
-          <span className="text_button ms-2">Cancelar</span>
-        </Button>
-      </div>
-      {/* Modal de confirmación de guardar */}
-      <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
-        <Modal.Header closeButton={false}>
-          <Modal.Title>Confirmación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        </select>
 
-          ¿Estás seguro de que deseas guardar los cambios?
-          Recuerda que si confirmas no se podran editar
+        <div className="fila-formulario">
+          <div className="grupo-formulario">
+            <label htmlFor="seleccionGasto">Concepto:</label>
+            <input
+              disabled
+              defaultValue={"Pago arriendo mes"}
+              type="text"
+              className="form-control InputsRegistros"
+              id="valor2"
+            />
+            <input
+              disabled
+              defaultValue={"Administracion Inmobiliaria"}
+              type="text"
+              className="form-control InputsRegistros"
+              id="valor2"
+            />
+            <input
+              disabled
+              defaultValue={"Aseo entrega casa"}
+              type="text"
+              className="form-control InputsRegistros"
+              id="valor2"
+            />
+            <input
+              disabled
+              defaultValue={"Mantenimiento"}
+              type="text"
+              className="form-control InputsRegistros"
+              id="valor2"
+            />
 
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
-            No
-          </Button>
+          </div>
+          <div className="valor">
+            <label htmlFor="valor">Valor</label>
 
-          <Button
-            variant="primary"
-            onClick={() => {
-              handleConfirmSave();
-            }}
-          >
-
-            Sí
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* Modal de confirmación de cancelar */}
-      <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
-        <Modal.Header closeButton={false}>
-          <Modal.Title>Confirmación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          ¿Estás seguro de que deseas cancelar la operación?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
-            No
-          </Button>
-
-          <Button
-            variant="primary"
-            onClick={() => {
-              handleConfirmCancel();
-              handleCancel();
-            }}
-          >
-
-            Sí
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal
-        size="lg"
-        show={mostrarModalA}
-        onHide={handleCloseModalA}
-        aria-labelledby="example-modal-sizes-title-lg"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Seleccionar Propietario</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ListGroup>
-            {PropietariosDisponibles.map((Propietario, index) => (
-              <ListGroup.Item
-                key={index}
-                action
-                onClick={() => handlePropietarioChange(Propietario)}
-              >
-
-                {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
-
-                {Propietario.NombreCompleto}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </Modal.Body>
-      </Modal>
-      <Modal
-        size="lg"
-        show={mostrarModalB}
-        onHide={handleCloseModalB}
-        aria-labelledby="example-modal-sizes-title-lg"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Seleccionar Inmueble</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ListGroup>
-            {InmueblesDisponibles.map((Inmueble, index) => (
-              <ListGroup.Item
-                key={index}
-                action
-                onClick={() => handleInmuebleChange(Inmueble)}
-              >
-                {Inmueble.NoMatricula} :{Inmueble.Tipo}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </Modal.Body>
-      </Modal>
+            <input
+              type="number"
+              className="form-control InputsRegistros"
+              name="PagoArriendo"
+              defaultValue={0}
+              onChange={(e) => handleCalcular(e.target)}
+            />
+            <input
+              type="number"
+              className="form-control InputsRegistros"
+              name="AdmInmobi"
+              defaultValue={0}
+              onChange={(e) => handleCalcular(e.target)}
+            />
+            <input
+              type="number"
+              className="form-control InputsRegistros"
+              name="AseoEntrega"
+              defaultValue={0}
+              onChange={(e) => handleCalcular(e.target)}
+            />
+            <input
+              type="numnumberber"
+              className="form-control InputsRegistros"
+              name="Mantenimiento"
+              defaultValue={0}
+              onChange={(e) => handleCalcular(e.target)}
+            />              
+          </div>
+        </div>
+      </form>
     </div>
-)};
+    <div className="btns">
+      <Button
+        type="button"
+        variant="success m-2"
+        onClick={() => setShowSaveModal(true)}
+      >
+        <FontAwesomeIcon icon={faSave} />
+        <span className="text_button ms-2">Guardar</span>
+      </Button>
+
+      {/* Botón de cancelar */}
+      <Button
+        type="button"
+        variant="danger m-2"
+        onClick={() => setShowCancelModal(true)}
+      >
+        <FontAwesomeIcon icon={faTimes} />
+        <span className="text_button ms-2">Cancelar</span>
+      </Button>
+    </div>
+    {/* Modal de confirmación de guardar */}
+    <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+      <Modal.Header closeButton={false}>
+        <Modal.Title>Confirmación</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+
+        ¿Estás seguro de que deseas guardar los cambios?
+        Recuerda que si confirmas no se podran editar
+
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
+          No
+        </Button>
+
+        <Button
+          variant="primary"
+          onClick={() => {
+            handleConfirmSave();
+          }}
+        >
+
+          Sí
+        </Button>
+      </Modal.Footer>
+    </Modal>
+
+    {/* Modal de confirmación de cancelar */}
+    <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
+      <Modal.Header closeButton={false}>
+        <Modal.Title>Confirmación</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        ¿Estás seguro de que deseas cancelar la operación?
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
+          No
+        </Button>
+
+        <Button
+          variant="primary"
+          onClick={() => {
+            handleConfirmCancel();
+            handleCancel();
+          }}
+        >
+
+          Sí
+        </Button>
+      </Modal.Footer>
+    </Modal>
+
+    <Modal
+      size="lg"
+      show={mostrarModalA}
+      onHide={handleCloseModalA}
+      aria-labelledby="example-modal-sizes-title-lg"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Seleccionar Propietario</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <ListGroup>
+          {PropietariosDisponibles.map((Propietario, index) => (
+            <ListGroup.Item
+              key={index}
+              action
+              onClick={() => handlePropietarioChange(Propietario)}
+            >
+
+              {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
+
+              {Propietario.NombreCompleto}
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </Modal.Body>
+    </Modal>
+    <Modal
+      size="lg"
+      show={mostrarModalB}
+      onHide={handleCloseModalB}
+      aria-labelledby="example-modal-sizes-title-lg"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Seleccionar Inmueble</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <ListGroup>
+          {InmueblesDisponibles.map((Inmueble, index) => (
+            <ListGroup.Item
+              key={index}
+              action
+              onClick={() => handleInmuebleChange(Inmueble)}
+            >
+              {Inmueble.NoMatricula} :{Inmueble.Tipo}
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </Modal.Body>
+    </Modal>
+  </div>
+)
 }
