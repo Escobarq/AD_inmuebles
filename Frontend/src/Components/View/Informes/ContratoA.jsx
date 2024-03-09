@@ -7,9 +7,11 @@ import "moment/locale/es";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../../../assets/Logo.jpg";
-import { Button, Table ,Col, Form ,Row } from "react-bootstrap";
+import { Button, Table  } from "react-bootstrap";
+import useContratoInfo from '../../Hooks/useObtenerInfoContrac';
 
 export const ContratoA = () => {
+  const contratoInfo = useContratoInfo('http://localhost:3006/contratoFiltro');
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const pdfContentRef = useRef(null);
   const [filtroData, setFiltroData] = useState({
@@ -34,7 +36,6 @@ export const ContratoA = () => {
       }
       const data = await response.json();
       setinfoarrendatario(data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }

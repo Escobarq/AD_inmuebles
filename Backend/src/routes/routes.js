@@ -5,41 +5,6 @@ const connection = require("../db");
 
 //Metodos Get
 
-router.get("/notificaciones", async (req, res) => {
-  try {
-    // Obtener contratos próximos a finalizar con detalles del arrendatario e inmueble
-    const response = await connection.query(`
-      SELECT c.FechaFinContrato, a.NombreCompleto AS NombreArrendatario, i.NoMatricula AS NumeroMatricula
-      FROM contratoarrendamiento c
-      INNER JOIN arrendatario a ON c.IdArrendatario = a.IdArrendatario
-      INNER JOIN inmueble i ON c.IdInmueble = i.IdInmueble
-      WHERE c.FechaFinContrato <= DATE_ADD(NOW(), INTERVAL 4 WEEK)
-    `);
-
-    // Verificar si la respuesta está definida y contiene datos
-    if (response && response.rows) {
-      // Actualizar el estado de los contratos finalizados
-      for (const contract of response.rows) {
-        const today = new Date();
-        const endDate = new Date(contract.FechaFinContrato);
-        if (today.toDateString() === endDate.toDateString()) {
-          // Actualizar el estado del contrato a "Finalizado"
-          await connection.query('UPDATE contratoarrendamiento SET EstadoContrato = ? WHERE IdContrato = ?', ['Finalizado', contract.IdContrato]);
-          // Actualizar el estado del contrato en el objeto de respuesta
-          contract.EstadoContrato = 'Finalizado';
-        }
-      }
-
-      res.status(200).json(response.rows);
-    } else {
-      console.error("La respuesta de la consulta está vacía o no definida.");
-      res.status(500).json({ error: "Error interno del servidor" });
-    }
-  } catch (error) {
-    console.error("Error al obtener las notificaciones:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
-  }
-});
 
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
@@ -824,6 +789,7 @@ router.post("/RegistrarUsuario", async (req, res) => {
   }
 
   try {
+    // Verificar si ya existe un usuario con el mismo correo electrónico
     const existingUser = await connection.query(
       "SELECT * FROM trabajador WHERE correo = ?",
       [correo]
@@ -837,6 +803,7 @@ router.post("/RegistrarUsuario", async (req, res) => {
 
     const idrol = Math.floor(Math.random() * 2) + 1;
 
+    // Insertar el nuevo usuario en la base de datos
     await connection.query(
       "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
       [nombre, apellido, correo, contrasena, telefono, idrol]
@@ -845,7 +812,7 @@ router.post("/RegistrarUsuario", async (req, res) => {
     res.status(201).json({ message: "Usuario registrado exitosamente" });
   } catch (error) {
     console.error("Error al registrar usuario:", error);
-    if (error.code === "ERDUPENTRY") {
+    if (error.code === "ER_DUP_ENTRY") {
       return res
         .status(409)
         .json({ message: "Ya existe un usuario con ese correo electrónico" });
@@ -853,6 +820,7 @@ router.post("/RegistrarUsuario", async (req, res) => {
     res.status(500).json({ message: "Error al registrar usuario" });
   }
 });
+
 
 // Ruta para registrar un arrendatario
 router.post("/Rarrendatario", async (req, res) => {
