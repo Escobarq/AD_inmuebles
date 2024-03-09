@@ -17,9 +17,12 @@ import useActualizarEstadoInmueble from "../../Hooks/InhabilitarInmueble";
 import NoResultImg from "../../../assets/NoResult.gif";
 import { format, toDate } from "date-fns";
 import useRoleInfo from "../../Hooks/useRoleInfo";
+import { useMediaQuery } from "@react-hook/media-query";
+
 
 export const Inmueble = () => {
   const roleId = useRoleInfo();
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
   const [NoResult, setNoResult] = useState(false);
   const [filtroData, setFiltroData] = useState({
@@ -70,8 +73,19 @@ export const Inmueble = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   // Paginacion
   const [infoinmueble, setinfoinmueble] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  
+    // Variables Paginacion
+    useEffect(() => {
+      // Cambiar el número de ítems por página según el tamaño de la pantalla
+      if (isSmallScreen) {
+        setItemsPerPage(5);
+      } else {
+        setItemsPerPage(8);
+      }
+    }, [isSmallScreen]);
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
 
   // Actualizar Inmueble
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);

@@ -6,10 +6,12 @@ import Pagination from "react-bootstrap/Pagination";
 import { Link } from "react-router-dom";
 import useActualizarEstadoEmpleados from "../../Hooks/InhabilitarEmpleado";
 import { toast } from "react-toastify";
+import { useMediaQuery } from "@react-hook/media-query";
 
 
 export const AsignarRol = () => {
   const [infoRol, setInfoRol] = useState([]);
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const { actualizarEstadoempleados } = useActualizarEstadoEmpleados();
   const [Empleados, setHarrenndamiento] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -126,11 +128,18 @@ export const AsignarRol = () => {
     }
   };
   
-  
-
   //Variables Paginacion
+  useEffect(() => {
+    // Cambiar el número de ítems por página según el tamaño de la pantalla
+    if (isSmallScreen) {
+      setItemsPerPage(5);
+    } else {
+      setItemsPerPage(8);
+    }
+  }, [isSmallScreen]);
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

@@ -9,11 +9,13 @@ import autoTable from "jspdf-autotable";
 import logo from "../../../assets/Logo.jpg";
 import { Button, Table  } from "react-bootstrap";
 import useContratoInfo from '../../Hooks/useObtenerInfoContrac';
+import { useMediaQuery } from "@react-hook/media-query";
 
 export const ContratoA = () => {
   const contratoInfo = useContratoInfo('http://localhost:3006/contratoFiltro');
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const pdfContentRef = useRef(null);
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [filtroData, setFiltroData] = useState({
     FechaFinMIN: "",
     FechaFinMAX: "",
@@ -80,24 +82,39 @@ export const ContratoA = () => {
   };
 
   const createrow = (Contrato) => {
-    return (
-      <tr key={Contrato.IdContrato}>
-        <td>{Contrato.IdContrato}</td>
-        <td>{Contrato.DocumentoIdentidad}</td>
-        <td>{Contrato.NombreArrendatario}</td>
-        <td>{Contrato.NoMatricula}</td>
-        <td>{formatDate(Contrato.FechaInicioContrato)}</td>
-        <td>{formatDate(Contrato.FechaFinContrato)}</td>
-        <td>$ {Contrato.ValorDeposito}</td>
-        <td>{Contrato.CuotasPendientes}</td>
-        <td>{Contrato.EstadoContrato}</td>
-      </tr>
-    );
-  };
+    // Calcula la fecha actual y la fecha actual + 4 semanas en milisegundos
+    const currentDate = new Date();
+    const fourWeeksLater = new Date(currentDate.getTime() + 4 * 7 * 24 * 60 * 60 * 1000).getTime();
+    
+    // Color para la fecha de fin de contrato
+    const colorFechaFinContrato = new Date(Contrato.FechaFinContrato).getTime() <= fourWeeksLater ? "#ff696198" : "#f8e44bbd";
 
+    return (
+        <tr key={Contrato.IdContrato}>
+            <td>{Contrato.IdContrato}</td>
+            <td>{Contrato.DocumentoIdentidad}</td>
+            <td>{Contrato.NombreArrendatario}</td>
+            <td>{Contrato.NoMatricula}</td>
+            <td>{formatDate(Contrato.FechaInicioContrato)}</td>
+            <td style={{ backgroundColor: colorFechaFinContrato}}>{formatDate(Contrato.FechaFinContrato)}</td>
+            <td>{Contrato.ValorDeposito}</td>
+            <td>{Contrato.CuotasPendientes}</td>
+            <td>{Contrato.EstadoContrato}</td>
+        </tr>
+    );
+};
   // Variables Paginacion
+  useEffect(() => {
+    // Cambiar el número de ítems por página según el tamaño de la pantalla
+    if (isSmallScreen) {
+      setItemsPerPage(5);
+    } else {
+      setItemsPerPage(8);
+    }
+  }, [isSmallScreen]);
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
 
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
