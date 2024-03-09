@@ -277,7 +277,7 @@ export const Propietarios = () => {
           >
             <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/InhaPropietarios")}>
               <FontAwesomeIcon className="icon" icon={faUserSlash} />
-              <p className="AgregarPA">Ver Propietarios Inhabilitados</p>
+              <p className="AgregarPA">Ver Inhabilitados</p>
             </Button>
           </OverlayTrigger>
         </div>

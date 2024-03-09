@@ -278,8 +278,7 @@ export const ContratoA = () => {
           id=""
         />
         </div>
-      </div>
-      <Button
+        <Button
         variant="primary"
         className="NewContract"
         onClick={() => redireccion("/Generar")}
@@ -295,6 +294,8 @@ export const ContratoA = () => {
         <FontAwesomeIcon icon={faFilePdf} />
         Generar PDF
       </Button>
+      </div>
+     
       <div className="container__arrendatario">
         <div className="ContArrendatario">
           <h1>Contrato Arrendatario</h1>

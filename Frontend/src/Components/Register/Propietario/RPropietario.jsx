@@ -180,7 +180,7 @@ export const RPropietario = () => {
                 Seleccione Tipo de Documento{" "}
               </option>
               <option value="Cedula Ciudadania">Cedula Ciudadania</option>
-              <option value="Cedula Extranjera">Cedula Extranjera</option>
+              <option value="Cedula Extranjeria">Cedula Extranjería</option>
               <option value="Pasaporte">Pasaporte</option>
             </Form.Select>
           </Form.Group>
@@ -299,8 +299,9 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
-          {/* Resto de los campos del formulario */}
+        
 
+        </Form>
           {/* Botones de guardar y cancelar */}
           <div className="col-md-12">
             <div className="save_deleter">
@@ -364,7 +365,6 @@ export const RPropietario = () => {
               </Modal.Footer>
             </Modal>
           </div>
-        </Form>
       </div>
     </div>
   );

@@ -1,22 +1,29 @@
 import { useState, useEffect } from "react";
 import "./ReArrendatario.css";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Button, Form, Modal, ListGroup } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export const ReArrendatario = () => {
-  
-  
+  const [CodeudoresDisponibles, setCodeudoresDisponibles] = useState([]);
+  const [selectedCodeudor, setSelectedCodeudor] = useState("");
   const { register, handleSubmit, reset } = useForm();
-
+  const [mostrarModalA, setMostrarModalA] = useState(false);
   const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la alerta
   const [focusedField, setFocusedField] = useState(""); // Estado para rastrear el campo enfocado
 
   // Modal
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+
+  const notify = () =>
+  toast.success("Se registró correctamente", {
+    theme: "dark",
+  });
 
   const handleConfirmSave = () => {
     // Lógica para confirmar el guardado
@@ -43,6 +50,7 @@ export const ReArrendatario = () => {
   });
 
   useEffect(() => {
+    fetchData();
     // Si hay parámetros de consulta en la URL, significa que se está editando un codeudor existente
     if (location.search) {
       const arrendatario = {
@@ -69,8 +77,35 @@ export const ReArrendatario = () => {
     }
   }, [location.search]);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3006/Vcodeudor?");
+      const Codeudores = response.data.map((prop) => prop);
+      setCodeudoresDisponibles(Codeudores);
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
+    }
+  };
+
+  
+  const handleCloseModalA = () => {
+    setMostrarModalA(false);
+  };
+  const handleMostrarAClick = async () => {
+    setMostrarModalA(true);
+  };
+
+  const handleCodeudorChange = async (Codeudor) => {
+    setSelectedCodeudor(Codeudor);
+    console.log(Codeudor);
+    setMostrarModalA(false);
+  };
 
   const onSubmitRegistro = async (data) => {
+    data.IdCodeudor = selectedCodeudor.IdCodeudor;
     try {
       const url = arrendatarioData.IdArrendatario
         ? `http://localhost:3006/Rarrendatarios/${arrendatarioData.IdArrendatario}`
@@ -112,7 +147,7 @@ export const ReArrendatario = () => {
       setShowWarning(false);
     }
 
-    // Actualiza los datos del propietario
+    // Actualiza los datos del Codeudor
     setarrendatarioData({ ...arrendatarioData, [fieldName]: fieldValue });
   };
 
@@ -130,7 +165,7 @@ export const ReArrendatario = () => {
       setShowWarning(false);
     }
 
-    // Actualiza los datos del propietario
+    // Actualiza los datos del Codeudor
     setarrendatarioData({ ...arrendatarioData, [fieldName]: fieldValue });
   };
 
@@ -172,8 +207,8 @@ export const ReArrendatario = () => {
                 {...register("tipodocumento")}
                 defaultValue={arrendatarioData.TipoDocumento}
               >
-                <option value={"CC"}>Cédula de Ciudadanía</option>
-                <option value={"CE"}>Cédula de Extranjería</option>
+                <option value={"Cedula Ciudadania"}>Cédula de Ciudadanía</option>
+                <option value={"Cedula Extranjeria"}>Cédula de Extranjería</option>
               </Form.Control>
             </Form.Group>
 
@@ -220,14 +255,23 @@ export const ReArrendatario = () => {
               />
             </Form.Group>
 
-            <Form.Group controlId="estado">
-              <Form.Label >Estado:</Form.Label>
-              <Form.Control
+            <Form.Group controlId="formNoIdentidadCodeudor">
+              <Form.Label>Codeudor del inmueble</Form.Label>
+              <Form.Select
                 className="InputsRegistros"
-                type="text"
-                {...register("estado")}
-                defaultValue={arrendatarioData.Estado}
-              />
+                value={
+                  selectedCodeudor ? selectedCodeudor.IdCodeudor : "a?"
+                }
+                onChange={(e) => handleCodeudorChange(e.target.value)}
+                onClick={() => handleMostrarAClick(true)}
+              >
+                <option value="">Seleccionar Numero de Codeudor</option>
+                {CodeudoresDisponibles.map((Codeudor, index) => (
+                  <option key={index} value={Codeudor.IdCodeudor}>
+                    {Codeudor.NombreCompleto}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
           </div>
 
@@ -293,6 +337,35 @@ export const ReArrendatario = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+        <Modal
+            size="lg"
+            show={mostrarModalA}
+            onHide={handleCloseModalA}
+            aria-labelledby="example-modal-sizes-title-lg"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Seleccionar Codeudor</Modal.Title>
+            </Modal.Header>
+              
+            <Modal.Body>
+              <ListGroup>
+                {CodeudoresDisponibles.map((Codeudor, index) => (
+                  <ListGroup.Item
+                    key={index}
+                    action
+                    onClick={() => handleCodeudorChange(Codeudor)}
+                  >
+                    <span style={{ marginRight: "10px" }}>
+                      🏢 {/* Icono de Codeudor */}
+                    </span>
+                    {Codeudor.TipoDocumento} {Codeudor.DocumentoIdentidad}{" "}
+                    - {Codeudor.NombreCompleto}
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </Modal.Body>
+            <Modal.Footer><a href="/Registrocodeudor">Agregar Nuevo Codeudor</a></Modal.Footer>
+          </Modal>
       </div>
     </div>
   );

@@ -184,7 +184,7 @@ export const AsignarRol = () => {
         </Button>
         <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/InhabilitarRol")}>
             <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-            Empleados Inhabilitados
+            Inhabilitados
         </Button>
       </div>
 

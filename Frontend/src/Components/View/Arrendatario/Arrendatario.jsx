@@ -105,7 +105,8 @@ export const Arrendatario = () => {
         <th>ID</th>
         <th>Tipo de Documento</th>
         <th>No. Documento</th>
-        <th>Nombre</th>
+        <th>Nombre Arrendatario</th>
+        <th>Nombre Codeudor</th>
         <th>Estado</th>
         <th>Teléfono</th>
         <th>Correo</th>
@@ -120,6 +121,7 @@ export const Arrendatario = () => {
         <td>{Arrendatarios.TipoDocumento}</td>
         <td>{Arrendatarios.DocumentoIdentidad}</td>
         <td>{Arrendatarios.NombreCompleto}</td>
+        <td>{Arrendatarios.NombreCodeudor}</td>
         <td>{Arrendatarios.Estado}</td>
         <td>{Arrendatarios.Telefono}</td>
         <td>{Arrendatarios.Correo}</td>
@@ -246,7 +248,7 @@ const redireccion = (ruta) => {
           >
             <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Inharrendatario")}>
                 <FontAwesomeIcon className="icon" icon={faUserSlash} />
-                <p className="AgregarPA">Ver Arrendatarios Inhabilitados</p>
+                <p className="AgregarPA">Ver Inhabilitados</p>
             </Button>
           </OverlayTrigger>
         </div>
