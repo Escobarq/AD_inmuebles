@@ -255,7 +255,7 @@ export const Codeudor = () => {
               onClick={() => redireccion("/Codeudores")}
             >
               <FontAwesomeIcon className="icon" icon={faUserSlash} />
-              <p className="AgregarPA">Ver Codeudores Inhabilitados</p>
+              <p className="AgregarPA">Ver Inhabilitados</p>
             </Button>
           </OverlayTrigger>
         </div>

@@ -1,10 +1,8 @@
-
-import { useEffect, useState } from 'react';
 import logo from '../../assets/Logo2.png'
-import './Home.css'
+import './Loading.css'
 import Spinner from 'react-bootstrap/Spinner';
 
-const Home = () => {
+const Loading = () => {
    
     return ( 
         <>
@@ -18,4 +16,4 @@ const Home = () => {
 }
  
 
-export default Home;
+export default Loading;

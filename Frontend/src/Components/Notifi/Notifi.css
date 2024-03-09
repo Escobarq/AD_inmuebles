@@ -6,7 +6,13 @@
 }
 
 .notification-button {
+  background-color: transparent;
+  border: none;
   font-size: 1.5rem; /* Aumenta el tamaño del botón */
+}
+.notification-button:hover{
+  background-color: transparent;
+  border: none;
 }
 
 .notification-popover {
@@ -45,7 +51,11 @@
 
 @media (max-width: 1440px) {
   .notification-container {
-    font-size: 14px; /* Tamaño de fuente reducido para pantallas más pequeñas */
+    font-size: 10px; /* Tamaño de fuente reducido para pantallas más pequeñas */
+    
+  }
+  .notification-button {
+    font-size: 1rem; /* Aumenta el tamaño del botón */
   }
 }
 

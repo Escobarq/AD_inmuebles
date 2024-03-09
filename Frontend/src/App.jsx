@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import Home from "./Components/Home/Home";
+import Loading from "./Components/Loading/Loading";
 import { Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { Propietarios } from "./Components/View/Propietarios/propietarios";
 import { Arrendatario } from "./Components/View/Arrendatario/Arrendatario";
@@ -72,7 +72,7 @@ function App() {
   if (loading) {
     return (
       <div className="contener-carga">
-        <Home />
+        <Loading />
       </div>
     );
   } else {
@@ -94,7 +94,7 @@ function App() {
 
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/inicio" element={<Home />} />
+            <Route path="/inicio" element={<Loading />} />
             <Route path="/Propietario" element={<Propietarios />} />
             <Route
               path="/InhaPropietarios"
