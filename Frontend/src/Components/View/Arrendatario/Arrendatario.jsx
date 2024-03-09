@@ -13,10 +13,12 @@ import ActualizarArrendatario from "../../Hooks/InhabilitarArren";
 import { toast } from "react-toastify";
 import NoResultImg from "../../../assets/NoResult.gif";
 import useRoleInfo from "../../Hooks/useRoleInfo";
+import { useMediaQuery } from "@react-hook/media-query";
 
 
 export const Arrendatario = () => {
   const roleId = useRoleInfo();
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [arrendatarioIdToDelete, setarrendatarioIdToDelete] = useState(null);
@@ -143,8 +145,17 @@ export const Arrendatario = () => {
     );
   };
   //Variables Paginacion
+  useEffect(() => {
+    // Cambiar el número de ítems por página según el tamaño de la pantalla
+    if (isSmallScreen) {
+      setItemsPerPage(5);
+    } else {
+      setItemsPerPage(8);
+    }
+  }, [isSmallScreen]);
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

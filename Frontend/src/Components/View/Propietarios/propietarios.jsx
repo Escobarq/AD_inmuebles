@@ -18,9 +18,11 @@ import InhabilitarPropetario from "../../Hooks/InhabilitarPropetarios";
 import NoResultImg from "../../../assets/NoResult.gif";
 import { InfoPropietario } from "../../Hooks/InfoPropietario";
 import useRoleInfo from "../../Hooks/useRoleInfo";
+import { useMediaQuery } from "@react-hook/media-query";
 
 export const Propietarios = () => {
   const roleId = useRoleInfo();
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infopropietario, setinfopropietario] = useState([]);
   const [Rol, setRol] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -158,9 +160,18 @@ export const Propietarios = () => {
       </tr>
     );
   };
-  //Variables Paginacion
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+    // Variables Paginacion
+    useEffect(() => {
+      // Cambiar el número de ítems por página según el tamaño de la pantalla
+      if (isSmallScreen) {
+        setItemsPerPage(5);
+      } else {
+        setItemsPerPage(8);
+      }
+    }, [isSmallScreen]);
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

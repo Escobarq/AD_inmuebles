@@ -8,8 +8,11 @@ import { useState, useEffect } from "react";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
 import "moment/locale/es";
+import { useMediaQuery } from "@react-hook/media-query";
+
 
 export const H_gastos = () => {
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoComision, setinfoComision] = useState([]);
 
   useEffect(() => {
@@ -78,8 +81,17 @@ export const H_gastos = () => {
     );
   };
   //Variables Paginacion
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+    useEffect(() => {
+      // Cambiar el número de ítems por página según el tamaño de la pantalla
+      if (isSmallScreen) {
+        setItemsPerPage(5);
+      } else {
+        setItemsPerPage(8);
+      }
+    }, [isSmallScreen]);
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

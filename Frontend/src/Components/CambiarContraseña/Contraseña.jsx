@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -11,14 +11,29 @@ export const Contraseña = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  const [userData, setUserData] = useState({
+    nombre: "",
+    apellido: "",
+    correo: ""
+  });
   const [error, setError] = useState(false); // Inicializar como falso
+  const [userEmail, setUserEmail] = useState(""); // Estado para almacenar el correo del usuario
+
+  useEffect(() => {
+    // Obtener el correo del usuario del localStorage al cargar el componente
+    const userEmailFromStorage = localStorage.getItem("items");
+    if (userEmailFromStorage) {
+      setUserEmail(userEmailFromStorage);
+      setUserData(prevData => ({...prevData, correo: userEmailFromStorage}));
+    }
+  }, []);
 
   const handleChangePassword = () => {
     const { oldPassword, newPassword } = passwordData;
   
     // Hacer una solicitud POST al servidor para cambiar la contraseña
     axios
-      .post("http://localhost:3006/api/changePassword", { oldPassword, newPassword })
+      .post("http://localhost:3006/api/changePassword", { ...userData, ...passwordData })
       .then((response) => {
         if (response.status === 200) {
           toast.success("Contraseña actualizada exitosamente", { theme: "colored" });
@@ -39,11 +54,15 @@ export const Contraseña = () => {
   };
 
   const handleSaveChanges = () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      // Si las contraseñas no coinciden, establecer error a true
+    if (
+      passwordData.newPassword !== passwordData.confirmPassword ||
+      !userData.nombre ||
+      !userData.apellido
+    ) {
+      // Si las contraseñas no coinciden o faltan el nombre o apellido, establecer error a true
       setError(true);
     } else {
-      // Si las contraseñas coinciden, establecer error a false y mostrar el modal
+      // Si las contraseñas coinciden y se proporciona el nombre y apellido, establecer error a false y mostrar el modal
       setError(false);
       setShowPasswordModal(true);
     }
@@ -59,12 +78,46 @@ export const Contraseña = () => {
   };
 
   return (
-    <div className="contener-home">
-      <div>
+    <div className="contener-home contener-rpropietario">
+        <h1>Editar Perfil</h1>
+      <div className="container">
         <Form
-          style={{ width: "400px" }}
-          className="d-flex flex-column justify-content-center align-items-center"
+          style={{ width: "100%" }}
+          className="form-propietario"
         >
+          <Form.Group controlId="formNombre" className="mb-3">
+            <Form.Label>Nombre</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingresa tu nombre"
+              name="nombre"
+              value={userData.nombre}
+              onChange={(e) => setUserData({...userData, nombre: e.target.value})}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formApellido" className="mb-3">
+            <Form.Label>Apellido</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingresa tu apellido"
+              name="apellido"
+              value={userData.apellido}
+              onChange={(e) => setUserData({...userData, apellido: e.target.value})}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formCorreo" className="mb-3">
+            <Form.Label>Correo</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Ingresa tu correo"
+              name="correo"
+              value={userData.correo}
+              disabled
+            />
+          </Form.Group>
+
           <Form.Group controlId="formOldPassword" className="mb-3">
             <Form.Label>Contraseña anterior</Form.Label>
             <Form.Control
@@ -98,23 +151,23 @@ export const Contraseña = () => {
             />
             {error && (
               <Form.Text className="text-danger">
-                Las contraseñas no coinciden
+                Las contraseñas no coinciden o faltan datos
               </Form.Text>
             )}
           </Form.Group>
-
-          <Button variant="primary" className="mb-3" onClick={handleSaveChanges}>
+        </Form>
+        <div className="contener-buttons d-flex justify-content-center">
+          <Button variant="primary" className="m-2" onClick={handleSaveChanges}>
             Guardar cambios
           </Button>
           <Button
-            variant="secondary"
+            variant="danger"
             onClick={handleCancelChanges}
             className="ms-2"
           >
             Cancelar
           </Button>
-        </Form>
-
+          </div>
         <Modal
           show={showPasswordModal}
           onHide={() => setShowPasswordModal(false)}

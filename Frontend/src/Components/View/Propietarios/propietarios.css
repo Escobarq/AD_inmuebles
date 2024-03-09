@@ -152,10 +152,12 @@ btn-add-info {
   .btn-add-info{
     margin: 2% !important;
   }
-}
-@media (width <= 1440px) {
   .input-filtroRe {
     height: 2.5rem !important;
   }
-
+  .btn-opciones{
+    margin: 1%;
+  }
 }
+
+
