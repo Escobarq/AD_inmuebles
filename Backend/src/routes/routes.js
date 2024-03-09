@@ -4,6 +4,8 @@ const router = express.Router();
 const connection = require("../db");
 
 //Metodos Get
+
+
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
   const { correousuario } = req.query; // Datos del formulario
@@ -22,10 +24,7 @@ router.get("/Infouser", (req, res) => {
 
 router.get("/Vpropietarios", (req, res) => {
   const { Cedula, FechaIngresoMIN, FechaIngresoMAX } = req.query;
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFiltroData({ ...filtroData, [name]: value });
-  };
+
 
   try {
     let query = "SELECT * FROM propietario  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
@@ -148,20 +147,27 @@ router.get("/Vinmueble", (req, res) => {
 router.get("/propietarios-inmuebles", (req, res) => {
   try {
     const query = `
-      SELECT 
-        p.*, 
-        i.IdInmueble,
-        i.Direccion AS DireccionInmueble,
-        i.Ciudad,
-        i.Barrio,
-        i.Tipo AS TipoInmueble,
-        i.NoMatricula
-      FROM 
-        propietario p
-      LEFT JOIN 
-        inmueble i ON p.IdPropietario = i.IdPropietario
-      ORDER BY 
-        p.IdPropietario ASC`;
+    SELECT 
+    p.*, 
+    i.IdInmueble,
+    i.Direccion AS DireccionInmueble,
+    i.Ciudad,
+    i.Barrio,
+    i.Tipo AS TipoInmueble,
+    i.NoMatricula
+FROM 
+    propietario p
+LEFT JOIN 
+    inmueble i ON p.IdPropietario = i.IdPropietario
+WHERE 
+    i.IdInmueble IS NOT NULL
+    AND i.Direccion IS NOT NULL
+    AND i.Ciudad IS NOT NULL
+    AND i.Barrio IS NOT NULL
+    AND i.Tipo IS NOT NULL
+    AND i.NoMatricula IS NOT NULL
+ORDER BY 
+    p.IdPropietario ASC`;
 
     connection.query(query, (error, results) => {
       if (error) {
@@ -501,12 +507,10 @@ router.post("/contratoarrendamiento", (req, res) => {
       return;
     }
     console.log("Nuevo contrato insertado correctamente");
-    res
-      .status(201)
-      .json({
-        message: "Contrato de arrendamiento creado correctamente",
-        contratoId: result.insertId,
-      });
+    res.status(201).json({
+      message: "Contrato de arrendamiento creado correctamente",
+      contratoId: result.insertId,
+    });
   });
 });
 
@@ -557,7 +561,24 @@ router.post("/RPropietario", async (req, res) => {
     res.status(500).json({ error: "Error al añadir propietario" });
   }
 });
+// Ruta para cambiar la contraseña del trabajador
+router.post("/api/changePassword", (req, res) => {
+  const { oldPassword, newPassword } = req.body;
 
+  // Consulta SQL para buscar el trabajador por su contraseña anterior
+  const sql = `UPDATE trabajador SET Contrasena = ? WHERE Contrasena = ?`;
+
+  // Ejecutar la consulta SQL
+  connection.query(sql, [newPassword, oldPassword], (err, result) => {
+    if (err) {
+      console.error("Error al cambiar la contraseña:", err);
+      res.status(500).json({ error: "Error al cambiar la contraseña" });
+    } else {
+      console.log("Contraseña actualizada exitosamente");
+      res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+    }
+  });
+});
 // Ruta para registrar un Inmueble
 router.post("/Reinmueble", async (req, res) => {
   const {
@@ -581,20 +602,10 @@ router.post("/Reinmueble", async (req, res) => {
   } = req.body;
 
   try {
-    // Verificar si el número de matrícula ya existe en la base de datos
-    const [existingInmueble] = await connection.execute(
-      "SELECT * FROM inmueble WHERE NoMatricula = ?",
-      [Nmatricula]
-    );
 
-    // Si el número de matrícula ya existe, devolver un error
-    if (existingInmueble.length > 0) {
-      return res
-        .status(400)
-        .json({
-          error: "El número de matrícula ya existe en la base de datos",
-        });
-    }else {
+    connection.query("SELECT * FROM inmueble WHERE NoMatricula = ?",
+    [Nmatricula], (error, results) => {
+      if (results == "") {
       if (Tipo == "Bodega") {
         connection.query(
           "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -696,12 +707,17 @@ router.post("/Reinmueble", async (req, res) => {
         );
       }
       res.status(201).json({ message: "Inmueble Registrado exitosamente" });
-    }
+      } else {
+        res.status(400).json({ error: "Numero de Matricula duplicado" }); 
+        console.log(error);
+      }
+    });
   } catch (error) {
     console.error("Error al añadir propietario:", error);
     res.status(500).json({ error: "Error al Registrar inmueble" });
   }
 });
+
 
 // Ruta para la creación de un nuevo codeudor
 router.post("/Rcodeudor", async (req, res) => {
@@ -772,28 +788,26 @@ router.post("/RegistrarUsuario", async (req, res) => {
   }
 
   try {
-    const existingUser = await connection.query(
-      "SELECT * FROM trabajador WHERE correo = ?",
-      [correo]
-    );
-
-    if (existingUser.length > 0) {
-      return res
-        .status(409)
-        .json({ message: "El correo electrónico ya está en uso" });
-    }
-
-    const idrol = Math.floor(Math.random() * 2) + 1;
-
-    await connection.query(
+      connection.query("SELECT * FROM trabajador WHERE Correo = ?",
+      [correo], (error, results) => {
+        if (results == "") {
+          const idrol = Math.floor(Math.random() * 2) + 1;
+    // Insertar el nuevo usuario en la base de datos
+     connection.query(
       "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
       [nombre, apellido, correo, contrasena, telefono, idrol]
     );
 
     res.status(201).json({ message: "Usuario registrado exitosamente" });
+        }
+        else {
+          res.status(400).json({ message: "Correo Duplicado" });
+          console.log(correo);
+        }})
+   
   } catch (error) {
     console.error("Error al registrar usuario:", error);
-    if (error.code === "ERDUPENTRY") {
+    if (error.code === "ER_DUP_ENTRY") {
       return res
         .status(409)
         .json({ message: "Ya existe un usuario con ese correo electrónico" });
@@ -801,6 +815,7 @@ router.post("/RegistrarUsuario", async (req, res) => {
     res.status(500).json({ message: "Error al registrar usuario" });
   }
 });
+
 
 // Ruta para registrar un arrendatario
 router.post("/Rarrendatario", async (req, res) => {

@@ -58,7 +58,7 @@ export const Switch = () => {
             </Col>
             <Col md={6}>
               <Card style={{ width: "18rem", margin: "10px" ,boxShadow:'0px 4px 8px rgba(0, 0, 0, 0.1)'}}>
-                <Card.Img variant="top" src="../../../public/ingri.png" style={{height:"260px"}}/>
+                <Card.Img variant="top" src="../../../public/ingri.jpg" style={{height:"260px"}}/>
                 <Card.Body>
                   <Card.Title><a href="https://github.com/IngSg" className="ModalNosotros">Ingrid Vannesa Segura Montaño </a></Card.Title>
                   <Card.Text>Ux Ui Desing</Card.Text>

@@ -1,19 +1,58 @@
 .notification-container {
-    position: fixed; /* Fija la posición del contenedor en la pantalla */
-    top: 20px; /* Ajusta la distancia desde la parte superior */
-    right: 20px; /* Ajusta la distancia desde el borde derecho */
-    z-index: 999; /* Asegura que el componente esté encima de otros elementos */
+  position: fixed;
+  top: 5px;
+  right: 20px;
+  z-index: 999;
+}
+
+.notification-button {
+  font-size: 1.5rem; /* Aumenta el tamaño del botón */
+}
+
+.notification-popover {
+  width: 300px; /* Ancho del Popover */
+  position: absolute;
+  top: calc(
+    100% + 10px
+  ); /* Coloca el Popover debajo del botón de notificación con un margen superior */
+  left: -60%; /* Centra el Popover horizontalmente */
+  transform: translateX(-50%);
+  z-index: 999;
+  padding: 10px; /* Agrega un espacio alrededor del contenido del Popover */
+}
+
+.popover-header {
+  background-color: #007bff; /* Cambia el color de fondo del encabezado */
+  color: #fff; /* Cambia el color del texto del encabezado */
+}
+
+.popover-body {
+  background-color: #f8f9fa;
+  max-height: 300px; /* Altura máxima del cuerpo de notificaciones */
+  overflow-y: auto; /* Cambia el color de fondo del cuerpo */
+}
+
+.notification-item {
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+.popover-arrow {
+  display: none !important;
+}
+
+@media (max-width: 1440px) {
+  .notification-container {
+    font-size: 14px; /* Tamaño de fuente reducido para pantallas más pequeñas */
   }
-  .notification-popover {
-    width: 270px;
-    position: absolute;
-    top: calc(100% + 1px); /* Coloca el popover debajo del botón de notificación */
-    left: -100%;
-    transform: translateX(-50%); /* Centra el popover horizontalmente */
-    z-index: 999; /* Asegura que el popover esté encima de todos los demás componentes */
-  }
-  .popover-arrow{
-    display: none !important;
-  }
-  
-  
+}
+
+.notification-details {
+  margin-bottom: 8px; /* Espacio entre detalles de notificación */
+}
+
+.notification-item span {
+  display: block; /* Alinear cada detalle en una línea separada */
+}
