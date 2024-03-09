@@ -24,10 +24,7 @@ router.get("/Infouser", (req, res) => {
 
 router.get("/Vpropietarios", (req, res) => {
   const { Cedula, FechaIngresoMIN, FechaIngresoMAX } = req.query;
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFiltroData({ ...filtroData, [name]: value });
-  };
+
 
   try {
     let query = "SELECT * FROM propietario  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
@@ -605,12 +602,10 @@ router.post("/Reinmueble", async (req, res) => {
   } = req.body;
 
   try {
-    // Si el número de matrícula ya existe, devolver un error
-    if (existingInmueble.length > 0) {
-      return res.status(400).json({
-        error: "El número de matrícula ya existe en la base de datos",
-      });
-    } else {
+
+    connection.query("SELECT * FROM inmueble WHERE NoMatricula = ?",
+    [Nmatricula], (error, results) => {
+      if (results == "") {
       if (Tipo == "Bodega") {
         connection.query(
           "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -712,7 +707,11 @@ router.post("/Reinmueble", async (req, res) => {
         );
       }
       res.status(201).json({ message: "Inmueble Registrado exitosamente" });
-    }
+      } else {
+        res.status(400).json({ error: "Numero de Matricula duplicado" }); 
+        console.log(error);
+      }
+    });
   } catch (error) {
     console.error("Error al añadir propietario:", error);
     res.status(500).json({ error: "Error al Registrar inmueble" });
@@ -789,27 +788,23 @@ router.post("/RegistrarUsuario", async (req, res) => {
   }
 
   try {
-    // Verificar si ya existe un usuario con el mismo correo electrónico
-    const existingUser = await connection.query(
-      "SELECT * FROM trabajador WHERE correo = ?",
-      [correo]
-    );
-
-    if (existingUser.length > 0) {
-      return res
-        .status(409)
-        .json({ message: "El correo electrónico ya está en uso" });
-    }
-
-    const idrol = Math.floor(Math.random() * 2) + 1;
-
+      connection.query("SELECT * FROM trabajador WHERE Correo = ?",
+      [correo], (error, results) => {
+        if (results == "") {
+          const idrol = Math.floor(Math.random() * 2) + 1;
     // Insertar el nuevo usuario en la base de datos
-    await connection.query(
+     connection.query(
       "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
       [nombre, apellido, correo, contrasena, telefono, idrol]
     );
 
     res.status(201).json({ message: "Usuario registrado exitosamente" });
+        }
+        else {
+          res.status(400).json({ message: "Correo Duplicado" });
+          console.log(correo);
+        }})
+   
   } catch (error) {
     console.error("Error al registrar usuario:", error);
     if (error.code === "ER_DUP_ENTRY") {

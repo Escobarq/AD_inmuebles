@@ -61,8 +61,8 @@ export const RInmuebleA = () => {
       reset();
       window.location.href = "/Inmueble";
     } catch (error) {
-      if (error.message.includes("correo ya registrado")) {
-        alert("El correo ya está registrado");
+      if (error.message.includes("Numero de Matricula duplicado")) {
+        alert("Numero de Matricula duplicado");
       } else {
         falla();
         console.error("Error al crear usuario:", error);
@@ -172,7 +172,7 @@ export const RInmuebleA = () => {
               <Form.Label>No. Matricula:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("NMatricula")}
+                {...register("Nmatricula")}
                 onChange={handleNumberChange}
                 onFocus={() => handleFieldFocus("Nmatricula")}
                 required
