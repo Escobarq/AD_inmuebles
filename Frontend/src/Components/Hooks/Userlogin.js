@@ -10,16 +10,15 @@ export const userLogin = async (data) => {
 
     if (response.ok) {
       const responseData = await response.json();
-      if (responseData.message === 'Inicio de sesión exitoso') {
-        localStorage.setItem('items', data.correousuario); // Reinicia el formulario si la solicitud es exitosa
-        window.location.href = '/Inmueble'; // Redirige al usuario a la vista de inicio
-      } else {
-        // Mostrar mensaje de error si el inicio de sesión no fue exitoso
-        throw new Error(responseData.message);
-      }
+      localStorage.setItem('items', data.correousuario); // Reinicia el formulario si la solicitud es exitosa
+      window.location.href = '/Inmueble'; 
+      return responseData; // Devuelve los datos de respuesta si la solicitud es exitosa
+    } else if (response.status === 401) {
+      throw new Error('Contraseña incorrecta'); // Lanza un error si la contraseña es incorrecta
+    } else if (response.status === 404) {
+      throw new Error('Usuario no encontrado o no autorizado para iniciar sesión'); // Lanza un error si el usuario no está autorizado
     } else {
-      // Mostrar mensaje de error si hay un problema con la solicitud
-      throw new Error('Hubo un problema con la solicitud');
+      throw new Error('Error en la solicitud'); // Lanza un error si hay un problema con la solicitud
     }
   } catch (error) {
     // Maneja los errores de red o de la aplicación

@@ -776,31 +776,30 @@ router.post("/Rcodeudor", async (req, res) => {
 /*
   Funcion para logear
   */
-router.post("/Login_user", (req, res) => {
-  const { correousuario, contrausuario } = req.body; // Datos del formulario
-
-  const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
-
-  connection.query(sql, [correousuario], (error, results) => {
-    if (error) {
-      console.error("Error al realizar la consulta:", error);
-      res.status(500).json({ message: "Error del servidor" });
-    } else {
+  router.post("/Login_user", (req, res) => {
+    const { correousuario, contrausuario } = req.body; // Datos del formulario
+  
+    const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
+  
+    connection.query(sql, [correousuario], (error, results) => {
+      if (error) {
+        console.error("Error al realizar la consulta:", error);
+        return res.status(500).json({ message: "Error del servidor" });
+      }
+  
       if (results.length > 0) {
         const user = results[0];
         if (user.Contrasena === contrausuario) {
-          res.status(200).json({ message: "Inicio de sesión exitoso" });
+          return res.status(200).json({ message: "Inicio de sesión exitoso" });
         } else {
-          res.status(401).json({ message: "Contraseña incorrecta" });
+          return res.status(401).json({ message: "Contraseña incorrecta" });
         }
       } else {
-        res.status(404).json({
-          message: "Usuario no encontrado o no autorizado para iniciar sesión",
-        });
+        return res.status(404).json({ message: "Usuario no encontrado o no autorizado para iniciar sesión" });
       }
-    }
+    });
   });
-});
+  
 
 // Registrar Usuario
 router.post("/RegistrarUsuario", async (req, res) => {
