@@ -4,6 +4,9 @@
   }
 
   .footer_login{
+    display: -webkit-box !important; /* Para Safari 6.1 - 9.0 */
+    display: -webkit-flex !important; /* Para Safari 9.0+ */
+    display: -ms-flexbox !important; /* Para IE 10 */
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
