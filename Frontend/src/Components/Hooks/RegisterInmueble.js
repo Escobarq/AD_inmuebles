@@ -9,6 +9,10 @@ export const crearInmueble = async (data) => {
             body: JSON.stringify(data),
         });
 
+        if (response.status === 400){
+            throw new Error(`Numero de Matricula duplicado`);
+        }
+
         if (!response.ok) {
             throw new Error(`Error al crear usuario. Código de estado: ${response.status}`);
         }
@@ -18,7 +22,7 @@ export const crearInmueble = async (data) => {
 
     } catch (error) {
         if (error.message.includes('Numero de Matricula duplicado')) {
-            console.log('XD')
+            console.log('Numero de Matricula duplicado')
             throw error;
         } else {
             console.error('Error en el registro del inmueble', error);

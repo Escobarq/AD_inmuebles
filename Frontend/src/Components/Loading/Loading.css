@@ -1,9 +1,6 @@
 
-.logo-img {
-  width: 75%;
-}
 .login {
-  width: 100%;
+  width: 99%;
 }
 .conten-login {
   width: 50%;
@@ -26,19 +23,12 @@
 }
 
 .logo-img{
-    width: 50%;
+    width: 25%;
 }
 .loading{
   margin-top: 5%;
-  width: 300px;
-  height: 300px;
-}
-
-.login{    
-    width: 100%;
-}
-.conten-login{
-    width: 50%;
+  width: 200px;
+  height: 200px;
 }
 
 /* Navbar.css */

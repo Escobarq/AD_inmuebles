@@ -67,7 +67,11 @@ router.get("/Vpropietarios", (req, res) => {
 router.get("/Varrendatario", (req, res) => {
   const { Cedula, Estado } = req.query;
   try {
-    let query = "SELECT * FROM arrendatario  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
+    let query = ` SELECT 
+    arrendatario.*,
+    codeudor.NombreCompleto AS NombreCodeudor
+FROM arrendatario
+JOIN codeudor ON arrendatario.IdCodeudor = codeudor.IdCodeudor `; // Inicializa la consulta con una condición verdadera
 
     const queryParams = []; // Almacena los valores de los parámetros
 
@@ -710,11 +714,9 @@ router.post("/Reinmueble", async (req, res) => {
       res.status(201).json({ message: "Inmueble Registrado exitosamente" });
       } else {
         res.status(400).json({ error: "Numero de Matricula duplicado" }); 
-        console.log(error);
       }
     });
   } catch (error) {
-    console.error("Error al añadir propietario:", error);
     res.status(500).json({ error: "Error al Registrar inmueble" });
   }
 });
@@ -802,17 +804,10 @@ router.post("/RegistrarUsuario", async (req, res) => {
     res.status(201).json({ message: "Usuario registrado exitosamente" });
         }
         else {
-          res.status(400).json({ message: "Correo Duplicado" });
-          console.log(correo);
+          res.status(400).json({ error: "Correo Duplicado" });
         }})
    
   } catch (error) {
-    console.error("Error al registrar usuario:", error);
-    if (error.code === "ER_DUP_ENTRY") {
-      return res
-        .status(409)
-        .json({ message: "Ya existe un usuario con ese correo electrónico" });
-    }
     res.status(500).json({ message: "Error al registrar usuario" });
   }
 });
@@ -822,6 +817,7 @@ router.post("/RegistrarUsuario", async (req, res) => {
 router.post("/Rarrendatario", async (req, res) => {
   const {
     tipodocumento,
+    IdCodeudor,
     numerodocumento,
     nombrearrendatario,
     telefono,
@@ -831,9 +827,10 @@ router.post("/Rarrendatario", async (req, res) => {
 
   try {
     connection.query(
-      "INSERT INTO arrendatario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono,  Correo, Estado) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO arrendatario (NombreCompleto, IdCodeudor, TipoDocumento, DocumentoIdentidad, Telefono,  Correo, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [
         nombrearrendatario,
+        IdCodeudor,
         tipodocumento,
         numerodocumento,
         telefono,
