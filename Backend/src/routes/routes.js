@@ -170,6 +170,7 @@ WHERE
     AND i.Barrio IS NOT NULL
     AND i.Tipo IS NOT NULL
     AND i.NoMatricula IS NOT NULL
+    AND i.Estado <> 'Ocupado'
 ORDER BY 
     p.IdPropietario ASC`;
 
@@ -243,10 +244,8 @@ FROM
     arrendatario a
 LEFT JOIN 
     codeudor c ON a.IdCodeudor = c.IdCodeudor
-LEFT JOIN
-    contratoarrendamiento contrato ON a.IdArrendatario = contrato.IdArrendatario
 WHERE
-    contrato.EstadoContrato = 'Finalizado' -- Solo arrendatarios con contratos finalizados
+    a.Estado = 'Libre'
 ORDER BY 
     a.IdArrendatario ASC`;
 
