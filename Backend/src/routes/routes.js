@@ -170,6 +170,7 @@ WHERE
     AND i.Barrio IS NOT NULL
     AND i.Tipo IS NOT NULL
     AND i.NoMatricula IS NOT NULL
+    AND i.Estado <> 'Ocupado'
 ORDER BY 
     p.IdPropietario ASC`;
 
@@ -243,10 +244,8 @@ FROM
     arrendatario a
 LEFT JOIN 
     codeudor c ON a.IdCodeudor = c.IdCodeudor
-LEFT JOIN
-    contratoarrendamiento contrato ON a.IdArrendatario = contrato.IdArrendatario
 WHERE
-    contrato.EstadoContrato = 'Finalizado' -- Solo arrendatarios con contratos finalizados
+    a.Estado = 'Libre'
 ORDER BY 
     a.IdArrendatario ASC`;
 
@@ -471,14 +470,38 @@ router.get("/Infouser", (req, res) => {
 });
 //Ruta para Traer Empleados
 router.get("/Vroles", (req, res) => {
-  connection.query("SELECT * FROM trabajador", (error, results) => {
-    if (error) {
-      console.error("Error al obtener datos de la base de datos:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
-    } else {
-      res.status(200).json(results);
+  const { VRol, } = req.query;
+
+
+  
+  try {
+    let query = "SELECT * FROM trabajador  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
+
+    const queryParams = []; // Almacena los valores de los parámetros
+
+    if (VRol) {
+      query += " AND Idrol = ?";
+      queryParams.push(VRol);
     }
-  });
+
+    query += "ORDER BY IdTrabajador ASC";
+    connection.query(
+      query,
+      queryParams,
+
+      (error, results) => {
+        if (error) {
+          console.error("Error al obtener datos de la base de datos:", error);
+          res.status(500).json({ error: "Error interno del servidor" });
+        } else {
+          res.status(200).json(results);
+        }
+      }
+    );
+  } catch (error) {
+    res(error);
+  }
+  
 });
 
 //Metodos Post
