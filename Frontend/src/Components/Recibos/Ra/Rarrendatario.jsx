@@ -152,7 +152,7 @@ export const Rarrendatario = () => {
       let rightX = width / 2 + 20;
       let yOffset = height - padding - fontSize * 2;
       const logoImageBytes = await fetch(logo).then((res) => res.arrayBuffer());
-      const logoImage = await pdfDoc.embedPng(logoImageBytes);
+      const logoImage = await pdfDoc.embedJpg(logoImageBytes);
 
       //encabezado-pdf
       page.drawImage(logoImage, {
