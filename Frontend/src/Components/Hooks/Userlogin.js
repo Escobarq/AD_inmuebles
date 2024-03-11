@@ -1,6 +1,6 @@
 export const userLogin = async (data) => {
   try {
-    const response = await fetch('http://localhost:3006/Login_user', {
+    const response = await fetch('http://localhost:3006/api/Login_user', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
