@@ -67,7 +67,11 @@ router.get("/Vpropietarios", (req, res) => {
 router.get("/Varrendatario", (req, res) => {
   const { Cedula, Estado } = req.query;
   try {
-    let query = "SELECT * FROM arrendatario  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
+    let query = ` SELECT 
+    arrendatario.*,
+    codeudor.NombreCompleto AS NombreCodeudor
+FROM arrendatario
+JOIN codeudor ON arrendatario.IdCodeudor = codeudor.IdCodeudor `; // Inicializa la consulta con una condición verdadera
 
     const queryParams = []; // Almacena los valores de los parámetros
 
@@ -166,6 +170,7 @@ WHERE
     AND i.Barrio IS NOT NULL
     AND i.Tipo IS NOT NULL
     AND i.NoMatricula IS NOT NULL
+    AND i.Estado <> 'Ocupado'
 ORDER BY 
     p.IdPropietario ASC`;
 
@@ -239,10 +244,8 @@ FROM
     arrendatario a
 LEFT JOIN 
     codeudor c ON a.IdCodeudor = c.IdCodeudor
-LEFT JOIN
-    contratoarrendamiento contrato ON a.IdArrendatario = contrato.IdArrendatario
 WHERE
-    contrato.EstadoContrato = 'Finalizado' -- Solo arrendatarios con contratos finalizados
+    a.Estado = 'Libre'
 ORDER BY 
     a.IdArrendatario ASC`;
 
@@ -467,14 +470,38 @@ router.get("/Infouser", (req, res) => {
 });
 //Ruta para Traer Empleados
 router.get("/Vroles", (req, res) => {
-  connection.query("SELECT * FROM trabajador", (error, results) => {
-    if (error) {
-      console.error("Error al obtener datos de la base de datos:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
-    } else {
-      res.status(200).json(results);
+  const { VRol, } = req.query;
+
+
+  
+  try {
+    let query = "SELECT * FROM trabajador  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
+
+    const queryParams = []; // Almacena los valores de los parámetros
+
+    if (VRol) {
+      query += " AND Idrol = ?";
+      queryParams.push(VRol);
     }
-  });
+
+    query += "ORDER BY IdTrabajador ASC";
+    connection.query(
+      query,
+      queryParams,
+
+      (error, results) => {
+        if (error) {
+          console.error("Error al obtener datos de la base de datos:", error);
+          res.status(500).json({ error: "Error interno del servidor" });
+        } else {
+          res.status(200).json(results);
+        }
+      }
+    );
+  } catch (error) {
+    res(error);
+  }
+  
 });
 
 //Metodos Post
@@ -561,24 +588,25 @@ router.post("/RPropietario", async (req, res) => {
     res.status(500).json({ error: "Error al añadir propietario" });
   }
 });
-// Ruta para cambiar la contraseña del trabajador
+// Ruta para cambiar la contraseña del trabajador y actualizar otros datos
 router.post("/api/changePassword", (req, res) => {
-  const { oldPassword, newPassword } = req.body;
+  const { correo, newPassword, nombre, apellido } = req.body;
 
-  // Consulta SQL para buscar el trabajador por su contraseña anterior
-  const sql = `UPDATE trabajador SET Contrasena = ? WHERE Contrasena = ?`;
+  // Consulta SQL para buscar el trabajador por su correo electrónico y actualizar sus datos
+  const sql = `UPDATE trabajador SET Contrasena = ?, Nombre = ?, Apellido = ? WHERE Correo = ?`;
 
   // Ejecutar la consulta SQL
-  connection.query(sql, [newPassword, oldPassword], (err, result) => {
+  connection.query(sql, [newPassword, nombre, apellido, correo], (err, result) => {
     if (err) {
       console.error("Error al cambiar la contraseña:", err);
       res.status(500).json({ error: "Error al cambiar la contraseña" });
     } else {
-      console.log("Contraseña actualizada exitosamente");
-      res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+      console.log("Datos actualizados exitosamente");
+      res.status(200).json({ message: "Datos actualizados exitosamente" });
     }
   });
 });
+
 // Ruta para registrar un Inmueble
 router.post("/Reinmueble", async (req, res) => {
   const {
@@ -709,11 +737,9 @@ router.post("/Reinmueble", async (req, res) => {
       res.status(201).json({ message: "Inmueble Registrado exitosamente" });
       } else {
         res.status(400).json({ error: "Numero de Matricula duplicado" }); 
-        console.log(error);
       }
     });
   } catch (error) {
-    console.error("Error al añadir propietario:", error);
     res.status(500).json({ error: "Error al Registrar inmueble" });
   }
 });
@@ -750,31 +776,30 @@ router.post("/Rcodeudor", async (req, res) => {
 /*
   Funcion para logear
   */
-router.post("/Login_user", (req, res) => {
-  const { correousuario, contrausuario } = req.body; // Datos del formulario
-
-  const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
-
-  connection.query(sql, [correousuario], (error, results) => {
-    if (error) {
-      console.error("Error al realizar la consulta:", error);
-      res.status(500).json({ message: "Error del servidor" });
-    } else {
+  router.post("/Login_user", (req, res) => {
+    const { correousuario, contrausuario } = req.body; // Datos del formulario
+  
+    const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
+  
+    connection.query(sql, [correousuario], (error, results) => {
+      if (error) {
+        console.error("Error al realizar la consulta:", error);
+        return res.status(500).json({ message: "Error del servidor" });
+      }
+  
       if (results.length > 0) {
         const user = results[0];
         if (user.Contrasena === contrausuario) {
-          res.status(200).json({ message: "Inicio de sesión exitoso" });
+          return res.status(200).json({ message: "Inicio de sesión exitoso" });
         } else {
-          res.status(401).json({ message: "Contraseña incorrecta" });
+          return res.status(401).json({ message: "Contraseña incorrecta" });
         }
       } else {
-        res.status(404).json({
-          message: "Usuario no encontrado o no autorizado para iniciar sesión",
-        });
+        return res.status(404).json({ message: "Usuario no encontrado o no autorizado para iniciar sesión" });
       }
-    }
+    });
   });
-});
+  
 
 // Registrar Usuario
 router.post("/RegistrarUsuario", async (req, res) => {
@@ -801,17 +826,10 @@ router.post("/RegistrarUsuario", async (req, res) => {
     res.status(201).json({ message: "Usuario registrado exitosamente" });
         }
         else {
-          res.status(400).json({ message: "Correo Duplicado" });
-          console.log(correo);
+          res.status(400).json({ error: "Correo Duplicado" });
         }})
    
   } catch (error) {
-    console.error("Error al registrar usuario:", error);
-    if (error.code === "ER_DUP_ENTRY") {
-      return res
-        .status(409)
-        .json({ message: "Ya existe un usuario con ese correo electrónico" });
-    }
     res.status(500).json({ message: "Error al registrar usuario" });
   }
 });
@@ -821,6 +839,7 @@ router.post("/RegistrarUsuario", async (req, res) => {
 router.post("/Rarrendatario", async (req, res) => {
   const {
     tipodocumento,
+    IdCodeudor,
     numerodocumento,
     nombrearrendatario,
     telefono,
@@ -830,9 +849,10 @@ router.post("/Rarrendatario", async (req, res) => {
 
   try {
     connection.query(
-      "INSERT INTO arrendatario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono,  Correo, Estado) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO arrendatario (NombreCompleto, IdCodeudor, TipoDocumento, DocumentoIdentidad, Telefono,  Correo, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [
         nombrearrendatario,
+        IdCodeudor,
         tipodocumento,
         numerodocumento,
         telefono,

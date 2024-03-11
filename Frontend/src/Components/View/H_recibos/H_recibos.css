@@ -3,7 +3,12 @@
 }
 @media (width <= 1440px) {
     .btn-add{
-        width: 5%;
+        width: 100px;
+        height: 70px;
+    }
+    .btn-add-info{
+        width: 100px;
+        height: 70px;
     }
     .AgregarPA{
         display: none;

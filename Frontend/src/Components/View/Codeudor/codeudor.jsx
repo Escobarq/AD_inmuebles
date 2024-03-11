@@ -13,8 +13,11 @@ import ActualizarCodeudor from "../../Hooks/Inhabilitarcodeudor";
 import { toast } from "react-toastify";
 import NoResultImg from "../../../assets/NoResult.gif";
 import useRoleInfo from "../../Hooks/useRoleInfo";
+import { useMediaQuery } from "@react-hook/media-query";
+
 
 export const Codeudor = () => {
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const roleId = useRoleInfo();
   const [infoCodeudor, setinfoCodeudor] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -164,8 +167,17 @@ export const Codeudor = () => {
     );
   };
   //Variables Paginacion
+  useEffect(() => {
+    // Cambiar el número de ítems por página según el tamaño de la pantalla
+    if (isSmallScreen) {
+      setItemsPerPage(5);
+    } else {
+      setItemsPerPage(8);
+    }
+  }, [isSmallScreen]);
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -243,7 +255,7 @@ export const Codeudor = () => {
               onClick={() => redireccion("/Codeudores")}
             >
               <FontAwesomeIcon className="icon" icon={faUserSlash} />
-              <p className="AgregarPA">Ver Codeudores Inhabilitados</p>
+              <p className="AgregarPA">Ver Inhabilitados</p>
             </Button>
           </OverlayTrigger>
         </div>

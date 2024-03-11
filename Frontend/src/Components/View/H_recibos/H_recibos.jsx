@@ -8,8 +8,10 @@ import moment from "moment";
 import "moment/locale/es";
 import NoResultImg from "../../../assets/NoResult.gif";
 import "./H_recibos.css";
+import { useMediaQuery } from "@react-hook/media-query";
 
 export const H_recibos = () => {
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
   const [filtroData, setFiltroData] = useState({
     estado: "",
@@ -92,9 +94,18 @@ export const H_recibos = () => {
       </tr>
     );
   };
-  //Variables Paginacion
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+    // Variables Paginacion
+    useEffect(() => {
+      // Cambiar el número de ítems por página según el tamaño de la pantalla
+      if (isSmallScreen) {
+        setItemsPerPage(5);
+      } else {
+        setItemsPerPage(8);
+      }
+    }, [isSmallScreen]);
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

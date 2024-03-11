@@ -6,13 +6,23 @@ import Pagination from "react-bootstrap/Pagination";
 import { Link } from "react-router-dom";
 import useActualizarEstadoEmpleados from "../../Hooks/InhabilitarEmpleado";
 import { toast } from "react-toastify";
+import { useMediaQuery } from "@react-hook/media-query";
 
 
 export const AsignarRol = () => {
   const [infoRol, setInfoRol] = useState([]);
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const { actualizarEstadoempleados } = useActualizarEstadoEmpleados();
   const [Empleados, setHarrenndamiento] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [filtroData, setFiltroData] = useState({
+    VRol: "",
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFiltroData({ ...filtroData, [name]: value });
+  };
 
   // Función para inhabilitar los gastos
   const handleInhabilitarEmpleados = async (EmpleadosID) => {
@@ -50,26 +60,26 @@ export const AsignarRol = () => {
       theme: "dark",
     });
   //Mostrar datos
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3006/Vroles");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        const Empleados = data.filter(
-          (Empleados) => Empleados.Booleanos === "true"
-        )
-        setInfoRol(Empleados);
-
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+  useEffect(() => {    
     fetchData();
-  }, []);
+  }, [filtroData]);
+  const fetchData = async () => {
+    try {
+      const queryParams = new URLSearchParams(filtroData);
+      const response = await fetch(`http://localhost:3006/Vroles?${queryParams.toString()}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const Empleados = data.filter(
+        (Empleados) => Empleados.Booleanos === "true"
+      )
+      setInfoRol(Empleados);
 
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
   const createHeaderRol = () => {
     return (
       <tr>
@@ -126,11 +136,18 @@ export const AsignarRol = () => {
     }
   };
   
-  
-
   //Variables Paginacion
+  useEffect(() => {
+    // Cambiar el número de ítems por página según el tamaño de la pantalla
+    if (isSmallScreen) {
+      setItemsPerPage(5);
+    } else {
+      setItemsPerPage(8);
+    }
+  }, [isSmallScreen]);
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -173,10 +190,11 @@ export const AsignarRol = () => {
         <h1 className="tittle_propetario">Empleados</h1>
         <div className="conten-inputs">
           <label className="l1">Rol</label>
-          <select className="input-filtroRe"name="rol" id="rol">
+          <select value={filtroData.VRol}
+              onChange={handleChange} className="input-filtroRe"name="VRol" id="rol">
             <option selected value="">Seleccione el tipo</option>
-            <option value="Asistente">Asistente</option>
-            <option value="Administrador">Administrador</option>
+            <option value="2">Asistente</option>
+            <option value="1">Administrador</option>
           </select>
         </div>
         <Button variant="success" className="btn-add-success" onClick={() => redireccion("/Crearperfil")}>
@@ -184,7 +202,7 @@ export const AsignarRol = () => {
         </Button>
         <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/InhabilitarRol")}>
             <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
-            Empleados Inhabilitados
+            Inhabilitados
         </Button>
       </div>
 

@@ -83,15 +83,7 @@ export const Notifi = () => {
             <div key={index} className="notification-item">
               <div className="notification-details">
                 <div>
-                  <span>Nombre del arrendatario: </span>
-                  <span>{notification.NombreArrendatario}</span>
-                </div>
-                <div>
-                  <span>Número de matrícula asociado: </span>
-                  <span>{notification.NumeroMatricula}</span>
-                </div>
-                <div>
-                  <span>Fecha de finalización del contrato: </span>
+                  <span>Un contrato esta apunto de terminar en la fecha: </span>
                   <span>{new Date(notification.FechaFinContrato).toLocaleDateString()}</span>
                 </div>
               </div>

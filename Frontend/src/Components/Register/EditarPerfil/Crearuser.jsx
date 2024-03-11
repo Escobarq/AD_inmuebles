@@ -52,10 +52,7 @@ const Crearuser = () => {
       window.location.href = "/AsignarRol";
       reset();
     } catch (error) {
-      if (
-        error.message ===
-        "El correo electrónico o la contraseña ya están en uso"
-      ) {
+      if (error.message.includes("Numero de Matricula duplicado")) {
         toast.error("El correo electrónico o la contraseña ya están en uso", {
           theme: "colored",
         });

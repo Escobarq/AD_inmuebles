@@ -6,15 +6,20 @@
 }
 
 .notification-button {
+  background-color: transparent;
+  border: none;
   font-size: 1.5rem; /* Aumenta el tamaño del botón */
+}
+
+.notification-button:hover {
+  background-color: transparent;
+  border: none;
 }
 
 .notification-popover {
   width: 300px; /* Ancho del Popover */
   position: absolute;
-  top: calc(
-    100% + 10px
-  ); /* Coloca el Popover debajo del botón de notificación con un margen superior */
+  top: calc(100% + 10px); /* Coloca el Popover debajo del botón de notificación con un margen superior */
   left: -60%; /* Centra el Popover horizontalmente */
   transform: translateX(-50%);
   z-index: 999;
@@ -45,7 +50,11 @@
 
 @media (max-width: 1440px) {
   .notification-container {
-    font-size: 14px; /* Tamaño de fuente reducido para pantallas más pequeñas */
+    font-size: 10px; /* Tamaño de fuente reducido para pantallas más pequeñas */
+  }
+  
+  .notification-button {
+    font-size: 1rem; /* Aumenta el tamaño del botón */
   }
 }
 

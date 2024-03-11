@@ -16,8 +16,6 @@
     margin-right: 10px;
 }
 
-
-
 .btn-cancelar {
     background-color: #d40000;
     color: #fff;
@@ -37,12 +35,10 @@
 }
 
 .fila-formulario1 {
-   display: grid;
-   grid-template-columns: repeat(2, 1fr);
-   column-gap: 50px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 50px;
 }
-
-
 
 .grupo-formulario,
 .valor {
@@ -53,11 +49,14 @@
     margin: 2%;
     margin-bottom: 5%;
 }
-.icon-btn{
+
+.icon-btn {
     padding: auto;
 }
+
 .btns {
     margin: 5%;
+    text-align: center;
 }
 
 .fila-formulario {
@@ -67,28 +66,20 @@
 
 .grupo-formulario,
 .valor {
-
     height: 100%;
     display: flex;
     flex-direction: column;
-
 }
 
 .grupo-formulario select {
     height: 44px;
     width: 100%;
-
 }
 
 .entregadopor {
     width: 48%;
 }
 
-
-/* Estilos para el contenedor principal del recibo */
-
-
-/* Estilos para el logo */
 .logo-pequeno {
     width: 100px;
     height: auto;
@@ -96,12 +87,10 @@
     margin: 0 auto;
 }
 
-/* Estilos para los campos del formulario */
 .tod {
     margin-bottom: 20px;
 }
 
-/* Estilos para etiquetas y campos de entrada */
 label {
     display: block;
     font-weight: bold;
@@ -117,11 +106,6 @@ select {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-}
-
-/* Estilos para los botones */
-.btns {
-    text-align: center;
 }
 
 .guardar-btn,

@@ -23,6 +23,10 @@ export const RInmuebleL = () => {
     toast.error("Hubo un error al ingresar los datos , itente nuevamente", {
       theme: "colored",
     });
+    const Nmatricula = () =>
+    toast.error("Numero de Matricula duplicado", {
+      theme: "colored",
+    });
 
   const {
     register,
@@ -64,11 +68,11 @@ export const RInmuebleL = () => {
       reset();
       window.location.href = "/Inmueble";
     } catch (error) {
-      if (error.message.includes("correo ya registrado")) {
-        alert("El correo ya está registrado");
+      if (error.message.includes("Numero de Matricula duplicado")) {
+        Nmatricula();
       } else {
-        console.error("Error al crear usuario:", error);
         falla();
+        console.error("Error al crear el inmueble:", error);
         throw error; // Re-lanza el error para que pueda ser manejado en el componente
       }
     }
@@ -215,7 +219,7 @@ export const RInmuebleL = () => {
           </Form.Group>
 
           <Form.Group controlId="formNoNiveles">
-            <Form.Label>Aseguramiento</Form.Label>
+            <Form.Label>Vencimiento de Aseguramiento:</Form.Label>
             <Form.Control
               className="InputsRegistros"
               {...register("aseguramiento")}

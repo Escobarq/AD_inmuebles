@@ -202,7 +202,7 @@ export const Registrocodeudor = () => {
                 Seleccione Tipo de Documento{" "}
               </option>
               <option value="Cedula Ciudadania">Cedula Ciudadania</option>
-              <option value="Cedula Extranjera">Cedula Extranjera</option>
+              <option value="Cedula Extranjeria">Cedula Extranjería</option>
             </Form.Select>
           </Form.Group>
 
