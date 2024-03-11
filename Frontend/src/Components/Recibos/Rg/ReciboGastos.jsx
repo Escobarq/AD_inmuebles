@@ -169,7 +169,7 @@ export const ReciboGastos = () => {
           const responseData = await response.json();
 
           setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
-          ReciboGasto(data.numerogasto, data); // Pasa los datos actualizados al PDF
+          ReciboGasto(data); // Pasa los datos actualizados al PDF
           notify("se enviaron correctamente los datos");
           return responseData;
         }
@@ -206,6 +206,7 @@ export const ReciboGastos = () => {
   }
   //AQUI EMPIEZA FUNCION PARA PDF
   const ReciboGasto = async (data) => {
+    console.log(data);
     const order = [
       "Documento",
       "Nombre",
@@ -252,7 +253,7 @@ export const ReciboGastos = () => {
       const logoImageBytes = await fetch(logo).then((res) =>
         res.arrayBuffer()
       );
-      const logoImage = await pdfDoc.embedPng(logoImageBytes);
+      const logoImage = await pdfDoc.embedJpg(logoImageBytes);
 
       //logo en el encabezado
 
