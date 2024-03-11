@@ -92,10 +92,13 @@ td {
 }
 .btn-add {
   margin: 2%;
-  width: 20%;
+  width: 200px;
+  height: 80px;
   background-color: green !important;
 }
-btn-add-info {
+.btn-add-info {
+  width: 200px;
+  height: 80px;
   background-color: #000000 !important;
 }
 .linkes{
@@ -152,10 +155,12 @@ btn-add-info {
   .btn-add-info{
     margin: 2% !important;
   }
-}
-@media (width <= 1440px) {
   .input-filtroRe {
     height: 2.5rem !important;
   }
-
+  .btn-opciones{
+    margin: 1%;
+  }
 }
+
+

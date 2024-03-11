@@ -13,10 +13,12 @@ import ActualizarArrendatario from "../../Hooks/InhabilitarArren";
 import { toast } from "react-toastify";
 import NoResultImg from "../../../assets/NoResult.gif";
 import useRoleInfo from "../../Hooks/useRoleInfo";
+import { useMediaQuery } from "@react-hook/media-query";
 
 
 export const Arrendatario = () => {
   const roleId = useRoleInfo();
+  const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [arrendatarioIdToDelete, setarrendatarioIdToDelete] = useState(null);
@@ -105,7 +107,8 @@ export const Arrendatario = () => {
         <th>ID</th>
         <th>Tipo de Documento</th>
         <th>No. Documento</th>
-        <th>Nombre</th>
+        <th>Nombre Arrendatario</th>
+        <th>Nombre Codeudor</th>
         <th>Estado</th>
         <th>Teléfono</th>
         <th>Correo</th>
@@ -120,6 +123,7 @@ export const Arrendatario = () => {
         <td>{Arrendatarios.TipoDocumento}</td>
         <td>{Arrendatarios.DocumentoIdentidad}</td>
         <td>{Arrendatarios.NombreCompleto}</td>
+        <td>{Arrendatarios.NombreCodeudor}</td>
         <td>{Arrendatarios.Estado}</td>
         <td>{Arrendatarios.Telefono}</td>
         <td>{Arrendatarios.Correo}</td>
@@ -143,8 +147,17 @@ export const Arrendatario = () => {
     );
   };
   //Variables Paginacion
+  useEffect(() => {
+    // Cambiar el número de ítems por página según el tamaño de la pantalla
+    if (isSmallScreen) {
+      setItemsPerPage(5);
+    } else {
+      setItemsPerPage(8);
+    }
+  }, [isSmallScreen]);
+  
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -246,7 +259,7 @@ const redireccion = (ruta) => {
           >
             <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Inharrendatario")}>
                 <FontAwesomeIcon className="icon" icon={faUserSlash} />
-                <p className="AgregarPA">Ver Arrendatarios Inhabilitados</p>
+                <p className="AgregarPA">Ver Inhabilitados</p>
             </Button>
           </OverlayTrigger>
         </div>

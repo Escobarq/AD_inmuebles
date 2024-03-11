@@ -1,44 +1,34 @@
-
-.logo-img {
-  width: 75%;
-}
 .login {
-  width: 100%;
+  width: 99%;
 }
 .conten-login {
   width: 50%;
 }
 
-
 .contener-home{
     width: 100%;
     padding: 2%;
-    background-color: #ffffff;
+    background-color: #fff;
     margin: 2% 2% 2% 0;
     border-radius: 2%;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: rgba(0, 0, 0, 0.20) 0px 5px 15px;
-  }
-  .c-loading{
+}
+
+.c-loading{
   box-shadow: none;
 }
 
 .logo-img{
-    width: 50%;
-}
-.loading{
-  margin-top: 5%;
-  width: 300px;
-  height: 300px;
+    width: 25%;
 }
 
-.login{    
-    width: 100%;
-}
-.conten-login{
-    width: 50%;
+.loading{
+  margin-top: 5%;
+  width: 200px;
+  height: 200px;
 }
 
 /* Navbar.css */
@@ -52,16 +42,21 @@
     padding: 0 20px;
     overflow: hidden;
     transition: height 0.3s ease-in-out;
-  }
   
-  .visible {
+    /* Prefijos de proveedores para la transición */
+    -webkit-transition: height 0.3s ease-in-out; /* Para Safari y Chrome */
+    -moz-transition: height 0.3s ease-in-out; /* Para Firefox */
+    -o-transition: height 0.3s ease-in-out; /* Para Opera */
+    -ms-transition: height 0.3s ease-in-out; /* Para Internet Explorer */
+}
+
+.visible {
     height: 200px; /* Altura deseada cuando está visible */
-  }
-  
-  .arrow {
+}
+
+.arrow {
     cursor: pointer;
     font-size: 24px;
-  }
-  
-  /* Otros estilos para tu Navbar según tus necesidades */
-  
+}
+
+/* Otros estilos para tu Navbar según tus necesidades */
