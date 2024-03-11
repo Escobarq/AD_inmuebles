@@ -1,19 +1,14 @@
 import login from "../../assets/login.png";
 import "./login.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { userLogin } from "../Hooks/Userlogin";
 
 export const Login = () => {
-  const [mostrarModal, setMostrarModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const notify = () =>
-    toast.success("Se Registro correctamente", {
-      theme: "dark",
-    });
+
 
   const a = () =>
     toast.success("Se inicio correctamente", {
@@ -36,34 +31,25 @@ export const Login = () => {
   const onsubmitLoginUser = async (data) => {
     try {
       if (!data.correousuario || !data.contrausuario) {
-        toast.error("Por favor, completa todos los campos");
-        return; // Detener la ejecución de la función si faltan campos
+        toast.error('Por favor, completa todos los campos');
+        return;
       }
-      await userLogin(data);
-      reset();
-      a(); // Mostrar mensaje de éxito
-    } catch (error) {
-      if (
-        error.message.includes(
-          "Usuario no encontrado o no autorizado para iniciar sesión"
-        )
-      ) {
-        falla("Usuario no encontrado o no autorizado para iniciar sesión");
+      const response = await userLogin(data);
+      // Procesar la respuesta de acuerdo con el mensaje recibido
+      if (response.message === 'Inicio de sesión exitoso') {
+        localStorage.setItem('items', data.correousuario);
+        reset();
+        a();
       } else {
-        falla("Error al enviar datos al servidor:", error);
+        throw new Error(response.message); // Lanza un error con el mensaje recibido
       }
+    } catch (error) {
+      // Manejar el error
+      falla('Error al iniciar sesión: ' + error.message);
     }
   };
-
-  // Modal //
-  const handleMostrarModalClick = () => {
-    setMostrarModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setMostrarModal(false);
-  };
-
+  
+  
 
   return (
     <>
