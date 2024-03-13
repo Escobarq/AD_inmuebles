@@ -65,6 +65,7 @@ function App() {
 
   useEffect(() => {
     setTimeout(() => {
+      console.log("loading");
       setLoading(false);
     }, 1500);
   }, []);
