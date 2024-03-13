@@ -1,5 +1,4 @@
-import { Table, Button, OverlayTrigger, Tooltip, Form, Modal, ListGroup  } from "react-bootstrap";
-
+import { Table, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
@@ -10,76 +9,28 @@ import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
 import "moment/locale/es";
 import { useMediaQuery } from "@react-hook/media-query";
-import axios from "axios";
 
 
 export const H_gastos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoComision, setinfoComision] = useState([]);
-  const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
-  const [selectedPropietario, setSelectedPropietario] = useState("");
-  const [mostrarModalA, setMostrarModalA] = useState(false);
-
-  const [filtroData, setFiltroData] = useState({
-    Propietario: "",
-    FechaElaboracionMin: "",
-    FechaElaboracionMax: "",
-    FormaPago: "",
-  });
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFiltroData({ ...filtroData, [name]: value });
-  };
-  const resetPropie = () => {
-    setSelectedPropietario("Seleccione Propietario");
-    setFiltroData({ ...filtroData, "Propietario": "" });
-    setMostrarModalA(false);
-  };
-  const handlePropietarioChange = async (Propietario) => {
-    setSelectedPropietario(Propietario);
-    setFiltroData({ ...filtroData, ["Propietario"]: Propietario.IdPropietario });
-    fetchDataPropietario(Propietario);
-    setMostrarModalA(false);
-  };
-  const handleCloseModalA = () => {
-    setMostrarModalA(false);
-  };
-  const handleMostrarAClick = async () => {
-    setMostrarModalA(true);
-  };
 
   useEffect(() => {
-    fetchData();
-    fetchDataPropietario();
-  }, [filtroData]);
-
-  const fetchData = async () => {
-    const queryParams = new URLSearchParams(filtroData);
-    try {
-      const response = await fetch(`http://localhost:3006/VComisionPropie?${queryParams.toString()}`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3006/VComisionPropie");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setinfoComision(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
       }
-      const data = await response.json();
-      setinfoComision(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-  
-  const fetchDataPropietario = async () => {
-    try {
-      const response = await axios.get("http://localhost:3006/Vpropietarios?");
-      const Propietarios = response.data.map((prop) => prop);
-      setPropietariosDisponibles(Propietarios);
-    } catch (error) {
-      console.error("Error al cargar las matrículas:", error);
-      toast.error(
-        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
-      );
-    }
-  };
+    };
+
+    fetchData();
+  }, []);
 
   const createheader = () => {
     return (
@@ -162,56 +113,16 @@ export const H_gastos = () => {
       <div className="contener-home">
         <div className="conten-filtro">
           <div className="conten-inputs">
-            <label className="l1">Propietario: </label>
-            <Form.Select
-              className="input-filtroRe"
-
-              value={
-                selectedPropietario ? selectedPropietario.IdPropietario : "a?"
-              }
-              onChange={(e) => handlePropietarioChange(e.target.value)}
-              onClick={() => handleMostrarAClick(true)}
-            >
-              <option value="" selected >Seleccionar Numero de Propietario</option>
-              {PropietariosDisponibles.map((Propietario, index) => (
-                <option key={index} value={Propietario.IdPropietario}>
-                  {Propietario.NombreCompleto}
-                </option>
-              ))}
-            </Form.Select>
-
-            <label className="l1">Forma de Pago: </label>
-            <select
-              className="input-filtroRe"
-              name="FormaPago"
-              value={filtroData.FormaPago}
-              onChange={handleChange}
-              id=""
-            >
-              <option selected value="">
-                Seleccion forma de pago
-              </option>
-              <option value="Transferencia">Transferencia</option>
-              <option value="Efectivo">Efectivo</option>
-            </select>
-            <label className="l1">Fecha Elaboracion Minima: </label>
+            <label className="l1">No. Cedula: </label>
             <input
               className="input-filtroRe"
-              type="date"
-              value={filtroData.FechaElaboracionMin}
-              onChange={handleChange}
-              name="FechaElaboracionMin"
+              type="number"
+              name=""
+              max={9999999999}
               id=""
             />
-            <label className="l1">Fecha Elaboracion Maxima: </label>
-            <input
-              className="input-filtroRe"
-              type="date"
-              value={filtroData.FechaElaboracionMax}
-              onChange={handleChange}
-              name="FechaElaboracionMax"
-              id=""
-            />
+            <label className="l1">Fecha Ingreso: </label>
+            <input className="input-filtroRe" type="date" name="" id="" />
           </div>
           
           <OverlayTrigger
@@ -268,32 +179,6 @@ export const H_gastos = () => {
           </Pagination>
         </div>
       </div>
-      <Modal
-      size="lg"
-      show={mostrarModalA}
-      onHide={handleCloseModalA}
-      aria-labelledby="example-modal-sizes-title-lg"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Seleccionar Propietario</Modal.Title>
-        <p onClick={resetPropie} >Reset</p>
-      </Modal.Header>
-      <Modal.Body>
-        <ListGroup>
-          {PropietariosDisponibles.map((Propietario, index) => (
-            <ListGroup.Item
-              key={index}
-              action
-              onClick={() => handlePropietarioChange(Propietario)}
-            >
-              {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
-
-              {Propietario.NombreCompleto}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Modal.Body>
-    </Modal>
     </>
   );
 };
