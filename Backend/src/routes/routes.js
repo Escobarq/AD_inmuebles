@@ -126,7 +126,7 @@ router.get("/Vinmueble", (req, res) => {
       queryParams.push(estrato);
     }
     if (IdPropietario) {
-      query += " AND IdPropietario = ?";
+      query += " AND i.IdPropietario = ?";
       queryParams.push(IdPropietario);
     }
 
@@ -452,8 +452,7 @@ router.get("/contratoFiltro", (req, res) => {
     if (error) {
       console.error("Error al ejecutar la consulta:", error);
       res.status(500).send("Error interno del servidor");
-    } else {
-      console.log(NContrato);
+    } else {      
       res.json(results);
     }
   });
@@ -1009,10 +1008,7 @@ router.post("/RComision", async (req, res) => {
     }
 
     // Valores predeterminados
-    const pagoArriendo = PagoArriendo || 0;
-    const adminInmobiliaria = AdminInmobiliaria || 0;
-    const aseoEntrega = AseoEntrega || 0;
-    const mantenimiento = Mantenimiento || 0;
+
 
     connection.query(
       "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento, ValorTotal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -1022,10 +1018,10 @@ router.post("/RComision", async (req, res) => {
         FechaPago,
         ElaboradoPor,
         FormaPago,
-        pagoArriendo,
-        adminInmobiliaria,
-        aseoEntrega,
-        mantenimiento,
+        PagoArriendo,   
+        AdminInmobiliaria,
+        AseoEntrega,
+        Mantenimiento,
         ValorTotal,
       ],
       (error, results) => {
@@ -1342,7 +1338,6 @@ router.put("/RPropietario/:id", async (req, res) => {
     banco,
     direccion,
     numerocuenta,
-    fechaingreso,
     TipoDocumento,
   } = req.body;
 
@@ -1386,10 +1381,6 @@ router.put("/RPropietario/:id", async (req, res) => {
     if (telefono) {
       updates.push("Telefono = ?");
       values.push(telefono);
-    }
-    if (fechaingreso) {
-      updates.push("FechaIngreso = ?");
-      values.push(fechaingreso);
     }
 
     if (updates.length === 0) {

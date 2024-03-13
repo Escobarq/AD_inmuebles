@@ -1,4 +1,5 @@
 import { Table, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { faFilePdf, faFileSignature } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
@@ -200,6 +201,14 @@ export const H_recibos = () => {
               </Link>
             </Button>
           </OverlayTrigger>
+          <Button
+        variant="success"
+        className="bottom-button"
+        
+      >
+        <FontAwesomeIcon icon={faFilePdf} />
+        Generar PDF
+      </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Historial de Pago Arrendamiento</h1>
