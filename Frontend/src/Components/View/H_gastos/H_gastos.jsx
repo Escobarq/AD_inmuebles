@@ -1,9 +1,10 @@
 import { Table, Button, OverlayTrigger, Tooltip, Form, Modal, ListGroup  } from "react-bootstrap";
-
+import { faFilePdf, faFileSignature } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Pagination from "react-bootstrap/Pagination";
@@ -226,6 +227,14 @@ export const H_gastos = () => {
               </Link>
             </Button>
           </OverlayTrigger>
+          <Button
+        variant="success"
+        className="bottom-button"
+        
+      >
+        <FontAwesomeIcon icon={faFilePdf} />
+        Generar PDF
+      </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">

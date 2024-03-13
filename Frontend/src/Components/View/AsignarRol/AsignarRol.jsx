@@ -188,6 +188,7 @@ export const AsignarRol = () => {
     <div className="contener-home">
       <div className="title_view">
         <h1 className="tittle_propetario">Empleados</h1>
+        <div className="conten-filtro">        
         <div className="conten-inputs">
           <label className="l1">Rol</label>
           <select value={filtroData.VRol}
@@ -204,6 +205,7 @@ export const AsignarRol = () => {
             <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
             Inhabilitados
         </Button>
+        </div>
       </div>
 
       <div className="view_esp">

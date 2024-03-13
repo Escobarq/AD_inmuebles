@@ -6,7 +6,7 @@ import "./Notifi.css";
 import useContratoInfo from "../Hooks/useObtenerInfoContrac";
 
 export const Notifi = () => {
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [notificationsCleared, setNotificationsCleared] = useState(false);
 

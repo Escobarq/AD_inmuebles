@@ -163,7 +163,7 @@ export const Inmueble = () => {
           </Button>
           <Button
             className="btn-opciones"
-            onClick={() => redireccion("/Generar")}
+            onClick={() => handleContrato(inmueble.IdInmueble)}
             variant="success"
           >
             <FontAwesomeIcon icon={faUserPlus} />
@@ -194,6 +194,7 @@ export const Inmueble = () => {
   //Traer Informacion
   const handleEditInmuebles = (InmuebleId) => {
     const inmueble = infoinmueble.find((inm) => inm.IdInmueble === InmuebleId);
+    
     if (!inmueble) {
       console.error("No se encontró el inmueble con ID:", InmuebleId);
       return;
@@ -229,6 +230,27 @@ export const Inmueble = () => {
 
     // Redireccionar a la ruta de edición de inmueble
     window.location.href = `/EditarDatosIn?${new URLSearchParams(
+      inmuebleData
+    ).toString()}`;
+  };
+  //Traer Informacion
+  const handleContrato = (InmuebleId) => {
+    const inmueble = infoinmueble.find((inm) => inm.IdInmueble === InmuebleId);
+
+    if (!inmueble) {
+      console.error("No se encontró el inmueble con ID:", InmuebleId);
+      return;
+    }
+
+    // Crear objeto con los datos del inmueble, incluyendo la fecha formateada
+    const inmuebleData = {
+      IdInmueble: inmueble.IdInmueble,
+      NoMatricula: inmueble.NoMatricula,
+      Tipo: inmueble.Tipo,
+    };
+
+    // Redireccionar a la ruta de edición de inmueble
+    window.location.href = `/Generar?${new URLSearchParams(
       inmuebleData
     ).toString()}`;
   };
