@@ -63,12 +63,12 @@ export const ReciboGastos = () => {
 
   const fetchData2 = async (Propietario) => {
     try {
-      
       const response = await axios.get(
         `http://localhost:3006/Vinmueble?IdPropietario=${Propietario.IdPropietario}`
       );
       const Inmuebles = response.data.map((prop) => prop);
       setInmueblesDisponibles(Inmuebles);
+      console.log("hola", Inmuebles);
     } catch (error) {
       console.error("Error al cargar las matrículas:", error);
       toast.error(

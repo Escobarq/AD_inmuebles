@@ -93,9 +93,8 @@ export const Registrocodeudor = () => {
       if (response.ok) {
         setShowSaveModal(true);
         notify();
-        console.log(dataToSend);
-        //reset();
-        // window.location.href = "/Codeudor";
+        reset();
+        window.location.href = "/Codeudor";
       } else {
         error();
       }
@@ -170,14 +169,14 @@ export const Registrocodeudor = () => {
             <Form.Label>Nombre:</Form.Label>
             <Form.Control
               type="text"
-              {...register("NombreCompleto")}
+              {...register("nombrecompleto")}
               defaultValue={codeudorData.NombreCompleto}
             
               onChange={handleTextChange}
-              onFocus={() => handleFieldFocus("NombreCompleto")}
+              onFocus={() => handleFieldFocus("nombrecompleto")}
               required
             />
-            {focusedField === "NombreCompleto" && showWarning && (
+            {focusedField === "nombrecompleto" && showWarning && (
               <span className="error-message">
                 Solo se permiten letras y espacios
               </span>
@@ -210,7 +209,7 @@ export const Registrocodeudor = () => {
           <Form.Group controlId="formDocumentoIdentidad">
             <Form.Label>Número de identidad:</Form.Label>
             <Form.Control
-              {...register("DocumentoIdentidad")}
+              {...register("documentoidentidad")}
               defaultValue={codeudorData.DocumentoIdentidad}
               
               onChange={handleNumberChange}
@@ -225,15 +224,15 @@ export const Registrocodeudor = () => {
           <Form.Group controlId="formtelefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
-              {...register("Telefono")}
+              {...register("telefono")}
               defaultValue={codeudorData.Telefono}
 
 
               onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("Telefono")}
+              onFocus={() => handleFieldFocus("telefono")}
               required
             />
-            {focusedField === "Telefono" && showWarning && (
+            {focusedField === "telefono" && showWarning && (
               <span className="error-message">Solo se permiten números</span>
             )}
           </Form.Group>
@@ -242,15 +241,16 @@ export const Registrocodeudor = () => {
             <Form.Label>Correo:</Form.Label>
             <Form.Control
               type="email"
-              {...register("Correo")}
+              {...register("correo")}
               defaultValue={codeudorData.Correo}
             />
           </Form.Group>
 
           <Form.Group controlId="formdireccion">
             <Form.Label>Dirección:</Form.Label>
-            <Form.Control              
-              {...register("Direccion")}
+            <Form.Control
+              
+              {...register("direccion")}
               defaultValue={codeudorData.Direccion}
             />
           </Form.Group>

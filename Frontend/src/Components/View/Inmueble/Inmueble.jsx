@@ -129,8 +129,8 @@ export const Inmueble = () => {
   const createheader = () => {
     return (
       <tr>
+        <th>NIT Pro</th>
         <th>NIT</th>
-        <th>Propietario</th>
         <th>Dirección</th>
         <th>Estrato</th>
         <th>Ciudad</th>
@@ -145,8 +145,8 @@ export const Inmueble = () => {
   const createrow = (inmueble) => {
     return (
       <tr key={inmueble.IdInmueble}>
+        <td>{inmueble.IdPropietario}</td>
         <td>{inmueble.NoMatricula}</td>
-        <td>{inmueble.NombrePropietario}</td>
         <td>{inmueble.Direccion}</td>
         <td>{inmueble.Estrato}</td>
         <td>{inmueble.Ciudad}</td>
