@@ -129,6 +129,8 @@ export const ContratoA = () => {
   function getCurrentDate() {
     return moment().format("MMMM D, YYYY");
   }
+
+
   //AQUI EMPIEZA GENERACION DE PDF
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
@@ -146,8 +148,14 @@ export const ContratoA = () => {
         doc.internal.pageSize.getHeight() - 10
       );
     };
-    doc.addImage(logo, "PNG", 15, 10, 33, 20); // Logo next to the title
-    doc.text("Contrato Arrendatario", 60, 23); // Title next to the logo
+    doc.addImage(logo, "PNG", 15, 10, 20, 15);
+    doc.setFontSize(19); 
+    doc.text("Contrato Arrendatario", 44, 28);
+    doc.setFontSize(13);
+    doc.setTextColor(128);
+    doc.text("Adminmuebles", 45, 20); // Title next to the logo
+
+
     addHoraEmision();
     const date = new Date();
     const monthNames = [
@@ -203,6 +211,8 @@ export const ContratoA = () => {
         i * itemsPerPage,
         (i + 1) * itemsPerPage
       );
+
+
       // Información en forma de tabla
       autoTable(doc, {
         columns,
@@ -216,6 +226,30 @@ export const ContratoA = () => {
         doc.addPage();
         startY = 40;
       }
+
+      const date = new Date();
+      const monthNames = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre",
+      ];
+      const formattedDate = `${
+        monthNames[date.getMonth()]
+      }/${date.getDate()}/${date.getFullYear()}`;
+      doc.setTextColor(128); // Gris
+      doc.setFontSize(10);
+      doc.text(formattedDate, 190, 18, null, null, "right");
+  
+
       addHoraEmision();
       doc.addImage(logo, "PNG", 15, 10, 20, 15);
       doc.setFontSize(13);
