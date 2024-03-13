@@ -313,7 +313,7 @@ export const ContratoA = () => {
       </Button>
       </div>
      
-      <div className="container__arrendatario">
+      <div className="view_esp">
         <div className="ContArrendatario">
           <h1>Contrato Arrendatario</h1>
         </div>
