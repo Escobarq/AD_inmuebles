@@ -34,15 +34,21 @@ export const Contrato = () => {
   useEffect(() => {
     cargarMatriculasDisponibles();
     cargarArrendatariosDisponibles();
-`    if (location.search) {
+
+    if (location.search) {
       setInmuebleData({
         IdInmueble: searchParams.get("IdInmueble") || "",
         NoMatricula: searchParams.get("NoMatricula") || "",
         Tipo: searchParams.get("Tipo") || "",
       });
     } else {
-      return null;
-    }`
+      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo codeudor
+      setInmuebleData({
+        IdInmueble: "",
+        NoMatricula: "",
+        Tipo: "",
+      });
+    }
   }, [location.search]);
 
   const cargarMatriculasDisponibles = async () => {
@@ -85,22 +91,43 @@ export const Contrato = () => {
   };
 
   const handleSubmitForm = async () => {
+   
     // Aquí puedes enviar los datos del formulario al backend
     try {
-      const response = await axios.post("http://localhost:3006/contratoarrendamiento", {
-        IdArrendatario: selectedIdArrendatario,
-        IdInmueble: selectedIdInmueble,
-        FechaInicioContrato: watch("FechaInicioContrato"),
-        FechaFinContrato: watch("FechaFinContrato"),
-        EstadoContrato: watch("EstadoContrato"),
-        ValorDeposito: watch("ValorDeposito")
-      });
+      if (location.search !== "") {
+        const response = await axios.post("http://localhost:3006/contratoarrendamiento", {
+          IdArrendatario: selectedIdArrendatario,
+          IdInmueble: inmuebleData.IdInmueble,
+          FechaInicioContrato: watch("FechaInicioContrato"),
+          FechaFinContrato: watch("FechaFinContrato"),
+          EstadoContrato: watch("EstadoContrato"),
+          ValorDeposito: watch("ValorDeposito")
+        });
+        console.log("Respuesta del servidor:", response.data);
+        toast.success("Contrato de arrendamiento creado correctamente");
+        console.log(selectedIdInmueble);
+        reset();
+        // Después de guardar los datos, redirigir a la página de Carrendatario
+       window.location.href = "/Carrendatario";
+        
+      } else{
+        const response = await axios.post("http://localhost:3006/contratoarrendamiento", {
+          IdArrendatario: selectedIdArrendatario,
+          IdInmueble: selectedIdInmueble,
+          FechaInicioContrato: watch("FechaInicioContrato"),
+          FechaFinContrato: watch("FechaFinContrato"),
+          EstadoContrato: watch("EstadoContrato"),
+          ValorDeposito: watch("ValorDeposito")
+        });
+        console.log("Respuesta del servidor:", response.data);
+        toast.success("Contrato de arrendamiento creado correctamente");
+        console.log(selectedIdInmueble);
+        reset();
+        // Después de guardar los datos, redirigir a la página de Carrendatario
+       window.location.href = "/Carrendatario";
+        
+      }
 
-      console.log("Respuesta del servidor:", response.data);
-      toast.success("Contrato de arrendamiento creado correctamente");
-      reset();
-      // Después de guardar los datos, redirigir a la página de Carrendatario
-      window.location.href = "/Carrendatario";
     } catch (error) {
       console.error("Error al guardar el contrato:", error);
       toast.error("Error al guardar el contrato. Inténtalo de nuevo.");
@@ -137,8 +164,8 @@ export const Contrato = () => {
     );
     setSelectedArrendatario(selected);
     setSelectedCodeudor(selected.NombreCodeudor);
-    setShowMatriculaModal(false);
     setSelectedIdArrendatario(selected.IdArrendatario);
+    setShowArrendatarioModal(false)
   };
 
 
@@ -150,7 +177,7 @@ export const Contrato = () => {
         <Form className="form-propietario" onSubmit={handleSubmit(handleConfirmSave)}>
           <Form.Group controlId="Matricula" className="mb-3">
             <Form.Label>Número de Matrícula:</Form.Label>
-            {location.search !== 2 && (
+            {location.search !== "" && (
             <>
                <Form.Control
               type="text"
@@ -160,7 +187,9 @@ export const Contrato = () => {
             />
             </>
           )}
-            <InputGroup>            
+            {location.search == "" && (
+            <>
+               <InputGroup>            
               <Form.Select
                 value={selectedMatricula}
                 onChange={(e) => handleMatriculaChange(e.target.value)}
@@ -174,16 +203,35 @@ export const Contrato = () => {
                 ))}
               </Form.Select>
             </InputGroup>
+            </>
+          )}           
           </Form.Group>
 
           <Form.Group controlId="TipoInmueble" className="mb-3">
             <Form.Label>Tipo de Inmueble:</Form.Label>
-            <Form.Control
+
+            {location.search !== "" && (
+            <>
+               <Form.Control
+              type="text"
+              value={inmuebleData.Tipo}
+              readOnly
+              disabled={!selectedTipoInmueble}
+            />
+            </>
+          )}
+            {location.search == "" && (
+            <>
+               <Form.Control
               type="text"
               value={selectedTipoInmueble}
               readOnly
               disabled={!selectedTipoInmueble}
             />
+            </>
+          )}           
+
+           
           </Form.Group>
 
           <Form.Group controlId="Arrendatario" className="mb-3">
@@ -261,7 +309,7 @@ export const Contrato = () => {
               <Button
                 type="button"
                 variant="danger m-2"
-                onClick={handleConfirmCancel}
+                onClick={() => setShowCancelModal(true)}
               >
                 <FontAwesomeIcon icon={faTimes} />
                 <span className="text_button ms-2">Cancelar</span>

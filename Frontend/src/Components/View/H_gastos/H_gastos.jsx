@@ -19,6 +19,7 @@ export const H_gastos = () => {
   const [infoComision, setinfoComision] = useState([]);
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [selectedPropietario, setSelectedPropietario] = useState("");
+  const [DatosFiltrados, setDatosFiltrados] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
 
   const [filtroData, setFiltroData] = useState({
@@ -64,6 +65,7 @@ export const H_gastos = () => {
       }
       const data = await response.json();
       setinfoComision(data);
+      setDatosFiltrados(queryParams.toString())
     } catch (error) {
       console.error("Error fetching products:", error);
     }

@@ -577,32 +577,32 @@ router.post("/contratoarrendamiento", (req, res) => {
 // Ruta para registrar un propietario
 router.post("/RPropietario", async (req, res) => {
   const {
-    numerodocumento,
-    nombrepropietario,
+    NombreCompleto,
+    TipoDocumento,
+    DocumentoIdentidad,
     Telefono,
     Correo,
-    tipocuenta,
-    banco,
+    TipoCuenta,
+    NumeroCuenta,
+    FechaIngreso,
     direccion,
-    numerocuenta,
-    fechaingreso,
-    TipoDocumento,
+    Banco,
   } = req.body;
 
   try {
     connection.query(
       "INSERT INTO propietario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Direccion, Correo, Banco, TipoCuenta, Telefono, NumeroCuenta, FechaIngreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
-        nombrepropietario,
+        NombreCompleto,
         TipoDocumento,
-        numerodocumento,
+        DocumentoIdentidad,
         direccion,
         Correo,
-        banco,
-        tipocuenta,
+        Banco,
+        TipoCuenta,
         Telefono,
-        numerocuenta,
-        fechaingreso,
+        NumeroCuenta,
+        FechaIngreso,
       ],
       (error, results) => {
         if (error) {

@@ -12,6 +12,7 @@ export const RInmuebleA = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [selectedPropietario, setSelectedPropietario] = useState("");
+  const [DocumentoPropie, setDocumentoPropie] = useState("");
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [focusedField, setFocusedField] = useState(""); // Agregar esta línea antes de usar focusedField
   const [showWarning, setShowWarning] = useState(false); // Agregar esta línea antes de usar showWarning
@@ -33,19 +34,35 @@ export const RInmuebleA = () => {
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
+    setDocumentoPropie(localStorage.getItem("NITPropie"))
+    console.log(DocumentoPropie);
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    try {
-      const response = await axios.get("http://localhost:3006/Vpropietarios?");
-      const Propietarios = response.data.map((prop) => prop);
-      setPropietariosDisponibles(Propietarios);
-    } catch (error) {
-      console.error("Error al cargar las matrículas:", error);
-      toast.error(
-        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
-      );
+    if (DocumentoPropie !== "") {
+      try {
+        const response = await axios.get(`http://localhost:3006/Vpropietarios?Cedula=${DocumentoPropie}`);
+        const Propietarios = response.data.map((prop) => prop);
+        setPropietariosDisponibles(Propietarios);
+      } catch (error) {
+        console.error("Error al cargar las matrículas:", error);
+        toast.error(
+          "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+        );
+      }
+    }
+    else{
+      try {
+        const response = await axios.get("http://localhost:3006/Vpropietarios?");
+        const Propietarios = response.data.map((prop) => prop);
+        setPropietariosDisponibles(Propietarios);
+      } catch (error) {
+        console.error("Error al cargar las matrículas:", error);
+        toast.error(
+          "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+        );
+      }
     }
   };
 
@@ -96,6 +113,7 @@ export const RInmuebleA = () => {
 
   const handleConfirmCancel = () => {
     window.location.href = "/Inmueble";
+    localStorage.removeItem("NITPropie")
     setShowCancelModal(false); // Cierra el modal
   };
 

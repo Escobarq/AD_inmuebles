@@ -15,6 +15,7 @@ export const ContratoA = () => {
   const contratoInfo = useContratoInfo('http://localhost:3006/contratoFiltro');
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const pdfContentRef = useRef(null);
+  const [DatosFiltrados, setDatosFiltrados] = useState("");
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [filtroData, setFiltroData] = useState({
     FechaFinMIN: "",
@@ -38,6 +39,7 @@ export const ContratoA = () => {
       }
       const data = await response.json();
       setinfoarrendatario(data);
+      setDatosFiltrados(queryParams.toString())
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -154,6 +156,8 @@ export const ContratoA = () => {
     doc.setFontSize(13);
     doc.setTextColor(128);
     doc.text("Adminmuebles", 45, 20); // Title next to the logo
+    doc.setFontSize(5);
+    doc.text(`Informe filtrado con estos terminos ${DatosFiltrados}`, 44, 15); // Title next to the logo
 
 
     addHoraEmision();
