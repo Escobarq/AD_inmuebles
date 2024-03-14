@@ -29,7 +29,7 @@ export const RPropietario = () => {
     TipoCuenta: "",
     NumeroCuenta: "",
     FechaIngreso: "",
-    Direccion: "",
+    direccion: "",
     IdPropietario: "", // Agregamos el campo IdPropietario
   });
 
@@ -63,7 +63,7 @@ export const RPropietario = () => {
         TipoCuenta: "",
         NumeroCuenta: "",
         FechaIngreso: "",
-        Direccion: "",
+        direccion: "",
       });
     }
   }, [location.search]);
@@ -102,13 +102,14 @@ export const RPropietario = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data), // Aquí debes asegurarte de que data contenga todos los campos necesarios
+        body: JSON.stringify(propetarioData), // Aquí debes asegurarte de que data contenga todos los campos necesarios
       });
       console.log(data);
       if (response.ok) {
         setShowSaveModal(false); // Muestra el modal de confirmación
         localStorage.setItem("NITPropie", data.DocumentoIdentidad); // Suponiendo que DocumentoIdentidad es el campo correcto
         reset();
+        window.location.href = "/Propietario";
         setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
       }
     } catch (error) {
@@ -121,6 +122,7 @@ export const RPropietario = () => {
   };
 
   const handleConfirmCancel = () => {
+    window.location.href = "/Propietario";
     setShowCancelModal(false); // Cierra el modal
   };
 
@@ -191,7 +193,13 @@ export const RPropietario = () => {
               className="InputsRegistros"
               {...register("direccion")}
               type="text"
-              defaultValue={propetarioData.Direccion}
+              defaultValue={propetarioData.direccion}
+              onChange={(e) =>
+                setpropetarioData({
+                  ...propetarioData,
+                  direccion: e.target.value,
+                })
+              }
             />
           </Form.Group>
 

@@ -171,6 +171,7 @@ export const ReArrendatario = () => {
 
   const handleFieldFocus = (fieldName) => {
     setFocusedField(fieldName);
+    console.log("borrar luego");
   };
 
   return (

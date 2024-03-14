@@ -1,5 +1,6 @@
 import { Form, Button, Modal, InputGroup, ListGroup } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -7,6 +8,8 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 export const Contrato = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showMatriculaModal, setShowMatriculaModal] = useState(false);
@@ -21,10 +24,26 @@ export const Contrato = () => {
   const [selectedIdInmueble, setSelectedIdInmueble] = useState(null);
   const [selectedIdArrendatario, setSelectedIdArrendatario] = useState("");
 
+  const [inmuebleData, setInmuebleData] = useState({
+    IdInmueble: "",
+    NoMatricula: "",
+    Tipo: "",
+  });
+
+
   useEffect(() => {
     cargarMatriculasDisponibles();
     cargarArrendatariosDisponibles();
-  }, []);
+`    if (location.search) {
+      setInmuebleData({
+        IdInmueble: searchParams.get("IdInmueble") || "",
+        NoMatricula: searchParams.get("NoMatricula") || "",
+        Tipo: searchParams.get("Tipo") || "",
+      });
+    } else {
+      return null;
+    }`
+  }, [location.search]);
 
   const cargarMatriculasDisponibles = async () => {
     try {
@@ -119,9 +138,7 @@ export const Contrato = () => {
     setSelectedArrendatario(selected);
     setSelectedCodeudor(selected.NombreCodeudor);
     setShowMatriculaModal(false);
-
     setSelectedIdArrendatario(selected.IdArrendatario);
-    console.log("ID del arrendatario:", selected.IdArrendatario); // Imprimir ID del arrendatario en la consola
   };
 
 
@@ -133,7 +150,17 @@ export const Contrato = () => {
         <Form className="form-propietario" onSubmit={handleSubmit(handleConfirmSave)}>
           <Form.Group controlId="Matricula" className="mb-3">
             <Form.Label>Número de Matrícula:</Form.Label>
-            <InputGroup>
+            {location.search !== 2 && (
+            <>
+               <Form.Control
+              type="text"
+              value={inmuebleData.NoMatricula}
+              readOnly
+              disabled={!selectedTipoInmueble}
+            />
+            </>
+          )}
+            <InputGroup>            
               <Form.Select
                 value={selectedMatricula}
                 onChange={(e) => handleMatriculaChange(e.target.value)}
