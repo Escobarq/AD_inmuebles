@@ -10,10 +10,16 @@ import "moment/locale/es";
 import NoResultImg from "../../../assets/NoResult.gif";
 import "./H_recibos.css";
 import { useMediaQuery } from "@react-hook/media-query";
+import logo from "../../../assets/Logo.jpg";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+
 
 export const H_recibos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
+  const [DatosFlitrados, setDatosFiltrados]=useState("");
   const [filtroData, setFiltroData] = useState({
     estado: "",
     FechaPagoIni: "",
@@ -44,6 +50,7 @@ export const H_recibos = () => {
       const data = await response.json();
       const Harrendamiento = data.filter((item) => item.booleanos === "true");
       setinfoPArrendamiento(Harrendamiento);
+      setDatosFiltrados(queryParams.toString())
 
       if (data.length == 0) {
         setNoResult(true);
@@ -95,18 +102,18 @@ export const H_recibos = () => {
       </tr>
     );
   };
-    // Variables Paginacion
-    useEffect(() => {
-      // Cambiar el número de ítems por página según el tamaño de la pantalla
-      if (isSmallScreen) {
-        setItemsPerPage(5);
-      } else {
-        setItemsPerPage(8);
-      }
-    }, [isSmallScreen]);
-    
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(8);
+  // Variables Paginacion
+  useEffect(() => {
+    // Cambiar el número de ítems por página según el tamaño de la pantalla
+    if (isSmallScreen) {
+      setItemsPerPage(5);
+    } else {
+      setItemsPerPage(8);
+    }
+  }, [isSmallScreen]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -131,6 +138,164 @@ export const H_recibos = () => {
     window.addEventListener("resize", updateTooltipVisibility);
     return () => window.removeEventListener("resize", updateTooltipVisibility);
   }, []);
+
+
+
+
+
+
+  //AQUI EMPIEZA GENERACION DE PDF
+  const ArrenPDF = () => {
+    const doc = new jsPDF();
+    const addHoraEmision = () => {
+      const currentDate = new Date();
+      const formattedTime = currentDate.toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      doc.setTextColor(128); // Gris
+      doc.setFontSize(8);
+      doc.text(
+        `Hora de Emisión: ${formattedTime}`,
+        20,
+        doc.internal.pageSize.getHeight() - 10
+      );
+    };
+    doc.addImage(logo, "PNG", 15, 10, 20, 20);
+    doc.setFontSize(20);
+    doc.text("Historial de Pago Arrendamiento", 44, 20);
+    doc.setFontSize(13);
+    doc.setTextColor(128);
+    doc.text("Adminmuebles", 44, 26); // Title next to the logo
+    doc.setFontSize(6);
+    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+
+    addHoraEmision();
+    const date = new Date();
+    const monthNames = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ];
+
+    const formattedDate = `${monthNames[date.getMonth()]
+      }/${date.getDate()}/${date.getFullYear()}`;
+    doc.setTextColor(128); // Gris
+    doc.setFontSize(10);
+    doc.text(formattedDate, 190, 18, null, null, "right");
+
+
+    const columns = [
+
+      { header: "ID pago arrendatario", dataKey: "IdPagoArrendamiento" },
+      { header: "ID arrendatario", dataKey: "IdArrendatario" },
+      { header: "Fecha pago", dataKey: "FechaPago" },
+      { header: "Fecha inicio", dataKey: "FechaInicio" },
+      { header: "Fecha final", dataKey: "FechaFin" },
+      { header: "Valor pago", dataKey: "ValorPago" },
+      { header: "Forma pago", dataKey: "FormaPago" },
+      { header: "Estado pago", dataKey: "Estado" },
+      { header: "Dias mora", dataKey: "DiasDMora" },
+    ];
+    // Datos de la tabla
+    const data = infoPArrendamiento.map((Arrendamiento) => ({
+
+      IdPagoArrendamiento:Arrendamiento.IdPagoArrendamiento,
+      IdArrendatario:Arrendamiento.IdArrendatario,
+      FechaPago: formatDate(Arrendamiento.FechaPago),
+      FechaInicio: formatDate(Arrendamiento.FechaInicio),
+      FechaFin: formatDate(Arrendamiento.FechaFin),
+      ValorPago:  `$${Arrendamiento.ValorPago}`,
+      FormaPago:Arrendamiento.FormaPago,
+      Estado:Arrendamiento.Estado,
+      DiasDMora:Arrendamiento.DiasDMora,
+
+
+    }));
+    const itemsPerPage = 21;
+    let startY = 45;
+    for (let i = 0; i < Math.ceil(data.length / itemsPerPage); i++) {
+      const currentPageData = data.slice(
+        i * itemsPerPage,
+        (i + 1) * itemsPerPage
+      );
+
+      // Información en forma de tabla
+      autoTable(doc, {
+        columns,
+        body: currentPageData,
+        startY: startY,
+        styles: { fontSize: 8 },
+        margin: { top: 30 },
+      });
+      // Si hay más páginas, añadir una nueva página
+      if (i < Math.ceil(data.length / itemsPerPage) - 1) {
+        doc.addPage();
+        startY = 40;
+      }
+
+      const date = new Date();
+      const monthNames = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre",
+      ];
+      const formattedDate = `${monthNames[date.getMonth()]
+        }/${date.getDate()}/${date.getFullYear()}`;
+      doc.setTextColor(128); // Gris
+      doc.setFontSize(10);
+      doc.text(formattedDate, 190, 18, null, null, "right");
+
+
+      addHoraEmision();
+      doc.addImage(logo, "PNG", 15, 15, 20, 15);
+      doc.setFontSize(13);
+      doc.text("Adminmuebles", 44, 26);
+    }
+
+    const totalPages = doc.internal.getNumberOfPages();
+    // Numeración de páginas
+    for (let j = 1; j <= totalPages; j++) {
+      doc.setPage(j);
+      doc.setFontSize(8);
+      doc.setTextColor(100);
+      doc.text(
+        `Pág ${j} / ${totalPages}`,
+        doc.internal.pageSize.getWidth() / 2,
+        doc.internal.pageSize.getHeight() - 10,
+        { align: "center" }
+      );
+    }
+    doc.save("Historial de Pago Arrendamiento-PDF");
+
+
+
+  };
+  //AQUI TERMINA
+
+
+
+
+
+
 
   return (
     <>
@@ -201,14 +366,15 @@ export const H_recibos = () => {
               </Link>
             </Button>
           </OverlayTrigger>
+
           <Button
-        variant="success"
-        className="bottom-button"
-        
-      >
-        <FontAwesomeIcon icon={faFilePdf} />
-        Generar PDF
-      </Button>
+            variant="success"
+            className="bottom-button"
+            onClick={ArrenPDF}
+          >
+            <FontAwesomeIcon icon={faFilePdf} />
+            Generar PDF
+          </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Historial de Pago Arrendamiento</h1>
