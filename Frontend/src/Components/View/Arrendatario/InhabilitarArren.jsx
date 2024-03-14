@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Table, Button ,Modal } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 
@@ -11,8 +10,11 @@ import {
 import Pagination from "react-bootstrap/Pagination";
 import ActualizarArrendatario from "../../Hooks/InhabilitarArren";
 import { toast } from "react-toastify";
+import useRoleInfo from "../../Hooks/useRoleInfo";
+
 
 export const InhabilitarArren = () => {
+  const roleId = useRoleInfo();
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [arrendatarioIdToDelete, setarrendatarioIdToDelete] = useState(null);
@@ -88,7 +90,7 @@ export const InhabilitarArren = () => {
         <th>Estado</th>
         <th>Teléfono</th>
         <th>Correo</th>
-        <th>Opciones</th>
+        {roleId !== 2 && <th>Opciones</th>}
       </tr>
     );
   };
@@ -102,6 +104,7 @@ export const InhabilitarArren = () => {
         <td>{Arrendatarios.Estado}</td>
         <td>{Arrendatarios.Telefono}</td>
         <td>{Arrendatarios.Correo}</td>
+        {roleId !== 2 && (
         <td>
           <Button
             className="btn-opciones"
@@ -114,6 +117,7 @@ export const InhabilitarArren = () => {
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
+        )}
       </tr>
     );
   };
