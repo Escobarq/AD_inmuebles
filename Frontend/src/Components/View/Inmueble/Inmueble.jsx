@@ -3,7 +3,6 @@ import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   faEye,

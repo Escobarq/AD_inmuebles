@@ -3,7 +3,6 @@ import { Table, Button, Modal } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   faTrash,
@@ -11,10 +10,12 @@ import {
   faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import useActualizarEstadoInmueble from "../../Hooks/InhabilitarInmueble";
+import useRoleInfo from "../../Hooks/useRoleInfo";
+
 
 export const InhabilitarInmuebles = () => {
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble();
-
+  const roleId = useRoleInfo();
   const [inmuebleIdBoolean, setInmueblesBoolean] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [infoinmueble, setinfoinmueble] = useState([]);
@@ -51,7 +52,7 @@ export const InhabilitarInmuebles = () => {
         <th>Ciudad</th>
         <th>Barrio</th>
         <th>Tipo</th>
-        <th>Opciones</th>
+        {roleId !== 2 && <th>Opciones</th>}
       </tr>
     );
   };
@@ -66,6 +67,7 @@ export const InhabilitarInmuebles = () => {
         <td>{inmueble.Ciudad}</td>
         <td>{inmueble.Barrio}</td>
         <td>{inmueble.Tipo}</td>
+        {roleId !== 2 && (
         <td>
           <Button
             className="btn-opciones"
@@ -78,6 +80,7 @@ export const InhabilitarInmuebles = () => {
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
+      )}
       </tr>
     );
   };
@@ -125,10 +128,7 @@ export const InhabilitarInmuebles = () => {
     toast.error("Hubo algun error  ", {
       theme: "dark",
     });
-  const notify = () =>
-    toast.success("Se Asigno el arrendatario Exitosamente", {
-      theme: "dark",
-    });
+ 
   const notifi = () =>
     toast.success("Se Inabilito Correctamente ", {
       theme: "dark",
