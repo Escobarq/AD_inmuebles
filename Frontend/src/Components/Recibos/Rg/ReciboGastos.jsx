@@ -63,12 +63,13 @@ export const ReciboGastos = () => {
 
   const fetchData2 = async (Propietario) => {
     try {
+      
       const response = await axios.get(
         `http://localhost:3006/Vinmueble?IdPropietario=${Propietario.IdPropietario}`
       );
       const Inmuebles = response.data.map((prop) => prop);
       setInmueblesDisponibles(Inmuebles);
-      console.log("hola", Inmuebles);
+      console.log(Inmuebles);
     } catch (error) {
       console.error("Error al cargar las matrículas:", error);
       toast.error(
@@ -141,17 +142,21 @@ export const ReciboGastos = () => {
     let Total = valorPA - valorAE - valorAI - valorM;;
     if (Total < 0) {
       alertError();
-      console.log(Total);
     } else {
       data.FechaPago = currentDate
       data.PagoArriendo = valorPA;
       data.AdminInmobiliaria = valorAI;
       data.AseoEntrega = valorAE;
       data.Mantenimiento =valorM;
-      data.ValorTotal =Total;
+      data.ValorTotal = Total;
       data.IdPropietario = selectedPropietario.IdPropietario;
       data.IdInmueble = selectedInmueble.IdInmueble;
       data.ElaboradoPor = Nombre;
+      data.Matricula = selectedInmueble.NoMatricula;
+      data.TipoInmueble = selectedInmueble.Tipo;
+      data.NombrePropietario = selectedPropietario.NombreCompleto;
+      data.CedulaPropietario = selectedPropietario.DocumentoIdentidad;
+
       try {
         const response = await fetch("http://localhost:3006/RComision", {
           method: "POST",
@@ -169,7 +174,7 @@ export const ReciboGastos = () => {
           const responseData = await response.json();
 
           setinfogastos(data); // Actualiza el estado antes de llamar a ReciboGasto
-          ReciboGasto(data.numerogasto, data); // Pasa los datos actualizados al PDF
+          ReciboGasto(data); // Pasa los datos actualizados al PDF
           notify("se enviaron correctamente los datos");
           return responseData;
         }
@@ -206,24 +211,22 @@ export const ReciboGastos = () => {
   }
   //AQUI EMPIEZA FUNCION PARA PDF
   const ReciboGasto = async (data) => {
+    console.log(data);
     const order = [
-      "Documento",
-      "Nombre",
-      "Tipo",
+      "CedulaPropietario",
+      "NombrePropietario",
+      "TipoInmueble",
+      "Matricula",
       "FormaPago",
       "FechaPago",
-      "Matricula",
       "AdminInmobiliaria",
       "PagoArriendo",
       "AseoEntrega",
       "Mantenimiento",
-      "ElaboradoPor"
+      "ElaboradoPor",
+      "ValorTotal",
     ];
 
-
-
-
-   
     try {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage(); 
@@ -252,7 +255,7 @@ export const ReciboGastos = () => {
       const logoImageBytes = await fetch(logo).then((res) =>
         res.arrayBuffer()
       );
-      const logoImage = await pdfDoc.embedPng(logoImageBytes);
+      const logoImage = await pdfDoc.embedJpg(logoImageBytes);
 
       //logo en el encabezado
 
@@ -327,13 +330,25 @@ export const ReciboGastos = () => {
               align: "right",
             });
             //la respuesta debajo del nombre del campo
-            page.drawText(`${value}`, {
-              x: leftX,
-              y: yOffset - fontSize * 1.5,
-              size: fontSize,
-              color: rgb(0, 0, 0),
-              align: "left",
-            });
+            if(key == "PagoArriendo" || key == "AseoEntrega" || key == "AdminInmobiliaria" || key== "Mantenimiento" || key == "ValorTotal") {
+              page.drawText(`$${value}`, {
+                x: leftX,
+                y: yOffset - fontSize * 1.5,
+                size: fontSize,
+                color: rgb(0, 0, 0),
+                align: "left",
+              });  
+            }
+            else{
+
+              page.drawText(`${value}`, {
+                x: leftX,
+                y: yOffset - fontSize * 1.5,
+                size: fontSize,
+                color: rgb(0, 0, 0),
+                align: "left",
+              });
+            }
             // Alternamos entre columnas izquierda y derecha
             if (leftX === padding) {
               leftX = rightX;

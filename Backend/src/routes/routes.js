@@ -108,7 +108,7 @@ router.get("/Vinmueble", (req, res) => {
   const { tipo, estrato, estado, IdPropietario } = req.query;
 
   try {
-    let query = "SELECT * FROM inmueble  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
+    let query = "SELECT  i.*, p.NombreCompleto AS NombrePropietario  FROM propietario p LEFT JOIN inmueble i ON p.IdPropietario = i.IdPropietario WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
 
     const queryParams = []; // Almacena los valores de los parámetros
 
@@ -126,7 +126,7 @@ router.get("/Vinmueble", (req, res) => {
       queryParams.push(estrato);
     }
     if (IdPropietario) {
-      query += " AND IdPropietario = ?";
+      query += " AND i.IdPropietario = ?";
       queryParams.push(IdPropietario);
     }
 
@@ -357,17 +357,51 @@ router.get("/VPagoArren", (req, res) => {
 });
 
 router.get("/VComisionPropie", (req, res) => {
-  connection.query(
-    "SELECT * FROM comision_propietario INNER JOIN propietario USING(IdPropietario)",
-    (error, results) => {
-      if (error) {
-        console.error("Error al obtener datos de la base de datos:", error);
-        res.status(500).json({ error: "Error interno del servidor" });
-      } else {
-        res.status(200).json(results);
-      }
+  const{Propietario, FechaElaboracionMin, FechaElaboracionMax,FormaPago} =req.query
+
+
+  try {
+    let query = "SELECT * FROM comision_propietario INNER JOIN propietario USING(IdPropietario) WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
+
+    const queryParams = []; // Almacena los valores de los parámetros
+
+    if (Propietario) {
+      query += " AND IdPropietario = ?";
+      queryParams.push(Propietario);
     }
-  );
+    if (FechaElaboracionMin) {
+      query += " AND FechaElaboracion >= ?";
+      queryParams.push(FechaElaboracionMin);
+    }
+
+    if (FechaElaboracionMax) {
+      query += " AND FechaElaboracion <= ?";
+      queryParams.push(FechaElaboracionMax);
+    }
+    if (FormaPago) {
+      query += " AND FormaPago = ?";
+      queryParams.push(FormaPago);
+    }
+
+    query += "ORDER BY IdComisionPropietario ASC";
+
+    connection.query(
+      query,
+      queryParams,
+
+      (error, results) => {
+        if (error) {
+          console.error("Error al obtener datos de la base de datos:", error);
+          res.status(500).json({ error: "Error interno del servidor" });
+        } else {
+          res.status(200).json(results);
+        }
+      }
+    );
+  } catch (error) {
+    res(error);
+  }
+
 });
 
 router.get("/contratoFiltro", (req, res) => {
@@ -418,8 +452,7 @@ router.get("/contratoFiltro", (req, res) => {
     if (error) {
       console.error("Error al ejecutar la consulta:", error);
       res.status(500).send("Error interno del servidor");
-    } else {
-      console.log(NContrato);
+    } else {      
       res.json(results);
     }
   });
@@ -748,22 +781,24 @@ router.post("/Reinmueble", async (req, res) => {
 // Ruta para la creación de un nuevo codeudor
 router.post("/Rcodeudor", async (req, res) => {
   const {
-    nombrecompleto,
-    documentoidentidad,
-    telefono,
-    correoelectronico,
-    direccion,
+    NombreCompleto,
+    TipoDocumento,
+    DocumentoIdentidad,
+    Telefono,
+    Correo,
+    Direccion,
   } = req.body;
 
   try {
     await connection.query(
-      "INSERT INTO codeudor (NombreCompleto, DocumentoIdentidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO codeudor (NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?, ?)",
       [
-        nombrecompleto,
-        documentoidentidad,
-        telefono,
-        correoelectronico,
-        direccion,
+        NombreCompleto,
+        TipoDocumento,
+        DocumentoIdentidad,
+        Telefono,
+        Correo,
+        Direccion,
       ]
     );
     res.status(200).json({ message: "Codeudor registrado correctamente" });
@@ -973,10 +1008,7 @@ router.post("/RComision", async (req, res) => {
     }
 
     // Valores predeterminados
-    const pagoArriendo = PagoArriendo || 0;
-    const adminInmobiliaria = AdminInmobiliaria || 0;
-    const aseoEntrega = AseoEntrega || 0;
-    const mantenimiento = Mantenimiento || 0;
+
 
     connection.query(
       "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento, ValorTotal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -986,10 +1018,10 @@ router.post("/RComision", async (req, res) => {
         FechaPago,
         ElaboradoPor,
         FormaPago,
-        pagoArriendo,
-        adminInmobiliaria,
-        aseoEntrega,
-        mantenimiento,
+        PagoArriendo,   
+        AdminInmobiliaria,
+        AseoEntrega,
+        Mantenimiento,
         ValorTotal,
       ],
       (error, results) => {
@@ -1306,7 +1338,6 @@ router.put("/RPropietario/:id", async (req, res) => {
     banco,
     direccion,
     numerocuenta,
-    fechaingreso,
     TipoDocumento,
   } = req.body;
 
@@ -1350,10 +1381,6 @@ router.put("/RPropietario/:id", async (req, res) => {
     if (telefono) {
       updates.push("Telefono = ?");
       values.push(telefono);
-    }
-    if (fechaingreso) {
-      updates.push("FechaIngreso = ?");
-      values.push(fechaingreso);
     }
 
     if (updates.length === 0) {
