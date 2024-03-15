@@ -29,11 +29,22 @@ export const Contrato = () => {
     NoMatricula: "",
     Tipo: "",
   });
-
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
+  // Función para obtener la fecha actual en formato YYYY-MM-DD
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
 
   useEffect(() => {
     cargarMatriculasDisponibles();
     cargarArrendatariosDisponibles();
+    setCurrentDate(getCurrentDate());
 
     if (location.search) {
       setInmuebleData({
@@ -114,7 +125,8 @@ export const Contrato = () => {
         const response = await axios.post("http://localhost:3006/contratoarrendamiento", {
           IdArrendatario: selectedIdArrendatario,
           IdInmueble: selectedIdInmueble,
-          FechaInicioContrato: watch("FechaInicioContrato"),
+          FechaInicioContrato: currentDate,
+          FechaPagoFija: currentDate,
           FechaFinContrato: watch("FechaFinContrato"),
           EstadoContrato: watch("EstadoContrato"),
           ValorDeposito: watch("ValorDeposito")
@@ -270,12 +282,17 @@ export const Contrato = () => {
 
           <Form.Group controlId="FechaInicioContrato">
             <Form.Label>Fecha Inicio Contrato:</Form.Label>
-            <Form.Control type="date" {...register("FechaInicioContrato")} />
+            <Form.Control value={currentDate} disabled type="date" {...register("FechaInicioContrato")} />
           </Form.Group>
 
           <Form.Group controlId="FechaFinContrato">
             <Form.Label>Fecha Fin Contrato:</Form.Label>
             <Form.Control type="date" {...register("FechaFinContrato")} />
+          </Form.Group>
+
+          <Form.Group controlId="FechaPagoFija">
+            <Form.Label>Fecha Pago Fija:</Form.Label>
+            <Form.Control type="date" value={currentDate} disabled {...register("FechaPagoFija")} />
           </Form.Group>
 
           <Form.Group controlId="TipoDocumento">

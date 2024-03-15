@@ -58,12 +58,12 @@ export const H_recibos = () => {
     return (
       <tr>
         <th>ID pago arrendatario</th>
-        <th>ID arrendatario</th>
+        <th>Cod Contrato</th>
+        <th>Arrendatario</th>
         <th>Fecha pago</th>
-        <th>Fecha inicio</th>
-        <th>Fecha final</th>
+        <th>Fecha Pago Fija</th>
+        <th>Forma de Pago</th>
         <th>Valor pago</th>
-        <th>Forma pago</th>
         <th>Estado pago</th>
         <th>Dias mora</th>
       </tr>
@@ -84,12 +84,12 @@ export const H_recibos = () => {
     return (
       <tr key={PArrendamiento.IdPagoArrendamiento}>
         <td>{PArrendamiento.IdPagoArrendamiento}</td>
+        <td>{PArrendamiento.IdContrato}</td>
         <td>{PArrendamiento.IdArrendatario}</td>
         <td>{formatDate(PArrendamiento.FechaPago)}</td>
-        <td>{formatDate(PArrendamiento.FechaInicio)}</td>
-        <td>{formatDate(PArrendamiento.FechaFin)}</td>
-        <td>{PArrendamiento.ValorPago}</td>
+        <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
         <td>{PArrendamiento.FormaPago}</td>
+        <td>{PArrendamiento.ValorPago}</td>
         <td>{PArrendamiento.Estado}</td>
         <td>{PArrendamiento.DiasDMora}</td>
       </tr>

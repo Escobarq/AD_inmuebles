@@ -34,6 +34,7 @@ export const RPropietario = () => {
   });
 
   useEffect(() => {
+    setCurrentDate(getCurrentDate());
     // Si hay parámetros de consulta en la URL, significa que se está editando un propietario existente
     if (location.search) {
       const arrendatario = {
@@ -68,9 +69,7 @@ export const RPropietario = () => {
     }
   }, [location.search]);
 
-  useEffect(() => {
-    setCurrentDate(getCurrentDate());
-  }, []);
+
 
   // Función para obtener la fecha actual en formato YYYY-MM-DD
   function getCurrentDate() {
@@ -84,6 +83,9 @@ export const RPropietario = () => {
   }
 
   const onSubmitRegistro = async (data) => {
+    propetarioData.FechaIngreso = (currentDate)
+    console.log(propetarioData.FechaIngreso);
+
     try {
       // Verificar si el número de identidad ya está registrado
       if (identidadesRegistradas.includes(data.DocumentoIdentidad)) {
@@ -107,11 +109,13 @@ export const RPropietario = () => {
       console.log(data);
       if (response.ok) {
         setShowSaveModal(false); // Muestra el modal de confirmación
-        localStorage.setItem("NITPropie", data.DocumentoIdentidad); // Suponiendo que DocumentoIdentidad es el campo correcto
-        console.log(data.DocumentoIdentidad);
-        reset();
-        window.location.href = "/RInmuebleA";
-        setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
+          const urlParams = new URLSearchParams({
+            DocumentoIdentidad: propetarioData.DocumentoIdentidad,
+          });
+          const url = `/RInmuebleA?${urlParams.toString()}`;
+          reset();
+          setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
+          window.location.href = url;
       }
     } catch (error) {
       console.error("Error al enviar datos al servidor:", error);
@@ -182,6 +186,7 @@ export const RPropietario = () => {
                 {" "}
                 Seleccione Tipo de Documento{" "}
               </option>
+              <option value=""> Seleccione Tipo Documento</option>
               <option value="Cedula Ciudadania">Cedula Ciudadania</option>
               <option value="Cedula Extranjeria">Cedula Extranjería</option>
               <option value="Pasaporte">Pasaporte</option>
@@ -274,6 +279,7 @@ export const RPropietario = () => {
               <option defaultValue="" disabled hidden>
                 Seleccione Tipo de Cuenta
               </option>
+              <option value="">Seleccion Tipo Cuenta</option>
               <option value="Cuenta Ahorros">Cuenta Ahorros</option>
               <option value="Cuenta Corriente">Cuenta Corriente</option>
             </Form.Select>
@@ -296,15 +302,10 @@ export const RPropietario = () => {
             <Form.Label>Fecha de Ingreso:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("FechaIngreso")}
+              disabled
+              
               type="date"
-              defaultValue={propetarioData.FechaIngreso || currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate
-              onChange={(e) =>
-                setpropetarioData({
-                  ...propetarioData,
-                  FechaIngreso: e.target.value,
-                })
-              }
+              defaultValue={currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate             
             />
           </Form.Group>
 

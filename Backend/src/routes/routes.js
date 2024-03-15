@@ -545,6 +545,7 @@ router.post("/contratoarrendamiento", (req, res) => {
     IdInmueble,
     FechaInicioContrato,
     FechaFinContrato,
+    FechaPagoFija,
     EstadoContrato,
     ValorDeposito,
   } = req.body;
@@ -554,6 +555,7 @@ router.post("/contratoarrendamiento", (req, res) => {
     IdInmueble,
     FechaInicioContrato,
     FechaFinContrato,
+    FechaPagoFija,
     EstadoContrato,
     ValorDeposito,
   };
@@ -608,6 +610,7 @@ router.post("/RPropietario", async (req, res) => {
         if (error) {
           console.error("Error al añadir propietario:", error);
           res.status(500).json({ error: "Error al añadir propietario" });
+          console.log(FechaIngreso, "aaaaaaaaaaa");
         } else {
           console.log("Propietario agregado:", results);
           res
@@ -617,7 +620,7 @@ router.post("/RPropietario", async (req, res) => {
       }
     );
   } catch (error) {
-    console.error("Error al añadir propietario:", error);
+    console.error("Error al añadir propietario:", error,);
     res.status(500).json({ error: "Error al añadir propietario" });
   }
 });
