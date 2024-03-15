@@ -13,8 +13,11 @@ import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import { toast } from "react-toastify";
 import InhabilitarPropetarios from "../../Hooks/InhabilitarPropetarios";
+import useRoleInfo from "../../Hooks/useRoleInfo";
+
 
 export const InhabilitarPropetario = () => {
+  const roleId = useRoleInfo();
   const [infopropietario, setinfopropietario] = useState([]);
   const [Rol, setRol] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -95,7 +98,7 @@ export const InhabilitarPropetario = () => {
         <th>Banco</th>
         <th>Tipo de cuenta</th>
         <th>Número de cuenta</th>
-        <th>Opciones</th>
+        {roleId !== 2 && <th>Opciones</th>}
       </tr>
     );
   };
@@ -111,6 +114,7 @@ export const InhabilitarPropetario = () => {
         <td>{Propietario.Banco}</td>
         <td>{Propietario.TipoCuenta}</td>
         <td>{Propietario.NumeroCuenta}</td>
+        {roleId !== 2 && (
         <td>
           <Button
             className="btn-opciones"
@@ -123,6 +127,7 @@ export const InhabilitarPropetario = () => {
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
+        )}
       </tr>
     );
   };

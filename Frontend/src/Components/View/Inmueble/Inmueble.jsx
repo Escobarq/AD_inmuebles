@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { faFilePdf, faFileSignature } from "@fortawesome/free-solid-svg-icons";
 import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   faEye,
@@ -18,9 +18,13 @@ import NoResultImg from "../../../assets/NoResult.gif";
 import { format, toDate } from "date-fns";
 import useRoleInfo from "../../Hooks/useRoleInfo";
 import { useMediaQuery } from "@react-hook/media-query";
+import logo from "../../../assets/Logo.jpg";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 
 export const Inmueble = () => {
+  const [DatosFlitrados, setDatosFiltrados]=useState("");
   const roleId = useRoleInfo();
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
@@ -73,19 +77,19 @@ export const Inmueble = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   // Paginacion
   const [infoinmueble, setinfoinmueble] = useState([]);
-  
-    // Variables Paginacion
-    useEffect(() => {
-      // Cambiar el número de ítems por página según el tamaño de la pantalla
-      if (isSmallScreen) {
-        setItemsPerPage(5);
-      } else {
-        setItemsPerPage(8);
-      }
-    }, [isSmallScreen]);
-    
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(8);
+
+  // Variables Paginacion
+  useEffect(() => {
+    // Cambiar el número de ítems por página según el tamaño de la pantalla
+    if (isSmallScreen) {
+      setItemsPerPage(5);
+    } else {
+      setItemsPerPage(8);
+    }
+  }, [isSmallScreen]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
 
   // Actualizar Inmueble
   const [inmuebleseleccion, setinmuebleseleccion] = useState(null);
@@ -116,6 +120,8 @@ export const Inmueble = () => {
       );
 
       setinfoinmueble(INmueblesActivos);
+      setDatosFiltrados(queryParams.toString())
+
       if (INmueblesActivos.length == 0) {
         setNoResult(true);
       } else {
@@ -194,7 +200,7 @@ export const Inmueble = () => {
   //Traer Informacion
   const handleEditInmuebles = (InmuebleId) => {
     const inmueble = infoinmueble.find((inm) => inm.IdInmueble === InmuebleId);
-    
+
     if (!inmueble) {
       console.error("No se encontró el inmueble con ID:", InmuebleId);
       return;
@@ -305,6 +311,169 @@ export const Inmueble = () => {
     window.location.href = ruta;
   };
 
+
+
+
+
+
+
+
+  //AQUI EMPIEZA GENERACION DE PDF
+  const ArrenPDF = () => {
+    const doc = new jsPDF();
+    const addHoraEmision = () => {
+      const currentDate = new Date();
+      const formattedTime = currentDate.toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      doc.setTextColor(128); // Gris
+      doc.setFontSize(8);
+      doc.text(
+        `Hora de Emisión: ${formattedTime}`,
+        20,
+        doc.internal.pageSize.getHeight() - 10
+      );
+    };
+    doc.addImage(logo, "PNG", 15, 10, 20, 20);
+    doc.setFontSize(20);
+    doc.text("Inmuebles", 44, 20);
+    doc.setFontSize(13);
+    doc.setTextColor(128);
+   // Title next to the logo
+    doc.setFontSize(6);
+    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+    doc.setFontSize(13);
+    doc.setTextColor(128);
+    doc.text("Adminmuebles", 44, 26); 
+    addHoraEmision();
+    const date = new Date();
+    const monthNames = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ];
+
+    const formattedDate = `${monthNames[date.getMonth()]
+      }/${date.getDate()}/${date.getFullYear()}`;
+    doc.setTextColor(128); // Gris
+    doc.setFontSize(10);
+    doc.text(formattedDate, 190, 18, null, null, "right");
+
+
+    const columns = [
+
+      { header: "NIT", dataKey: "NoMatricula" },
+      { header: "Propietario", dataKey: "NombrePropietario" },
+      { header: "Dirección", dataKey: "Direccion" },
+      { header: "Estrato", dataKey: "Estrato" },
+      { header: "Ciudad", dataKey: "Ciudad" },
+      { header: "Barrio", dataKey: "Barrio" },
+      { header: "Tipo", dataKey: "Tipo" },
+      { header: "Estado", dataKey: "Estado" },
+
+    ];
+
+    const data = infoinmueble.map((Inmueble) => ({
+
+      NoMatricula: Inmueble.NoMatricula,
+      NombrePropietario: Inmueble.NombrePropietario,
+      Direccion: Inmueble.Direccion,
+      Estrato: Inmueble.Estrato,
+      Ciudad: Inmueble.Ciudad,
+      Barrio: Inmueble.Barrio,
+      Tipo: Inmueble.Tipo,
+      Estado: Inmueble.Estado,
+
+    }));
+    const itemsPerPage = 32;
+    let startY = 45;
+    for (let i = 0; i < Math.ceil(data.length / itemsPerPage); i++) {
+      const currentPageData = data.slice(
+        i * itemsPerPage,
+        (i + 1) * itemsPerPage
+      );
+
+      // Información en forma de tabla
+      autoTable(doc, {
+        columns,
+        body: currentPageData,
+        startY: startY,
+        styles: { fontSize: 8 },
+        margin: { top: 30 },
+      });
+      // Si hay más páginas, añadir una nueva página
+      if (i < Math.ceil(data.length / itemsPerPage) - 1) {
+        doc.addPage();
+        startY = 40;
+      }
+
+      const date = new Date();
+      const monthNames = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre",
+      ];
+      const formattedDate = `${monthNames[date.getMonth()]
+        }/${date.getDate()}/${date.getFullYear()}`;
+      doc.setTextColor(128); // Gris
+      doc.setFontSize(10);
+      doc.text(formattedDate, 190, 18, null, null, "right");
+
+
+      addHoraEmision();
+      doc.addImage(logo, "PNG", 15, 15, 20, 15);
+      doc.setFontSize(13);
+      doc.text("Adminmuebles", 44, 26); 
+    }
+
+    const totalPages = doc.internal.getNumberOfPages();
+    // Numeración de páginas
+    for (let j = 1; j <= totalPages; j++) {
+      doc.setPage(j);
+      doc.setFontSize(8);
+      doc.setTextColor(100);
+      doc.text(
+        `Pág ${j} / ${totalPages}`,
+        doc.internal.pageSize.getWidth() / 2,
+        doc.internal.pageSize.getHeight() - 10,
+        { align: "center" }
+      );
+    }
+    doc.save("Inmuebles");
+
+
+
+  };
+  //AQUI TERMINA
+
+
+
+
+
+
+
+
+
+
   return (
     <>
       <div className="contener-home">
@@ -406,6 +575,14 @@ export const Inmueble = () => {
               <p className="AgregarPA">Ver Inhabilitados</p>
             </Button>
           </OverlayTrigger>
+          <Button
+            variant="success"
+            className="bottom-button"
+            onClick={ArrenPDF}
+          >
+            <FontAwesomeIcon icon={faFilePdf} />
+            Generar PDF
+          </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">Inmuebles</h1>

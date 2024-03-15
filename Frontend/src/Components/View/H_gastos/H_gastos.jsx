@@ -1,10 +1,11 @@
-import { Table, Button, OverlayTrigger, Tooltip, Form, Modal, ListGroup  } from "react-bootstrap";
+import { Table, Button, OverlayTrigger, Tooltip, Form, Modal, ListGroup } from "react-bootstrap";
 import { faFilePdf, faFileSignature } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
-
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Pagination from "react-bootstrap/Pagination";
@@ -12,16 +13,17 @@ import moment from "moment";
 import "moment/locale/es";
 import { useMediaQuery } from "@react-hook/media-query";
 import axios from "axios";
-
+import logo from "../../../assets/Logo.jpg";
 
 export const H_gastos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoComision, setinfoComision] = useState([]);
+  
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [selectedPropietario, setSelectedPropietario] = useState("");
   const [DatosFiltrados, setDatosFiltrados] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
-
+  const [DatosFlitrados, setDatosFiltrados]=useState("");
   const [filtroData, setFiltroData] = useState({
     Propietario: "",
     FechaElaboracionMin: "",
@@ -70,7 +72,7 @@ export const H_gastos = () => {
       console.error("Error fetching products:", error);
     }
   };
-  
+
   const fetchDataPropietario = async () => {
     try {
       const response = await axios.get("http://localhost:3006/Vpropietarios?");
@@ -133,17 +135,17 @@ export const H_gastos = () => {
     );
   };
   //Variables Paginacion
-    useEffect(() => {
-      // Cambiar el número de ítems por página según el tamaño de la pantalla
-      if (isSmallScreen) {
-        setItemsPerPage(5);
-      } else {
-        setItemsPerPage(8);
-      }
-    }, [isSmallScreen]);
-    
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(8);
+  useEffect(() => {
+    // Cambiar el número de ítems por página según el tamaño de la pantalla
+    if (isSmallScreen) {
+      setItemsPerPage(5);
+    } else {
+      setItemsPerPage(8);
+    }
+  }, [isSmallScreen]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -160,6 +162,160 @@ export const H_gastos = () => {
     window.addEventListener("resize", updateTooltipVisibility);
     return () => window.removeEventListener("resize", updateTooltipVisibility);
   }, []);
+
+
+  //AQUI EMPIEZA GENERACION DE PDF
+  const HistorialPDF = () => {
+    const doc = new jsPDF();
+    const addHoraEmision = () => {
+      const currentDate = new Date();
+      const formattedTime = currentDate.toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      doc.setTextColor(128); // Gris
+      doc.setFontSize(8);
+      doc.text(
+        `Hora de Emisión: ${formattedTime}`,
+        20,
+        doc.internal.pageSize.getHeight() - 10
+      );
+    };
+    doc.addImage(logo, "PNG", 15, 10, 20, 20);
+    doc.setFontSize(20);
+    doc.text("Historial de comisiones propietario", 44, 20);
+    doc.setFontSize(13);
+    doc.setTextColor(128);
+    doc.text("Adminmuebles", 44, 26); 
+    doc.setFontSize(6);
+    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+    addHoraEmision();
+    const date = new Date();
+    const monthNames = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ];
+
+    const formattedDate = `${monthNames[date.getMonth()]
+      }/${date.getDate()}/${date.getFullYear()}`;
+    doc.setTextColor(128); // Gris
+    doc.setFontSize(10);
+    doc.text(formattedDate, 190, 18, null, null, "right");
+
+
+    const columns = [
+      { header: "No Comision", dataKey: "IdComisionPropietario" },
+      { header: "Propietario", dataKey: "NombreCompleto" },
+      { header: "Fecha Elaboracion", dataKey: "FechaElaboracion"},
+      { header: "Forma pago", dataKey: "FormaPago" },
+      { header: "Elaborado Por", dataKey: "ElaboradoPor" },
+      { header: "Pago Arriendo", dataKey: "PagoArriendo" },
+      { header: "Administracion", dataKey: "AdmInmobi" },
+      { header: "Aseo Entrega", dataKey: "AseoEntrega" },
+      { header: "Mantenimiento", dataKey: "Mantenimiento" },
+      { header: "Valor Total", dataKey: "ValorTotal" },
+
+    ];
+    // Datos de la tabla
+    const data = infoComision.map((Historial) => ({
+
+      IdComisionPropietario: Historial.IdComisionPropietario,
+      NombreCompleto: Historial.NombreCompleto,
+      FechaElaboracion: formatDate(Historial.FechaElaboracion),
+      FormaPago: Historial.FormaPago,
+      ElaboradoPor: Historial.ElaboradoPor,
+      PagoArriendo: `$${Historial.PagoArriendo}`,
+      AdmInmobi: `$${Historial.AdmInmobi}`,
+      AseoEntrega: `$${Historial.AseoEntrega}`,
+      Mantenimiento: `$${Historial.Mantenimiento}`,
+      ValorTotal: `$${Historial.ValorTotal},`
+
+    }));
+    const itemsPerPage = 21;
+    let startY = 45;
+    for (let i = 0; i < Math.ceil(data.length / itemsPerPage); i++) {
+      const currentPageData = data.slice(
+        i * itemsPerPage,
+        (i + 1) * itemsPerPage
+      );
+
+      // Información en forma de tabla
+      autoTable(doc, {
+        columns,
+        body: currentPageData,
+        startY: startY,
+        styles: { fontSize: 8 },
+        margin: { top: 30 },
+      });
+      // Si hay más páginas, añadir una nueva página
+      if (i < Math.ceil(data.length / itemsPerPage) - 1) {
+        doc.addPage();
+        startY = 40;
+      }
+
+      const date = new Date();
+      const monthNames = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre",
+      ];
+      const formattedDate = `${monthNames[date.getMonth()]
+        }/${date.getDate()}/${date.getFullYear()}`;
+      doc.setTextColor(128); // Gris
+      doc.setFontSize(10);
+      doc.text(formattedDate, 190, 18, null, null, "right");
+
+
+      addHoraEmision();
+      doc.addImage(logo, "PNG", 15, 15, 20, 15);
+      doc.setFontSize(13);
+      
+      doc.text("Adminmuebles", 44, 26);
+    }
+
+    const totalPages = doc.internal.getNumberOfPages();
+    // Numeración de páginas
+    for (let j = 1; j <= totalPages; j++) {
+      doc.setPage(j);
+      doc.setFontSize(8);
+      doc.setTextColor(100);
+      doc.text(
+        `Pág ${j} / ${totalPages}`,
+        doc.internal.pageSize.getWidth() / 2,
+        doc.internal.pageSize.getHeight() - 10,
+        { align: "center" }
+      );
+    }
+    doc.save("Historial de comisiones propietario-PDF");
+
+
+
+  };
+  //AQUI TERMINA
+
+
+
+
+
   return (
     <>
       <div className="contener-home">
@@ -216,7 +372,7 @@ export const H_gastos = () => {
               id=""
             />
           </div>
-          
+
           <OverlayTrigger
             key="tooltip-generar-recibo-gastos"
             placement="top"
@@ -230,13 +386,14 @@ export const H_gastos = () => {
             </Button>
           </OverlayTrigger>
           <Button
-        variant="success"
-        className="bottom-button"
-        
-      >
-        <FontAwesomeIcon icon={faFilePdf} />
-        Generar PDF
-      </Button>
+            variant="success"
+            className="bottom-button"
+          onClick={HistorialPDF}
+
+          >
+            <FontAwesomeIcon icon={faFilePdf} />
+            Generar PDF
+          </Button>
         </div>
         <div className="title_view">
           <h1 className="tittle_propetario">
@@ -280,31 +437,31 @@ export const H_gastos = () => {
         </div>
       </div>
       <Modal
-      size="lg"
-      show={mostrarModalA}
-      onHide={handleCloseModalA}
-      aria-labelledby="example-modal-sizes-title-lg"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Seleccionar Propietario</Modal.Title>
-        <p onClick={resetPropie} >Reset</p>
-      </Modal.Header>
-      <Modal.Body>
-        <ListGroup>
-          {PropietariosDisponibles.map((Propietario, index) => (
-            <ListGroup.Item
-              key={index}
-              action
-              onClick={() => handlePropietarioChange(Propietario)}
-            >
-              {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
+        size="lg"
+        show={mostrarModalA}
+        onHide={handleCloseModalA}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Propietario</Modal.Title>
+          <p onClick={resetPropie} >Reset</p>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {PropietariosDisponibles.map((Propietario, index) => (
+              <ListGroup.Item
+                key={index}
+                action
+                onClick={() => handlePropietarioChange(Propietario)}
+              >
+                {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
 
-              {Propietario.NombreCompleto}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Modal.Body>
-    </Modal>
+                {Propietario.NombreCompleto}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

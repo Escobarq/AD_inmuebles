@@ -88,7 +88,7 @@ function App() {
             />
           )}
 
-          {roleId !== 2 &&
+          {
             roleId !== 3 &&
             location.pathname !== "/" &&
             location.pathname !== "/login" && <Notifi />}

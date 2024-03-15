@@ -7,13 +7,13 @@ import {
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "react-bootstrap/Pagination";
-import { Link } from "react-router-dom";
 import ActualizarCodeudor from "../../Hooks/Inhabilitarcodeudor";
 import { toast } from "react-toastify";
+import useRoleInfo from "../../Hooks/useRoleInfo";
 
 
 export const CodeudorInha = () => {
-  
+  const roleId = useRoleInfo();
   const [infoCodeudor, setinfoCodeudor] = useState([]);
   const { actualizarEstadoCodeudor } = ActualizarCodeudor();
   const [showModal, setShowModal] = useState(false);
@@ -89,7 +89,7 @@ export const CodeudorInha = () => {
         <th>Dirección</th>
         <th>Teléfono</th>
         <th>Correo</th>
-        <th>Opciones</th>
+        {roleId !== 2 && <th>Opciones</th>}
       </tr>
     );
   };
@@ -103,6 +103,7 @@ export const CodeudorInha = () => {
         <td>{Codeudor.Direccion}</td>
         <td>{Codeudor.Telefono}</td>
         <td>{Codeudor.Correo}</td>
+        {roleId !== 2 && (
         <td>
           <Button
             className="btn-opciones"
@@ -115,6 +116,7 @@ export const CodeudorInha = () => {
             <FontAwesomeIcon icon={faPenToSquare} />
           </Button>
         </td>
+        )}
       </tr>
     );
   };

@@ -17,6 +17,7 @@ export const ContratoA = () => {
   const pdfContentRef = useRef(null);
   const [DatosFiltrados, setDatosFiltrados] = useState("");
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
+  const [DatosFlitrados, setDatosFiltrados]=useState("");
   const [filtroData, setFiltroData] = useState({
     FechaFinMIN: "",
     FechaFinMAX: "",
@@ -150,14 +151,15 @@ export const ContratoA = () => {
         doc.internal.pageSize.getHeight() - 10
       );
     };
-    doc.addImage(logo, "PNG", 15, 10, 20, 15);
-    doc.setFontSize(19); 
-    doc.text("Contrato Arrendatario", 44, 28);
+    doc.addImage(logo, "PNG", 15, 10, 20, 20);
+    doc.setFontSize(20); 
+    doc.text("Contrato Arrendatario", 44, 20);
     doc.setFontSize(13);
     doc.setTextColor(128);
-    doc.text("Adminmuebles", 45, 20); // Title next to the logo
-    doc.setFontSize(5);
-    doc.text(`Informe filtrado con estos terminos ${DatosFiltrados}`, 44, 15); // Title next to the logo
+
+    doc.text("Adminmuebles", 44, 26); // Title next to the logo
+    doc.setFontSize(6);
+    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
 
 
     addHoraEmision();
