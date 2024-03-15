@@ -184,14 +184,14 @@ export const ReArrendatario = () => {
 
             <Form.Group controlId="nombrearrendatario">
               <Form.Label >Nombre arrendatario:</Form.Label>
-              <Form.Control className="InputsRegistros"              
+              <Form.Control required className="InputsRegistros"              
                {...register("nombrearrendatario")}
                 defaultValue={arrendatarioData.NombreCompleto}
 
 
                 onChange={handleTextChange}
                 onFocus={() => handleFieldFocus("nombrearrendatario")}
-                required
+                
               />
               {focusedField === "nombrearrendatario" && showWarning && (
                 <span className="error-message">
@@ -202,7 +202,7 @@ export const ReArrendatario = () => {
 
             <Form.Group controlId="formtipodocumento">
               <Form.Label >Tipo Documento:</Form.Label>
-              <Form.Control
+              <Form.Control required
                 className="InputsRegistros"
                 as="select"
                 {...register("tipodocumento")}
@@ -215,13 +215,13 @@ export const ReArrendatario = () => {
 
             <Form.Group controlId="formnumerodocumento">
               <Form.Label >N° Documento Identidad:</Form.Label>
-              <Form.Control                
+              <Form.Control required                
                 className="InputsRegistros"
                  {...register("numerodocumento")}
                 defaultValue={arrendatarioData.DocumentoIdentidad} 
                 onChange={handleNumberChange}
                 onFocus={() => handleFieldFocus("numerodocumento")}
-                required
+                
               />
               {focusedField === "numerodocumento" && showWarning && (
                 <span className="error-message">Solo se permiten números</span>
@@ -230,7 +230,7 @@ export const ReArrendatario = () => {
 
             <Form.Group controlId="formtelefono">
               <Form.Label > Teléfono Arrendatario: </Form.Label>
-              <Form.Control
+              <Form.Control required
                 className="InputsRegistros"
                 
                 {...register("telefono")}
@@ -238,7 +238,7 @@ export const ReArrendatario = () => {
 
                 onChange={handleNumberChange}
                 onFocus={() => handleFieldFocus("telefono")}
-                required
+                
               />
               {focusedField === "telefono" && showWarning && (
                 <span className="error-message">Solo se permiten números</span>
@@ -247,7 +247,7 @@ export const ReArrendatario = () => {
 
             <Form.Group controlId="correo">
               <Form.Label > Correo Arrendatario:  </Form.Label>
-              <Form.Control
+              <Form.Control required
                 controlId="correo"
                 className="InputsRegistros"
                 type="email"

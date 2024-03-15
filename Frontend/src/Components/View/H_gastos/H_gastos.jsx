@@ -21,6 +21,7 @@ export const H_gastos = () => {
   
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [selectedPropietario, setSelectedPropietario] = useState("");
+  const [DatosFiltrados, setDatosFiltrados] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [DatosFlitrados, setDatosFiltrados]=useState("");
   const [filtroData, setFiltroData] = useState({

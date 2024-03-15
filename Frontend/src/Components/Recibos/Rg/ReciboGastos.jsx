@@ -394,7 +394,7 @@ return (
         <div className="fila-formulario1">
           <Form.Group>
             <label htmlFor="fecha">Fecha de Pago:</label>
-            <input
+            <input required
               type="date"
               className="form-control InputsRegistros"
               id="fecha"
@@ -405,7 +405,7 @@ return (
 
           <Form.Group>
             <label htmlFor="entregadoPor">Entregado por:</label>
-            <input
+            <input required
               type="text"
               className="form-control InputsRegistros"
               id="entregadoPor"
@@ -473,28 +473,28 @@ return (
         <div className="fila-formulario">
           <div className="grupo-formulario">
             <label htmlFor="seleccionGasto">Concepto:</label>
-            <input
+            <input required 
               disabled
               defaultValue={"Pago arriendo mes"}
               type="text"
               className="form-control InputsRegistros"
               id="valor2"
             />
-            <input
+            <input required
               disabled
               defaultValue={"Administracion Inmobiliaria"}
               type="text"
               className="form-control InputsRegistros"
               id="valor2"
             />
-            <input
+            <input required
               disabled
               defaultValue={"Aseo entrega casa"}
               type="text"
               className="form-control InputsRegistros"
               id="valor2"
             />
-            <input
+            <input required
               disabled
               defaultValue={"Mantenimiento"}
               type="text"
@@ -506,28 +506,28 @@ return (
           <div className="valor">
             <label htmlFor="valor">Valor</label>
 
-            <input
+            <input required
               type="number"
               className="form-control InputsRegistros"
               name="PagoArriendo"
               defaultValue={0}
               onChange={(e) => handleCalcular(e.target)}
             />
-            <input
+            <input 
               type="number"
               className="form-control InputsRegistros"
               name="AdmInmobi"
               defaultValue={0}
               onChange={(e) => handleCalcular(e.target)}
             />
-            <input
+            <input 
               type="number"
               className="form-control InputsRegistros"
               name="AseoEntrega"
               defaultValue={0}
               onChange={(e) => handleCalcular(e.target)}
             />
-            <input
+            <input 
               type="numnumberber"
               className="form-control InputsRegistros"
               name="Mantenimiento"
