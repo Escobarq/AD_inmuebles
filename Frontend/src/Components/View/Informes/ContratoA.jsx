@@ -155,9 +155,11 @@ export const ContratoA = () => {
     doc.text("Contrato Arrendatario", 44, 20);
     doc.setFontSize(13);
     doc.setTextColor(128);
+
     doc.text("Adminmuebles", 44, 26); // Title next to the logo
     doc.setFontSize(6);
     doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+
 
     addHoraEmision();
     const date = new Date();

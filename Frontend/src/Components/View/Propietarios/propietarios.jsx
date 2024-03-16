@@ -116,7 +116,7 @@ export const Propietarios = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>NIT</th>
+        <th>No Identidad</th>
         <th>Nombre</th>
         <th>Dirección</th>
         <th>Teléfono</th>
@@ -211,7 +211,7 @@ export const Propietarios = () => {
         Direccion: propetario.Direccion
       });
 
-      const url = `/RPropietario?${urlParams.toString()}`;
+      const url = `/RPropietario?${urlParams}`;
       window.location.href = url;
     } else {
       console.error("No se encontró el propetario con ID:", PropetarioId);

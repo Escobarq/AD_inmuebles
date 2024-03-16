@@ -1,18 +1,29 @@
 const mysql = require('mysql');
 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'adminmuebles',
-});
+let connection;
 
-connection.connect((error) => {
-  if (error) {
-    console.error('Error connecting to database:', error);
-    throw error; // Lanzar error en caso de falla en la conexión
+function configureDatabase({ host, user, password, database }) {
+  connection = mysql.createConnection({
+    host,
+    user,
+    password,
+    database,
+  });
+
+  connection.connect((error) => {
+    if (error) {
+      console.error('Error connecting to database:', error);
+    } else {
+      console.log('Connected to MySQL database');
+    }
+  });
+}
+
+function getConnection() {
+  if (!connection) {
+    throw new Error('Database connection has not been configured');
   }
-  console.log('Connected to MySQL database');
-});
+  return connection;
+}
 
-module.exports = connection;
+module.exports = { configureDatabase, getConnection };

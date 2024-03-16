@@ -7,7 +7,8 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import logo from "../../../assets/Logo.jpg";
-
+import moment from "moment";
+import "moment/locale/es";
 export const Rarrendatario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -15,9 +16,10 @@ export const Rarrendatario = () => {
   const [showContratoModal, setShowContratoModal] = useState(false);
   const [selectedContrato, setSelectedContrato] = useState("");
   const [ContratosDisponibles, setContratosDisponibles] = useState([]);
-  const [PagoArrenda, setPagoArrenda] = useState([]);
-
-
+  const [showFechaModal, setShowFechaModal] = useState(false);
+  const [FechasPagosFijas, setFechasPagosFijas] = useState([]);
+  const [selectedFecha, setSelectedFecha] = useState("");
+  
   const funcional = (text) =>
     toast.success(text, {
       theme: "colored",
@@ -38,6 +40,7 @@ export const Rarrendatario = () => {
       day = day.length > 1 ? day : "0" + day;
       return `${year}-${month}-${day}`;
     }
+    
 
     useEffect(() => {
       cargarContratosDisponibles();
@@ -50,10 +53,23 @@ export const Rarrendatario = () => {
         "http://localhost:3006/contrato-arren-inmue"
       );
       const Contratos = response.data.map((prop) => prop);
-
       setContratosDisponibles(Contratos);
-
       console.log(response.data);
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
+    }
+  };
+  const cargarFechasContratos = async (Contrato) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3006/VPagoArren?IdContrato=${Contrato.IdContrato}`
+      );
+      const FechasPagosFijas = response.data.map((prop) => prop);
+      setFechasPagosFijas(FechasPagosFijas);
+      console.log("fechas", FechasPagosFijas);
     } catch (error) {
       console.error("Error al cargar las matrículas:", error);
       toast.error(
@@ -65,6 +81,7 @@ export const Rarrendatario = () => {
   const onSubmitRegistro = async (data) => {
     data.NombreArrendatario = selectedContrato.NombreArrendatario;
     data.IdContrato = selectedContrato.IdContrato;
+    data.IdPagoArrendamiento = selectedFecha.IdPagoArrendamiento;
     data.IdArrendatario = selectedContrato.IdArrendatario;
     data.FechaPago = currentDate;
     data.Estado = "Pagado";
@@ -73,14 +90,13 @@ export const Rarrendatario = () => {
     data.TipoInmueble = selectedContrato.TipoInmueble;
     try {
       const response = await fetch("http://localhost:3006/RPagoArrendamiento", {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data), // Aquí debes asegurarte de que data contenga todos los campos necesarios
       });
       if (response.ok) {
-        setPagoArrenda(data);
         handleGuardarClick(data),
         funcional('se an enviado los datos correctamente'),
         setShowSaveModal(false); // Muestra el modal de confirmación
@@ -99,7 +115,12 @@ export const Rarrendatario = () => {
 
   const handleContratoChange = async (Contrato) => {
     setSelectedContrato(Contrato);
+    cargarFechasContratos(Contrato)
     setShowContratoModal(false);
+  };
+  const handleFechasChange = async (Fechas) => {
+    setSelectedFecha(Fechas);
+    setShowFechaModal(false);
   };
 
   const handleCancelClick = () => {
@@ -258,6 +279,22 @@ export const Rarrendatario = () => {
     }
   };
 
+  function formatDate(fechaString) {
+    return moment(fechaString).format("MMMM , D , YYYY");
+  }
+
+  moment.updateLocale("es", {
+    months:
+      "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
+        "_"
+      ),
+    monthsShort:
+      "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+    weekdays: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
+    weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
+    weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
+  });
+
   
   //AQUI TERMINA PDF
 
@@ -269,7 +306,7 @@ export const Rarrendatario = () => {
           <div className="form-propietario">
             <Form.Group controlId="fecha">
               <Form.Label>Fecha de Pago:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 defaultValue={currentDate}
@@ -296,7 +333,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>No Documento Arrendatario:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={
@@ -308,7 +345,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>No Matricula Inmueble:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={selectedContrato ? selectedContrato.NoMatricula : ""}
@@ -318,7 +355,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>Nombre Arrendatario:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={
@@ -330,7 +367,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>Tipo de Inmueble:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={selectedContrato ? selectedContrato.TipoInmueble : ""}
@@ -340,7 +377,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="suma">
               <Form.Label>Valor del Pago:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 type="number"
                 {...register("ValorPago")}
@@ -360,22 +397,21 @@ export const Rarrendatario = () => {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group controlId="periodoDesde">
-              <Form.Label>Fecha Inicial de Pago:</Form.Label>
-              <Form.Control
+            <Form.Group controlId="documentoIdentidad">
+              <Form.Label>Lista de Fechas De Pagos:</Form.Label>
+              <Form.Select
                 className="InputsRegistros"
-                type="date"
-                {...register("FechaInicio")}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="periodoHasta">
-              <Form.Label>Fecha Final Pago:</Form.Label>
-              <Form.Control
-                className="InputsRegistros"
-                type="date"
-                {...register("FechaFin")}
-              />
+                value={selectedFecha ? selectedFecha.FechaPagoFija: ""}
+                onChange={(e) => handleFechasChange(e.target.value)}
+                onClick={() => setShowFechaModal(true)}
+              >
+                <option value="">Seleccionar Numero de contrato</option>
+                {FechasPagosFijas.map((Fecha, index) => (
+                  <option key={index} value={Fecha.FechaPagoFija}>
+                    {formatDate(Fecha.FechaPagoFija)}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
           </div>
           <div
@@ -425,6 +461,28 @@ export const Rarrendatario = () => {
                 onClick={() => handleContratoChange(Contrato)}
               >
                 {Contrato.IdContrato}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
+      {/* Modal de lista de Fechas Fijas de Contrato */}
+      <Modal
+        show={showFechaModal}
+        onHide={() => setShowFechaModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Fecha del Pago</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {FechasPagosFijas.map((Fechas, index) => (
+              <ListGroup.Item
+                key={index}
+                action
+                onClick={() => handleFechasChange(Fechas)}
+              >
+                {formatDate(Fechas.FechaPagoFija)}
               </ListGroup.Item>
             ))}
           </ListGroup>

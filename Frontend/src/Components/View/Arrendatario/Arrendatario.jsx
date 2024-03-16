@@ -104,7 +104,6 @@ export const Arrendatario = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>ID</th>
         <th>Tipo de Documento</th>
         <th>No. Documento</th>
         <th>Nombre Arrendatario</th>
@@ -119,7 +118,6 @@ export const Arrendatario = () => {
   const createrow = (Arrendatarios) => {
     return (
       <tr key={Arrendatarios.IdArrendatario}>
-        <td>{Arrendatarios.IdArrendatario}</td>
         <td>{Arrendatarios.TipoDocumento}</td>
         <td>{Arrendatarios.DocumentoIdentidad}</td>
         <td>{Arrendatarios.NombreCompleto}</td>

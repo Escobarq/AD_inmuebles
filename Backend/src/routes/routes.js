@@ -1,15 +1,28 @@
 // src/routes/routes.js
 const express = require("express");
 const router = express.Router();
-const connection = require("../db");
+const { configureDatabase, getConnection } = require('../db'); // Importar la función configureDatabase y getConnection desde db.js
 
-//Metodos Get
+router.post('/api/config', async (req, res) => {
+  const { host, user, password, database } = req.body;
 
+  try {
+    // Configurar la conexión a la base de datos
+    configureDatabase({ host, user, password, database });
+
+    console.log('Configuración de conexión actualizada correctamente');
+    res.status(200).json({ message: 'Conexión actualizada con éxito' });
+  } catch (error) {
+    console.error('Error al configurar la conexión a la base de datos:', error);
+    res.status(500).json({ message: 'Error al configurar la conexión a la base de datos' });
+  }
+});
 
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
-  const { correousuario } = req.query; // Datos del formulario
-  // Consulta SQL para buscar un usuario con el correo electrónico proporcionado
+  const { correousuario } = req.query;
+  const connection = getConnection(); 
+
   const sql = `SELECT * FROM trabajador WHERE correo = ?`;
 
   connection.query(sql, [correousuario], (error, results) => {
@@ -23,8 +36,8 @@ router.get("/Infouser", (req, res) => {
 });
 
 router.get("/Vpropietarios", (req, res) => {
+  const connection = getConnection(); 
   const { Cedula, FechaIngresoMIN, FechaIngresoMAX } = req.query;
-
 
   try {
     let query = "SELECT * FROM propietario  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
@@ -65,6 +78,7 @@ router.get("/Vpropietarios", (req, res) => {
 });
 
 router.get("/Varrendatario", (req, res) => {
+  const connection = getConnection(); 
   const { Cedula, Estado } = req.query;
   try {
     let query = ` SELECT 
@@ -105,6 +119,7 @@ JOIN codeudor ON arrendatario.IdCodeudor = codeudor.IdCodeudor `; // Inicializa 
 });
 
 router.get("/Vinmueble", (req, res) => {
+  const connection = getConnection(); 
   const { tipo, estrato, estado, IdPropietario } = req.query;
 
   try {
@@ -149,6 +164,7 @@ router.get("/Vinmueble", (req, res) => {
 });
 
 router.get("/propietarios-inmuebles", (req, res) => {
+  const connection = getConnection(); 
   try {
     const query = `
     SELECT 
@@ -188,6 +204,7 @@ ORDER BY
 });
 
 router.get("/propietarios-inmuebles/:idInmueble", (req, res) => {
+  const connection = getConnection(); 
   try {
     const { idInmueble } = req.params;
     const query = `
@@ -223,6 +240,7 @@ router.get("/propietarios-inmuebles/:idInmueble", (req, res) => {
 
 //traer Arrendatarios con id del codeudor:
 router.get("/arrendatarios-codeudores", (req, res) => {
+  const connection = getConnection(); 
   try {
     const query = `
     SELECT 
@@ -263,6 +281,7 @@ ORDER BY
 });
 
 router.get("/VinmuArren", (req, res) => {
+  const connection = getConnection(); 
   const { IdInmueble } = req.query;
 
   connection.query(
@@ -280,6 +299,7 @@ router.get("/VinmuArren", (req, res) => {
 });
 
 router.get("/Vcodeudor", (req, res) => {
+  const connection = getConnection(); 
   const { Cedula } = req.query;
   try {
     let query = "SELECT * FROM codeudor  WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
@@ -311,7 +331,8 @@ router.get("/Vcodeudor", (req, res) => {
 });
 
 router.get("/VPagoArren", (req, res) => {
-  const { FechaPagoIni, FechaPagoFin, FormaPago, estado } = req.query;
+  const connection = getConnection(); 
+  const { FechaPagoIni, IdContrato, FechaPagoFin, FormaPago, estado } = req.query;
 
   try {
     let query = "SELECT * FROM pagos_arrendamiento WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
@@ -322,9 +343,9 @@ router.get("/VPagoArren", (req, res) => {
       query += " AND FechaPago >= ?";
       queryParams.push(FechaPagoIni);
     }
-    if (FechaPagoFin) {
-      query += " AND FechaPago <= ?";
-      queryParams.push(FechaPagoFin);
+    if (IdContrato) {
+      query += " AND IdContrato = ?";
+      queryParams.push(IdContrato);
     }
 
     if (estado) {
@@ -357,6 +378,7 @@ router.get("/VPagoArren", (req, res) => {
 });
 
 router.get("/VComisionPropie", (req, res) => {
+  const connection = getConnection(); 
   const{Propietario, FechaElaboracionMin, FechaElaboracionMax,FormaPago} =req.query
 
 
@@ -405,6 +427,7 @@ router.get("/VComisionPropie", (req, res) => {
 });
 
 router.get("/contratoFiltro", (req, res) => {
+  const connection = getConnection(); 
   // Obtén los parámetros de consulta
   const { FechaFinMIN, FechaFinMAX, NContrato, Estado } = req.query;
   // Construye la consulta SQL base
@@ -459,6 +482,7 @@ router.get("/contratoFiltro", (req, res) => {
 });
 
 router.get("/contrato-arren-inmue", (req, res) => {
+  const connection = getConnection(); 
   const query = `
   SELECT 
   contratoarrendamiento.IdContrato,
@@ -488,6 +512,7 @@ WHERE contratoarrendamiento.EstadoContrato = 'Vigente';
 
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
+  const connection = getConnection(); 
   const { correousuario } = req.query; // Datos del formulario
   // Consulta SQL para buscar un usuario con el correo electrónico proporcionado
   const sql = `SELECT * FROM trabajador WHERE correo = ?`;
@@ -503,8 +528,8 @@ router.get("/Infouser", (req, res) => {
 });
 //Ruta para Traer Empleados
 router.get("/Vroles", (req, res) => {
+  const connection = getConnection(); 
   const { VRol, } = req.query;
-
 
   
   try {
@@ -540,11 +565,13 @@ router.get("/Vroles", (req, res) => {
 //Metodos Post
 // Ruta para manejar la solicitud de creación de un nuevo contrato de arrendamiento
 router.post("/contratoarrendamiento", (req, res) => {
+  const connection = getConnection(); 
   const {
     IdArrendatario,
     IdInmueble,
     FechaInicioContrato,
     FechaFinContrato,
+    FechaPagoFija,
     EstadoContrato,
     ValorDeposito,
   } = req.body;
@@ -554,6 +581,7 @@ router.post("/contratoarrendamiento", (req, res) => {
     IdInmueble,
     FechaInicioContrato,
     FechaFinContrato,
+    FechaPagoFija,
     EstadoContrato,
     ValorDeposito,
   };
@@ -576,38 +604,40 @@ router.post("/contratoarrendamiento", (req, res) => {
 
 // Ruta para registrar un propietario
 router.post("/RPropietario", async (req, res) => {
+  const connection = getConnection(); 
   const {
-    numerodocumento,
-    nombrepropietario,
+    NombreCompleto,
+    TipoDocumento,
+    DocumentoIdentidad,
     Telefono,
     Correo,
-    tipocuenta,
-    banco,
+    TipoCuenta,
+    NumeroCuenta,
+    FechaIngreso,
     direccion,
-    numerocuenta,
-    fechaingreso,
-    TipoDocumento,
+    Banco,
   } = req.body;
 
   try {
     connection.query(
       "INSERT INTO propietario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Direccion, Correo, Banco, TipoCuenta, Telefono, NumeroCuenta, FechaIngreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
-        nombrepropietario,
+        NombreCompleto,
         TipoDocumento,
-        numerodocumento,
+        DocumentoIdentidad,
         direccion,
         Correo,
-        banco,
-        tipocuenta,
+        Banco,
+        TipoCuenta,
         Telefono,
-        numerocuenta,
-        fechaingreso,
+        NumeroCuenta,
+        FechaIngreso,
       ],
       (error, results) => {
         if (error) {
           console.error("Error al añadir propietario:", error);
           res.status(500).json({ error: "Error al añadir propietario" });
+          console.log(FechaIngreso, "aaaaaaaaaaa");
         } else {
           console.log("Propietario agregado:", results);
           res
@@ -617,12 +647,13 @@ router.post("/RPropietario", async (req, res) => {
       }
     );
   } catch (error) {
-    console.error("Error al añadir propietario:", error);
+    console.error("Error al añadir propietario:", error,);
     res.status(500).json({ error: "Error al añadir propietario" });
   }
 });
 // Ruta para cambiar la contraseña del trabajador y actualizar otros datos
 router.post("/api/changePassword", (req, res) => {
+  const connection = getConnection(); 
   const { correo, newPassword, nombre, apellido } = req.body;
 
   // Consulta SQL para buscar el trabajador por su correo electrónico y actualizar sus datos
@@ -642,6 +673,7 @@ router.post("/api/changePassword", (req, res) => {
 
 // Ruta para registrar un Inmueble
 router.post("/Reinmueble", async (req, res) => {
+  const connection = getConnection(); 
   const {
     Nmatricula,
     Direccion,
@@ -780,6 +812,7 @@ router.post("/Reinmueble", async (req, res) => {
 
 // Ruta para la creación de un nuevo codeudor
 router.post("/Rcodeudor", async (req, res) => {
+  const connection = getConnection(); 
   const {
     NombreCompleto,
     TipoDocumento,
@@ -812,6 +845,7 @@ router.post("/Rcodeudor", async (req, res) => {
   Funcion para logear
   */
   router.post("/Login_user", (req, res) => {
+    const connection = getConnection(); 
     const { correousuario, contrausuario } = req.body; // Datos del formulario
   
     const sql = `SELECT * FROM trabajador WHERE Correo = ? AND Booleanos = 'true'`;
@@ -838,6 +872,7 @@ router.post("/Rcodeudor", async (req, res) => {
 
 // Registrar Usuario
 router.post("/RegistrarUsuario", async (req, res) => {
+  const connection = getConnection(); 
   const { nombre, apellido, correo, contrasena, telefono } = req.body;
 
   // Validación básica de entrada
@@ -872,6 +907,7 @@ router.post("/RegistrarUsuario", async (req, res) => {
 
 // Ruta para registrar un arrendatario
 router.post("/Rarrendatario", async (req, res) => {
+  const connection = getConnection(); 
   const {
     tipodocumento,
     IdCodeudor,
@@ -913,6 +949,7 @@ router.post("/Rarrendatario", async (req, res) => {
 });
 // Ruta para registrar un contratoarrendatario
 router.post("/RConArrendamiento", async (req, res) => {
+  const connection = getConnection(); 
   const {
     IdArrendatario,
     fechainicio,
@@ -942,30 +979,26 @@ router.post("/RConArrendamiento", async (req, res) => {
 });
 
 // Ruta para registar Pago de Arrendamiento --------------------------------------------------
-router.post("/RPagoArrendamiento", async (req, res) => {
+
+
+
+router.put("/RPagoArrendamiento", async (req, res) => {
+  const connection = getConnection(); 
   const {
-    IdArrendatario,
-    IdContrato,
+    IdPagoArrendamiento,
     FechaPago,
-    FechaIni,
-    FechaFin,
     ValorPago,
     FormaPago,
-    Estado,
   } = req.body;
 
   try {
     connection.query(
-      "INSERT INTO pagos_arrendamiento (IdArrendatario, IdContrato,  FechaPago, FechaInicio, FechaFin, ValorPago, FormaPago, Estado) VALUES (?,?,?, ?, ?, ?,?,?)",
+      " Update pagos_arrendamiento FechaPago = ?,ValorPago = ?,FormaPago = ? where IdPagoArrendamiento = ?",
       [
-        IdArrendatario,
-        IdContrato,
-        FechaPago,
-        FechaIni,
-        FechaFin,
+        FechaPago, 
         ValorPago,
         FormaPago,
-        Estado,
+        IdPagoArrendamiento,
       ],
       (error, results) => {
         if (error) {
@@ -988,6 +1021,7 @@ router.post("/RPagoArrendamiento", async (req, res) => {
 });
 
 router.post("/RComision", async (req, res) => {
+  const connection = getConnection(); 
   const {
     IdPropietario,
     IdInmueble,
@@ -1044,56 +1078,53 @@ router.post("/RComision", async (req, res) => {
 
 // Ruta para actualizar un arrendatario existente
 router.put("/Rarrendatarios/:id", async (req, res) => {
+  const connection = getConnection(); 
   const { id } = req.params;
   const {
-    tipodocumento,
-    numerodocumento,
-    nombrearrendatario,
-    telefono,
-    correo,
-    estadocontrato,
+    TipoDocumento,
+    DocumentoIdentidad,
+    NombreCompleto,
+    Telefono,
+    Correo,
+    Estado,
   } = req.body;
 
   try {
     const updates = [];
-    if (tipodocumento) updates.push("TipoDocumento = ?");
-    if (numerodocumento) updates.push("DocumentoIdentidad = ?");
-    if (nombrearrendatario) updates.push("NombreCompleto = ?");
-    if (telefono) updates.push("Telefono = ?");
-    if (correo) updates.push("Correo = ?");
-    if (estadocontrato) updates.push("Estado = ?");
+    if (TipoDocumento) updates.push("TipoDocumento = ?");
+    if (DocumentoIdentidad) updates.push("DocumentoIdentidad = ?");
+    if (NombreCompleto) updates.push("NombreCompleto = ?");
+    if (Telefono) updates.push("Telefono = ?");
+    if (Correo) updates.push("Correo = ?");
+    if (Estado) updates.push("Estado = ?");
 
     if (updates.length === 0) {
       return res.status(400).json({ error: "Nada que actualizar" });
     }
 
-    const sql = `UPDATE arrendatario SET ${updates.join(
-      ", "
-    )} WHERE IdArrendatario = ?`;
+    const sql = `UPDATE arrendatario SET ${updates.join(", ")} WHERE IdArrendatario = ?`;
+    const values = updates.map(field => req.body[field.split(" ")[0]]); // Extract values from req.body
 
-    connection.query(
-      sql,
-      [...updates.map((val) => req.body[val.split(" ")[0]]), id],
-      (error, results) => {
-        if (error) {
-          console.error("Error al actualizar arrendatario:", error);
-          res.status(500).json({ error: "Error al actualizar arrendatario" });
-        } else {
-          console.log("Arrendatario actualizado exitosamente");
-          res
-            .status(200)
-            .json({ message: "Arrendatario actualizado exitosamente" });
-        }
+    connection.query(sql, [...values, id], (error, results) => {
+      if (error) {
+        console.error("Error al actualizar arrendatario:", error);
+        res.status(500).json({ error: "Error al actualizar arrendatario" });
+      } else {
+        console.log("Arrendatario actualizado exitosamente");
+        res.status(200).json({ message: "Arrendatario actualizado exitosamente" });
       }
-    );
+    });
   } catch (error) {
     console.error("Error al actualizar arrendatario:", error);
     res.status(500).json({ error: "Error al actualizar arrendatario" });
   }
 });
 
+
+
 //actualizar Estado Codeudor
 router.put("/Vcodeudor/:id", (req, res) => {
+  const connection = getConnection(); 
   const id = req.params.id;
   const nuevoEstado = req.body.estado;
 
@@ -1120,6 +1151,7 @@ router.put("/Vcodeudor/:id", (req, res) => {
 
 // Ruta para la actualización de un codeudor existente
 router.put("/Rcodeudor/:id", async (req, res) => {
+  const connection = getConnection(); 
   const { id } = req.params;
 
   try {
@@ -1159,6 +1191,7 @@ router.put("/Rcodeudor/:id", async (req, res) => {
 
 //actualizar Estado Arrendatario
 router.put("/Varrendatario/:id", (req, res) => {
+  const connection = getConnection(); 
   const id = req.params.id;
   const nuevoEstado = req.body.estado;
 
@@ -1184,6 +1217,7 @@ router.put("/Varrendatario/:id", (req, res) => {
 });
 //actualizar Estado Arrendatario
 router.put("/Vpropetarios/:id", (req, res) => {
+  const connection = getConnection(); 
   const id = req.params.id;
   const nuevoEstado = req.body.estado;
 
@@ -1209,6 +1243,7 @@ router.put("/Vpropetarios/:id", (req, res) => {
 });
 //Actualizar Estado Inmueble
 router.put("/VINmuebles/:id", (req, res) => {
+  const connection = getConnection(); 
   const id = req.params.id;
   const nuevoEstado = req.body.estado;
 
@@ -1236,6 +1271,7 @@ router.put("/VINmuebles/:id", (req, res) => {
 });
 //Aactualizar inmueble
 router.put("/actualizarInmueble", (req, res) => {
+  const connection = getConnection(); 
   const { IdInmueble } = req.query; // Datos del formulario
   const { IdArrendatario, Estado } = req.body; // Datos del formulario
   const sql = `UPDATE inmueble SET IdArrendatario = ?, Estado = ?  WHERE IdInmueble = ?`;
@@ -1256,6 +1292,7 @@ router.put("/actualizarInmueble", (req, res) => {
 
 //Actualizar Estado Historial Arrendamiento
 router.put("/Vempleados/:id", (req, res) => {
+  const connection = getConnection(); 
   const id = req.params.id;
   const nuevoEstado = req.body.estado;
 
@@ -1291,6 +1328,7 @@ const fields = [
 ];
 
 router.put("/empleados/:id", (req, res) => {
+  const connection = getConnection(); 
   const id = req.params.id; // ID del empleado a actualizar
 
   // Construimos el array de valores a actualizar
@@ -1326,77 +1364,61 @@ router.put("/empleados/:id", (req, res) => {
   );
 });
 
-// Ruta para actualizar un propietario existente
 router.put("/RPropietario/:id", async (req, res) => {
+  const connection = getConnection(); 
   const { id } = req.params;
   const {
-    numerodocumento,
-    nombrepropietario,
-    telefono,
-    correoelectronico,
-    tipocuenta,
-    banco,
+    DocumentoIdentidad,
+    NombreCompleto,
+    Telefono,
+    Correo,
+    TipoCuenta,
+    Banco,
     direccion,
-    numerocuenta,
+    NumeroCuenta,
     TipoDocumento,
+    FechaIngreso
   } = req.body;
 
   try {
     const updates = [];
     const values = [];
 
-    if (nombrepropietario) {
-      updates.push("NombreCompleto = ?");
-      values.push(nombrepropietario);
-    }
-    if (TipoDocumento) {
-      updates.push("TipoDocumento = ?");
-      values.push(TipoDocumento);
-    }
-    if (numerodocumento) {
-      updates.push("DocumentoIdentidad = ?");
-      values.push(numerodocumento);
-    }
-    if (direccion) {
-      updates.push("Direccion = ?");
-      values.push(direccion);
-    }
-    if (correoelectronico) {
-      updates.push("Correo = ?");
-      values.push(correoelectronico);
-    }
-    if (banco) {
-      updates.push("Banco = ?");
-      values.push(banco);
-    }
-    if (tipocuenta !== undefined) {
-      updates.push("TipoCuenta = ?");
-      values.push(tipocuenta);
-    }
-    if (numerocuenta !== undefined && numerocuenta !== "") {
-      updates.push("NumeroCuenta = ?");
-      values.push(numerocuenta);
-    }
+    // Definir el orden de los campos y valores
+    const fieldOrder = [
+      { field: "NombreCompleto", value: NombreCompleto },
+      { field: "TipoDocumento", value: TipoDocumento },
+      { field: "DocumentoIdentidad", value: DocumentoIdentidad },
+      { field: "Direccion", value: direccion },
+      { field: "Correo", value: Correo },
+      { field: "Banco", value: Banco },
+      { field: "TipoCuenta", value: TipoCuenta },
+      { field: "NumeroCuenta", value: NumeroCuenta },
+      { field: "Telefono", value: Telefono },
+      { field: "FechaIngreso", value: FechaIngreso }
+    ];
 
-    if (telefono) {
-      updates.push("Telefono = ?");
-      values.push(telefono);
-    }
+    // Construir la lista de actualizaciones y valores en el orden correcto
+    fieldOrder.forEach(({ field, value }) => {
+      if (value !== undefined && value !== "") {
+        updates.push(`${field} = ?`);
+        values.push(value);
+      }
+    });
 
     if (updates.length === 0) {
       return res.status(400).json({ error: "Nada que actualizar" });
     }
 
-    values.push(id); // Agregamos el id al final de los valores
+    values.push(Number(id)); // Convertir el id a número antes de agregarlo a values
 
-    const sql = `UPDATE propietario SET ${updates.join(
-      ", "
-    )} WHERE IdPropietario = ?`;
+    // Construir la consulta SQL con las actualizaciones en el orden correcto
+    const sql = `UPDATE propietario SET ${updates.join(", ")} WHERE IdPropietario = ?`;
 
     connection.query(sql, values, (error, results) => {
       if (error) {
         console.error("Error al actualizar propietario:", error);
-        res.status(500).json({ error: "Error al actualizar propietario" });
+        return res.status(500).json({ error: "Error al actualizar propietario" });
       } else {
         console.log("Propietario actualizado exitosamente");
         res
@@ -1406,12 +1428,14 @@ router.put("/RPropietario/:id", async (req, res) => {
     });
   } catch (error) {
     console.error("Error al actualizar propietario:", error);
-    res.status(500).json({ error: "Error al actualizar propietario" });
+    return res.status(500).json({ error: "Error al actualizar propietario" });
   }
 });
 
+
 // Ruta para actualizar un Inmueble
 router.put("/Reinmueble/:id", async (req, res) => {
+  const connection = getConnection(); 
   const IdInmueble = req.params.id;
 
   const {

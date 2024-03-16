@@ -6,15 +6,22 @@ import { useForm } from "react-hook-form";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 export const RInmuebleA = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [selectedPropietario, setSelectedPropietario] = useState("");
+  const [DocumentoPropie, setDocumentoPropie] = useState("");
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [focusedField, setFocusedField] = useState(""); // Agregar esta línea antes de usar focusedField
   const [showWarning, setShowWarning] = useState(false); // Agregar esta línea antes de usar showWarning
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [propetarioData, setpropetarioData] = useState({
+    DocumentoIdentidad: "",
+  });
 
   const notify = () =>
     toast.success("Se Registró correctamente", {
@@ -33,20 +40,46 @@ export const RInmuebleA = () => {
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get("http://localhost:3006/Vpropietarios?");
-      const Propietarios = response.data.map((prop) => prop);
-      setPropietariosDisponibles(Propietarios);
-    } catch (error) {
-      console.error("Error al cargar las matrículas:", error);
-      toast.error(
-        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
-      );
+    if (location.search) {
+      const propietario = {
+        DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
+      };
+      console.log("Datos de propietario recibidos:", propietario);
+      setpropetarioData();
+      fetchData(propietario);
+    } else {
+      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo propietario
+      setpropetarioData({
+        DocumentoIdentidad: "",
+      });
+      fetchData2();
     }
+  }, [location.search]);
+
+  const fetchData = async (propietario) => {
+      try {
+        const response = await axios.get(`http://localhost:3006/Vpropietarios?Cedula=${propietario.DocumentoIdentidad}`);
+        const Propietarios = response.data.map((prop) => prop);
+        setPropietariosDisponibles(Propietarios);
+      } catch (error) {
+        console.error("Error al cargar las matrículas:", error);
+        toast.error(
+          "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+        );
+      }
+  };
+  const fetchData2 = async () => {
+      try {
+        const response = await axios.get("http://localhost:3006/Vpropietarios?");
+        const Propietarios = response.data.map((prop) => prop);
+        setPropietariosDisponibles(Propietarios);
+        console.log("a");
+      } catch (error) {
+        console.error("Error al cargar las matrículas:", error);
+        toast.error(
+          "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+        );
+      }
   };
 
   const handleCloseModalA = () => {
@@ -76,7 +109,6 @@ export const RInmuebleA = () => {
   };
   const handlePropietarioChange = async (Propietario) => {
     setSelectedPropietario(Propietario);
-    console.log(Propietario);
     setMostrarModalA(false);
   };
 
@@ -114,8 +146,6 @@ export const RInmuebleA = () => {
       setShowWarning(false);
     }
 
-    // Actualiza los datos del propietario
-    setPropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
   const handleNumberChange = (event) => {
@@ -131,9 +161,6 @@ export const RInmuebleA = () => {
     } else {
       setShowWarning(false);
     }
-
-    // Actualiza los datos del propietario
-    setPropetarioData({ ...propetarioData, [fieldName]: fieldValue });
   };
 
   const handleFieldFocus = (fieldName) => {

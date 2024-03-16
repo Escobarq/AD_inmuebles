@@ -135,7 +135,7 @@ export const Inmueble = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>NIT</th>
+        <th>No Matricula</th>
         <th>Propietario</th>
         <th>Dirección</th>
         <th>Estrato</th>
@@ -159,7 +159,7 @@ export const Inmueble = () => {
         <td>{inmueble.Barrio}</td>
         <td>{inmueble.Tipo}</td>
         <td>{inmueble.Estado}</td>
-        <td>
+        <td className="responsive">
           <Button
             className="btn-opciones"
             variant="primary"
@@ -307,6 +307,7 @@ export const Inmueble = () => {
   }, []);
 
   const redireccion = (ruta) => {
+    localStorage.removeItem("NITPropie")
     window.location.href = ruta;
   };
 
