@@ -71,7 +71,7 @@ a:hover {
   background-color: transparent !important;
 }
 .view-small-screen {
-    max-height: 6 * 48px; /* Altura de 6 filas */
-    overflow-y: auto; /* Para habilitar el scroll si hay más de 6 filas */
-  }
-  
+  max-height: 6 * 48px; /* Altura de 6 filas */
+  overflow-y: auto; /* Para habilitar el scroll si hay más de 6 filas */
+}
+
