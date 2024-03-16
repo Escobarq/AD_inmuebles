@@ -100,7 +100,6 @@ export const Codeudor = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>ID</th>
         <th>Tipo Documento</th>
         <th>No. Documento</th>
         <th>Nombre</th>
@@ -139,7 +138,6 @@ export const Codeudor = () => {
   const createrow = (Codeudor) => {
     return (
       <tr key={Codeudor.IdCodeudor}>
-        <td>{Codeudor.IdCodeudor}</td>
         <td>{Codeudor.TipoDocumento}</td>
         <td>{Codeudor.DocumentoIdentidad}</td>
         <td>{Codeudor.NombreCompleto}</td>

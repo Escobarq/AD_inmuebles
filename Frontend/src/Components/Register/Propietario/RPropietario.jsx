@@ -34,6 +34,7 @@ export const RPropietario = () => {
   });
 
   useEffect(() => {
+    setCurrentDate(getCurrentDate());
     // Si hay parámetros de consulta en la URL, significa que se está editando un propietario existente
     if (location.search) {
       const arrendatario = {
@@ -68,9 +69,7 @@ export const RPropietario = () => {
     }
   }, [location.search]);
 
-  useEffect(() => {
-    setCurrentDate(getCurrentDate());
-  }, []);
+
 
   // Función para obtener la fecha actual en formato YYYY-MM-DD
   function getCurrentDate() {
@@ -84,6 +83,9 @@ export const RPropietario = () => {
   }
 
   const onSubmitRegistro = async (data) => {
+    propetarioData.FechaIngreso = (currentDate)
+    console.log(propetarioData.FechaIngreso);
+
     try {
       // Verificar si el número de identidad ya está registrado
       if (identidadesRegistradas.includes(data.DocumentoIdentidad)) {
@@ -107,10 +109,13 @@ export const RPropietario = () => {
       console.log(data);
       if (response.ok) {
         setShowSaveModal(false); // Muestra el modal de confirmación
-        localStorage.setItem("NITPropie", data.DocumentoIdentidad); // Suponiendo que DocumentoIdentidad es el campo correcto
-        reset();
-        window.location.href = "/Propietario";
-        setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
+          const urlParams = new URLSearchParams({
+            DocumentoIdentidad: propetarioData.DocumentoIdentidad,
+          });
+          const url = `/RInmuebleA?${urlParams.toString()}`;
+          reset();
+          setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
+          window.location.href = url;
       }
     } catch (error) {
       console.error("Error al enviar datos al servidor:", error);
@@ -154,11 +159,11 @@ export const RPropietario = () => {
             <Form.Label>Nombre de Propietario:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("nombrepropietario")}
+              {...register("NombreCompleto")}
               type="text"
               defaultValue={propetarioData.NombreCompleto}
               onChange={handleTextChange}
-              onFocus={() => handleFieldFocus("nombrepropietario")}
+              onFocus={() => handleFieldFocus("NombreCompleto")}
               required
             />
           </Form.Group>
@@ -181,6 +186,7 @@ export const RPropietario = () => {
                 {" "}
                 Seleccione Tipo de Documento{" "}
               </option>
+              <option value=""> Seleccione Tipo Documento</option>
               <option value="Cedula Ciudadania">Cedula Ciudadania</option>
               <option value="Cedula Extranjeria">Cedula Extranjería</option>
               <option value="Pasaporte">Pasaporte</option>
@@ -246,11 +252,11 @@ export const RPropietario = () => {
             <Form.Label>Banco:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("banco")}
+              {...register("Banco")}
               type="text"
               defaultValue={propetarioData.Banco}
               onChange={handleTextChange}
-              onFocus={() => handleFieldFocus("banco")}
+              onFocus={() => handleFieldFocus("Banco")}
               required
             />
           </Form.Group>
@@ -273,6 +279,7 @@ export const RPropietario = () => {
               <option defaultValue="" disabled hidden>
                 Seleccione Tipo de Cuenta
               </option>
+              <option value="">Seleccion Tipo Cuenta</option>
               <option value="Cuenta Ahorros">Cuenta Ahorros</option>
               <option value="Cuenta Corriente">Cuenta Corriente</option>
             </Form.Select>
@@ -282,12 +289,12 @@ export const RPropietario = () => {
             <Form.Label>Número de Cuenta:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("numerocuenta")}
+              {...register("NumeroCuenta")}
               max={9999999999}
               defaultValue={propetarioData.NumeroCuenta}
               required
               onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("numerocuenta")}
+              onFocus={() => handleFieldFocus("NumeroCuenta")}
             />
           </Form.Group>
 
@@ -295,15 +302,10 @@ export const RPropietario = () => {
             <Form.Label>Fecha de Ingreso:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("fechaingreso")}
+              disabled
+              
               type="date"
-              defaultValue={propetarioData.FechaIngreso || currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate
-              onChange={(e) =>
-                setpropetarioData({
-                  ...propetarioData,
-                  FechaIngreso: e.target.value,
-                })
-              }
+              defaultValue={currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate             
             />
           </Form.Group>
 

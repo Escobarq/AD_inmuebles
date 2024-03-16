@@ -269,7 +269,7 @@ export const Rarrendatario = () => {
           <div className="form-propietario">
             <Form.Group controlId="fecha">
               <Form.Label>Fecha de Pago:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 defaultValue={currentDate}
@@ -296,7 +296,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>No Documento Arrendatario:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={
@@ -308,7 +308,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>No Matricula Inmueble:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={selectedContrato ? selectedContrato.NoMatricula : ""}
@@ -318,7 +318,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>Nombre Arrendatario:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={
@@ -330,7 +330,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>Tipo de Inmueble:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={selectedContrato ? selectedContrato.TipoInmueble : ""}
@@ -340,7 +340,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="suma">
               <Form.Label>Valor del Pago:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 type="number"
                 {...register("ValorPago")}
@@ -362,7 +362,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="periodoDesde">
               <Form.Label>Fecha Inicial de Pago:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 type="date"
                 {...register("FechaInicio")}
@@ -371,7 +371,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="periodoHasta">
               <Form.Label>Fecha Final Pago:</Form.Label>
-              <Form.Control
+               <Form.Control required
                 className="InputsRegistros"
                 type="date"
                 {...register("FechaFin")}
