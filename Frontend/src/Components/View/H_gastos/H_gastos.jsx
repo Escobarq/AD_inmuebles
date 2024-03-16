@@ -1,5 +1,5 @@
 import { Table, Button, OverlayTrigger, Tooltip, Form, Modal, ListGroup } from "react-bootstrap";
-import { faFilePdf, faFileSignature } from "@fortawesome/free-solid-svg-icons";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
@@ -14,16 +14,16 @@ import "moment/locale/es";
 import { useMediaQuery } from "@react-hook/media-query";
 import axios from "axios";
 import logo from "../../../assets/Logo.jpg";
+import { toast } from "react-toastify";
+
 
 export const H_gastos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoComision, setinfoComision] = useState([]);
-  
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [selectedPropietario, setSelectedPropietario] = useState("");
   const [DatosFiltrados, setDatosFiltrados] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
-  const [DatosFlitrados, setDatosFiltrados]=useState("");
   const [filtroData, setFiltroData] = useState({
     Propietario: "",
     FechaElaboracionMin: "",
@@ -188,7 +188,7 @@ export const H_gastos = () => {
     doc.setTextColor(128);
     doc.text("Adminmuebles", 44, 26); 
     doc.setFontSize(6);
-    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+    doc.text(`Informe filtrado con estos terminos:   ${DatosFiltrados}`,44,30);
     addHoraEmision();
     const date = new Date();
     const monthNames = [
