@@ -109,13 +109,13 @@ export const RPropietario = () => {
       console.log(data);
       if (response.ok) {
         setShowSaveModal(false); // Muestra el modal de confirmación
-          const urlParams = new URLSearchParams({
-            DocumentoIdentidad: propetarioData.DocumentoIdentidad,
-          });
-          const url = `/RInmuebleA?${urlParams.toString()}`;
-          reset();
-          setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
-          window.location.href = url;
+        const urlParams = new URLSearchParams({
+          DocumentoIdentidad: propetarioData.DocumentoIdentidad,
+        });
+        const url = `/RInmuebleA?${urlParams.toString()}`;
+        reset();
+        setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
+        window.location.href = url;
       }
     } catch (error) {
       console.error("Error al enviar datos al servidor:", error);
@@ -149,7 +149,7 @@ export const RPropietario = () => {
 
   return (
     <div className="contener-home contener-rpropietario">
-      <h2>Registro Propietario</h2>
+      <h2 className="Rtit">Registro Propietario</h2>
       <div className="container">
         <Form
           className="form-propietario"
@@ -250,16 +250,31 @@ export const RPropietario = () => {
 
           <Form.Group controlId="formbanco">
             <Form.Label>Banco:</Form.Label>
-            <Form.Control
+            <Form.Select
               className="InputsRegistros"
               {...register("Banco")}
-              type="text"
-              defaultValue={propetarioData.Banco}
               onChange={handleTextChange}
               onFocus={() => handleFieldFocus("Banco")}
               required
-            />
+            >
+            <option value="">Seleccione un banco</option>
+             <option value="Banco Agrario de Colombia"> Banco Agrario de Colombia</option>
+              <option value="Banco AV Villas">Banco AV Villas</option>
+              <option value="Banco de Bogotá">Banco de Bogotá</option>
+              <option value="Bancolombia">Bancolombia</option>
+              <option value="BBVA Colombia">BBVA</option>
+              <option value="Banco Caja Social">Banco Caja Social</option>
+              <option value="CorpBanca">CorpBanca</option>
+              <option value="Banco De la República">Banco De la República</option>
+              <option value="Davivienda">Davivienda</option>
+              <option value="Banco Occidente">Banco Occidente</option>
+              <option value="Banco Popular">Banco Popular</option>
+              <option value="Banco Santander Colombia">Banco Santander Colombia</option>
+              <option value="Banco WWB">Banco WWB</option>
+              
+            </Form.Select>
           </Form.Group>
+
 
           <Form.Group controlId="formTipoCuenta">
             <Form.Label>Tipo De Cuenta</Form.Label>
@@ -282,6 +297,7 @@ export const RPropietario = () => {
               <option value="">Seleccion Tipo Cuenta</option>
               <option value="Cuenta Ahorros">Cuenta Ahorros</option>
               <option value="Cuenta Corriente">Cuenta Corriente</option>
+              
             </Form.Select>
           </Form.Group>
 
@@ -303,79 +319,80 @@ export const RPropietario = () => {
             <Form.Control
               className="InputsRegistros"
               disabled
-              
+
               type="date"
               defaultValue={currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate             
             />
           </Form.Group>
 
-        
+
 
         </Form>
-          {/* Botones de guardar y cancelar */}
-          <div className="col-md-12">
-            <div className="save_deleter">
-              <Button
-                type="button"
-                variant="success m-2"
-                onClick={() => setShowSaveModal(true)}
-              >
-                <FontAwesomeIcon icon={faSave} />
-                <span className="text_button ms-2">Guardar</span>
-              </Button>
+        {/* Botones de guardar y cancelar */}
+        <div className="col-md-12">
+          <div className="save_deleter">
+            <Button
+              type="button"
+              variant="success m-2"
+              onClick={() => setShowSaveModal(true)}
+            >
+              <FontAwesomeIcon icon={faSave} />
+              <span className="text_button ms-2">Guardar</span>
+            </Button>
 
-              {/* Botón de cancelar */}
-              <Button
-                type="button"
-                variant="danger m-2"
-                onClick={() => setShowCancelModal(true)}
-              >
-                <FontAwesomeIcon icon={faTimes} />
-                <span className="text_button ms-2">Cancelar</span>
-              </Button>
-            </div>
-
-            {/* Modales */}
-            {/* Modal de confirmación de guardar */}
-            <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
-              <Modal.Header closeButton>
-                <Modal.Title>Confirmación</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                ¿Estás seguro de que deseas guardar los cambios?
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
-                  No
-                </Button>
-                <Button variant="primary" onClick={handleConfirmSave}>
-                  Sí
-                </Button>
-              </Modal.Footer>
-            </Modal>
-
-            {/* Modal de confirmación de cancelar */}
-            <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
-              <Modal.Header closeButton>
-                <Modal.Title>Confirmación</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                ¿Estás seguro de que deseas cancelar la operación?
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowCancelModal(false)}
-                >
-                  No
-                </Button>
-                <Button variant="primary" onClick={handleConfirmCancel}>
-                  Sí
-                </Button>
-              </Modal.Footer>
-            </Modal>
+            {/* Botón de cancelar */}
+            <Button
+              type="button"
+              variant="danger m-2"
+              onClick={() => setShowCancelModal(true)}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+              <span className="text_button ms-2">Cancelar</span>
+            </Button>
           </div>
+
+          {/* Modales */}
+          {/* Modal de confirmación de guardar */}
+          <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Confirmación</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              ¿Estás seguro de que deseas guardar los cambios?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
+                No
+              </Button>
+              <Button variant="primary" onClick={handleConfirmSave}>
+                Sí
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
+          {/* Modal de confirmación de cancelar */}
+          <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Confirmación</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              ¿Estás seguro de que deseas cancelar la operación?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setShowCancelModal(false)}
+              >
+                No
+              </Button>
+              <Button variant="primary" onClick={handleConfirmCancel}>
+                Sí
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
       </div>
     </div>
   );
 };
+
