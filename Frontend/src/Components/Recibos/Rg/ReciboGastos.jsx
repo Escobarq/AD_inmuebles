@@ -9,6 +9,8 @@ import { PDFDocument, rgb } from "pdf-lib";
 import logo from '../../../assets/Logo.jpg';
 import axios from "axios";
 
+
+
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -24,7 +26,7 @@ export const ReciboGastos = () => {
   const [valorAI, setvalorAI] = useState();
   const [valorAE, setvalorAE] = useState();
   const [valorM, setvalorM] = useState();
-  
+
   // Redireccion en caso de confirmar o cancelar
   const handleConfirmSave = () => {
     // Lógica para confirmar el guardado
@@ -42,7 +44,7 @@ export const ReciboGastos = () => {
     let a = localStorage.getItem("user");
     let b = localStorage.getItem("apellido");
 
-    setNombre(a + " " + b);    
+    setNombre(a + " " + b);
 
     fetchData();
     setCurrentDate(getCurrentDate());
@@ -63,7 +65,7 @@ export const ReciboGastos = () => {
 
   const fetchData2 = async (Propietario) => {
     try {
-      
+
       const response = await axios.get(
         `http://localhost:3006/Vinmueble?IdPropietario=${Propietario.IdPropietario}`
       );
@@ -108,17 +110,17 @@ export const ReciboGastos = () => {
   };
   const handleCalcular = (e) => {
     const { name, value } = e;
-    
-    if(name == "AseoEntrega") {
+
+    if (name == "AseoEntrega") {
       setvalorAE(value)
     }
-    if(name == "AdmInmobi") {
+    if (name == "AdmInmobi") {
       setvalorAI(value)
     }
-    if(name == "PagoArriendo") {
+    if (name == "PagoArriendo") {
       setvalorPA(value)
     }
-    if(name == "Mantenimiento") {
+    if (name == "Mantenimiento") {
       setvalorM(value)
     }
   };
@@ -144,11 +146,13 @@ export const ReciboGastos = () => {
       alertError();
     } else {
       data.FechaPago = currentDate
+
       data.PagoArriendo = valorPA;
       data.AdminInmobiliaria = valorAI;
       data.AseoEntrega = valorAE;
-      data.Mantenimiento =valorM;
+      data.Mantenimiento = valorM;
       data.ValorTotal = Total;
+
       data.IdPropietario = selectedPropietario.IdPropietario;
       data.IdInmueble = selectedInmueble.IdInmueble;
       data.ElaboradoPor = Nombre;
@@ -219,24 +223,24 @@ export const ReciboGastos = () => {
       "Matricula",
       "FormaPago",
       "FechaPago",
-      "AdminInmobiliaria",
-      "PagoArriendo",
-      "AseoEntrega",
-      "Mantenimiento",
+      //"AdminInmobiliaria",
+      // "PagoArriendo",
+      // "AseoEntrega",
+      // "Mantenimiento",
       "ElaboradoPor",
-      "ValorTotal",
+      // "ValorTotal",
     ];
 
     try {
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage(); 
+      const page = pdfDoc.addPage();
       const { width, height } = page.getSize();
-      const fontSize = 19; 
-      const padding = 50; 
-      const middle = width / 2; 
+      const fontSize = 19;
+      const padding = 50;
+      const middle = width / 2;
       const currentDate = new Date().toLocaleDateString();
-      const currentTime = new Date().toLocaleTimeString(); 
-      const footerText = `Hora de emisión: ${currentTime}`; 
+      const currentTime = new Date().toLocaleTimeString();
+      const footerText = `Hora de emisión: ${currentTime}`;
       const textWidth = (await pdfDoc.embedFont("Helvetica")).widthOfTextAtSize(currentDate, fontSize);
       const textX = width - padding - textWidth;
 
@@ -271,7 +275,7 @@ export const ReciboGastos = () => {
       //fecha actual
       page.drawText(`${currentDate}`, {
         x: textX,
-        y: height - padding - fontSize * 0.1, 
+        y: height - padding - fontSize * 0.1,
         size: fontSize - 2,
         color: rgb(0.5, 0.5, 0.5),
         font: await pdfDoc.embedFont("Helvetica"),
@@ -315,7 +319,7 @@ export const ReciboGastos = () => {
       let leftX = padding;
       let rightX = width / 2 + 20;
       let yOffset = height - padding - fontSize * 8;
- 
+
       for (const key of order) {
         if (key !== "IdPropietario" && key !== "IdInmueble") {
           const value = data[key];
@@ -330,16 +334,16 @@ export const ReciboGastos = () => {
               align: "right",
             });
             //la respuesta debajo del nombre del campo
-            if(key == "PagoArriendo" || key == "AseoEntrega" || key == "AdminInmobiliaria" || key== "Mantenimiento" || key == "ValorTotal") {
+            if (key == "PagoArriendo" || key == "AseoEntrega" || key == "AdminInmobiliaria" || key == "Mantenimiento" || key == "ValorTotal") {
               page.drawText(`$${value}`, {
                 x: leftX,
                 y: yOffset - fontSize * 1.5,
                 size: fontSize,
                 color: rgb(0, 0, 0),
                 align: "left",
-              });  
+              });
             }
-            else{
+            else {
 
               page.drawText(`${value}`, {
                 x: leftX,
@@ -349,6 +353,63 @@ export const ReciboGastos = () => {
                 align: "left",
               });
             }
+
+            // Datos de la tabla
+            const tableData = [
+              { concepto: "Pago de Arriendo", valor: valorPA },
+              { concepto: "Admin Inmobiliaria", valor: valorAI },
+              { concepto: "Aseo Entrega", valor: valorAE },
+              { concepto: "Mantenimiento", valor: valorM },
+              { concepto: "Valor Total", valor: data.ValorTotal }
+            ];
+
+            // Posiciones iniciales para dibujar la tabla
+            let tableX = padding;
+            let tableY = height - padding - fontSize * 25;
+
+
+            // Dibujar líneas horizontales y verticales
+            const rowHeight = 33; // Altura de cada fila
+            const columnWidth = 450; // Ancho de cada columna
+            const lineWidth = 0.5; // Grosor de las líneas
+            const tableHeight = rowHeight * (tableData.length + 1); // Altura total de la tabla
+
+
+            // Líneas de las filas y datos de la tabla
+            tableData.forEach(async (row, index) => {
+              const rowY = tableY - (index + 1) * rowHeight;
+
+              // Líneas horizontales
+              page.drawLine({
+                start: { x: tableX, y: rowY },
+                end: { x: tableX + columnWidth, y: rowY },
+                thickness: lineWidth,
+                color: rgb(0, 0, 0),
+              });
+
+              // Datos de la fila
+              page.drawText(row.concepto, {
+                x: tableX,
+                y: rowY - fontSize * 1.1, // Ajusta la posición vertical según tu diseño
+                size: fontSize,
+                font: await pdfDoc.embedFont("Helvetica"),
+              });
+              page.drawText(`$${row.valor}`, {
+                x: tableX + 279, // Ajusta la posición horizontal según tu diseño
+                y: rowY - fontSize * 1.1, // Ajusta la posición vertical según tu diseño
+                size: fontSize,
+
+              });
+            });
+
+            // Línea inferior
+            page.drawLine({
+              start: { x: tableX, y: tableY - tableHeight },
+              end: { x: tableX + columnWidth, y: tableY - tableHeight },
+              thickness: lineWidth,
+              color: rgb(0, 0, 0),
+            });
+
             // Alternamos entre columnas izquierda y derecha
             if (leftX === padding) {
               leftX = rightX;
@@ -535,132 +596,211 @@ return (
               onChange={(e) => handleCalcular(e.target)}
             />              
           </div>
-        </div>
-      </form>
-    </div>
-    <div className="btns">
-      <Button
-        type="button"
-        variant="success m-2"
-        onClick={() => setShowSaveModal(true)}
-      >
-        <FontAwesomeIcon icon={faSave} />
-        <span className="text_button ms-2">Guardar</span>
-      </Button>
 
-      {/* Botón de cancelar */}
-      <Button
-        type="button"
-        variant="danger m-2"
-        onClick={() => setShowCancelModal(true)}
-      >
-        <FontAwesomeIcon icon={faTimes} />
-        <span className="text_button ms-2">Cancelar</span>
-      </Button>
-    </div>
-    {/* Modal de confirmación de guardar */}
-    <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
-      <Modal.Header closeButton={false}>
-        <Modal.Title>Confirmación</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+          <label>Forma de pago</label>
+          <select
+            className="InputsRegistros"
+            {...register("FormaPago")}
+            id="seleccionGasto3"
 
-        ¿Estás seguro de que deseas guardar los cambios?
-        Recuerda que si confirmas no se podran editar
+          >
+            <option value="">Seleccione Forma de Pago</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
 
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
-          No
-        </Button>
+          </select>
 
+          <div className="fila-formulario">
+            <div className="grupo-formulario">
+              <label htmlFor="seleccionGasto">Concepto:</label>
+              <input
+                disabled
+                defaultValue={"Pago arriendo mes"}
+                type="text"
+                className="form-control InputsRegistros"
+                id="valor2"
+              />
+              <input
+                disabled
+                defaultValue={"Administracion Inmobiliaria"}
+                type="text"
+                className="form-control InputsRegistros"
+                id="valor2"
+              />
+              <input
+                disabled
+                defaultValue={"Aseo entrega casa"}
+                type="text"
+                className="form-control InputsRegistros"
+                id="valor2"
+              />
+              <input
+                disabled
+                defaultValue={"Mantenimiento"}
+                type="text"
+                className="form-control InputsRegistros"
+                id="valor2"
+              />
+
+            </div>
+            <div className="valor">
+              <label htmlFor="valor">Valor</label>
+
+              <input
+                type="number"
+                className="form-control InputsRegistros"
+                name="PagoArriendo"
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
+              />
+              <input
+                type="number"
+                className="form-control InputsRegistros"
+                name="AdmInmobi"
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
+              />
+              <input
+                type="number"
+                className="form-control InputsRegistros"
+                name="AseoEntrega"
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
+              />
+              <input
+                type="numnumberber"
+                className="form-control InputsRegistros"
+                name="Mantenimiento"
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div className="btns">
         <Button
-          variant="primary"
-          onClick={() => {
-            handleConfirmSave();
-          }}
+          type="button"
+          variant="success m-2"
+          onClick={() => setShowSaveModal(true)}
         >
-
-          Sí
-        </Button>
-      </Modal.Footer>
-    </Modal>
-
-    {/* Modal de confirmación de cancelar */}
-    <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
-      <Modal.Header closeButton={false}>
-        <Modal.Title>Confirmación</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        ¿Estás seguro de que deseas cancelar la operación?
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
-          No
+          <FontAwesomeIcon icon={faSave} />
+          <span className="text_button ms-2">Guardar</span>
         </Button>
 
+        {/* Botón de cancelar */}
         <Button
-          variant="primary"
-          onClick={() => {
-            handleConfirmCancel();
-            handleCancel();
-          }}
+          type="button"
+          variant="danger m-2"
+          onClick={() => setShowCancelModal(true)}
         >
-
-          Sí
+          <FontAwesomeIcon icon={faTimes} />
+          <span className="text_button ms-2">Cancelar</span>
         </Button>
-      </Modal.Footer>
-    </Modal>
+      </div>
+      {/* Modal de confirmación de guardar */}
+      <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
+        <Modal.Header closeButton={false}>
+          <Modal.Title>Confirmación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
 
-    <Modal
-      size="lg"
-      show={mostrarModalA}
-      onHide={handleCloseModalA}
-      aria-labelledby="example-modal-sizes-title-lg"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Seleccionar Propietario</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <ListGroup>
-          {PropietariosDisponibles.map((Propietario, index) => (
-            <ListGroup.Item
-              key={index}
-              action
-              onClick={() => handlePropietarioChange(Propietario)}
-            >
+          ¿Estás seguro de que deseas guardar los cambios?
+          Recuerda que si confirmas no se podran editar
 
-              {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
+            No
+          </Button>
 
-              {Propietario.NombreCompleto}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Modal.Body>
-    </Modal>
-    <Modal
-      size="lg"
-      show={mostrarModalB}
-      onHide={handleCloseModalB}
-      aria-labelledby="example-modal-sizes-title-lg"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Seleccionar Inmueble</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <ListGroup>
-          {InmueblesDisponibles.map((Inmueble, index) => (
-            <ListGroup.Item
-              key={index}
-              action
-              onClick={() => handleInmuebleChange(Inmueble)}
-            >
-              {Inmueble.NoMatricula} :{Inmueble.Tipo}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Modal.Body>
-    </Modal>
-  </div>
-)
+          <Button
+            variant="primary"
+            onClick={() => {
+              handleConfirmSave();
+            }}
+          >
+
+            Sí
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal de confirmación de cancelar */}
+      <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
+        <Modal.Header closeButton={false}>
+          <Modal.Title>Confirmación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          ¿Estás seguro de que deseas cancelar la operación?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
+            No
+          </Button>
+
+          <Button
+            variant="primary"
+            onClick={() => {
+              handleConfirmCancel();
+              handleCancel();
+            }}
+          >
+
+            Sí
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        size="lg"
+        show={mostrarModalA}
+        onHide={handleCloseModalA}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Propietario</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {PropietariosDisponibles.map((Propietario, index) => (
+              <ListGroup.Item
+                key={index}
+                action
+                onClick={() => handlePropietarioChange(Propietario)}
+              >
+
+                {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
+
+                {Propietario.NombreCompleto}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
+      <Modal
+        size="lg"
+        show={mostrarModalB}
+        onHide={handleCloseModalB}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Inmueble</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {InmueblesDisponibles.map((Inmueble, index) => (
+              <ListGroup.Item
+                key={index}
+                action
+                onClick={() => handleInmuebleChange(Inmueble)}
+              >
+                {Inmueble.NoMatricula} :{Inmueble.Tipo}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
+    </div>
+  )
 }
