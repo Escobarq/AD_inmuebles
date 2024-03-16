@@ -447,75 +447,154 @@ export const ReciboGastos = () => {
       console.error("Error al generar el PDF:", error);
     }
   };
-  return (
-    <div className="home-2">
-      <div className="contenedor-formulario" id="recibo-gastos">
-        <h1 className="tit">Recibo de Gastos</h1>
-        <form onSubmit={handleSubmit(onsubmitGastos)} className="tod">
-          <div className="fila-formulario1">
-            <Form.Group>
-              <label htmlFor="fecha">Fecha de Pago:</label>
-              <input
-                type="date"
-                className="form-control InputsRegistros"
-                id="fecha"
-                defaultValue={currentDate}
-                disabled
-              />
-            </Form.Group>
+return (
+  <div className="home-2">
+    <div className="contenedor-formulario" id="recibo-gastos">
+      <h1 className="tit">Recibo de Gastos</h1>
+      <form onSubmit={handleSubmit(onsubmitGastos)} className="tod">
+        <div className="fila-formulario1">
+          <Form.Group>
+            <label htmlFor="fecha">Fecha de Pago:</label>
+            <input required
+              type="date"
+              className="form-control InputsRegistros"
+              id="fecha"
+              defaultValue={currentDate}
+              disabled                
+            />
+          </Form.Group>
 
-            <Form.Group>
-              <label htmlFor="entregadoPor">Entregado por:</label>
-              <input
-                type="text"
-                className="form-control InputsRegistros"
-                id="entregadoPor"
-                defaultValue={Nombre}
-                disabled
-              />
+          <Form.Group>
+            <label htmlFor="entregadoPor">Entregado por:</label>
+            <input required
+              type="text"
+              className="form-control InputsRegistros"
+              id="entregadoPor"
+              defaultValue={Nombre}
+              disabled
+            />
 
-            </Form.Group>
+          </Form.Group>
 
-            <Form.Group>
-              <Form.Label>Propietario del inmueble</Form.Label>
-              <Form.Select
-                className="InputsRegistros"
+          <Form.Group>
+            <Form.Label>Propietario del inmueble</Form.Label>
+            <Form.Select
+              className="InputsRegistros"
 
-                value={
-                  selectedPropietario ? selectedPropietario.IdPropietario : "a?"
-                }
-                onChange={(e) => handlePropietarioChange(e.target.value)}
-                onClick={() => handleMostrarAClick(true)}
-              >
-                <option value="">Seleccionar Numero de Propietario</option>
-                {PropietariosDisponibles.map((Propietario, index) => (
-                  <option key={index} value={Propietario.IdPropietario}>
-                    {Propietario.NombreCompleto}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
+              value={
+                selectedPropietario ? selectedPropietario.IdPropietario : "a?"
+              }
+              onChange={(e) => handlePropietarioChange(e.target.value)}
+              onClick={() => handleMostrarAClick(true)}
+            >
+              <option value="">Seleccionar Numero de Propietario</option>
+              {PropietariosDisponibles.map((Propietario, index) => (
+                <option key={index} value={Propietario.IdPropietario}>
+                  {Propietario.NombreCompleto}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
 
-            <Form.Group>
-              <Form.Label>Inmueble</Form.Label>
+          <Form.Group>
+            <Form.Label>Inmueble</Form.Label>
 
-              <Form.Select
-                className="InputsRegistros"
-                value={selectedInmueble ? selectedInmueble.IdInmueble : "a?"}
+            <Form.Select
+              className="InputsRegistros"
+              value={selectedInmueble ? selectedInmueble.IdInmueble : "a?"}
 
-                onChange={(e) => handleInmuebleChange(e.target.value)}
-                onClick={() => handleMostrarBClick(true)}
-              >
-                <option value="">Seleccionar Numero de Matricula</option>
-                {InmueblesDisponibles.map((Inmueble, index) => (
-                  <option key={index} value={Inmueble.IdInmueble}>
+              onChange={(e) => handleInmuebleChange(e.target.value)}
+              onClick={() => handleMostrarBClick(true)}
+            >
+              <option value="">Seleccionar Numero de Matricula</option>
+              {InmueblesDisponibles.map((Inmueble, index) => (
+                <option key={index} value={Inmueble.IdInmueble}>
 
-                    {Inmueble.NoMatricula} {Inmueble.Tipo}
+                  {Inmueble.NoMatricula} {Inmueble.Tipo}
 
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </div>
+
+        <label>Forma de pago</label>
+        <select
+          className="InputsRegistros"
+          {...register("FormaPago")}
+          id="seleccionGasto3"
+
+        >
+          <option value="">Seleccione Forma de Pago</option>
+          <option value="Efectivo">Efectivo</option>
+          <option value="Transferencia">Transferencia</option>
+
+        </select>
+
+        <div className="fila-formulario">
+          <div className="grupo-formulario">
+            <label htmlFor="seleccionGasto">Concepto:</label>
+            <input required 
+              disabled
+              defaultValue={"Pago arriendo mes"}
+              type="text"
+              className="form-control InputsRegistros"
+              id="valor2"
+            />
+            <input required
+              disabled
+              defaultValue={"Administracion Inmobiliaria"}
+              type="text"
+              className="form-control InputsRegistros"
+              id="valor2"
+            />
+            <input required
+              disabled
+              defaultValue={"Aseo entrega casa"}
+              type="text"
+              className="form-control InputsRegistros"
+              id="valor2"
+            />
+            <input required
+              disabled
+              defaultValue={"Mantenimiento"}
+              type="text"
+              className="form-control InputsRegistros"
+              id="valor2"
+            />
+
+          </div>
+          <div className="valor">
+            <label htmlFor="valor">Valor</label>
+
+            <input required
+              type="number"
+              className="form-control InputsRegistros"
+              name="PagoArriendo"
+              defaultValue={0}
+              onChange={(e) => handleCalcular(e.target)}
+            />
+            <input 
+              type="number"
+              className="form-control InputsRegistros"
+              name="AdmInmobi"
+              defaultValue={0}
+              onChange={(e) => handleCalcular(e.target)}
+            />
+            <input 
+              type="number"
+              className="form-control InputsRegistros"
+              name="AseoEntrega"
+              defaultValue={0}
+              onChange={(e) => handleCalcular(e.target)}
+            />
+            <input 
+              type="numnumberber"
+              className="form-control InputsRegistros"
+              name="Mantenimiento"
+              defaultValue={0}
+              onChange={(e) => handleCalcular(e.target)}
+            />              
           </div>
 
           <label>Forma de pago</label>
