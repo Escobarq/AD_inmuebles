@@ -332,7 +332,7 @@ router.get("/Vcodeudor", (req, res) => {
 
 router.get("/VPagoArren", (req, res) => {
   const connection = getConnection(); 
-  const { FechaPagoIni, FechaPagoFin, FormaPago, estado } = req.query;
+  const { FechaPagoIni, IdContrato, FechaPagoFin, FormaPago, estado } = req.query;
 
   try {
     let query = "SELECT * FROM pagos_arrendamiento WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
@@ -343,9 +343,9 @@ router.get("/VPagoArren", (req, res) => {
       query += " AND FechaPago >= ?";
       queryParams.push(FechaPagoIni);
     }
-    if (FechaPagoFin) {
-      query += " AND FechaPago <= ?";
-      queryParams.push(FechaPagoFin);
+    if (IdContrato) {
+      query += " AND IdContrato = ?";
+      queryParams.push(IdContrato);
     }
 
     if (estado) {
@@ -979,31 +979,26 @@ router.post("/RConArrendamiento", async (req, res) => {
 });
 
 // Ruta para registar Pago de Arrendamiento --------------------------------------------------
-router.post("/RPagoArrendamiento", async (req, res) => {
+
+
+
+router.put("/RPagoArrendamiento", async (req, res) => {
   const connection = getConnection(); 
   const {
-    IdArrendatario,
-    IdContrato,
+    IdPagoArrendamiento,
     FechaPago,
-    FechaIni,
-    FechaFin,
     ValorPago,
     FormaPago,
-    Estado,
   } = req.body;
 
   try {
     connection.query(
-      "INSERT INTO pagos_arrendamiento (IdArrendatario, IdContrato,  FechaPago, FechaInicio, FechaFin, ValorPago, FormaPago, Estado) VALUES (?,?,?, ?, ?, ?,?,?)",
+      " Update pagos_arrendamiento FechaPago = ?,ValorPago = ?,FormaPago = ? where IdPagoArrendamiento = ?",
       [
-        IdArrendatario,
-        IdContrato,
-        FechaPago,
-        FechaIni,
-        FechaFin,
+        FechaPago, 
         ValorPago,
         FormaPago,
-        Estado,
+        IdPagoArrendamiento,
       ],
       (error, results) => {
         if (error) {

@@ -22,7 +22,6 @@ export const H_gastos = () => {
   const [infoComision, setinfoComision] = useState([]);
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [selectedPropietario, setSelectedPropietario] = useState("");
-  const [DatosFiltrados, setDatosFiltrados] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [filtroData, setFiltroData] = useState({
     Propietario: "",
@@ -307,15 +306,8 @@ export const H_gastos = () => {
     }
     doc.save("Historial de comisiones propietario-PDF");
 
-
-
   };
   //AQUI TERMINA
-
-
-
-
-
   return (
     <>
       <div className="contener-home">
