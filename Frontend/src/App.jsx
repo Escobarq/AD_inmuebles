@@ -38,7 +38,6 @@ import { Notifi } from "./Components/Notifi/Notifi";
 import useRoleInfo from "./Components/Hooks/useRoleInfo";
 import Crearuser from "./Components/Register/EditarPerfil/Crearuser";
 import { Contraseña } from "./Components/CambiarContraseña/Contraseña";
-import { EditarCodeudor } from "./Components/Register/Codeudor/EditarCodeudor ";
 
 
 
