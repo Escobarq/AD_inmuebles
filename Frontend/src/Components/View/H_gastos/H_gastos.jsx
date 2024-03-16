@@ -18,10 +18,8 @@ import logo from "../../../assets/Logo.jpg";
 export const H_gastos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoComision, setinfoComision] = useState([]);
-  
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [selectedPropietario, setSelectedPropietario] = useState("");
-  const [DatosFiltrados, setDatosFiltrados] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [DatosFlitrados, setDatosFiltrados]=useState("");
   const [filtroData, setFiltroData] = useState({
@@ -307,15 +305,8 @@ export const H_gastos = () => {
     }
     doc.save("Historial de comisiones propietario-PDF");
 
-
-
   };
   //AQUI TERMINA
-
-
-
-
-
   return (
     <>
       <div className="contener-home">
