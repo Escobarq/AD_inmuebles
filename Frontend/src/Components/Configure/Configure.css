@@ -1,0 +1,52 @@
+.configure-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 5px;
+    padding: 0.75rem 1rem; /* Utilizamos medidas relativas */
+    font-size: 1rem; /* Utilizamos medidas relativas */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .configure-button:hover {
+    background-color: #bbb;
+  }
+  
+  .configure-button-icon {
+    margin-right: 0.5rem; /* Utilizamos medidas relativas */
+  }
+  .modales {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modales-content {
+    background-color: #fff;
+    max-width: 50%;
+    max-height: 50%;
+    padding: 1em;
+    border-radius: 1em;
+    box-shadow: 0 0 1em rgba(0, 0, 0, 0.2);
+  }
+  
+  .close-button {
+    position: absolute;
+    width: 2rem;
+    top: 1em;
+    right: 1em;
+    cursor: pointer;
+  }
+  
+  

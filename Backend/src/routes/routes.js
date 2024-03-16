@@ -1,15 +1,31 @@
 // src/routes/routes.js
 const express = require("express");
 const router = express.Router();
-const connection = require("../db");
+const { configureDatabase } = require("../db"); 
 
-//Metodos Get
+// Declarar la variable global para la conexión
+let connection;
 
+//Metodo Para Conectarse
+router.post('/api/config', async (req, res) => {
+  const { host, user, password, database } = req.body;
+
+  try {
+    // Configurar la conexión a la base de datos y esperar a que se resuelva la Promise
+    connection = await configureDatabase({ host, user, password, database });
+
+    console.log('Configuración de conexión actualizada correctamente');
+    res.status(200).json({ message: 'Conexión actualizada con éxito' });
+  } catch (error) {
+    console.error('Error al configurar la conexión a la base de datos:', error);
+    res.status(500).json({ message: 'Error al configurar la conexión a la base de datos' });
+  }
+});
 
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {
-  const { correousuario } = req.query; // Datos del formulario
-  // Consulta SQL para buscar un usuario con el correo electrónico proporcionado
+  const { correousuario } = req.query;
+
   const sql = `SELECT * FROM trabajador WHERE correo = ?`;
 
   connection.query(sql, [correousuario], (error, results) => {
