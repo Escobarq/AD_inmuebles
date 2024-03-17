@@ -20,10 +20,17 @@ export const ReArrendatario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
 
-  const notify = () =>
-  toast.success("Se registró correctamente", {
-    theme: "dark",
-  });
+  const notify = () => {
+    toast.success("Se registró correctamente", {
+      theme: "dark",
+    });
+  };
+
+  const falla = () => {
+    toast.error("Hubo un Error ", {
+      theme: "dark",
+    });
+  };
 
   const handleConfirmSave = () => {
     // Lógica para confirmar el guardado

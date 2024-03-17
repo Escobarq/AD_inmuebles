@@ -1,8 +1,11 @@
 const mysql = require('mysql');
 
 let connection;
+let databaseConfig;
 
 function configureDatabase({ host, user, password, database }) {
+  databaseConfig = { host, user, password, database };
+
   connection = mysql.createConnection({
     host,
     user,
@@ -26,4 +29,8 @@ function getConnection() {
   return connection;
 }
 
-module.exports = { configureDatabase, getConnection };
+function getDatabaseConfig() {
+  return databaseConfig;
+}
+
+module.exports = { configureDatabase, getConnection, getDatabaseConfig };

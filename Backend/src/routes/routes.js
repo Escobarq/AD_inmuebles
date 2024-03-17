@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const { configureDatabase, getConnection } = require('../db'); // Importar la función configureDatabase y getConnection desde db.js
 
+//Configurando Servidor
 router.post('/api/config', async (req, res) => {
   const { host, user, password, database } = req.body;
 
@@ -17,6 +18,7 @@ router.post('/api/config', async (req, res) => {
     res.status(500).json({ message: 'Error al configurar la conexión a la base de datos' });
   }
 });
+
 
 //Funcion para traer su información
 router.get("/Infouser", (req, res) => {

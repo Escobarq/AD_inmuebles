@@ -33,10 +33,11 @@ export const ReciboGastos = () => {
     handleSubmit(onsubmitGastos)(); // Envia los datos
     setShowSaveModal(false); // Cierra el modal
   };
-  const alertError = () =>
+  const alertError = () =>{
     toast.error("Alerta el los valores de los conceptos no coinciden ", {
       theme: "dark",
     });
+  };
 
   const { handleSubmit, register } = useForm();
 
@@ -126,22 +127,22 @@ export const ReciboGastos = () => {
   };
 
 
-  const errores = (text) =>
+  const errores = (text) =>{
     toast.error(text, {
       theme: "colored",
 
       autoClose: 2000,
     });
-
-  const notify = (text) =>
+  };
+  const notify = (text) =>{
     toast.success(text, {
       theme: "colored",
 
       autoClose: 2000,
     });
-
+  };
   const onsubmitGastos = async (data) => {
-    let Total = valorPA - valorAE - valorAI - valorM;;
+    let Total = valorPA - valorAE - valorAI - valorM;
     if (Total < 0) {
       alertError();
     } else {
@@ -675,6 +676,7 @@ return (
                 onChange={(e) => handleCalcular(e.target)}
               />
             </div>
+          </div>
           </div>
         </form>
       </div>
