@@ -15,7 +15,6 @@ export const ContratoA = () => {
   const contratoInfo = useContratoInfo('http://localhost:3006/contratoFiltro');
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const pdfContentRef = useRef(null);
-
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [DatosFlitrados, setDatosFiltrados]=useState("");
   const [filtroData, setFiltroData] = useState({

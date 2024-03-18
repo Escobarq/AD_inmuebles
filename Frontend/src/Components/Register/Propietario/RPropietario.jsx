@@ -9,20 +9,16 @@ import { useLocation } from "react-router-dom";
 export const RPropietario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la alerta
-  const [focusedField, setFocusedField] = useState(""); // Estado para rastrear el campo enfocado
   const [identidadesRegistradas, setIdentidadesRegistradas] = useState([]);
-
   const { register, handleSubmit, reset } = useForm();
-
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
-  // Estado para almacenar los datos del propietario
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const [propetarioData, setpropetarioData] = useState({
+    IdPropietario: "",
+    NombreCompleto: "",
     TipoDocumento: "",
     DocumentoIdentidad: "",
-    NombreCompleto: "",
     Telefono: "",
     Correo: "",
     Banco: "",
@@ -30,14 +26,12 @@ export const RPropietario = () => {
     NumeroCuenta: "",
     FechaIngreso: "",
     direccion: "",
-    IdPropietario: "", // Agregamos el campo IdPropietario
   });
 
   useEffect(() => {
     setCurrentDate(getCurrentDate());
-    // Si hay parámetros de consulta en la URL, significa que se está editando un propietario existente
     if (location.search) {
-      const arrendatario = {
+      const propietario = {
         IdPropietario: searchParams.get("IdPropietario"),
         TipoDocumento: searchParams.get("TipoDocumento"),
         DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
@@ -47,15 +41,14 @@ export const RPropietario = () => {
         TipoCuenta: searchParams.get("TipoCuenta"),
         NumeroCuenta: searchParams.get("NumeroCuenta"),
         FechaIngreso: searchParams.get("FechaIngreso"),
-        Direccion: searchParams.get("Direccion"),
+        direccion: searchParams.get("Direccion"),
         Correo: searchParams.get("Correo"),
       };
-      console.log("Datos de propietario recibidos:", arrendatario);
-      setpropetarioData(arrendatario);
+      setpropetarioData(propietario);
     } else {
-      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo propietario
+      // Si no hay parámetros de búsqueda en la URL, inicializar propietarioData con un objeto vacío
       setpropetarioData({
-        IdPropietario: "", // Agregamos el campo IdPropietario
+        IdPropietario: "",
         NombreCompleto: "",
         TipoDocumento: "",
         DocumentoIdentidad: "",
@@ -69,9 +62,6 @@ export const RPropietario = () => {
     }
   }, [location.search]);
 
-
-
-  // Función para obtener la fecha actual en formato YYYY-MM-DD
   function getCurrentDate() {
     const date = new Date();
     const year = date.getFullYear();
@@ -83,31 +73,26 @@ export const RPropietario = () => {
   }
 
   const onSubmitRegistro = async (data) => {
-    propetarioData.FechaIngreso = (currentDate)
-    console.log(propetarioData.FechaIngreso);
-
+    const formData = {
+      ...propetarioData,
+      ...data // Agregar los nuevos datos del formulario
+    };
+    formData.FechaIngreso = currentDate;
     try {
-      // Verificar si el número de identidad ya está registrado
-      if (identidadesRegistradas.includes(data.DocumentoIdentidad)) {
-        alert('Esta persona ya está registrada con este número de identidad.');
-        return;
-      }
-
       const url = propetarioData.IdPropietario
         ? `http://localhost:3006/RPropietario/${propetarioData.IdPropietario}`
         : "http://localhost:3006/RPropietario";
-
       const method = propetarioData.IdPropietario ? "PUT" : "POST";
-
       const response = await fetch(url, {
         method: method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(propetarioData), // Aquí debes asegurarte de que data contenga todos los campos necesarios
+        body: JSON.stringify(formData),
       });
-      console.log(data);
+      console.log(formData)
       if (response.ok) {
+
         setShowSaveModal(false); // Muestra el modal de confirmación
         const urlParams = new URLSearchParams({
           DocumentoIdentidad: propetarioData.DocumentoIdentidad,
@@ -128,25 +113,8 @@ export const RPropietario = () => {
 
   const handleConfirmCancel = () => {
     window.location.href = "/Propietario";
-    setShowCancelModal(false); // Cierra el modal
+    setShowCancelModal(false);
   };
-
-  const handleTextChange = (event) => {
-    const fieldValue = event.target.value;
-    const fieldName = event.target.name;
-    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
-  };
-
-  const handleNumberChange = (event) => {
-    const fieldValue = event.target.value;
-    const fieldName = event.target.name;
-    setpropetarioData({ ...propetarioData, [fieldName]: fieldValue });
-  };
-
-  const handleFieldFocus = (fieldName) => {
-    setFocusedField(fieldName);
-  };
-
   return (
     <div className="contener-home contener-rpropietario">
       <h2 className="Rtit">Registro Propietario</h2>
@@ -155,15 +123,13 @@ export const RPropietario = () => {
           className="form-propietario"
           onSubmit={handleSubmit(onSubmitRegistro)}
         >
-          <Form.Group controlId="formnombrepropietario" className="formSelect">
+           <Form.Group controlId="formnombrepropietario" className="formSelect">
             <Form.Label>Nombre de Propietario:</Form.Label>
             <Form.Control
               className="InputsRegistros"
               {...register("NombreCompleto")}
               type="text"
               defaultValue={propetarioData.NombreCompleto}
-              onChange={handleTextChange}
-              onFocus={() => handleFieldFocus("NombreCompleto")}
               required
             />
           </Form.Group>
@@ -215,8 +181,6 @@ export const RPropietario = () => {
               className="InputsRegistros"
               {...register("DocumentoIdentidad")}
               defaultValue={propetarioData.DocumentoIdentidad}
-              onChange={(e) => handleNumberChange(e)}
-              onFocus={() => handleFieldFocus("DocumentoIdentidad")}
               required
             />
           </Form.Group>
@@ -227,8 +191,6 @@ export const RPropietario = () => {
               className="InputsRegistros"
               {...register("Telefono")}
               defaultValue={propetarioData.Telefono}
-              onChange={(e) => handleNumberChange(e)}
-              onFocus={() => handleFieldFocus("Telefono")}
               required
             />
           </Form.Group>
@@ -253,8 +215,10 @@ export const RPropietario = () => {
             <Form.Select
               className="InputsRegistros"
               {...register("Banco")}
-              onChange={handleTextChange}
-              onFocus={() => handleFieldFocus("Banco")}
+
+              type="text"
+              defaultValue={propetarioData.Banco}
+
               required
             >
             <option value="">Seleccione un banco</option>
@@ -309,8 +273,6 @@ export const RPropietario = () => {
               max={9999999999}
               defaultValue={propetarioData.NumeroCuenta}
               required
-              onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("NumeroCuenta")}
             />
           </Form.Group>
 
@@ -321,12 +283,9 @@ export const RPropietario = () => {
               disabled
 
               type="date"
-              defaultValue={currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate             
+              defaultValue={currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate
             />
           </Form.Group>
-
-
-
         </Form>
         {/* Botones de guardar y cancelar */}
         <div className="col-md-12">
@@ -363,6 +322,7 @@ export const RPropietario = () => {
             <Modal.Footer>
               <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
                 No
+
               </Button>
               <Button variant="primary" onClick={handleConfirmSave}>
                 Sí
@@ -385,6 +345,7 @@ export const RPropietario = () => {
               >
                 No
               </Button>
+
               <Button variant="primary" onClick={handleConfirmCancel}>
                 Sí
               </Button>
