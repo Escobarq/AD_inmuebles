@@ -24,7 +24,7 @@ function configureDatabase({ host, user, password, database }) {
 
 function getConnection() {
   if (!connection) {
-    throw new Error('Database connection has not been configured');
+    console.error('Error connecting to database:', );
   }
   return connection;
 }

@@ -88,19 +88,37 @@ export const H_recibos = () => {
     weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
   });
   const createrow = (PArrendamiento) => {
-    return (
-      <tr key={PArrendamiento.IdPagoArrendamiento}>
-        <td>{PArrendamiento.IdPagoArrendamiento}</td>
-        <td>{PArrendamiento.IdContrato}</td>
-        <td>{PArrendamiento.IdArrendatario}</td>
-        <td>{formatDate(PArrendamiento.FechaPago)}</td>
-        <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
-        <td>{PArrendamiento.FormaPago}</td>
-        <td>{PArrendamiento.ValorPago}</td>
-        <td>{PArrendamiento.Estado}</td>
-        <td>{PArrendamiento.DiasDMora}</td>
-      </tr>
-    );
+    if(PArrendamiento.FechaPago == null) {
+      return (
+        <tr key={PArrendamiento.IdPagoArrendamiento}>
+          <td>{PArrendamiento.IdPagoArrendamiento}</td>
+          <td>{PArrendamiento.IdContrato}</td>
+          <td>{PArrendamiento.IdArrendatario}</td>
+          <td>Pendiente</td>
+          <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
+          <td>{PArrendamiento.FormaPago}</td>
+          <td>{PArrendamiento.ValorPago}</td>
+          <td>{PArrendamiento.Estado}</td>
+          <td>{PArrendamiento.DiasDMora}</td>
+        </tr>
+      );
+    }
+    else{
+      
+      return (
+        <tr key={PArrendamiento.IdPagoArrendamiento}>
+          <td>{PArrendamiento.IdPagoArrendamiento}</td>
+          <td>{PArrendamiento.IdContrato}</td>
+          <td>{PArrendamiento.IdArrendatario}</td>
+          <td>{formatDate(PArrendamiento.FechaPago)}</td>
+          <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
+          <td>{PArrendamiento.FormaPago}</td>
+          <td>{PArrendamiento.ValorPago}</td>
+          <td>{PArrendamiento.Estado}</td>
+          <td>{PArrendamiento.DiasDMora}</td>
+        </tr>
+      );
+    }
   };
   // Variables Paginacion
   useEffect(() => {
@@ -290,12 +308,6 @@ export const H_recibos = () => {
 
   };
   //AQUI TERMINA
-
-
-
-
-
-
 
   return (
     <>
