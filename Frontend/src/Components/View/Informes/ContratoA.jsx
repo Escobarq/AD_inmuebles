@@ -156,7 +156,7 @@ export const ContratoA = () => {
     doc.setFontSize(13);
     doc.setTextColor(128);
 
-    doc.text("Adminmuebles", 44, 26); // Title next to the logo
+    doc.text("Adminmuebles", 44, 26); 
     doc.setFontSize(6);
     doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
 
@@ -258,7 +258,7 @@ export const ContratoA = () => {
       addHoraEmision();
       doc.addImage(logo, "PNG", 15, 10, 20, 15);
       doc.setFontSize(13);
-      doc.text("Adminmuebles", 45, 20);
+      doc.text("Adminmuebles", 44, 26); 
     }
     const totalPages = doc.internal.getNumberOfPages();
     // Numeración de páginas

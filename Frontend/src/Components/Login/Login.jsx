@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { userLogin } from "../Hooks/Userlogin";
+import { Configure } from "../Configure/Configure";
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,6 +54,7 @@ export const Login = () => {
 
   return (
     <>
+  <Configure/>  
       <section className="vh-100 login login-section">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col col-xl-10 conten-login">

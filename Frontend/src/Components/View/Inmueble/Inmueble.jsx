@@ -159,7 +159,7 @@ export const Inmueble = () => {
         <td>{inmueble.Barrio}</td>
         <td>{inmueble.Tipo}</td>
         <td>{inmueble.Estado}</td>
-        <td>
+        <td className="responsive">
           <Button
             className="btn-opciones"
             variant="primary"
