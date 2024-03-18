@@ -66,7 +66,6 @@ export const H_gastos = () => {
       }
       const data = await response.json();
       setinfoComision(data);
-      setDatosFiltrados(queryParams.toString())
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -163,6 +162,27 @@ export const H_gastos = () => {
   }, []);
 
 
+
+// Objeto para descripciones de filtros
+const filtroDescriptions = {
+  Propietario: " Propietario",
+  FormaPago: "Forma Pago",
+  FechaElaboracionMin: "Elaboracion Minima",
+  FechaElaboracionMax: "Elaboracion Maxima",
+
+};
+
+// Formatear los filtros aplicados
+let formattedFilters = "";
+if (Object.values(filtroData).filter(value => value).length > 0) {
+formattedFilters = Object.keys(filtroData)
+  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
+  .map(key => ` ${filtroDescriptions[key]}: ${filtroData[key]}`)
+  
+} else {
+  formattedFilters = " Ninguno";
+}
+
   //AQUI EMPIEZA GENERACION DE PDF
   const HistorialPDF = () => {
     const doc = new jsPDF();
@@ -186,8 +206,9 @@ export const H_gastos = () => {
     doc.setFontSize(13);
     doc.setTextColor(128);
     doc.text("Adminmuebles", 44, 26); 
-    doc.setFontSize(6);
-    doc.text(`Informe filtrado con estos terminos:   ${DatosFiltrados}`,44,30);
+    doc.setFontSize(7);
+    doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
+
     addHoraEmision();
     const date = new Date();
     const monthNames = [
@@ -211,7 +232,6 @@ export const H_gastos = () => {
     doc.setFontSize(10);
     doc.text(formattedDate, 190, 18, null, null, "right");
 
-
     const columns = [
       { header: "No Comision", dataKey: "IdComisionPropietario" },
       { header: "Propietario", dataKey: "NombreCompleto" },
@@ -223,7 +243,6 @@ export const H_gastos = () => {
       { header: "Aseo Entrega", dataKey: "AseoEntrega" },
       { header: "Mantenimiento", dataKey: "Mantenimiento" },
       { header: "Valor Total", dataKey: "ValorTotal" },
-
     ];
     // Datos de la tabla
     const data = infoComision.map((Historial) => ({

@@ -598,7 +598,6 @@ return (
             />              
           </div>
           </div>
-          </div>
         </form>
       </div>
       <div className="btns">
