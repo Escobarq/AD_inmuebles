@@ -471,6 +471,7 @@ router.get("/contratoFiltro", (req, res) => {
   if (filtroConditions.length > 0) {
     query += " WHERE " + filtroConditions.join(" AND ");
   }
+  query += " ORDER BY contratoarrendamiento.IdContrato";
 
   // Ejecuta la consulta SQL
   connection.query(query, (error, results) => {
@@ -991,15 +992,17 @@ router.put("/RPagoArrendamiento", async (req, res) => {
     FechaPago,
     ValorPago,
     FormaPago,
+    Estado,
   } = req.body;
 
   try {
     connection.query(
-      " Update pagos_arrendamiento FechaPago = ?,ValorPago = ?,FormaPago = ? where IdPagoArrendamiento = ?",
+      " Update pagos_arrendamiento set FechaPago = ?,ValorPago = ?,FormaPago = ?, Estado = ? where IdPagoArrendamiento = ?",
       [
         FechaPago, 
         ValorPago,
         FormaPago,
+        Estado,
         IdPagoArrendamiento,
       ],
       (error, results) => {

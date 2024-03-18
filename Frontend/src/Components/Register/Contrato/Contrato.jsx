@@ -111,7 +111,7 @@ export const Contrato = () => {
           IdInmueble: inmuebleData.IdInmueble,
           FechaInicioContrato: watch("FechaInicioContrato"),
           FechaFinContrato: watch("FechaFinContrato"),
-          EstadoContrato: watch("EstadoContrato"),
+          EstadoContrato: ("Vigente"),
           ValorDeposito: watch("ValorDeposito")
         });
         console.log("Respuesta del servidor:", response.data);
@@ -128,7 +128,7 @@ export const Contrato = () => {
           FechaInicioContrato: currentDate,
           FechaPagoFija: currentDate,
           FechaFinContrato: watch("FechaFinContrato"),
-          EstadoContrato: watch("EstadoContrato"),
+          EstadoContrato: ("Vigente"),
           ValorDeposito: watch("ValorDeposito")
         });
         console.log("Respuesta del servidor:", response.data);
@@ -295,13 +295,6 @@ export const Contrato = () => {
             <Form.Control type="date" value={currentDate} disabled {...register("FechaPagoFija")} />
           </Form.Group>
 
-          <Form.Group controlId="TipoDocumento">
-            <Form.Label>Estado Contrato:</Form.Label>
-            <Form.Control as="select" {...register("EstadoContrato")}>
-              <option value={"Vigente"}>Vigente</option>
-              <option value={"Finalizado"}>Finalizado</option>
-            </Form.Control>
-          </Form.Group>
 
           <Form.Group controlId="documentoidentidad">
             <Form.Label>Valor Deposito:</Form.Label>
