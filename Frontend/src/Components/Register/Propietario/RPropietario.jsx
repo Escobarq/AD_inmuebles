@@ -92,16 +92,14 @@ export const RPropietario = () => {
       });
       console.log(formData)
       if (response.ok) {
-        setShowSaveModal(false);
+
+        setShowSaveModal(false); // Muestra el modal de confirmación
         const urlParams = new URLSearchParams({
-          DocumentoIdentidad: formData.DocumentoIdentidad,
+          DocumentoIdentidad: propetarioData.DocumentoIdentidad,
         });
         const url = `/RInmuebleA?${urlParams.toString()}`;
         reset();
-        setIdentidadesRegistradas([
-          ...identidadesRegistradas,
-          formData.DocumentoIdentidad,
-        ]);
+        setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
         window.location.href = url;
       }
     } catch (error) {
@@ -119,7 +117,7 @@ export const RPropietario = () => {
   };
   return (
     <div className="contener-home contener-rpropietario">
-      <h2>Registro Propietario</h2>
+      <h2 className="Rtit">Registro Propietario</h2>
       <div className="container">
         <Form
           className="form-propietario"
@@ -214,14 +212,33 @@ export const RPropietario = () => {
 
           <Form.Group controlId="formbanco">
             <Form.Label>Banco:</Form.Label>
-            <Form.Control
+            <Form.Select
               className="InputsRegistros"
               {...register("Banco")}
+
               type="text"
               defaultValue={propetarioData.Banco}
+
               required
-            />
+            >
+            <option value="">Seleccione un banco</option>
+             <option value="Banco Agrario de Colombia"> Banco Agrario de Colombia</option>
+              <option value="Banco AV Villas">Banco AV Villas</option>
+              <option value="Banco de Bogotá">Banco de Bogotá</option>
+              <option value="Bancolombia">Bancolombia</option>
+              <option value="BBVA Colombia">BBVA</option>
+              <option value="Banco Caja Social">Banco Caja Social</option>
+              <option value="CorpBanca">CorpBanca</option>
+              <option value="Banco De la República">Banco De la República</option>
+              <option value="Davivienda">Davivienda</option>
+              <option value="Banco Occidente">Banco Occidente</option>
+              <option value="Banco Popular">Banco Popular</option>
+              <option value="Banco Santander Colombia">Banco Santander Colombia</option>
+              <option value="Banco WWB">Banco WWB</option>
+              
+            </Form.Select>
           </Form.Group>
+
 
           <Form.Group controlId="formTipoCuenta">
             <Form.Label>Tipo De Cuenta</Form.Label>
@@ -244,6 +261,7 @@ export const RPropietario = () => {
               <option value="">Seleccion Tipo Cuenta</option>
               <option value="Cuenta Ahorros">Cuenta Ahorros</option>
               <option value="Cuenta Corriente">Cuenta Corriente</option>
+              
             </Form.Select>
           </Form.Group>
 
@@ -263,6 +281,7 @@ export const RPropietario = () => {
             <Form.Control
               className="InputsRegistros"
               disabled
+
               type="date"
               defaultValue={currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate
             />
@@ -303,6 +322,7 @@ export const RPropietario = () => {
             <Modal.Footer>
               <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
                 No
+
               </Button>
               <Button variant="primary" onClick={handleConfirmSave}>
                 Sí
@@ -319,9 +339,13 @@ export const RPropietario = () => {
               ¿Estás seguro de que deseas cancelar la operación?
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
+              <Button
+                variant="secondary"
+                onClick={() => setShowCancelModal(false)}
+              >
                 No
               </Button>
+
               <Button variant="primary" onClick={handleConfirmCancel}>
                 Sí
               </Button>
@@ -332,3 +356,4 @@ export const RPropietario = () => {
     </div>
   );
 };
+
