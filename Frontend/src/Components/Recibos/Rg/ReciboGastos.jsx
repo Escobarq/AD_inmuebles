@@ -366,7 +366,7 @@ export const ReciboGastos = () => {
 
             // Posiciones iniciales para dibujar la tabla
             let tableX = padding;
-            let tableY = height - padding - fontSize * 25;
+            let tableY = height - padding - fontSize * 24;
 
 
             // Dibujar líneas horizontales y verticales
@@ -393,7 +393,7 @@ export const ReciboGastos = () => {
                 x: tableX,
                 y: rowY - fontSize * 1.1, // Ajusta la posición vertical según tu diseño
                 size: fontSize,
-                font: await pdfDoc.embedFont("Helvetica"),
+             
               });
               page.drawText(`$${row.valor}`, {
                 x: tableX + 279, // Ajusta la posición horizontal según tu diseño
@@ -597,85 +597,6 @@ return (
               onChange={(e) => handleCalcular(e.target)}
             />              
           </div>
-
-          <label>Forma de pago</label>
-          <select
-            className="InputsRegistros"
-            {...register("FormaPago")}
-            id="seleccionGasto3"
-
-          >
-            <option value="">Seleccione Forma de Pago</option>
-            <option value="Efectivo">Efectivo</option>
-            <option value="Transferencia">Transferencia</option>
-
-          </select>
-
-          <div className="fila-formulario">
-            <div className="grupo-formulario">
-              <label htmlFor="seleccionGasto">Concepto:</label>
-              <input
-                disabled
-                defaultValue={"Pago arriendo mes"}
-                type="text"
-                className="form-control InputsRegistros"
-                id="valor2"
-              />
-              <input
-                disabled
-                defaultValue={"Administracion Inmobiliaria"}
-                type="text"
-                className="form-control InputsRegistros"
-                id="valor2"
-              />
-              <input
-                disabled
-                defaultValue={"Aseo entrega casa"}
-                type="text"
-                className="form-control InputsRegistros"
-                id="valor2"
-              />
-              <input
-                disabled
-                defaultValue={"Mantenimiento"}
-                type="text"
-                className="form-control InputsRegistros"
-                id="valor2"
-              />
-
-            </div>
-            <div className="valor">
-              <label htmlFor="valor">Valor</label>
-
-              <input
-                type="number"
-                className="form-control InputsRegistros"
-                name="PagoArriendo"
-                defaultValue={0}
-                onChange={(e) => handleCalcular(e.target)}
-              />
-              <input
-                type="number"
-                className="form-control InputsRegistros"
-                name="AdmInmobi"
-                defaultValue={0}
-                onChange={(e) => handleCalcular(e.target)}
-              />
-              <input
-                type="number"
-                className="form-control InputsRegistros"
-                name="AseoEntrega"
-                defaultValue={0}
-                onChange={(e) => handleCalcular(e.target)}
-              />
-              <input
-                type="numnumberber"
-                className="form-control InputsRegistros"
-                name="Mantenimiento"
-                defaultValue={0}
-                onChange={(e) => handleCalcular(e.target)}
-              />
-            </div>
           </div>
           </div>
         </form>
