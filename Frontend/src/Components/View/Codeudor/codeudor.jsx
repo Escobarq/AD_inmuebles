@@ -127,7 +127,7 @@ export const Codeudor = () => {
         Correo: codeudor.Correo,
       });
 
-      const url = `/Registrocodeudor?${urlParams.toString()}`;
+      const url = `/Registrocodeudor?${urlParams}`;
 
       window.location.href = url;
     } else {

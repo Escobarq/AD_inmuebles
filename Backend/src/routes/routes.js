@@ -1086,22 +1086,20 @@ router.put("/Rarrendatarios/:id", async (req, res) => {
   const connection = getConnection(); 
   const { id } = req.params;
   const {
-    TipoDocumento,
-    DocumentoIdentidad,
-    NombreCompleto,
-    Telefono,
-    Correo,
-    Estado,
+    tipodocumento,
+    numerodocumento,
+    nombrearrendatario,
+    telefono,
+    correo,
   } = req.body;
 
   try {
     const updates = [];
-    if (TipoDocumento) updates.push("TipoDocumento = ?");
-    if (DocumentoIdentidad) updates.push("DocumentoIdentidad = ?");
-    if (NombreCompleto) updates.push("NombreCompleto = ?");
-    if (Telefono) updates.push("Telefono = ?");
-    if (Correo) updates.push("Correo = ?");
-    if (Estado) updates.push("Estado = ?");
+    if (tipodocumento) updates.push("TipoDocumento = ?");
+    if (numerodocumento) updates.push("DocumentoIdentidad = ?");
+    if (nombrearrendatario) updates.push("NombreCompleto = ?");
+    if (telefono) updates.push("Telefono = ?");
+    if (correo) updates.push("Correo = ?");
 
     if (updates.length === 0) {
       return res.status(400).json({ error: "Nada que actualizar" });
