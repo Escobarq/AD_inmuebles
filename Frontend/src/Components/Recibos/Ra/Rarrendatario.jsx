@@ -65,7 +65,7 @@ export const Rarrendatario = () => {
   const cargarFechasContratos = async (Contrato) => {
     try {
       const response = await axios.get(
-        `http://localhost:3006/VPagoArren?IdContrato=${Contrato.IdContrato}`
+        `http://localhost:3006/VPagoArren?IdContrato=${Contrato.IdContrato}&estado=Pendiente`
       );
       const FechasPagosFijas = response.data.map((prop) => prop);
       setFechasPagosFijas(FechasPagosFijas);
@@ -84,10 +84,21 @@ export const Rarrendatario = () => {
     data.IdPagoArrendamiento = selectedFecha.IdPagoArrendamiento;
     data.IdArrendatario = selectedContrato.IdArrendatario;
     data.FechaPago = currentDate;
-    data.Estado = "Pagado";
     data.NoDocumento = selectedContrato.DocumentoIdentidad;
     data.NoMatricula = selectedContrato.NoMatricula;
     data.TipoInmueble = selectedContrato.TipoInmueble;
+    
+    if(currentDate > selectedFecha.FechaPagoFija){
+      data.Estado = "Atrasado"
+    }
+    else if(currentDate < selectedFecha.FechaPagoFija){
+      data.Estado = "Adelantado"
+    }
+    else {
+      
+      data.Estado = "AlDia"
+    }
+    
     try {
       const response = await fetch("http://localhost:3006/RPagoArrendamiento", {
         method: "PUT",
