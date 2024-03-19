@@ -11,11 +11,8 @@ import { toast } from "react-toastify";
 export const ReArrendatario = () => {
   const [CodeudoresDisponibles, setCodeudoresDisponibles] = useState([]);
   const [selectedCodeudor, setSelectedCodeudor] = useState("");
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
   const [mostrarModalA, setMostrarModalA] = useState(false);
-  const [showWarning, setShowWarning] = useState(false); // Estado para mostrar la alerta
-  const [focusedField, setFocusedField] = useState(""); // Estado para rastrear el campo enfocado
-
   // Modal
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -36,7 +33,6 @@ export const ReArrendatario = () => {
     // Lógica para confirmar el guardado
     handleSubmit(onSubmitRegistro)(); // Envia los datos
     setShowSaveModal(false); // Cierra el modal
-    reset();
   };
 
   const handleConfirmCancel = () => {
@@ -48,6 +44,7 @@ export const ReArrendatario = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const [arrendatarioData, setarrendatarioData] = useState({
+    IdArrendatario: "",
     TipoDocumento: "",
     DocumentoIdentidad: "",
     NombreCompleto: "",
@@ -74,9 +71,10 @@ export const ReArrendatario = () => {
     } else {
       // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo codeudor
       setarrendatarioData({
-        NombreCompleto: "",
+        IdArrendatario: "",
         TipoDocumento: "",
         DocumentoIdentidad: "",
+        NombreCompleto: "",
         Telefono: "",
         Correo: "",
         Estado: "",
@@ -111,6 +109,14 @@ export const ReArrendatario = () => {
     setMostrarModalA(false);
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setarrendatarioData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   const onSubmitRegistro = async (data) => {
     data.IdCodeudor = selectedCodeudor.IdCodeudor;
     try {
@@ -140,46 +146,6 @@ export const ReArrendatario = () => {
     }
   };
   
-  const handleTextChange = (event) => {
-    const fieldValue = event.target.value;
-    const fieldName = event.target.name;
-
-    // Expresión regular para permitir solo letras y espacios
-    const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/;
-
-    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
-    if (!regex.test(fieldValue) && focusedField === fieldName) {
-      setShowWarning(true);
-    } else {
-      setShowWarning(false);
-    }
-
-    // Actualiza los datos del Codeudor
-    setarrendatarioData({ ...arrendatarioData, [fieldName]: fieldValue });
-  };
-
-  const handleNumberChange = (event) => {
-    const fieldValue = event.target.value;
-    const fieldName = event.target.name;
-
-    // Expresión regular para permitir solo números
-    const regex = /^[0-9]*$/;
-
-    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
-    if (!regex.test(fieldValue) && focusedField === fieldName) {
-      setShowWarning(true);
-    } else {
-      setShowWarning(false);
-    }
-
-    // Actualiza los datos del Codeudor
-    setarrendatarioData({ ...arrendatarioData, [fieldName]: fieldValue });
-  };
-
-  const handleFieldFocus = (fieldName) => {
-    setFocusedField(fieldName);
-    console.log("borrar luego");
-  };
 
   return (
     <div className="contener-home contener-ReArrendatario">
@@ -188,23 +154,13 @@ export const ReArrendatario = () => {
         <Form className="" onSubmit={handleSubmit(onSubmitRegistro)}>
           <div className="form-propietario">
 
-
             <Form.Group controlId="nombrearrendatario">
               <Form.Label >Nombre arrendatario:</Form.Label>
               <Form.Control required className="InputsRegistros"              
                {...register("nombrearrendatario")}
                 defaultValue={arrendatarioData.NombreCompleto}
-
-
-                onChange={handleTextChange}
-                onFocus={() => handleFieldFocus("nombrearrendatario")}
-                
+                onChange={handleInputChange}
               />
-              {focusedField === "nombrearrendatario" && showWarning && (
-                <span className="error-message">
-                  Solo se permiten letras y espacios
-                </span>
-              )}
             </Form.Group>
 
             <Form.Group controlId="formtipodocumento">
@@ -214,6 +170,7 @@ export const ReArrendatario = () => {
                 as="select"
                 {...register("tipodocumento")}
                 defaultValue={arrendatarioData.TipoDocumento}
+                onChange={handleInputChange}
               >
                 <option value={"Cedula Ciudadania"}>Cédula de Ciudadanía</option>
                 <option value={"Cedula Extranjeria"}>Cédula de Extranjería</option>
@@ -226,30 +183,18 @@ export const ReArrendatario = () => {
                 className="InputsRegistros"
                  {...register("numerodocumento")}
                 defaultValue={arrendatarioData.DocumentoIdentidad} 
-                onChange={handleNumberChange}
-                onFocus={() => handleFieldFocus("numerodocumento")}
-                
+                onChange={handleInputChange}
               />
-              {focusedField === "numerodocumento" && showWarning && (
-                <span className="error-message">Solo se permiten números</span>
-              )}
             </Form.Group>
 
             <Form.Group controlId="formtelefono">
               <Form.Label > Teléfono Arrendatario: </Form.Label>
               <Form.Control required
-                className="InputsRegistros"
-                
+                className="InputsRegistros"         
                 {...register("telefono")}
                 defaultValue={arrendatarioData.Telefono}
-
-                onChange={handleNumberChange}
-                onFocus={() => handleFieldFocus("telefono")}
-                
+                onChange={handleInputChange}
               />
-              {focusedField === "telefono" && showWarning && (
-                <span className="error-message">Solo se permiten números</span>
-              )}
             </Form.Group>
 
             <Form.Group controlId="correo">
@@ -260,6 +205,7 @@ export const ReArrendatario = () => {
                 type="email"
                 {...register("correo")}
                 defaultValue={arrendatarioData.Correo}
+                onChange={handleInputChange}
               />
             </Form.Group>
 
