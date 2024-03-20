@@ -141,8 +141,14 @@ td {
 }
 .btn-opciones {
   margin: 2%;
- width: 40px;
- height: 40px;
+  margin-right: 0px !important;
+ width: 30px;
+ height: 30 px;
+ padding: 0px !important;
+}
+.icon-table{
+  width: 15px;
+ height: 15px;
 }
 .NewContract{
   margin: 2%;

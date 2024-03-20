@@ -109,7 +109,8 @@ export const Contrato = () => {
         const response = await axios.post("http://localhost:3006/contratoarrendamiento", {
           IdArrendatario: selectedIdArrendatario,
           IdInmueble: inmuebleData.IdInmueble,
-          FechaInicioContrato: watch("FechaInicioContrato"),
+          FechaInicioContrato: currentDate,
+          FechaPagoFija: currentDate,
           FechaFinContrato: watch("FechaFinContrato"),
           EstadoContrato: ("Vigente"),
           ValorDeposito: watch("ValorDeposito")
@@ -133,7 +134,6 @@ export const Contrato = () => {
         });
         console.log("Respuesta del servidor:", response.data);
         toast.success("Contrato de arrendamiento creado correctamente");
-        console.log(selectedIdInmueble);
         reset();
         // Después de guardar los datos, redirigir a la página de Carrendatario
        window.location.href = "/Carrendatario";
