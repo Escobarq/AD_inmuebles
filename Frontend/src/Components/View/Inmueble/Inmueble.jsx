@@ -24,7 +24,7 @@ import autoTable from "jspdf-autotable";
 
 
 export const Inmueble = () => {
-  const [DatosFlitrados, setDatosFiltrados]=useState("");
+
   const roleId = useRoleInfo();
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
@@ -120,7 +120,7 @@ export const Inmueble = () => {
       );
 
       setinfoinmueble(INmueblesActivos);
-      setDatosFiltrados(queryParams.toString())
+ 
 
       if (INmueblesActivos.length == 0) {
         setNoResult(true);
@@ -313,6 +313,26 @@ export const Inmueble = () => {
 
 
 
+// Objeto para descripciones de filtros
+const filtroDescriptions = {
+  tipo: "Tipo",
+  estrato: "Estrato",
+  estado: "Estado",
+
+};
+
+
+
+// Formatear los filtros aplicados
+let formattedFilters = "";
+if (Object.values(filtroData).filter(value => value).length > 0) {
+formattedFilters = Object.keys(filtroData)
+  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
+  .map(key => ` ${filtroDescriptions[key]}: ${filtroData[key]}`);
+
+} else {
+  formattedFilters = " Ninguno";
+}
 
 
 
@@ -342,10 +362,16 @@ export const Inmueble = () => {
     doc.setTextColor(128);
    // Title next to the logo
     doc.setFontSize(6);
-    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+
     doc.setFontSize(13);
     doc.setTextColor(128);
     doc.text("Adminmuebles", 44, 26); 
+
+    doc.setFontSize(7);
+    doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
+
+  
+
     addHoraEmision();
     const date = new Date();
     const monthNames = [

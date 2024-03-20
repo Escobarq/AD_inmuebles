@@ -19,7 +19,7 @@ import autoTable from "jspdf-autotable";
 export const H_recibos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
-  const [DatosFlitrados, setDatosFiltrados]=useState("");
+
   const [filtroData, setFiltroData] = useState({
     estado: "",
     FechaPagoIni: "",
@@ -50,7 +50,7 @@ export const H_recibos = () => {
       const data = await response.json();
       const Harrendamiento = data.filter((item) => item.booleanos === "true");
       setinfoPArrendamiento(Harrendamiento);
-      setDatosFiltrados(queryParams.toString())
+
 
       if (data.length == 0) {
         setNoResult(true);
@@ -158,6 +158,24 @@ export const H_recibos = () => {
   }, []);
 
 
+// Objeto para descripciones de filtros
+const filtroDescriptions = {
+  estado: "Estado",
+  FormaPago: "Forma Pago",
+  FechaPagoIni: "Pago Inicio",
+  FechaPagoFin: "Pago Fin",
+};
+
+// Formatear los filtros aplicados
+let formattedFilters = "";
+if (Object.values(filtroData).filter(value => value).length > 0) {
+formattedFilters = Object.keys(filtroData)
+  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
+  .map(key => `${filtroDescriptions[key]}: ${filtroData[key]}`);
+
+} else {
+  formattedFilters = " Ninguno";
+}
 
 
 
@@ -186,7 +204,10 @@ export const H_recibos = () => {
     doc.setTextColor(128);
     doc.text("Adminmuebles", 44, 26); // Title next to the logo
     doc.setFontSize(6);
-    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+    doc.setFontSize(7);
+    doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
+ 
+    
 
     addHoraEmision();
     const date = new Date();
