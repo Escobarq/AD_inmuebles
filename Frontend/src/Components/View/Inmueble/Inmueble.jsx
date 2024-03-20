@@ -357,7 +357,7 @@ formattedFilters = Object.keys(filtroData)
     };
     doc.addImage(logo, "PNG", 15, 10, 20, 20);
     doc.setFontSize(20);
-    doc.text("Inmuebles", 44, 20);
+    doc.text("Inmuebles", 43, 20);
     doc.setFontSize(13);
     doc.setTextColor(128);
    // Title next to the logo
@@ -365,7 +365,7 @@ formattedFilters = Object.keys(filtroData)
 
     doc.setFontSize(13);
     doc.setTextColor(128);
-    doc.text("Adminmuebles", 44, 26); 
+    doc.text("Adminmuebles", 43, 26); 
 
     doc.setFontSize(7);
     doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
@@ -468,7 +468,7 @@ formattedFilters = Object.keys(filtroData)
       addHoraEmision();
       doc.addImage(logo, "PNG", 15, 15, 20, 15);
       doc.setFontSize(13);
-      doc.text("Adminmuebles", 44, 26); 
+      doc.text("Adminmuebles", 43, 26); 
     }
 
     const totalPages = doc.internal.getNumberOfPages();
