@@ -454,7 +454,7 @@ export const H_recibos = () => {
               disabled={currentPage === 1}
             />
             {pagesToShow.map((page) => (
-              <Pagination.Item
+              <Pagination.Item className="item-paginador"
                 key={page}
                 active={page === currentPage}
                 onClick={() => setCurrentPage(page)}
