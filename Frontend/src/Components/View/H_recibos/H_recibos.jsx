@@ -14,8 +14,6 @@ import logo from "../../../assets/Logo.jpg";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-
-
 export const H_recibos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
@@ -50,7 +48,6 @@ export const H_recibos = () => {
       const data = await response.json();
       const Harrendamiento = data.filter((item) => item.booleanos === "true");
       setinfoPArrendamiento(Harrendamiento);
-
 
       if (data.length == 0) {
         setNoResult(true);
@@ -93,7 +90,7 @@ export const H_recibos = () => {
   });
 
   const createrow = (PArrendamiento) => {
-    if(PArrendamiento.FechaPago == null) {
+    if (PArrendamiento.FechaPago == null) {
       return (
         <tr key={PArrendamiento.IdPagoArrendamiento}>
           <td>{PArrendamiento.IdPagoArrendamiento}</td>
@@ -107,9 +104,7 @@ export const H_recibos = () => {
           <td>{PArrendamiento.DiasDMora}</td>
         </tr>
       );
-    }
-    else{
-      
+    } else {
       return (
         <tr key={PArrendamiento.IdPagoArrendamiento}>
           <td>{PArrendamiento.IdPagoArrendamiento}</td>
@@ -144,8 +139,42 @@ export const H_recibos = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
+  const [pagesToShow, setPagesToShow] = useState([]);
+  const [pageCount, setPageCount] = useState(0); // Agregamos el estado de pageCount
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const renderPaginator = (pageCount) => {
+    // Pasamos pageCount como parámetro
+    const maxPagesToShow = 10; // Cambia el número máximo de páginas mostradas
+
+    if (pageCount <= maxPagesToShow) {
+      setPagesToShow(Array.from({ length: pageCount }, (_, i) => i + 1));
+    } else {
+      if (currentPage <= maxPagesToShow - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(Array.from({ length: maxPagesToShow }, (_, i) => i + 1));
+      } else if (currentPage >= pageCount - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => pageCount - maxPagesToShow + i + 1
+          )
+        );
+      } else {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => currentPage - Math.floor(maxPagesToShow / 2) + i
+          )
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    const newPageCount = Math.ceil(infoPArrendamiento.length / itemsPerPage);
+    setPageCount(newPageCount); // Actualizamos el estado de pageCount
+    renderPaginator(newPageCount); // Llamamos a la función renderPaginator con el nuevo pageCount
+  }, [infoPArrendamiento, itemsPerPage, currentPage]); // Dependencias del useEffect
+
   //formatear fecha
   //Tooltip
   const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
@@ -159,29 +188,23 @@ export const H_recibos = () => {
     return () => window.removeEventListener("resize", updateTooltipVisibility);
   }, []);
 
+  // Objeto para descripciones de filtros
+  const filtroDescriptions = {
+    estado: "Estado",
+    FormaPago: "Forma Pago",
+    FechaPagoIni: "Pago Inicio",
+    FechaPagoFin: "Pago Fin",
+  };
 
-// Objeto para descripciones de filtros
-const filtroDescriptions = {
-  estado: "Estado",
-  FormaPago: "Forma Pago",
-  FechaPagoIni: "Pago Inicio",
-  FechaPagoFin: "Pago Fin",
-};
-
-// Formatear los filtros aplicados
-let formattedFilters = "";
-if (Object.values(filtroData).filter(value => value).length > 0) {
-formattedFilters = Object.keys(filtroData)
-  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
-  .map(key => `${filtroDescriptions[key]}: ${filtroData[key]}`);
-
-} else {
-  formattedFilters = " Ninguno";
-}
-
-
-
-
+  // Formatear los filtros aplicados
+  let formattedFilters = "";
+  if (Object.values(filtroData).filter((value) => value).length > 0) {
+    formattedFilters = Object.keys(filtroData)
+      .filter((key) => filtroData[key]) // Filtrar solo los valores que no están vacíos
+      .map((key) => `${filtroDescriptions[key]}: ${filtroData[key]}`);
+  } else {
+    formattedFilters = " Ninguno";
+  }
   //AQUI EMPIEZA GENERACION DE PDF
   const ArrenPDF = () => {
     const doc = new jsPDF();
@@ -208,8 +231,6 @@ formattedFilters = Object.keys(filtroData)
     doc.setFontSize(6);
     doc.setFontSize(7);
     doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
- 
-    
 
     addHoraEmision();
     const date = new Date();
@@ -228,15 +249,14 @@ formattedFilters = Object.keys(filtroData)
       "Diciembre",
     ];
 
-    const formattedDate = `${monthNames[date.getMonth()]
-      }/${date.getDate()}/${date.getFullYear()}`;
+    const formattedDate = `${
+      monthNames[date.getMonth()]
+    }/${date.getDate()}/${date.getFullYear()}`;
     doc.setTextColor(128); // Gris
     doc.setFontSize(10);
     doc.text(formattedDate, 190, 18, null, null, "right");
 
-
     const columns = [
-
       { header: "ID pago arrendatario", dataKey: "IdPagoArrendamiento" },
       { header: "ID arrendatario", dataKey: "IdArrendatario" },
       { header: "Fecha pago", dataKey: "FechaPago" },
@@ -249,18 +269,15 @@ formattedFilters = Object.keys(filtroData)
     ];
     // Datos de la tabla
     const data = infoPArrendamiento.map((Arrendamiento) => ({
-
-      IdPagoArrendamiento:Arrendamiento.IdPagoArrendamiento,
-      IdArrendatario:Arrendamiento.IdArrendatario,
+      IdPagoArrendamiento: Arrendamiento.IdPagoArrendamiento,
+      IdArrendatario: Arrendamiento.IdArrendatario,
       FechaPago: formatDate(Arrendamiento.FechaPago),
       FechaInicio: formatDate(Arrendamiento.FechaInicio),
       FechaFin: formatDate(Arrendamiento.FechaFin),
-      ValorPago:  `$${Arrendamiento.ValorPago}`,
-      FormaPago:Arrendamiento.FormaPago,
-      Estado:Arrendamiento.Estado,
-      DiasDMora:Arrendamiento.DiasDMora,
-
-
+      ValorPago: `$${Arrendamiento.ValorPago}`,
+      FormaPago: Arrendamiento.FormaPago,
+      Estado: Arrendamiento.Estado,
+      DiasDMora: Arrendamiento.DiasDMora,
     }));
     const itemsPerPage = 21;
     let startY = 45;
@@ -299,12 +316,12 @@ formattedFilters = Object.keys(filtroData)
         "Noviembre",
         "Diciembre",
       ];
-      const formattedDate = `${monthNames[date.getMonth()]
-        }/${date.getDate()}/${date.getFullYear()}`;
+      const formattedDate = `${
+        monthNames[date.getMonth()]
+      }/${date.getDate()}/${date.getFullYear()}`;
       doc.setTextColor(128); // Gris
       doc.setFontSize(10);
       doc.text(formattedDate, 190, 18, null, null, "right");
-
 
       addHoraEmision();
       doc.addImage(logo, "PNG", 15, 15, 20, 15);
@@ -326,9 +343,6 @@ formattedFilters = Object.keys(filtroData)
       );
     }
     doc.save("Historial de Pago Arrendamiento-PDF");
-
-
-
   };
   //AQUI TERMINA
 
@@ -436,26 +450,21 @@ formattedFilters = Object.keys(filtroData)
         <div className="paginador">
           <Pagination>
             <Pagination.Prev
-              onClick={() => paginate(currentPage - 1)}
+              onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
             />
-            {[
-              ...Array(Math.ceil(infoPArrendamiento.length / itemsPerPage)),
-            ].map((item, index) => (
+            {pagesToShow.map((page) => (
               <Pagination.Item
-                key={index}
-                active={index + 1 === currentPage}
-                onClick={() => paginate(index + 1)}
+                key={page}
+                active={page === currentPage}
+                onClick={() => setCurrentPage(page)}
               >
-                {index + 1}
+                {page}
               </Pagination.Item>
             ))}
             <Pagination.Next
-              onClick={() => paginate(currentPage + 1)}
-              disabled={
-                currentPage ===
-                Math.ceil(infoPArrendamiento.length / itemsPerPage)
-              }
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pageCount}
             />
           </Pagination>
         </div>
