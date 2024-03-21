@@ -7,7 +7,6 @@ import {
   faPenToSquare,
   faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link, useLocation } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import ActualizarCodeudor from "../../Hooks/Inhabilitarcodeudor";
 import { toast } from "react-toastify";
@@ -180,7 +179,41 @@ export const Codeudor = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoCodeudor.slice(indexOfFirstItem, indexOfLastItem);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const [pagesToShow, setPagesToShow] = useState([]);
+  const [pageCount, setPageCount] = useState(0); // Agregamos el estado de pageCount
+
+  const renderPaginator = (pageCount) => {
+    // Pasamos pageCount como parámetro
+    const maxPagesToShow = 10; // Cambia el número máximo de páginas mostradas
+
+    if (pageCount <= maxPagesToShow) {
+      setPagesToShow(Array.from({ length: pageCount }, (_, i) => i + 1));
+    } else {
+      if (currentPage <= maxPagesToShow - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(Array.from({ length: maxPagesToShow }, (_, i) => i + 1));
+      } else if (currentPage >= pageCount - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => pageCount - maxPagesToShow + i + 1
+          )
+        );
+      } else {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => currentPage - Math.floor(maxPagesToShow / 2) + i
+          )
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    const newPageCount = Math.ceil(infoCodeudor.length / itemsPerPage);
+    setPageCount(newPageCount); // Actualizamos el estado de pageCount
+    renderPaginator(newPageCount); // Llamamos a la función renderPaginator con el nuevo pageCount
+  }, [infoCodeudor, itemsPerPage, currentPage]);
   //Tooltip
   const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
@@ -280,25 +313,21 @@ export const Codeudor = () => {
         <div className="paginador">
           <Pagination>
             <Pagination.Prev
-              onClick={() => paginate(currentPage - 1)}
+              onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
             />
-            {[...Array(Math.ceil(infoCodeudor.length / itemsPerPage))].map(
-              (item, index) => (
-                <Pagination.Item
-                  key={index}
-                  active={index + 1 === currentPage}
-                  onClick={() => paginate(index + 1)}
-                >
-                  {index + 1}
-                </Pagination.Item>
-              )
-            )}
+            {pagesToShow.map((page) => (
+              <Pagination.Item className="item-paginador"
+                key={page}
+                active={page === currentPage}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </Pagination.Item>
+            ))}
             <Pagination.Next
-              onClick={() => paginate(currentPage + 1)}
-              disabled={
-                currentPage === Math.ceil(infoCodeudor.length / itemsPerPage)
-              }
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pageCount}
             />
           </Pagination>
         </div>

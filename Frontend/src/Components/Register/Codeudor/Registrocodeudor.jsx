@@ -117,8 +117,7 @@ export const Registrocodeudor = () => {
             <Form.Label>Número de identidad:</Form.Label>
             <Form.Control
               {...register("DocumentoIdentidad")}
-              type="number"
-              max={12}
+              maxLength={10}
               required
               onChange={(e) => setValue("DocumentoIdentidad", e.target.value)}
             />
@@ -128,8 +127,7 @@ export const Registrocodeudor = () => {
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
               {...register("Telefono")}
-              type="number"
-              max={10}
+              maxLength={10}
               required
               onChange={(e) => setValue("Telefono", e.target.value)}
             />
