@@ -12,7 +12,7 @@ export const RInmuebleC = () => {
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [selectedPropietario, setSelectedPropietario] = useState("");
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
-
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
   const notify = () =>
     toast.success("Se Registro correctamente", {
       theme: "dark",
@@ -35,8 +35,20 @@ export const RInmuebleC = () => {
   } = useForm();
 
   useEffect(() => {
+    setCurrentDate(getCurrentDate());
     fetchData();
   }, []);
+
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
+
 
   const fetchData = async () => {
     try {
@@ -61,6 +73,7 @@ export const RInmuebleC = () => {
   const onsubmitRegistro = async (data) => {
     data.Id_Propietario = selectedPropietario.IdPropietario;
     data.Tipo = "Casa";
+    data.aseguramiento = currentDate;
     try {
       await crearInmueble(data);
       notify();
@@ -208,12 +221,30 @@ export const RInmuebleC = () => {
               type="text"
             />
           </Form.Group>
+          <Form.Group controlId="formNoHabitaciones">
+            <Form.Label>Area Construida en M2</Form.Label>
+            <Form.Control
+              className="InputsRegistros"
+              {...register("AreaM")}
+              type="number"
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formNoNiveles">
+            <Form.Label>Fecha de Aseguramiento:</Form.Label>
+            <Form.Control
+            value={currentDate}
+            disabled
+              className="InputsRegistros"
+              type="date"
+            />
+          </Form.Group>
 
           <Form.Group controlId="formNoNiveles">
             <Form.Label>Vencimiento de Aseguramiento:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("aseguramiento")}
+              {...register("vaseguramiento")}
               type="date"
             />
           </Form.Group>

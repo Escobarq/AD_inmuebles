@@ -19,6 +19,7 @@ export const RInmuebleA = () => {
   const [showWarning, setShowWarning] = useState(false); // Agregar esta línea antes de usar showWarning
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
   const [propetarioData, setpropetarioData] = useState({
     DocumentoIdentidad: "",
   });
@@ -40,6 +41,7 @@ export const RInmuebleA = () => {
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
+    setCurrentDate(getCurrentDate());
     if (location.search) {
       const propietario = {
         DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
@@ -55,6 +57,16 @@ export const RInmuebleA = () => {
       fetchData2();
     }
   }, [location.search]);
+
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
 
   const fetchData = async (propietario) => {
       try {
@@ -92,6 +104,7 @@ export const RInmuebleA = () => {
   const onsubmitRegistro = async (data) => {
     data.Id_Propietario = selectedPropietario.IdPropietario;
     data.Tipo = "Apartamento";
+    data.aseguramiento = currentDate;
     try {
       await crearInmueble(data);
       notify();
@@ -362,10 +375,19 @@ export const RInmuebleA = () => {
           </Form.Group>
 
             <Form.Group controlId="formAseguramiento">
+              <Form.Label>FechA de Aseguramiento:</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                value={currentDate}
+                disabled
+                type="date"
+              />
+            </Form.Group>
+            <Form.Group controlId="formAseguramiento">
               <Form.Label>Vencimiento de Aseguramiento:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("aseguramiento")}
+                {...register("vaseguramiento")}
                 type="date"
               />
             </Form.Group>
@@ -387,7 +409,6 @@ export const RInmuebleA = () => {
                 ))}
               </Form.Select>
             </Form.Group>
-          </div>
           <Form.Group controlId="formNoIdentidadPropietario">
             <Form.Label>Descripción</Form.Label>
             <Form.Control
@@ -398,6 +419,7 @@ export const RInmuebleA = () => {
               style={{ width: "100%", resize: "none" }}
             />
           </Form.Group>
+          </div>
           {/*Botones para guardar y cancelar*/}
           <div className="col-md-12">
             <div className="save_deleter">
