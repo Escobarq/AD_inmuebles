@@ -178,6 +178,8 @@ export const RPropietario = () => {
           <Form.Group controlId="formDocumentoIdentidad">
             <Form.Label>Número de Identidad:</Form.Label>
             <Form.Control
+              maxLength={10}
+              max={10}
               className="InputsRegistros"
               {...register("DocumentoIdentidad")}
               defaultValue={propetarioData.DocumentoIdentidad}
@@ -188,6 +190,8 @@ export const RPropietario = () => {
           <Form.Group controlId="formTelefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
+              maxLength={10}
+              max={10}
               className="InputsRegistros"
               {...register("Telefono")}
               defaultValue={propetarioData.Telefono}

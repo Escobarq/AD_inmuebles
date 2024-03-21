@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3006;
 const { configureDatabase, getDatabaseConfig } = require('./db');
+const fs = require('fs'); // Agregar la importación del módulo fs
 
 app.use(cors());
 app.use(express.json());
@@ -15,6 +16,19 @@ let server;
 function startServer() {
   server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+
+    // Leer el contenido del archivo config.json
+    try {
+      const configData = fs.readFileSync('./config.json', 'utf8');
+      const databaseConfig = JSON.parse(configData);
+      console.log('Datos de conexión desde config.json:', databaseConfig);
+    } catch (err) {
+      console.error('Error al leer el archivo de configuración:', err);
+    }
+
+    // Obtener los datos de conexión desde la función getDatabaseConfig
+    const databaseConfig = getDatabaseConfig();
+    console.log('Datos de conexión desde getDatabaseConfig:', databaseConfig);
   });
 }
 

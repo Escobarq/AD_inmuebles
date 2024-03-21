@@ -34,8 +34,8 @@
   
   .modales-content {
     background-color: #fff;
-    max-width: 50%;
-    max-height: 50%;
+    max-width: 70%;
+    max-height: 90%;
     padding: 1em;
     border-radius: 1em;
     box-shadow: 0 0 1em rgba(0, 0, 0, 0.2);
@@ -47,6 +47,9 @@
     top: 1em;
     right: 1em;
     cursor: pointer;
+  }
+  .host-cone{
+    font-size: .9rem;
   }
   
   

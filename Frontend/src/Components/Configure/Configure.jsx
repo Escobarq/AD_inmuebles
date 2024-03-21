@@ -2,7 +2,6 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGear,
-  faX,
   faSave,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
@@ -66,15 +65,12 @@ export const Configure = () => {
       {showModal && (
         <div className="modales">
           <div className="modales-content">
-            <span className="close-button" onClick={toggleModal}>
-              <FontAwesomeIcon icon={faX} />
-            </span>
-            <h1>Hora de conectarse al servidor</h1>
+            <h4>Hora de conectarse al servidor</h4>
             <div className="container">
               <Form onSubmit={handleSubmit}>
                 <div className="form-propietario">
                   <Form.Group controlId="Host">
-                    <Form.Label>Escriba el host o la dirección del servidor:</Form.Label>
+                    <Form.Label className="host-cone">Escriba el host o la dirección del servidor:</Form.Label>
                     <Form.Control
                       type="text"
                       name="host"
@@ -85,7 +81,7 @@ export const Configure = () => {
                     />
                   </Form.Group>
                   <Form.Group controlId="User">
-                    <Form.Label>
+                    <Form.Label className="host-cone">
                       Escriba el Usuario de la base de datos:
                     </Form.Label>
                     <Form.Control
@@ -98,7 +94,7 @@ export const Configure = () => {
                     />
                   </Form.Group>
                   <Form.Group controlId="Password">
-                    <Form.Label>Escriba la contraseña del servidor:</Form.Label>
+                    <Form.Label className="host-cone">Escriba la contraseña del servidor:</Form.Label>
                     <Form.Control
                       type="text"
                       name="password"
@@ -108,7 +104,7 @@ export const Configure = () => {
                     />
                   </Form.Group>
                   <Form.Group controlId="Database">
-                    <Form.Label>
+                    <Form.Label className="host-cone">
                       Escriba el nombre de la base de datos:
                     </Form.Label>
                     <Form.Control

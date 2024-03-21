@@ -128,14 +128,45 @@ export const ContratoA = () => {
     indexOfLastItem
   );
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const [pagesToShow, setPagesToShow] = useState([]);
+  const [pageCount, setPageCount] = useState(0); // Agregamos el estado de pageCount
+
+  const renderPaginator = (pageCount) => {
+    // Pasamos pageCount como parámetro
+    const maxPagesToShow = 10; // Cambia el número máximo de páginas mostradas
+
+    if (pageCount <= maxPagesToShow) {
+      setPagesToShow(Array.from({ length: pageCount }, (_, i) => i + 1));
+    } else {
+      if (currentPage <= maxPagesToShow - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(Array.from({ length: maxPagesToShow }, (_, i) => i + 1));
+      } else if (currentPage >= pageCount - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => pageCount - maxPagesToShow + i + 1
+          )
+        );
+      } else {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => currentPage - Math.floor(maxPagesToShow / 2) + i
+          )
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    const newPageCount = Math.ceil(infoarrendatario.length / itemsPerPage);
+    setPageCount(newPageCount); // Actualizamos el estado de pageCount
+    renderPaginator(newPageCount); // Llamamos a la función renderPaginator con el nuevo pageCount
+  }, [infoarrendatario, itemsPerPage, currentPage]);
 
   function getCurrentDate() {
     return moment().format("MMMM D, YYYY");
   }
-
-
-
   // Objeto para descripciones de filtros
   const filtroDescriptions = {
     FechaFinMIN: "Final mínimo",
@@ -143,8 +174,6 @@ export const ContratoA = () => {
     NContrato: "No Contrato",
     Estado: "Estado"
   };
-
-
 
 // Formatear los filtros aplicados
 let formattedFilters = "";
@@ -154,7 +183,7 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
     .map(key => `${filtroDescriptions[key]}: ${filtroData[key]}`)
     .join("\n");
   } else {
-    formattedFilters = " Ninguno";
+    formattedFilters = "Ninguno";
   }
   
 
@@ -184,6 +213,8 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
     doc.text("Adminmuebles", 44, 26);
     doc.setFontSize(6);
 
+    doc.setFontSize(7);
+    doc.text(`Filtros aplicados:\n${formattedFilters}`, 44, 31);
 
 
     addHoraEmision();
@@ -255,13 +286,6 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
         doc.addPage();
         startY = 40;
       }
-
-      
-      doc.setFontSize(7);
-      doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
- 
-    
-    
 
       const date = new Date();
       const monthNames = [
@@ -394,30 +418,26 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
         </div>
       </div>
       <div className="paginador">
-        <Pagination>
-          <Pagination.Prev
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-          />
-          {[...Array(Math.ceil(infoarrendatario.length / itemsPerPage))].map(
-            (item, index) => (
-              <Pagination.Item
-                key={index}
-                active={index + 1 === currentPage}
-                onClick={() => paginate(index + 1)}
+          <Pagination>
+            <Pagination.Prev
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            {pagesToShow.map((page) => (
+              <Pagination.Item className="item-paginador"
+                key={page}
+                active={page === currentPage}
+                onClick={() => setCurrentPage(page)}
               >
-                {index + 1}
+                {page}
               </Pagination.Item>
-            )
-          )}
-          <Pagination.Next
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(infoarrendatario.length / itemsPerPage)
-            }
-          />
-        </Pagination>
-      </div>
+            ))}
+            <Pagination.Next
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pageCount}
+            />
+          </Pagination>
+        </div>
     </div>
   );
 };
