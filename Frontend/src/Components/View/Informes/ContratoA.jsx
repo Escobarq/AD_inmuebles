@@ -52,15 +52,16 @@ export const ContratoA = () => {
 
   moment.updateLocale("es", {
     months:
-      "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split(
+      "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
         "_"
       ),
     monthsShort:
-      "ene.feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split(""),
-    weekdays: "domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),
-    weekdaysShort: "dom.lun._mar._mié._jue._vie._sáb.".split(""),
-    weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
+      "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+    weekdays: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
+    weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
+    weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
   });
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;

@@ -12,6 +12,7 @@ export const RInmuebleO = () => {
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [selectedPropietario, setSelectedPropietario] = useState("");
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
   const notify = () =>
     toast.success("Se Registro correctamente", {
       theme: "dark",
@@ -36,6 +37,15 @@ export const RInmuebleO = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
 
   const fetchData = async () => {
     try {
@@ -60,6 +70,7 @@ export const RInmuebleO = () => {
   const onsubmitRegistro = async (data) => {
     data.Id_Propietario = selectedPropietario.IdPropietario;
     data.Tipo = "Oficina";
+    data.aseguramiento = currentDate;
     try {
       await crearInmueble(data);
       notify();
@@ -210,11 +221,30 @@ export const RInmuebleO = () => {
             />
           </Form.Group>
 
+          <Form.Group controlId="formNoHabitaciones">
+            <Form.Label>Area Construida en M2</Form.Label>
+            <Form.Control
+              className="InputsRegistros"
+              {...register("AreaM")}
+              type="number"
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formNoNiveles">
+            <Form.Label>Fecha de Aseguramiento:</Form.Label>
+            <Form.Control
+            value={currentDate}
+            disabled
+              className="InputsRegistros"
+              type="date"
+            />
+          </Form.Group>
+
           <Form.Group controlId="formNoNiveles">
             <Form.Label>Vencimiento de Aseguramiento:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("aseguramiento")}
+              {...register("vaseguramiento")}
               type="date"
             />
           </Form.Group>

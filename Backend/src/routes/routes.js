@@ -694,6 +694,7 @@ router.post("/Reinmueble", async (req, res) => {
     Nbanos,
     Spublicos,
     aseguramiento,
+    vaseguramiento,
     Id_Propietario,
   } = req.body;
 
@@ -704,7 +705,7 @@ router.post("/Reinmueble", async (req, res) => {
       if (results == "") {
       if (Tipo == "Bodega") {
         connection.query(
-          "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, VAseguramiento, Descripcion, ValorInmueble, Estado, AreaConstruidaM2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           [
             Nmatricula,
             Id_Propietario,
@@ -716,14 +717,16 @@ router.post("/Reinmueble", async (req, res) => {
             Nbanos,
             Spublicos,
             aseguramiento,
+            vaseguramiento,
             Descripcion,
             ValorIn,
             Estado,
+            AreaM,
           ]
         );
       } else if (Tipo == "Casa") {
         connection.query(
-          "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, VAseguramiento, Descripcion, ValorInmueble, Estado, AreaConstruidaM2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           [
             Nmatricula,
             Id_Propietario,
@@ -735,14 +738,16 @@ router.post("/Reinmueble", async (req, res) => {
             Nbanos,
             Spublicos,
             aseguramiento,
+            vaseguramiento,
             Descripcion,
             ValorIn,
             Estado,
+            AreaM,
           ]
         );
       } else if (Tipo == "Apartamento") {
         connection.query(
-          "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoHabitaciones, NoNiveles, NoTerraza, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
+          "INSERT INTO inmueble (NoMatricula, IdPropietario,Direccion, Estrato, Ciudad, Barrio, Tipo, NoHabitaciones, NoNiveles, NoTerraza, NoBanos, ServiciosPublicos, Aseguramiento, VAseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)",
           [
             Nmatricula,
             Id_Propietario,
@@ -757,6 +762,7 @@ router.post("/Reinmueble", async (req, res) => {
             Nbanos,
             Spublicos,
             aseguramiento,
+            vaseguramiento,
             Descripcion,
             ValorIn,
             Estado,
@@ -764,7 +770,7 @@ router.post("/Reinmueble", async (req, res) => {
         );
       } else if (Tipo == "Oficina") {
         connection.query(
-          "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, ServiciosPublicos, Aseguramiento, VAseguramiento, Descripcion, ValorInmueble, Estado, AreaConstruidaM2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           [
             Nmatricula,
             Id_Propietario,
@@ -776,14 +782,16 @@ router.post("/Reinmueble", async (req, res) => {
             Nbanos,
             Spublicos,
             aseguramiento,
+            vaseguramiento,
             Descripcion,
             ValorIn,
             Estado,
+            AreaM,
           ]
         );
       } else if (Tipo == "Local") {
         connection.query(
-          "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, NoHabitaciones, ServiciosPublicos, Aseguramiento, Descripcion, ValorInmueble, Estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO inmueble (NoMatricula, IdPropietario, Direccion, Estrato, Ciudad, Barrio, Tipo, NoBanos, NoHabitaciones, ServiciosPublicos, Aseguramiento, VAseguramiento, Descripcion, ValorInmueble, Estado, AreaConstruidaM2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           [
             Nmatricula,
             Id_Propietario,
@@ -796,9 +804,11 @@ router.post("/Reinmueble", async (req, res) => {
             NoHabita,
             Spublicos,
             aseguramiento,
+            vaseguramiento,
             Descripcion,
             ValorIn,
             Estado,
+            AreaM,
           ]
         );
       }

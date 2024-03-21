@@ -4,6 +4,8 @@ import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
+import moment from "moment";
+import "moment/locale/es";
 import { toast } from "react-toastify";
 import {
   faEye,
@@ -54,6 +56,21 @@ export const Inmueble = () => {
       errores();
     }
   };
+  function formatDate(fechaString) {
+    return moment(fechaString).format("MMMM , D , YYYY");
+  }
+
+  moment.updateLocale("es", {
+    months:
+      "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
+        "_"
+      ),
+    monthsShort:
+      "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+    weekdays: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
+    weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
+    weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
+  });
   //Modal para Inhabilitacion
   const handleOpenModal = (InmuebleId) => {
     setInmueblesBoolean(InmuebleId);
@@ -143,6 +160,8 @@ export const Inmueble = () => {
         <th>Barrio</th>
         <th>Tipo</th>
         <th>Estado</th>
+        <th>Fecha Asegunramiento</th>
+        <th>Ven. Aseguramiento</th>
         <th>Opciones</th>
       </tr>
     );
@@ -159,20 +178,22 @@ export const Inmueble = () => {
         <td>{inmueble.Barrio}</td>
         <td>{inmueble.Tipo}</td>
         <td>{inmueble.Estado}</td>
+        <td>{formatDate(inmueble.Aseguramiento)}</td>
+        <td>{formatDate(inmueble.VAseguramiento)}</td>
         <td className="responsive">
           <Button
             className="btn-opciones"
             variant="primary"
             onClick={() => handleMostrarModalClick(inmueble)}
           >
-            <FontAwesomeIcon icon={faEye} />
+            <FontAwesomeIcon  className="icon-table" icon={faEye} />
           </Button>
           <Button
             className="btn-opciones"
             onClick={() => handleContrato(inmueble.IdInmueble)}
             variant="success"
           >
-            <FontAwesomeIcon icon={faUserPlus} />
+            <FontAwesomeIcon  className="icon-table" icon={faUserPlus} />
           </Button>
           {roleId !== 2 && (
             <>
@@ -181,14 +202,14 @@ export const Inmueble = () => {
                 variant="danger"
                 onClick={() => handleOpenModal(inmueble.IdInmueble)}
               >
-                <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
+                <FontAwesomeIcon className="icon-table" icon={faTrash} style={{ color: "#ffffff" }} />
               </Button>
               <Button
                 className="btn-opciones"
                 variant="warning"
                 onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
               >
-                <FontAwesomeIcon icon={faPenToSquare} />
+                <FontAwesomeIcon  className="icon-table" icon={faPenToSquare} />
               </Button>
             </>
           )}
