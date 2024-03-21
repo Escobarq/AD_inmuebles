@@ -208,7 +208,7 @@ formattedFilters = Object.keys(filtroData)
     doc.setTextColor(128);
     doc.text("Adminmuebles", 44, 26); 
     doc.setFontSize(7);
-    doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
+    doc.text(` Filtros aplicados:\n${formattedFilters}`, 44, 31);
 
     addHoraEmision();
     const date = new Date();

@@ -144,8 +144,6 @@ export const ContratoA = () => {
     Estado: "Estado"
   };
 
-
-
 // Formatear los filtros aplicados
 let formattedFilters = "";
 if (Object.values(filtroData).filter(value => value).length > 0) {
@@ -154,7 +152,7 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
     .map(key => `${filtroDescriptions[key]}: ${filtroData[key]}`)
     .join("\n");
   } else {
-    formattedFilters = " Ninguno";
+    formattedFilters = "Ninguno";
   }
   
 
@@ -184,6 +182,8 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
     doc.text("Adminmuebles", 44, 26);
     doc.setFontSize(6);
 
+    doc.setFontSize(7);
+    doc.text(`Filtros aplicados:\n${formattedFilters}`, 44, 31);
 
 
     addHoraEmision();
@@ -257,9 +257,7 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
       }
 
       
-      doc.setFontSize(7);
-      doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
- 
+     
     
     
 

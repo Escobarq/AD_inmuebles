@@ -19,7 +19,7 @@ export const Rarrendatario = () => {
   const [showFechaModal, setShowFechaModal] = useState(false);
   const [FechasPagosFijas, setFechasPagosFijas] = useState([]);
   const [selectedFecha, setSelectedFecha] = useState("");
-  
+
   const funcional = (text) =>
     toast.success(text, {
       theme: "colored",
@@ -29,23 +29,24 @@ export const Rarrendatario = () => {
     toast.error(text, {
       theme: "colored",
     });
-    const [currentDate, setCurrentDate] = useState(getCurrentDate());
-    // Función para obtener la fecha actual en formato YYYY-MM-DD
-    function getCurrentDate() {
-      const date = new Date();
-      const year = date.getFullYear();
-      let month = (1 + date.getMonth()).toString();
-      month = month.length > 1 ? month : "0" + month;
-      let day = date.getDate().toString();
-      day = day.length > 1 ? day : "0" + day;
-      return `${year}-${month}-${day}`;
-    }
-    
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
 
-    useEffect(() => {
-      cargarContratosDisponibles();
-      setCurrentDate(getCurrentDate());
-    }, []);
+  // Función para obtener la fecha actual en formato YYYY-MM-DD
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
+
+
+  useEffect(() => {                
+    cargarContratosDisponibles();
+    setCurrentDate(getCurrentDate());
+  }, []);
 
   const cargarContratosDisponibles = async () => {
     try {
@@ -87,18 +88,18 @@ export const Rarrendatario = () => {
     data.NoDocumento = selectedContrato.DocumentoIdentidad;
     data.NoMatricula = selectedContrato.NoMatricula;
     data.TipoInmueble = selectedContrato.TipoInmueble;
-    
-    if(currentDate > selectedFecha.FechaPagoFija){
+    data.FechaPagoFija = getCurrentDate(selectedFecha.FechaPagoFija);
+    if (currentDate > selectedFecha.FechaPagoFija) {
       data.Estado = "Atrasado"
     }
-    else if(currentDate < selectedFecha.FechaPagoFija){
+    else if (currentDate < selectedFecha.FechaPagoFija) {
       data.Estado = "Adelantado"
     }
     else {
-      
+
       data.Estado = "AlDia"
     }
-    
+
     try {
       const response = await fetch("http://localhost:3006/RPagoArrendamiento", {
         method: "PUT",
@@ -109,8 +110,8 @@ export const Rarrendatario = () => {
       });
       if (response.ok) {
         handleGuardarClick(data),
-        funcional('se an enviado los datos correctamente'),
-        setShowSaveModal(false); // Muestra el modal de confirmación
+          funcional('se an enviado los datos correctamente'),
+          setShowSaveModal(false); // Muestra el modal de confirmación
         reset();
       }
     } catch (error) {
@@ -144,11 +145,11 @@ export const Rarrendatario = () => {
     setFormData({});
     window.location.href = "/H_recibos";
   };
-  
+
 
   //FUNCION PARA GENERAR PDF
   const handleGuardarClick = async (data) => {
-    
+
     const order = [
       "NoDocumento",
       "NombreArrendatario",
@@ -156,8 +157,8 @@ export const Rarrendatario = () => {
       "TipoInmueble",
       "FormaPago",
       "ValorPago",
-      "FechaInicio",
-      "FechaFin",
+      "FechaPago",
+      "FechaPagoFija",
       "Estado",
     ];
     try {
@@ -171,6 +172,9 @@ export const Rarrendatario = () => {
       const footerText = `Hora de emisión: ${currentTime}`;
       const textWidth = (await pdfDoc.embedFont("Helvetica")).widthOfTextAtSize(currentfech, fontSize);
       const textX = width - padding - textWidth;
+
+
+      
 
       page.drawText(footerText, {
         x: padding,
@@ -306,7 +310,7 @@ export const Rarrendatario = () => {
     weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
   });
 
-  
+
   //AQUI TERMINA PDF
 
   return (
@@ -317,7 +321,7 @@ export const Rarrendatario = () => {
           <div className="form-propietario">
             <Form.Group controlId="fecha">
               <Form.Label>Fecha de Pago:</Form.Label>
-               <Form.Control required
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 defaultValue={currentDate}
@@ -344,7 +348,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>No Documento Arrendatario:</Form.Label>
-               <Form.Control required
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={
@@ -356,7 +360,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>No Matricula Inmueble:</Form.Label>
-               <Form.Control required
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={selectedContrato ? selectedContrato.NoMatricula : ""}
@@ -366,7 +370,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>Nombre Arrendatario:</Form.Label>
-               <Form.Control required
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={
@@ -378,7 +382,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>Tipo de Inmueble:</Form.Label>
-               <Form.Control required
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={selectedContrato ? selectedContrato.TipoInmueble : ""}
@@ -388,7 +392,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="suma">
               <Form.Label>Valor del Pago:</Form.Label>
-               <Form.Control required
+              <Form.Control required
                 className="InputsRegistros"
                 type="number"
                 {...register("ValorPago")}
@@ -412,11 +416,11 @@ export const Rarrendatario = () => {
               <Form.Label>Lista de Fechas De Pagos:</Form.Label>
               <Form.Select
                 className="InputsRegistros"
-                value={selectedFecha ? selectedFecha.FechaPagoFija: ""}
+                value={selectedFecha ? selectedFecha.FechaPagoFija : ""}
                 onChange={(e) => handleFechasChange(e.target.value)}
                 onClick={() => setShowFechaModal(true)}
               >
-                <option value="">Seleccionar Numero de contrato</option>
+                <option value="">Seleccionar Fecha</option>
                 {FechasPagosFijas.map((Fecha, index) => (
                   <option key={index} value={Fecha.FechaPagoFija}>
                     {formatDate(Fecha.FechaPagoFija)}
@@ -494,6 +498,7 @@ export const Rarrendatario = () => {
                 onClick={() => handleFechasChange(Fechas)}
               >
                 {formatDate(Fechas.FechaPagoFija)}
+                
               </ListGroup.Item>
             ))}
           </ListGroup>

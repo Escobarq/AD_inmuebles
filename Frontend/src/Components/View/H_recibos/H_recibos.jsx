@@ -196,15 +196,25 @@ export const H_recibos = () => {
     FechaPagoFin: "Pago Fin",
   };
 
-  // Formatear los filtros aplicados
-  let formattedFilters = "";
-  if (Object.values(filtroData).filter((value) => value).length > 0) {
-    formattedFilters = Object.keys(filtroData)
-      .filter((key) => filtroData[key]) // Filtrar solo los valores que no están vacíos
-      .map((key) => `${filtroDescriptions[key]}: ${filtroData[key]}`);
-  } else {
-    formattedFilters = " Ninguno";
-  }
+// Objeto para descripciones de filtros
+const filtroDescriptions = {
+  estado: "Estado",
+  FormaPago: "Forma Pago",
+  FechaPagoIni: "Pago Inicio",
+  FechaPagoFin: "Pago Fin",
+};
+
+// Formatear los filtros aplicados
+let formattedFilters = "";
+if (Object.values(filtroData).filter(value => value).length > 0) {
+formattedFilters = Object.keys(filtroData)
+  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
+  .map(key => `${filtroDescriptions[key]}: ${filtroData[key]}`);
+
+} else {
+  formattedFilters = "Ninguno";
+}
+
   //AQUI EMPIEZA GENERACION DE PDF
   const ArrenPDF = () => {
     const doc = new jsPDF();
@@ -228,9 +238,9 @@ export const H_recibos = () => {
     doc.setFontSize(13);
     doc.setTextColor(128);
     doc.text("Adminmuebles", 44, 26); // Title next to the logo
-    doc.setFontSize(6);
     doc.setFontSize(7);
     doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
+
 
     addHoraEmision();
     const date = new Date();
