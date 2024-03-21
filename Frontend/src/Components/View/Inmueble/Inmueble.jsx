@@ -4,6 +4,8 @@ import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./inmuebles.css";
+import moment from "moment";
+import "moment/locale/es";
 import { toast } from "react-toastify";
 import {
   faEye,
@@ -24,7 +26,7 @@ import autoTable from "jspdf-autotable";
 
 
 export const Inmueble = () => {
-  const [DatosFlitrados, setDatosFiltrados]=useState("");
+
   const roleId = useRoleInfo();
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
@@ -54,6 +56,21 @@ export const Inmueble = () => {
       errores();
     }
   };
+  function formatDate(fechaString) {
+    return moment(fechaString).format("MMMM , D , YYYY");
+  }
+
+  moment.updateLocale("es", {
+    months:
+      "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
+        "_"
+      ),
+    monthsShort:
+      "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+    weekdays: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
+    weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
+    weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
+  });
   //Modal para Inhabilitacion
   const handleOpenModal = (InmuebleId) => {
     setInmueblesBoolean(InmuebleId);
@@ -120,7 +137,7 @@ export const Inmueble = () => {
       );
 
       setinfoinmueble(INmueblesActivos);
-      setDatosFiltrados(queryParams.toString())
+ 
 
       if (INmueblesActivos.length == 0) {
         setNoResult(true);
@@ -143,6 +160,8 @@ export const Inmueble = () => {
         <th>Barrio</th>
         <th>Tipo</th>
         <th>Estado</th>
+        <th>Fecha Asegunramiento</th>
+        <th>Ven. Aseguramiento</th>
         <th>Opciones</th>
       </tr>
     );
@@ -159,20 +178,22 @@ export const Inmueble = () => {
         <td>{inmueble.Barrio}</td>
         <td>{inmueble.Tipo}</td>
         <td>{inmueble.Estado}</td>
+        <td>{formatDate(inmueble.Aseguramiento)}</td>
+        <td>{formatDate(inmueble.VAseguramiento)}</td>
         <td className="responsive">
           <Button
             className="btn-opciones"
             variant="primary"
             onClick={() => handleMostrarModalClick(inmueble)}
           >
-            <FontAwesomeIcon icon={faEye} />
+            <FontAwesomeIcon  className="icon-table" icon={faEye} />
           </Button>
           <Button
             className="btn-opciones"
             onClick={() => handleContrato(inmueble.IdInmueble)}
             variant="success"
           >
-            <FontAwesomeIcon icon={faUserPlus} />
+            <FontAwesomeIcon  className="icon-table" icon={faUserPlus} />
           </Button>
           {roleId !== 2 && (
             <>
@@ -181,14 +202,14 @@ export const Inmueble = () => {
                 variant="danger"
                 onClick={() => handleOpenModal(inmueble.IdInmueble)}
               >
-                <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
+                <FontAwesomeIcon className="icon-table" icon={faTrash} style={{ color: "#ffffff" }} />
               </Button>
               <Button
                 className="btn-opciones"
                 variant="warning"
                 onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
               >
-                <FontAwesomeIcon icon={faPenToSquare} />
+                <FontAwesomeIcon  className="icon-table" icon={faPenToSquare} />
               </Button>
             </>
           )}
@@ -313,6 +334,26 @@ export const Inmueble = () => {
 
 
 
+// Objeto para descripciones de filtros
+const filtroDescriptions = {
+  tipo: "Tipo",
+  estrato: "Estrato",
+  estado: "Estado",
+
+};
+
+
+
+// Formatear los filtros aplicados
+let formattedFilters = "";
+if (Object.values(filtroData).filter(value => value).length > 0) {
+formattedFilters = Object.keys(filtroData)
+  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
+  .map(key => ` ${filtroDescriptions[key]}: ${filtroData[key]}`);
+
+} else {
+  formattedFilters = " Ninguno";
+}
 
 
 
@@ -337,15 +378,21 @@ export const Inmueble = () => {
     };
     doc.addImage(logo, "PNG", 15, 10, 20, 20);
     doc.setFontSize(20);
-    doc.text("Inmuebles", 44, 20);
+    doc.text("Inmuebles", 43, 20);
     doc.setFontSize(13);
     doc.setTextColor(128);
    // Title next to the logo
     doc.setFontSize(6);
-    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+
     doc.setFontSize(13);
     doc.setTextColor(128);
-    doc.text("Adminmuebles", 44, 26); 
+    doc.text("Adminmuebles", 43, 26); 
+
+    doc.setFontSize(7);
+    doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
+
+  
+
     addHoraEmision();
     const date = new Date();
     const monthNames = [
@@ -442,7 +489,7 @@ export const Inmueble = () => {
       addHoraEmision();
       doc.addImage(logo, "PNG", 15, 15, 20, 15);
       doc.setFontSize(13);
-      doc.text("Adminmuebles", 44, 26); 
+      doc.text("Adminmuebles", 43, 26); 
     }
 
     const totalPages = doc.internal.getNumberOfPages();

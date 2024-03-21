@@ -14,12 +14,10 @@ import logo from "../../../assets/Logo.jpg";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-
-
 export const H_recibos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
-  const [DatosFlitrados, setDatosFiltrados]=useState("");
+
   const [filtroData, setFiltroData] = useState({
     estado: "",
     FechaPagoIni: "",
@@ -50,7 +48,6 @@ export const H_recibos = () => {
       const data = await response.json();
       const Harrendamiento = data.filter((item) => item.booleanos === "true");
       setinfoPArrendamiento(Harrendamiento);
-      setDatosFiltrados(queryParams.toString())
 
       if (data.length == 0) {
         setNoResult(true);
@@ -76,19 +73,24 @@ export const H_recibos = () => {
       </tr>
     );
   };
+  function formatDate(fechaString) {
+    return moment(fechaString).format("MMMM , D , YYYY");
+  }
+
   moment.updateLocale("es", {
     months:
-      "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split(
+      "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
         "_"
       ),
     monthsShort:
-      "ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),
-    weekdays: "domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),
-    weekdaysShort: "dom._lun._mar._mié._jue._vie._sáb.".split("_"),
-    weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
+      "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+    weekdays: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
+    weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
+    weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
   });
+
   const createrow = (PArrendamiento) => {
-    if(PArrendamiento.FechaPago == null) {
+    if (PArrendamiento.FechaPago == null) {
       return (
         <tr key={PArrendamiento.IdPagoArrendamiento}>
           <td>{PArrendamiento.IdPagoArrendamiento}</td>
@@ -102,9 +104,7 @@ export const H_recibos = () => {
           <td>{PArrendamiento.DiasDMora}</td>
         </tr>
       );
-    }
-    else{
-      
+    } else {
       return (
         <tr key={PArrendamiento.IdPagoArrendamiento}>
           <td>{PArrendamiento.IdPagoArrendamiento}</td>
@@ -139,12 +139,43 @@ export const H_recibos = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
+  const [pagesToShow, setPagesToShow] = useState([]);
+  const [pageCount, setPageCount] = useState(0); // Agregamos el estado de pageCount
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const renderPaginator = (pageCount) => {
+    // Pasamos pageCount como parámetro
+    const maxPagesToShow = 10; // Cambia el número máximo de páginas mostradas
+
+    if (pageCount <= maxPagesToShow) {
+      setPagesToShow(Array.from({ length: pageCount }, (_, i) => i + 1));
+    } else {
+      if (currentPage <= maxPagesToShow - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(Array.from({ length: maxPagesToShow }, (_, i) => i + 1));
+      } else if (currentPage >= pageCount - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => pageCount - maxPagesToShow + i + 1
+          )
+        );
+      } else {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => currentPage - Math.floor(maxPagesToShow / 2) + i
+          )
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    const newPageCount = Math.ceil(infoPArrendamiento.length / itemsPerPage);
+    setPageCount(newPageCount); // Actualizamos el estado de pageCount
+    renderPaginator(newPageCount); // Llamamos a la función renderPaginator con el nuevo pageCount
+  }, [infoPArrendamiento, itemsPerPage, currentPage]); // Dependencias del useEffect
+
   //formatear fecha
-  function formatDate(fechaString) {
-    return moment(fechaString).format("MMMM , D , YYYY");
-  }
   //Tooltip
   const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
@@ -157,10 +188,32 @@ export const H_recibos = () => {
     return () => window.removeEventListener("resize", updateTooltipVisibility);
   }, []);
 
+  // Objeto para descripciones de filtros
+  const filtroDescriptions = {
+    estado: "Estado",
+    FormaPago: "Forma Pago",
+    FechaPagoIni: "Pago Inicio",
+    FechaPagoFin: "Pago Fin",
+  };
 
+// Objeto para descripciones de filtros
+const filtroDescriptions = {
+  estado: "Estado",
+  FormaPago: "Forma Pago",
+  FechaPagoIni: "Pago Inicio",
+  FechaPagoFin: "Pago Fin",
+};
 
+// Formatear los filtros aplicados
+let formattedFilters = "";
+if (Object.values(filtroData).filter(value => value).length > 0) {
+formattedFilters = Object.keys(filtroData)
+  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
+  .map(key => `${filtroDescriptions[key]}: ${filtroData[key]}`);
 
-
+} else {
+  formattedFilters = "Ninguno";
+}
 
   //AQUI EMPIEZA GENERACION DE PDF
   const ArrenPDF = () => {
@@ -185,8 +238,9 @@ export const H_recibos = () => {
     doc.setFontSize(13);
     doc.setTextColor(128);
     doc.text("Adminmuebles", 44, 26); // Title next to the logo
-    doc.setFontSize(6);
-    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+    doc.setFontSize(7);
+    doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
+
 
     addHoraEmision();
     const date = new Date();
@@ -205,15 +259,14 @@ export const H_recibos = () => {
       "Diciembre",
     ];
 
-    const formattedDate = `${monthNames[date.getMonth()]
-      }/${date.getDate()}/${date.getFullYear()}`;
+    const formattedDate = `${
+      monthNames[date.getMonth()]
+    }/${date.getDate()}/${date.getFullYear()}`;
     doc.setTextColor(128); // Gris
     doc.setFontSize(10);
     doc.text(formattedDate, 190, 18, null, null, "right");
 
-
     const columns = [
-
       { header: "ID pago arrendatario", dataKey: "IdPagoArrendamiento" },
       { header: "ID arrendatario", dataKey: "IdArrendatario" },
       { header: "Fecha pago", dataKey: "FechaPago" },
@@ -226,18 +279,15 @@ export const H_recibos = () => {
     ];
     // Datos de la tabla
     const data = infoPArrendamiento.map((Arrendamiento) => ({
-
-      IdPagoArrendamiento:Arrendamiento.IdPagoArrendamiento,
-      IdArrendatario:Arrendamiento.IdArrendatario,
+      IdPagoArrendamiento: Arrendamiento.IdPagoArrendamiento,
+      IdArrendatario: Arrendamiento.IdArrendatario,
       FechaPago: formatDate(Arrendamiento.FechaPago),
       FechaInicio: formatDate(Arrendamiento.FechaInicio),
       FechaFin: formatDate(Arrendamiento.FechaFin),
-      ValorPago:  `$${Arrendamiento.ValorPago}`,
-      FormaPago:Arrendamiento.FormaPago,
-      Estado:Arrendamiento.Estado,
-      DiasDMora:Arrendamiento.DiasDMora,
-
-
+      ValorPago: `$${Arrendamiento.ValorPago}`,
+      FormaPago: Arrendamiento.FormaPago,
+      Estado: Arrendamiento.Estado,
+      DiasDMora: Arrendamiento.DiasDMora,
     }));
     const itemsPerPage = 21;
     let startY = 45;
@@ -276,12 +326,12 @@ export const H_recibos = () => {
         "Noviembre",
         "Diciembre",
       ];
-      const formattedDate = `${monthNames[date.getMonth()]
-        }/${date.getDate()}/${date.getFullYear()}`;
+      const formattedDate = `${
+        monthNames[date.getMonth()]
+      }/${date.getDate()}/${date.getFullYear()}`;
       doc.setTextColor(128); // Gris
       doc.setFontSize(10);
       doc.text(formattedDate, 190, 18, null, null, "right");
-
 
       addHoraEmision();
       doc.addImage(logo, "PNG", 15, 15, 20, 15);
@@ -303,9 +353,6 @@ export const H_recibos = () => {
       );
     }
     doc.save("Historial de Pago Arrendamiento-PDF");
-
-
-
   };
   //AQUI TERMINA
 
@@ -413,26 +460,21 @@ export const H_recibos = () => {
         <div className="paginador">
           <Pagination>
             <Pagination.Prev
-              onClick={() => paginate(currentPage - 1)}
+              onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
             />
-            {[
-              ...Array(Math.ceil(infoPArrendamiento.length / itemsPerPage)),
-            ].map((item, index) => (
-              <Pagination.Item
-                key={index}
-                active={index + 1 === currentPage}
-                onClick={() => paginate(index + 1)}
+            {pagesToShow.map((page) => (
+              <Pagination.Item className="item-paginador"
+                key={page}
+                active={page === currentPage}
+                onClick={() => setCurrentPage(page)}
               >
-                {index + 1}
+                {page}
               </Pagination.Item>
             ))}
             <Pagination.Next
-              onClick={() => paginate(currentPage + 1)}
-              disabled={
-                currentPage ===
-                Math.ceil(infoPArrendamiento.length / itemsPerPage)
-              }
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pageCount}
             />
           </Pagination>
         </div>

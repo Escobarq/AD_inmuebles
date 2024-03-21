@@ -66,7 +66,6 @@ export const H_gastos = () => {
       }
       const data = await response.json();
       setinfoComision(data);
-      setDatosFiltrados(queryParams.toString())
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -108,15 +107,16 @@ export const H_gastos = () => {
 
   moment.updateLocale("es", {
     months:
-      "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split(
+      "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
         "_"
       ),
     monthsShort:
-      "ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),
-    weekdays: "domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),
-    weekdaysShort: "dom._lun._mar._mié._jue._vie._sáb.".split("_"),
-    weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
+      "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+    weekdays: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
+    weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
+    weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
   });
+
   const createrow = (CPropietario) => {
     return (
       <tr key={CPropietario.IdComisionPropietario}>
@@ -163,6 +163,27 @@ export const H_gastos = () => {
   }, []);
 
 
+
+// Objeto para descripciones de filtros
+const filtroDescriptions = {
+  Propietario: " Propietario",
+  FormaPago: "Forma Pago",
+  FechaElaboracionMin: "Elaboracion Minima",
+  FechaElaboracionMax: "Elaboracion Maxima",
+
+};
+
+// Formatear los filtros aplicados
+let formattedFilters = "";
+if (Object.values(filtroData).filter(value => value).length > 0) {
+formattedFilters = Object.keys(filtroData)
+  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
+  .map(key => ` ${filtroDescriptions[key]}: ${filtroData[key]}`)
+  
+} else {
+  formattedFilters = " Ninguno";
+}
+
   //AQUI EMPIEZA GENERACION DE PDF
   const HistorialPDF = () => {
     const doc = new jsPDF();
@@ -186,8 +207,9 @@ export const H_gastos = () => {
     doc.setFontSize(13);
     doc.setTextColor(128);
     doc.text("Adminmuebles", 44, 26); 
-    doc.setFontSize(6);
-    doc.text(`Informe filtrado con estos terminos:   ${DatosFiltrados}`,44,30);
+    doc.setFontSize(7);
+    doc.text(` Filtros aplicados:\n${formattedFilters}`, 44, 31);
+
     addHoraEmision();
     const date = new Date();
     const monthNames = [
@@ -211,7 +233,6 @@ export const H_gastos = () => {
     doc.setFontSize(10);
     doc.text(formattedDate, 190, 18, null, null, "right");
 
-
     const columns = [
       { header: "No Comision", dataKey: "IdComisionPropietario" },
       { header: "Propietario", dataKey: "NombreCompleto" },
@@ -223,7 +244,6 @@ export const H_gastos = () => {
       { header: "Aseo Entrega", dataKey: "AseoEntrega" },
       { header: "Mantenimiento", dataKey: "Mantenimiento" },
       { header: "Valor Total", dataKey: "ValorTotal" },
-
     ];
     // Datos de la tabla
     const data = infoComision.map((Historial) => ({

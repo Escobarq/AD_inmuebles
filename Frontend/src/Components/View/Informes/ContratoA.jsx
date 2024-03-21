@@ -7,7 +7,7 @@ import "moment/locale/es";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../../../assets/Logo.jpg";
-import { Button, Table  } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import useContratoInfo from '../../Hooks/useObtenerInfoContrac';
 import { useMediaQuery } from "@react-hook/media-query";
 
@@ -16,7 +16,8 @@ export const ContratoA = () => {
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const pdfContentRef = useRef(null);
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
-  const [DatosFlitrados, setDatosFiltrados]=useState("");
+
+
   const [filtroData, setFiltroData] = useState({
     FechaFinMIN: "",
     FechaFinMAX: "",
@@ -39,7 +40,7 @@ export const ContratoA = () => {
       }
       const data = await response.json();
       setinfoarrendatario(data);
-      setDatosFiltrados(queryParams.toString())
+
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -51,15 +52,16 @@ export const ContratoA = () => {
 
   moment.updateLocale("es", {
     months:
-      "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split(
+      "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
         "_"
       ),
     monthsShort:
-      "ene.feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split(""),
-    weekdays: "domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),
-    weekdaysShort: "dom.lun._mar._mié._jue._vie._sáb.".split(""),
-    weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
+      "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+    weekdays: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
+    weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
+    weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
   });
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -87,24 +89,24 @@ export const ContratoA = () => {
     // Calcula la fecha actual y la fecha actual + 4 semanas en milisegundos
     const currentDate = new Date();
     const fourWeeksLater = new Date(currentDate.getTime() + 4 * 7 * 24 * 60 * 60 * 1000).getTime();
-    
+
     // Color para la fecha de fin de contrato
     const colorFechaFinContrato = new Date(Contrato.FechaFinContrato).getTime() <= fourWeeksLater ? "#ff696198" : "#f8e44bbd";
 
     return (
-        <tr key={Contrato.IdContrato}>
-            <td>{Contrato.IdContrato}</td>
-            <td>{Contrato.DocumentoIdentidad}</td>
-            <td>{Contrato.NombreArrendatario}</td>
-            <td>{Contrato.NoMatricula}</td>
-            <td>{formatDate(Contrato.FechaInicioContrato)}</td>
-            <td style={{ backgroundColor: colorFechaFinContrato}}>{formatDate(Contrato.FechaFinContrato)}</td>
-            <td>{Contrato.ValorDeposito}</td>
-            <td>{Contrato.CuotasPendientes}</td>
-            <td>{Contrato.EstadoContrato}</td>
-        </tr>
+      <tr key={Contrato.IdContrato}>
+        <td>{Contrato.IdContrato}</td>
+        <td>{Contrato.DocumentoIdentidad}</td>
+        <td>{Contrato.NombreArrendatario}</td>
+        <td>{Contrato.NoMatricula}</td>
+        <td>{formatDate(Contrato.FechaInicioContrato)}</td>
+        <td style={{ backgroundColor: colorFechaFinContrato }}>{formatDate(Contrato.FechaFinContrato)}</td>
+        <td>{Contrato.ValorDeposito}</td>
+        <td>{Contrato.CuotasPendientes}</td>
+        <td>{Contrato.EstadoContrato}</td>
+      </tr>
     );
-};
+  };
   // Variables Paginacion
   useEffect(() => {
     // Cambiar el número de ítems por página según el tamaño de la pantalla
@@ -114,7 +116,7 @@ export const ContratoA = () => {
       setItemsPerPage(8);
     }
   }, [isSmallScreen]);
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
 
@@ -132,6 +134,27 @@ export const ContratoA = () => {
     return moment().format("MMMM D, YYYY");
   }
 
+
+
+  // Objeto para descripciones de filtros
+  const filtroDescriptions = {
+    FechaFinMIN: "Final mínimo",
+    FechaFinMAX: "Final máximo",
+    NContrato: "No Contrato",
+    Estado: "Estado"
+  };
+
+// Formatear los filtros aplicados
+let formattedFilters = "";
+if (Object.values(filtroData).filter(value => value).length > 0) {
+  formattedFilters = Object.keys(filtroData)
+    .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
+    .map(key => `${filtroDescriptions[key]}: ${filtroData[key]}`)
+    .join("\n");
+  } else {
+    formattedFilters = "Ninguno";
+  }
+  
 
   //AQUI EMPIEZA GENERACION DE PDF
   const handleGeneratePDF = () => {
@@ -151,14 +174,16 @@ export const ContratoA = () => {
       );
     };
     doc.addImage(logo, "PNG", 15, 10, 20, 20);
-    doc.setFontSize(20); 
+    doc.setFontSize(20);
     doc.text("Contrato Arrendatario", 44, 20);
     doc.setFontSize(13);
     doc.setTextColor(128);
 
-    doc.text("Adminmuebles", 44, 26); 
+    doc.text("Adminmuebles", 44, 26);
     doc.setFontSize(6);
-    doc.text(`Informe filtrado con estos terminos:   ${DatosFlitrados}`,44,30);
+
+    doc.setFontSize(7);
+    doc.text(`Filtros aplicados:\n${formattedFilters}`, 44, 31);
 
 
     addHoraEmision();
@@ -177,9 +202,8 @@ export const ContratoA = () => {
       "Noviembre",
       "Diciembre",
     ];
-    const formattedDate = `${
-      monthNames[date.getMonth()]
-    }/${date.getDate()}/${date.getFullYear()}`;
+    const formattedDate = `${monthNames[date.getMonth()]
+      }/${date.getDate()}/${date.getFullYear()}`;
     doc.setTextColor(128); // Gris
     doc.setFontSize(10);
     doc.text(formattedDate, 190, 18, null, null, "right");
@@ -232,6 +256,11 @@ export const ContratoA = () => {
         startY = 40;
       }
 
+      
+     
+    
+    
+
       const date = new Date();
       const monthNames = [
         "Enero",
@@ -247,18 +276,17 @@ export const ContratoA = () => {
         "Noviembre",
         "Diciembre",
       ];
-      const formattedDate = `${
-        monthNames[date.getMonth()]
-      }/${date.getDate()}/${date.getFullYear()}`;
+      const formattedDate = `${monthNames[date.getMonth()]
+        }/${date.getDate()}/${date.getFullYear()}`;
       doc.setTextColor(128); // Gris
       doc.setFontSize(10);
       doc.text(formattedDate, 190, 18, null, null, "right");
-  
+
 
       addHoraEmision();
       doc.addImage(logo, "PNG", 15, 10, 20, 15);
       doc.setFontSize(13);
-      doc.text("Adminmuebles", 44, 26); 
+      doc.text("Adminmuebles", 44, 26);
     }
     const totalPages = doc.internal.getNumberOfPages();
     // Numeración de páginas
@@ -325,33 +353,33 @@ export const ContratoA = () => {
             <option value="Finalizado">Finalizado</option>
           </select>
           <label className="l1">Fecha Final Maxima: </label>
-        <input
-          className="input-filtroRe"
-          value={filtroData.FechaFinMAX}
-          onChange={handleChange}
-          type="date"
-          name="FechaFinMAX"
-          id=""
-        />
+          <input
+            className="input-filtroRe"
+            value={filtroData.FechaFinMAX}
+            onChange={handleChange}
+            type="date"
+            name="FechaFinMAX"
+            id=""
+          />
         </div>
         <Button
-        variant="primary"
-        className="NewContract"
-        onClick={() => redireccion("/Generar")}
-      >
-        <FontAwesomeIcon icon={faFileSignature} />
-        Generar Nuevo contrato
-      </Button>
-      <Button
-        variant="success"
-        className="bottom-button"
-        onClick={handleGeneratePDF}
-      >
-        <FontAwesomeIcon icon={faFilePdf} />
-        Generar PDF
-      </Button>
+          variant="primary"
+          className="NewContract"
+          onClick={() => redireccion("/Generar")}
+        >
+          <FontAwesomeIcon icon={faFileSignature} />
+          Generar Nuevo contrato
+        </Button>
+        <Button
+          variant="success"
+          className="bottom-button"
+          onClick={handleGeneratePDF}
+        >
+          <FontAwesomeIcon icon={faFilePdf} />
+          Generar PDF
+        </Button>
       </div>
-     
+
       <div className="view_esp">
         <div className="ContArrendatario">
           <h1>Contrato Arrendatario</h1>

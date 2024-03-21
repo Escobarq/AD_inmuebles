@@ -1,6 +1,10 @@
 .AgregarPA{
     margin-bottom: 0px !important;
 }
+
+.item-paginador{
+    width: 50px !important;
+}
 @media (width <= 1440px) {
     .btn-add{
         width: 100px;
