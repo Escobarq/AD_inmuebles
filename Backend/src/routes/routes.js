@@ -836,18 +836,29 @@ router.post("/Rcodeudor", async (req, res) => {
   } = req.body;
 
   try {
-    await connection.query(
-      "INSERT INTO codeudor (NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?, ?)",
-      [
-        NombreCompleto,
-        TipoDocumento,
-        DocumentoIdentidad,
-        Telefono,
-        Correo,
-        Direccion,
-      ]
-    );
-    res.status(200).json({ message: "Codeudor registrado correctamente" });
+    
+    connection.query("SELECT * FROM codeudor WHERE DocumentoIdentidad = ?",
+    [DocumentoIdentidad], (error, results) => {
+      if (results == "") {
+         connection.query(
+          "INSERT INTO codeudor (NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?, ?)",
+          [
+            NombreCompleto,
+            TipoDocumento,
+            DocumentoIdentidad,
+            Telefono,
+            Correo,
+            Direccion,
+          ]
+        );
+        res.status(200).json({ message: "Codeudor registrado correctamente" });
+
+      } else {
+        res.status(400).json({ error: "Numero de Documento de codeudor duplicado" }); 
+      }
+    });
+    
+   
   } catch (error) {
     console.error("Error al añadir codeudor:", error);
     res.status(500).json({ error: "Error al añadir codeudor" });
@@ -1102,7 +1113,6 @@ router.put("/Rarrendatarios/:id", async (req, res) => {
     telefono,
     correo,
   } = req.body;
-
   try {
     const updates = [];
     if (tipodocumento) updates.push("TipoDocumento = ?");
@@ -1110,14 +1120,20 @@ router.put("/Rarrendatarios/:id", async (req, res) => {
     if (nombrearrendatario) updates.push("NombreCompleto = ?");
     if (telefono) updates.push("Telefono = ?");
     if (correo) updates.push("Correo = ?");
-
+    
     if (updates.length === 0) {
       return res.status(400).json({ error: "Nada que actualizar" });
     }
-
+    
     const sql = `UPDATE arrendatario SET ${updates.join(", ")} WHERE IdArrendatario = ?`;
-    const values = updates.map(field => req.body[field.split(" ")[0]]); // Extract values from req.body
-
+    const values = updates.map(field => {
+      const columnName = field.split("=")[0].trim(); // Obtiene el nombre de la columna sin espacios adicionales
+      return req.body[columnName];
+  });
+  console.log(updates);
+console.log(values);
+  
+    
     connection.query(sql, [...values, id], (error, results) => {
       if (error) {
         console.error("Error al actualizar arrendatario:", error);
