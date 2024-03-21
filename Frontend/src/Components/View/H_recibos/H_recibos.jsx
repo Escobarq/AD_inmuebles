@@ -175,7 +175,7 @@ export const H_recibos = () => {
     renderPaginator(newPageCount); // Llamamos a la función renderPaginator con el nuevo pageCount
   }, [infoPArrendamiento, itemsPerPage, currentPage]); // Dependencias del useEffect
 
-  //formatear fecha
+  
   //Tooltip
   const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
@@ -195,14 +195,6 @@ export const H_recibos = () => {
     FechaPagoIni: "Pago Inicio",
     FechaPagoFin: "Pago Fin",
   };
-
-// Objeto para descripciones de filtros
-const filtroDescriptions = {
-  estado: "Estado",
-  FormaPago: "Forma Pago",
-  FechaPagoIni: "Pago Inicio",
-  FechaPagoFin: "Pago Fin",
-};
 
 // Formatear los filtros aplicados
 let formattedFilters = "";
@@ -355,7 +347,9 @@ formattedFilters = Object.keys(filtroData)
     doc.save("Historial de Pago Arrendamiento-PDF");
   };
   //AQUI TERMINA
-
+  const redireccion = (ruta) => {
+    window.location.href = ruta;
+  }
   return (
     <>
       <div className="contener-home">
