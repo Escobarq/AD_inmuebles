@@ -1114,27 +1114,35 @@ router.put("/Rarrendatarios/:id", async (req, res) => {
     correo,
   } = req.body;
   try {
-    const updates = [];
-    if (tipodocumento) updates.push("TipoDocumento = ?");
-    if (numerodocumento) updates.push("DocumentoIdentidad = ?");
-    if (nombrearrendatario) updates.push("NombreCompleto = ?");
-    if (telefono) updates.push("Telefono = ?");
-    if (correo) updates.push("Correo = ?");
-    
-    if (updates.length === 0) {
-      return res.status(400).json({ error: "Nada que actualizar" });
+
+
+    const updatedFields = {};
+    if (nombrearrendatario){
+      updatedFields["NombreCompleto"] = nombrearrendatario;
     }
-    
-    const sql = `UPDATE arrendatario SET ${updates.join(", ")} WHERE IdArrendatario = ?`;
-    const values = updates.map(field => {
-      const columnName = field.split("=")[0].trim(); // Obtiene el nombre de la columna sin espacios adicionales
-      return req.body[columnName];
-  });
-  console.log(updates);
-console.log(values);
-  
-    
-    connection.query(sql, [...values, id], (error, results) => {
+    if (tipodocumento){
+      updatedFields["TipoDocumento"] = tipodocumento;
+    }
+    if (numerodocumento){
+      updatedFields["DocumentoIdentidad"] = numerodocumento;
+    }
+    if (telefono){
+      updatedFields["Telefono"] = telefono;
+    }
+    if (correo){
+      updatedFields["Correo"] = correo;      
+    }
+
+    // Verificar si se proporcionaron campos para actualizar
+    if (Object.keys(updatedFields).length === 0) {
+      return res
+        .status(400)
+        .json({ error: "No se proporcionaron campos para actualizar" });
+    }
+
+    const updateQuery = "UPDATE arrendatario SET ? WHERE IdArrendatario = ?";
+        
+    await connection.query(updateQuery, [updatedFields, id], (error, results) => {
       if (error) {
         console.error("Error al actualizar arrendatario:", error);
         res.status(500).json({ error: "Error al actualizar arrendatario" });
