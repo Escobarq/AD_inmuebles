@@ -6,14 +6,21 @@ import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { set } from "date-fns";
 export const RInmuebleB = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [selectedPropietario, setSelectedPropietario] = useState("");
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
+  const [propetarioData, setpropetarioData] = useState({
+    DocumentoIdentidad: "",
+  });
 
   const notify = () =>
     toast.success("Se Registro correctamente", {
@@ -32,8 +39,21 @@ export const RInmuebleB = () => {
   const { register, handleSubmit, reset } = useForm();
   useEffect(() => {
     setCurrentDate(getCurrentDate());
-    fetchData();
-  }, []);
+    if (location.search) {
+      const propietario = {
+        DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
+      };
+      console.log("Datos de propietario recibidos:", propietario);
+      setpropetarioData(propietario);
+      fetchData(propietario);
+    } else {
+      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo propietario
+      setpropetarioData({
+        DocumentoIdentidad: "",
+      });
+      fetchData();
+    }
+  }, [location.search]);
   function getCurrentDate() {
     const date = new Date();
     const year = date.getFullYear();
@@ -45,9 +65,9 @@ export const RInmuebleB = () => {
   }
 
 
-  const fetchData = async () => {
+  const fetchData = async (propietario) => {
     try {
-      const response = await axios.get("http://localhost:3006/Vpropietarios?");
+      const response = await axios.get(`http://localhost:3006/Vpropietarios?Cedula=${propietario.DocumentoIdentidad}`);
       const Propietarios = response.data.map((prop) => prop);
       setPropietariosDisponibles(Propietarios);
     } catch (error) {
@@ -86,14 +106,16 @@ export const RInmuebleB = () => {
   };
   const handlePropietarioChange = async (Propietario) => {
     setSelectedPropietario(Propietario);
-    console.log(Propietario);
     setMostrarModalA(false);
   };
 
   const handleSelectChange = (event) => {
+    const urlParams = new URLSearchParams({
+      DocumentoIdentidad: propetarioData.DocumentoIdentidad,
+    });
     const selectedOption = event.target.value;
     if (selectedOption) {
-      window.location.assign(`/${selectedOption}`);
+      window.location.assign(`/${selectedOption}?${urlParams.toString()}`);
     }
   };
 

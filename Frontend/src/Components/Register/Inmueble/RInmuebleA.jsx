@@ -47,7 +47,7 @@ export const RInmuebleA = () => {
         DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
       };
       console.log("Datos de propietario recibidos:", propietario);
-      setpropetarioData();
+      setpropetarioData(propietario);
       fetchData(propietario);
     } else {
       // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo propietario
@@ -126,9 +126,12 @@ export const RInmuebleA = () => {
   };
 
   const handleSelectChange = (event) => {
+    const urlParams = new URLSearchParams({
+      DocumentoIdentidad: propetarioData.DocumentoIdentidad,
+    });
     const selectedOption = event.target.value;
     if (selectedOption) {
-      window.location.assign(`/${selectedOption}`);
+      window.location.assign(`/${selectedOption}?${urlParams.toString()}`);
     }
   };
 

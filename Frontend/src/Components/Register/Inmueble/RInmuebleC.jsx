@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 export const RInmuebleC = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -13,6 +14,12 @@ export const RInmuebleC = () => {
   const [selectedPropietario, setSelectedPropietario] = useState("");
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [propetarioData, setpropetarioData] = useState({
+    DocumentoIdentidad: "",
+  });
+
   const notify = () =>
     toast.success("Se Registro correctamente", {
       theme: "dark",
@@ -36,8 +43,21 @@ export const RInmuebleC = () => {
 
   useEffect(() => {
     setCurrentDate(getCurrentDate());
-    fetchData();
-  }, []);
+    if (location.search) {
+      const propietario = {
+        DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
+      };
+      console.log("Datos de propietario recibidos:", propietario);
+      setpropetarioData(propietario);
+      fetchData(propietario);
+    } else {
+      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo propietario
+      setpropetarioData({
+        DocumentoIdentidad: "",
+      });
+      fetchData();
+    }
+  }, [location.search]);
 
   function getCurrentDate() {
     const date = new Date();
@@ -50,9 +70,9 @@ export const RInmuebleC = () => {
   }
 
 
-  const fetchData = async () => {
+  const fetchData = async (propietario) => {
     try {
-      const response = await axios.get("http://localhost:3006/Vpropietarios?");
+      const response = await axios.get(`http://localhost:3006/Vpropietarios?Cedula=${propietario.DocumentoIdentidad}`);
       const Propietarios = response.data.map((prop) => prop);
       setPropietariosDisponibles(Propietarios);
     } catch (error) {
@@ -96,9 +116,12 @@ export const RInmuebleC = () => {
   };
 
   const handleSelectChange = (event) => {
+    const urlParams = new URLSearchParams({
+      DocumentoIdentidad: propetarioData.DocumentoIdentidad,
+    });
     const selectedOption = event.target.value;
     if (selectedOption) {
-      window.location.assign(`/${selectedOption}`);
+      window.location.assign(`/${selectedOption}?${urlParams.toString()}`);
     }
   };
 

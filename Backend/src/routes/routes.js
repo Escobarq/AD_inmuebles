@@ -836,18 +836,29 @@ router.post("/Rcodeudor", async (req, res) => {
   } = req.body;
 
   try {
-    await connection.query(
-      "INSERT INTO codeudor (NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?, ?)",
-      [
-        NombreCompleto,
-        TipoDocumento,
-        DocumentoIdentidad,
-        Telefono,
-        Correo,
-        Direccion,
-      ]
-    );
-    res.status(200).json({ message: "Codeudor registrado correctamente" });
+    
+    connection.query("SELECT * FROM codeudor WHERE DocumentoIdentidad = ?",
+    [DocumentoIdentidad], (error, results) => {
+      if (results == "") {
+         connection.query(
+          "INSERT INTO codeudor (NombreCompleto, TipoDocumento, DocumentoIdentidad, Telefono, Correo, Direccion) VALUES (?, ?, ?, ?, ?, ?)",
+          [
+            NombreCompleto,
+            TipoDocumento,
+            DocumentoIdentidad,
+            Telefono,
+            Correo,
+            Direccion,
+          ]
+        );
+        res.status(200).json({ message: "Codeudor registrado correctamente" });
+
+      } else {
+        res.status(400).json({ error: "Numero de Documento de codeudor duplicado" }); 
+      }
+    });
+    
+   
   } catch (error) {
     console.error("Error al añadir codeudor:", error);
     res.status(500).json({ error: "Error al añadir codeudor" });
@@ -1102,23 +1113,36 @@ router.put("/Rarrendatarios/:id", async (req, res) => {
     telefono,
     correo,
   } = req.body;
-
   try {
-    const updates = [];
-    if (tipodocumento) updates.push("TipoDocumento = ?");
-    if (numerodocumento) updates.push("DocumentoIdentidad = ?");
-    if (nombrearrendatario) updates.push("NombreCompleto = ?");
-    if (telefono) updates.push("Telefono = ?");
-    if (correo) updates.push("Correo = ?");
 
-    if (updates.length === 0) {
-      return res.status(400).json({ error: "Nada que actualizar" });
+
+    const updatedFields = {};
+    if (nombrearrendatario){
+      updatedFields["NombreCompleto"] = nombrearrendatario;
+    }
+    if (tipodocumento){
+      updatedFields["TipoDocumento"] = tipodocumento;
+    }
+    if (numerodocumento){
+      updatedFields["DocumentoIdentidad"] = numerodocumento;
+    }
+    if (telefono){
+      updatedFields["Telefono"] = telefono;
+    }
+    if (correo){
+      updatedFields["Correo"] = correo;      
     }
 
-    const sql = `UPDATE arrendatario SET ${updates.join(", ")} WHERE IdArrendatario = ?`;
-    const values = updates.map(field => req.body[field.split(" ")[0]]); // Extract values from req.body
+    // Verificar si se proporcionaron campos para actualizar
+    if (Object.keys(updatedFields).length === 0) {
+      return res
+        .status(400)
+        .json({ error: "No se proporcionaron campos para actualizar" });
+    }
 
-    connection.query(sql, [...values, id], (error, results) => {
+    const updateQuery = "UPDATE arrendatario SET ? WHERE IdArrendatario = ?";
+        
+    await connection.query(updateQuery, [updatedFields, id], (error, results) => {
       if (error) {
         console.error("Error al actualizar arrendatario:", error);
         res.status(500).json({ error: "Error al actualizar arrendatario" });
