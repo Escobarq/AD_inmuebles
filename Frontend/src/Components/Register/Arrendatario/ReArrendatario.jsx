@@ -16,6 +16,7 @@ export const ReArrendatario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const navigate = useNavigate();
+  
 
   const notify = () => {
     toast.success("Se registró correctamente", {
@@ -45,6 +46,7 @@ export const ReArrendatario = () => {
     IdArrendatario: "",
     TipoDocumento: "",
     DocumentoIdentidad: "",
+    DocumentoCodeudor: "",
     NombreCompleto: "",
     Telefono: "",
     Correo: "",
@@ -52,11 +54,11 @@ export const ReArrendatario = () => {
   });
 
   useEffect(() => {
-    fetchData();
     if (location.search) {
       const arrendatario = {
         IdArrendatario: searchParams.get("IdArrendatario"),
         TipoDocumento: searchParams.get("TipoDocumento"),
+        DocumentoCodeudor: searchParams.get("DocumentoCodeudor"),
         DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
         NombreCompleto: searchParams.get("NombreCompleto"),
         Telefono: searchParams.get("Telefono"),
@@ -64,22 +66,25 @@ export const ReArrendatario = () => {
         Estado: searchParams.get("Estado"),
       };
       setarrendatarioData(arrendatario);
+      fetchData(arrendatario.DocumentoCodeudor);
     } else {
       setarrendatarioData({
         IdArrendatario: "",
         TipoDocumento: "",
         DocumentoIdentidad: "",
+        DocumentoCodeudor: "",
         NombreCompleto: "",
         Telefono: "",
         Correo: "",
         Estado: "",
       });
+      fetchData(arrendatarioData.DocumentoCodeudor);
     }
   }, [location.search]);
 
-  const fetchData = async () => {
+  const fetchData = async (DocumentoCodeudor) => {
     try {
-      const response = await axios.get("http://localhost:3006/Vcodeudor?");
+      const response = await axios.get(`http://localhost:3006/Vcodeudor?Cedula=${DocumentoCodeudor}`);
       const Codeudores = response.data.map((prop) => prop);
       setCodeudoresDisponibles(Codeudores);
     } catch (error) {
@@ -112,6 +117,7 @@ export const ReArrendatario = () => {
 
   const onSubmitRegistro = async (data) => {
     data.IdCodeudor = selectedCodeudor.IdCodeudor;
+    console.log(data);
     try {
       const url = arrendatarioData.IdArrendatario
         ? `http://localhost:3006/Rarrendatarios/${arrendatarioData.IdArrendatario}`
