@@ -378,7 +378,9 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
             <option value="Vigente">Vigente</option>
             <option value="Finalizado">Finalizado</option>
           </select>
-         
+
+      
+
         </div>
         <Button
           variant="primary"
@@ -388,7 +390,7 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
           <FontAwesomeIcon icon={faFileSignature} />
           Generar Nuevo contrato
         </Button>
-        <Button
+        <p
           variant="success"
           className="bottom-button"
           onClick={handleGeneratePDF}
