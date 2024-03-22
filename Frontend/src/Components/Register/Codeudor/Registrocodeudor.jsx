@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom";
 export const Registrocodeudor = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  
 
   const notify = () => toast.success("Se registró correctamente", { theme: "dark" });
   const error = () => toast.error("Hubo algún error al enviar los datos", { theme: "dark" });
@@ -37,6 +38,7 @@ export const Registrocodeudor = () => {
       setValue("Telefono", Telefono);
       setValue("Correo", Correo);
     }
+    
   }, [location.search, setValue]);
 
   const onSubmitRegistro = async (data) => {
@@ -61,7 +63,11 @@ export const Registrocodeudor = () => {
         setShowSaveModal(true);
         notify();
         reset();
-        window.location.href ="/Codeudor"
+        const urlParams = new URLSearchParams({
+          DocumentoCodeudor: data.DocumentoIdentidad,
+        });
+        const url = `/ReArrendatario?${urlParams.toString()}`;
+        window.location.href = url;
       } else {
         error();
       }

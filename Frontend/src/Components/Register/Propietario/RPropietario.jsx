@@ -95,7 +95,7 @@ export const RPropietario = () => {
 
         setShowSaveModal(false); // Muestra el modal de confirmación
         const urlParams = new URLSearchParams({
-          DocumentoIdentidad: propetarioData.DocumentoIdentidad,
+          DocumentoIdentidad: formData.DocumentoIdentidad,
         });
         const url = `/RInmuebleA?${urlParams.toString()}`;
         reset();

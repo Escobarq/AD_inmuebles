@@ -364,8 +364,10 @@ formattedFilters = Object.keys(filtroData)
               id=""
             >
               <option value="">Seleccione el estado</option>
+              <option value="Atrasado">Atrasado</option>
+              <option value="Adelantado">Adelantado</option>
               <option value="Pendiente">Pendiente</option>
-              <option value="Pagado">Pagado</option>
+              <option value="AlDia">AlDia</option>
             </select>
 
             <label className="l1">Forma de Pago: </label>

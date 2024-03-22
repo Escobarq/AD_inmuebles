@@ -168,54 +168,108 @@ export const Inmueble = () => {
   };
 
   const createrow = (inmueble) => {
-    return (
-      <tr key={inmueble.IdInmueble}>
-        <td>{inmueble.NoMatricula}</td>
-        <td>{inmueble.NombrePropietario}</td>
-        <td>{inmueble.Direccion}</td>
-        <td>{inmueble.Estrato}</td>
-        <td>{inmueble.Ciudad}</td>
-        <td>{inmueble.Barrio}</td>
-        <td>{inmueble.Tipo}</td>
-        <td>{inmueble.Estado}</td>
-        <td>{formatDate(inmueble.Aseguramiento)}</td>
-        <td>{formatDate(inmueble.VAseguramiento)}</td>
-        <td className="responsive">
-          <Button
-            className="btn-opciones"
-            variant="primary"
-            onClick={() => handleMostrarModalClick(inmueble)}
-          >
-            <FontAwesomeIcon  className="icon-table" icon={faEye} />
-          </Button>
-          <Button
-            className="btn-opciones"
-            onClick={() => handleContrato(inmueble.IdInmueble)}
-            variant="success"
-          >
-            <FontAwesomeIcon  className="icon-table" icon={faUserPlus} />
-          </Button>
-          {roleId !== 2 && (
-            <>
-              <Button
-                className="btn-opciones"
-                variant="danger"
-                onClick={() => handleOpenModal(inmueble.IdInmueble)}
-              >
-                <FontAwesomeIcon className="icon-table" icon={faTrash} style={{ color: "#ffffff" }} />
-              </Button>
-              <Button
-                className="btn-opciones"
-                variant="warning"
-                onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
-              >
-                <FontAwesomeIcon  className="icon-table" icon={faPenToSquare} />
-              </Button>
-            </>
-          )}
-        </td>
-      </tr>
-    );
+    if (inmueble.Estado == "Ocupado") {
+      return (
+        <tr key={inmueble.IdInmueble}>
+          <td>{inmueble.NoMatricula}</td>
+          <td>{inmueble.NombrePropietario}</td>
+          <td>{inmueble.Direccion}</td>
+          <td>{inmueble.Estrato}</td>
+          <td>{inmueble.Ciudad}</td>
+          <td>{inmueble.Barrio}</td>
+          <td>{inmueble.Tipo}</td>
+          <td>{inmueble.Estado}</td>
+          <td>{formatDate(inmueble.Aseguramiento)}</td>
+          <td>{formatDate(inmueble.VAseguramiento)}</td>
+          <td className="responsive">
+            <Button
+              className="btn-opciones"
+              variant="primary"
+              onClick={() => handleMostrarModalClick(inmueble)}
+            >
+              <FontAwesomeIcon  className="icon-table" icon={faEye} />
+            </Button>
+            <Button
+            disabled
+              className="btn-opciones"
+              onClick={() => handleContrato(inmueble.IdInmueble)}
+              variant="success"
+            >
+              <FontAwesomeIcon  className="icon-table" icon={faUserPlus} />
+            </Button>
+            {roleId !== 2 && (
+              <>
+                <Button
+                  className="btn-opciones"
+                  variant="danger"
+                  onClick={() => handleOpenModal(inmueble.IdInmueble)}
+                >
+                  <FontAwesomeIcon className="icon-table" icon={faTrash} style={{ color: "#ffffff" }} />
+                </Button>
+                <Button
+                  className="btn-opciones"
+                  variant="warning"
+                  onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
+                >
+                  <FontAwesomeIcon  className="icon-table" icon={faPenToSquare} />
+                </Button>
+              </>
+            )}
+          </td>
+        </tr>
+      );
+    }
+    else {
+      return (
+        <tr key={inmueble.IdInmueble}>
+          <td>{inmueble.NoMatricula}</td>
+          <td>{inmueble.NombrePropietario}</td>
+          <td>{inmueble.Direccion}</td>
+          <td>{inmueble.Estrato}</td>
+          <td>{inmueble.Ciudad}</td>
+          <td>{inmueble.Barrio}</td>
+          <td>{inmueble.Tipo}</td>
+          <td>{inmueble.Estado}</td>
+          <td>{formatDate(inmueble.Aseguramiento)}</td>
+          <td>{formatDate(inmueble.VAseguramiento)}</td>
+          <td className="responsive">
+            <Button
+              className="btn-opciones"
+              variant="primary"
+              onClick={() => handleMostrarModalClick(inmueble)}
+            >
+              <FontAwesomeIcon  className="icon-table" icon={faEye} />
+            </Button>
+            <Button
+              className="btn-opciones"
+              onClick={() => handleContrato(inmueble.IdInmueble)}
+              variant="success"
+            >
+              <FontAwesomeIcon  className="icon-table" icon={faUserPlus} />
+            </Button>
+            {roleId !== 2 && (
+              <>
+                <Button
+                  className="btn-opciones"
+                  variant="danger"
+                  onClick={() => handleOpenModal(inmueble.IdInmueble)}
+                >
+                  <FontAwesomeIcon className="icon-table" icon={faTrash} style={{ color: "#ffffff" }} />
+                </Button>
+                <Button
+                  className="btn-opciones"
+                  variant="warning"
+                  onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
+                >
+                  <FontAwesomeIcon  className="icon-table" icon={faPenToSquare} />
+                </Button>
+              </>
+            )}
+          </td>
+        </tr>
+      );
+
+    }
   };
 
   //Traer Informacion
