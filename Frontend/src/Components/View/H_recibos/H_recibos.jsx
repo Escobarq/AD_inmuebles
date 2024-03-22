@@ -62,7 +62,7 @@ export const H_recibos = () => {
     return (
       <tr>
         <th>ID pago arrendatario</th>
-        <th>Cod Contrato</th>
+        <th>Cont Cliente</th>
         <th>Arrendatario</th>
         <th>Fecha pago</th>
         <th>Fecha Pago Fija</th>

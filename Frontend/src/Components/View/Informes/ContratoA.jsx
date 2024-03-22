@@ -72,7 +72,7 @@ export const ContratoA = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>No Contrato</th>
+        <th>Cont Cliente</th>
         <th>No Documento</th>
         <th>Arrendatario</th>
         <th>Matricula Inmueble</th>
@@ -378,6 +378,9 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
             <option value="Vigente">Vigente</option>
             <option value="Finalizado">Finalizado</option>
           </select>
+
+      
+
         </div>
         <Button
           variant="primary"
@@ -387,7 +390,7 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
           <FontAwesomeIcon icon={faFileSignature} />
           Generar Nuevo contrato
         </Button>
-        <Button
+        <p
           variant="success"
           className="bottom-button"
           onClick={handleGeneratePDF}

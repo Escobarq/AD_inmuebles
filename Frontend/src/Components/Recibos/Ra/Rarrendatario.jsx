@@ -270,14 +270,34 @@ export const Rarrendatario = () => {
             font: await pdfDoc.embedFont("Helvetica-Bold"),
             align: "right",
           });
+
+
+
           //la respuesta debajo del nombre del campo
-          page.drawText(`${element}`, {
-            x: leftX,
-            y: yOffset - fontSize * 1.5,
-            size: fontSize,
-            color: rgb(0, 0, 0),
-            align: "left",
-          });
+
+          if (key == "ValorPago"){
+
+            page.drawText(`$${element}`, {
+              x: leftX,
+              y: yOffset - fontSize * 1.5,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              align: "left",
+            });
+
+          } else {
+
+            page.drawText(`${element}`, {
+              x: leftX,
+              y: yOffset - fontSize * 1.5,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              align: "left",
+            });
+
+          }
+
+         
 
           if (leftX === padding) {
             leftX = rightX;
@@ -318,7 +338,7 @@ export const Rarrendatario = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "Recibo.Arrendatario_pdf";
+      link.download = "Recibo.Arrendatario.pdf";
       link.click();
       console.log("imprima");
       window.location.href = "/H_recibos"
