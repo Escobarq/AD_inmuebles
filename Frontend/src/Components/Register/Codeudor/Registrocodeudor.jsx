@@ -19,6 +19,16 @@ export const Registrocodeudor = () => {
   const { register, handleSubmit, reset, setValue } = useForm({ mode: "onChange" });
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [arrendatarioData, setarrendatarioData] = useState({
+    IdArrendatario: "",
+    TipoDocumento: "",
+    DocumentoIdentidad: "",
+    DocumentoCodeudor: "",
+    NombreCompleto: "",
+    Telefono: "",
+    Correo: "",
+    Estado: "",
+  });
 
   useEffect(() => {
     if (location.search) {
@@ -29,14 +39,27 @@ export const Registrocodeudor = () => {
       const Direccion = searchParams.get("Direccion") ? searchParams.get("Direccion") : "";
       const Telefono = searchParams.get("Telefono") ? searchParams.get("Telefono") : "";
       const Correo = searchParams.get("Correo") ? searchParams.get("Correo") : "";
+      if(IdCodeudor) {
+        setValue("IdCodeudor", IdCodeudor);
+        setValue("TipoDocumento", TipoDocumento);
+        setValue("DocumentoIdentidad", DocumentoIdentidad);
+        setValue("NombreCompleto", NombreCompleto);
+        setValue("Direccion", Direccion);
+        setValue("Telefono", Telefono);
+        setValue("Correo", Correo);
+      }
+      else{
+        const arrendatario = {
+          TipoDocumento: searchParams.get("TipoDocumento"),
+          DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
+          NombreCompleto: searchParams.get("NombreCompleto"),
+          Telefono: searchParams.get("Telefono"),
+          Correo: searchParams.get("Correo"),
+          Estado: searchParams.get("Estado"),
+        };
+        setarrendatarioData(arrendatario);
+      }
 
-      setValue("IdCodeudor", IdCodeudor);
-      setValue("TipoDocumento", TipoDocumento);
-      setValue("DocumentoIdentidad", DocumentoIdentidad);
-      setValue("NombreCompleto", NombreCompleto);
-      setValue("Direccion", Direccion);
-      setValue("Telefono", Telefono);
-      setValue("Correo", Correo);
     }
     
   }, [location.search, setValue]);
@@ -65,6 +88,12 @@ export const Registrocodeudor = () => {
         reset();
         const urlParams = new URLSearchParams({
           DocumentoCodeudor: data.DocumentoIdentidad,
+            TipoDocumento: searchParams.get("TipoDocumento"),
+            DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
+            NombreCompleto: searchParams.get("NombreCompleto"),
+            Telefono: searchParams.get("Telefono"),
+            Correo: searchParams.get("Correo"),
+            Estado: searchParams.get("Estado"),
         });
         const url = `/ReArrendatario?${urlParams.toString()}`;
         window.location.href = url;

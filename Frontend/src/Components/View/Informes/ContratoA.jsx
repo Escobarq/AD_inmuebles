@@ -378,15 +378,6 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
             <option value="Vigente">Vigente</option>
             <option value="Finalizado">Finalizado</option>
           </select>
-          <label className="l1">Fecha Final Maxima: </label>
-          <input
-            className="input-filtroRe"
-            value={filtroData.FechaFinMAX}
-            onChange={handleChange}
-            type="date"
-            name="FechaFinMAX"
-            id=""
-          />
         </div>
         <Button
           variant="primary"
