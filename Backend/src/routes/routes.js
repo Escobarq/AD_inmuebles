@@ -526,11 +526,12 @@ router.get("/contrato-arren-inmue", (req, res) => {
   arrendatario.Nombrecompleto AS NombreArrendatario,
   inmueble.IdInmueble,
   inmueble.NoMatricula,
-  inmueble.Tipo AS TipoInmueble
+  inmueble.Tipo AS TipoInmueble,
+  inmueble.ValorInmueble AS ValorPago
 FROM contratoarrendamiento
 JOIN arrendatario ON contratoarrendamiento.IdArrendatario = arrendatario.IdArrendatario
 JOIN inmueble ON contratoarrendamiento.idInmueble = inmueble.IdInmueble
-WHERE contratoarrendamiento.EstadoContrato = 'Vigente';
+WHERE contratoarrendamiento.EstadoContrato = 'Vigente', contratoarrendamiento.;
   `;
 
   connection.query(query, (error, results) => {
@@ -1039,7 +1040,7 @@ router.post("/RConArrendamiento", async (req, res) => {
 router.put("/RPagoArrendamiento", async (req, res) => {
   const connection = getConnection(); 
   const {
-    IdPagoArrendamiento,
+    IdPagosSeleccionados,
     FechaPago,
     ValorPago,
     FormaPago,
@@ -1047,29 +1048,29 @@ router.put("/RPagoArrendamiento", async (req, res) => {
   } = req.body;
 
   try {
-    connection.query(
-      " Update pagos_arrendamiento set FechaPago = ?,ValorPago = ?,FormaPago = ?, Estado = ? where IdPagoArrendamiento = ?",
-      [
-        FechaPago, 
-        ValorPago,
-        FormaPago,
-        Estado,
-        IdPagoArrendamiento,
-      ],
-      (error, results) => {
-        if (error) {
-          console.error("Error al añadir Un pago de arrendamiento:", error);
-          res
-            .status(500)
-            .json({ error: "Error al añadir Pago de arrendamiento" });
-        } else {
-          console.log(" Pago Arrenmiento agregado:", results);
-          res
-            .status(201)
-            .json({ message: "Pago Arrenmiento registrado exitosamente" });
+    // Itera sobre la lista de IDs y actualiza cada registro
+    for (const id of IdPagosSeleccionados) {
+      connection.query(
+        "UPDATE pagos_arrendamiento SET FechaPago = ?, ValorPago = ?, FormaPago = ?, Estado = ? WHERE IdPagoArrendamiento = ?",
+        [
+          FechaPago, 
+          ValorPago,
+          FormaPago,
+          Estado,
+          id,
+        ],
+        (error, results) => {
+          if (error) {
+            console.error("Error al actualizar el pago de arrendamiento con ID:", id, error);
+          } else {
+            console.log("Pago de arrendamiento actualizado con ID:", id);
+          }
         }
-      }
-    );
+      );
+    }
+
+    // Envía una respuesta exitosa al finalizar la actualización
+    res.status(200).json({ message: "Pagos de arrendamiento actualizados exitosamente" });
   } catch (error) {
     console.error("Error al añadir Pago Arrenmiento: ", error);
     res.status(500).json({ error: "Error al Pago Arrenmiento" });
