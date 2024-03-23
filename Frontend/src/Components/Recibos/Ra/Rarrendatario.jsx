@@ -46,9 +46,7 @@ export const Rarrendatario = () => {
   useEffect(() => {
     cargarContratosDisponibles();
     setCurrentDate(getCurrentDate());
-    
   }, []);
-
   const cargarContratosDisponibles = async () => {
     try {
       const response = await axios.get(
@@ -83,9 +81,10 @@ export const Rarrendatario = () => {
   const onSubmitRegistro = async (data) => {
     data.NombreArrendatario = selectedContrato.NombreArrendatario;
     data.IdContrato = selectedContrato.IdContrato;
-    data.IdPagoArrendamiento = selectedFecha.IdPagoArrendamiento;
+    data.IdPagosSeleccionados = Array.from(IdpagosSeleccionados);
     data.IdArrendatario = selectedContrato.IdArrendatario;
     data.FechaPago = currentDate;
+    data.ValorPago = selectedContrato.ValorPago
     data.NoDocumento = selectedContrato.DocumentoIdentidad;
     data.NoMatricula = selectedContrato.NoMatricula;
     data.TipoInmueble = selectedContrato.TipoInmueble;
@@ -146,15 +145,16 @@ export const Rarrendatario = () => {
     setFormData({});
     window.location.href = "/H_recibos";
   };
-
+  
   const [pagosSeleccionados, setPagosSeleccionados] = useState(new Set());
   const [IdpagosSeleccionados, setIdPagosSeleccionados] = useState(new Set());
+  const [ValorTotal, setValorTotal] = useState(0);
 
   // Función para manejar el cambio de estado cuando se hace clic en el interruptor
-  const handleSwitchChange = (index) => {
+  const handleSwitchChange  = async (index) => {
     const nuevaListaFechasPagos = new Set(pagosSeleccionados);
     const nuevaListaPagos = new Set(IdpagosSeleccionados);
-
+    const cantidadCamposSeleccionados = nuevaListaPagos.size;
     // Si el índice ya está en el conjunto, lo eliminamos, de lo contrario lo agregamos
     if (nuevaListaFechasPagos.has(formatDate(index.FechaPagoFija))) {
       nuevaListaFechasPagos.delete(formatDate(index.FechaPagoFija));
@@ -166,19 +166,17 @@ export const Rarrendatario = () => {
     } else {
       nuevaListaPagos.add(index.IdPagoArrendamiento);
     }
-    console.log(nuevaListaFechasPagos);
-    console.log(nuevaListaPagos);
     // Actualizar el estado con la nueva lista de pagos seleccionados
     setPagosSeleccionados(nuevaListaFechasPagos);
     setIdPagosSeleccionados(nuevaListaPagos);
+    
   };
 
-  const mostrarFechasSeleccionadas = () => {
-    // Convertir el conjunto de fechas seleccionadas a una cadena separada por comas
-    return Array.from(pagosSeleccionados)
-      .map((index) => formatDate(FechasPagosFijas[index]))
-      .join(', ');
-  };
+  useEffect(() => {
+    const valorPago = selectedContrato ? selectedContrato.ValorPago : 0;
+    const valorTotalPago = valorPago * IdpagosSeleccionados.size;
+    setValorTotal(valorTotalPago);
+  }, [IdpagosSeleccionados, selectedContrato]);
 
   //FUNCION PARA GENERAR PDF
   const handleGuardarClick = async (data) => {
@@ -445,10 +443,11 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="suma">
               <Form.Label>Valor del Pago:</Form.Label>
-              <Form.Control required
+              <Form.Control
+              disable
                 className="InputsRegistros"
                 type="number"
-                {...register("ValorPago")}
+                value={ ValorTotal ? ValorTotal : selectedContrato ? selectedContrato.ValorPago :  "" }
               />
             </Form.Group>
 
@@ -469,7 +468,7 @@ export const Rarrendatario = () => {
               <Form.Label>Lista de Fechas De Pagos:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                value={mostrarFechasSeleccionadas ? mostrarFechasSeleccionadas : ""}
+                value={pagosSeleccionados ? Array.from(pagosSeleccionados).join(', ') : ""}
                 onChange={(e) => handleFechasChange(e.target.value)}
                 onClick={() => setShowFechaModal(true)}
               >

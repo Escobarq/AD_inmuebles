@@ -390,7 +390,7 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
           <FontAwesomeIcon icon={faFileSignature} />
           Generar Nuevo contrato
         </Button>
-        <p
+        <Button
           variant="success"
           className="bottom-button"
           onClick={handleGeneratePDF}
