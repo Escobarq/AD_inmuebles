@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 export const ReArrendatario = () => {
   const [CodeudoresDisponibles, setCodeudoresDisponibles] = useState([]);
   const [selectedCodeudor, setSelectedCodeudor] = useState("");
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -136,7 +136,7 @@ export const ReArrendatario = () => {
         setShowSaveModal(true);
         notify();
         reset();
-        // navigate("/Arrendatario");
+        navigate("/Arrendatario");
       } else {
         falla();
       }

@@ -285,9 +285,8 @@ export const Rarrendatario = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "Recibo.Arrendatario_pdf";
+      link.download = "Recibo-Arrendatario.pdf";
       link.click();
-      console.log("imprima");
       window.location.href = "/H_recibos"
     } catch (error) {
       console.log(error)

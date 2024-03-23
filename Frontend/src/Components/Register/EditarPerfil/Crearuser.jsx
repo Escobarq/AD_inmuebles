@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Modal, Button, Form, InputGroup  } from "react-bootstrap";
+import { useState } from "react";
+import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -70,6 +70,7 @@ const Crearuser = () => {
       telefono: document.getElementById("telefono").value,
       correo: document.getElementById("correo").value,
       contrasena: document.getElementById("contrausuario").value,
+      rol: document.getElementById("rol").value,
     };
 
     onsubmitNewUser(formData);
@@ -132,25 +133,44 @@ const Crearuser = () => {
           <Form.Group>
             <Form.Label>Contraseña:</Form.Label>
             <div className="password-input">
-              <Form.Control
-                onChange={onChange}
-                type={shown ? "text" : "password"}
-                id="contrausuario"
-                name="contrausuario"
-                className="form-control form-control-lg border border-dark"
-                placeholder="Ingresa una Contraseña"
-                required
-                max={12}
-              />
-              <Button variant="success" onClick={switchShown}>
-                {shown ? "Ocultar" : "Mostrar"}
-              </Button>
+              <InputGroup>
+                <Form.Control
+                  onChange={onChange}
+                  type={shown ? "text" : "password"}
+                  id="contrausuario"
+                  name="contrausuario"
+                  className="form-control  border border-dark"
+                  placeholder="Ingresa una Contraseña"
+                  required
+                  max={12}
+                />
+                <InputGroup.Text
+                style={{ height: "100%"}}
+                >
+                  <FontAwesomeIcon
+                    icon={shown ? faEyeSlash : faEye}
+                    onClick={switchShown}
+                    style={{ cursor: "pointer" ,height:"1.5rem"}}
+                  />
+                </InputGroup.Text>
+              </InputGroup>
             </div>
             <div className="password-hint">
               <p className="text-danger">
                 Por favor, recuerde muy bien su contraseña.
               </p>
             </div>
+          </Form.Group>
+          <Form.Group controlId="formNoIdentidadCodeudor">
+            <Form.Label>Selecione Rol</Form.Label>
+            <Form.Select
+              className="form-control border border-dark"
+              id="rol"
+              name="rol"
+            >
+              <option value="1">Administrador</option>
+              <option value="2">Asistente</option>
+            </Form.Select>
           </Form.Group>
         </Form>
       </div>

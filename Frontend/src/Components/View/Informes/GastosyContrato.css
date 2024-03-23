@@ -89,6 +89,9 @@
   display: flex;
   align-items: center; 
 }
+.btn-success{
+  margin: 2%;
+}
 .buttonsapp{
   width: 100%;
   display: flex;
@@ -125,7 +128,9 @@
   background-color: #7b7b7b; /* Cambio de color al pasar el cursor */
 }
 
-
+.total-general{
+  margin: 2%;
+}
 
 
 /*ESTILOS PARA HISTORIAL DE COMISION DE PROPIETARIO*/

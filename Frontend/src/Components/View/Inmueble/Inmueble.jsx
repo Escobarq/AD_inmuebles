@@ -24,9 +24,7 @@ import logo from "../../../assets/Logo.jpg";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-
 export const Inmueble = () => {
-
   const roleId = useRoleInfo();
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const { actualizarEstadoInmueble } = useActualizarEstadoInmueble(); // Cambiado aquí
@@ -137,7 +135,6 @@ export const Inmueble = () => {
       );
 
       setinfoinmueble(INmueblesActivos);
- 
 
       if (INmueblesActivos.length == 0) {
         setNoResult(true);
@@ -187,15 +184,15 @@ export const Inmueble = () => {
               variant="primary"
               onClick={() => handleMostrarModalClick(inmueble)}
             >
-              <FontAwesomeIcon  className="icon-table" icon={faEye} />
+              <FontAwesomeIcon className="icon-table" icon={faEye} />
             </Button>
             <Button
-            disabled
+              disabled
               className="btn-opciones"
               onClick={() => handleContrato(inmueble.IdInmueble)}
               variant="success"
             >
-              <FontAwesomeIcon  className="icon-table" icon={faUserPlus} />
+              <FontAwesomeIcon className="icon-table" icon={faUserPlus} />
             </Button>
             {roleId !== 2 && (
               <>
@@ -204,22 +201,28 @@ export const Inmueble = () => {
                   variant="danger"
                   onClick={() => handleOpenModal(inmueble.IdInmueble)}
                 >
-                  <FontAwesomeIcon className="icon-table" icon={faTrash} style={{ color: "#ffffff" }} />
+                  <FontAwesomeIcon
+                    className="icon-table"
+                    icon={faTrash}
+                    style={{ color: "#ffffff" }}
+                  />
                 </Button>
                 <Button
                   className="btn-opciones"
                   variant="warning"
                   onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
                 >
-                  <FontAwesomeIcon  className="icon-table" icon={faPenToSquare} />
+                  <FontAwesomeIcon
+                    className="icon-table"
+                    icon={faPenToSquare}
+                  />
                 </Button>
               </>
             )}
           </td>
         </tr>
       );
-    }
-    else {
+    } else {
       return (
         <tr key={inmueble.IdInmueble}>
           <td>{inmueble.NoMatricula}</td>
@@ -238,14 +241,14 @@ export const Inmueble = () => {
               variant="primary"
               onClick={() => handleMostrarModalClick(inmueble)}
             >
-              <FontAwesomeIcon  className="icon-table" icon={faEye} />
+              <FontAwesomeIcon className="icon-table" icon={faEye} />
             </Button>
             <Button
               className="btn-opciones"
               onClick={() => handleContrato(inmueble.IdInmueble)}
               variant="success"
             >
-              <FontAwesomeIcon  className="icon-table" icon={faUserPlus} />
+              <FontAwesomeIcon className="icon-table" icon={faUserPlus} />
             </Button>
             {roleId !== 2 && (
               <>
@@ -254,21 +257,27 @@ export const Inmueble = () => {
                   variant="danger"
                   onClick={() => handleOpenModal(inmueble.IdInmueble)}
                 >
-                  <FontAwesomeIcon className="icon-table" icon={faTrash} style={{ color: "#ffffff" }} />
+                  <FontAwesomeIcon
+                    className="icon-table"
+                    icon={faTrash}
+                    style={{ color: "#ffffff" }}
+                  />
                 </Button>
                 <Button
                   className="btn-opciones"
                   variant="warning"
                   onClick={() => handleEditInmuebles(inmueble.IdInmueble)}
                 >
-                  <FontAwesomeIcon  className="icon-table" icon={faPenToSquare} />
+                  <FontAwesomeIcon
+                    className="icon-table"
+                    icon={faPenToSquare}
+                  />
                 </Button>
               </>
             )}
           </td>
         </tr>
       );
-
     }
   };
 
@@ -338,19 +347,43 @@ export const Inmueble = () => {
 
   const createrowDetalles = () => {
     if (inmuebleseleccion) {
+      const {
+        NoNiveles,
+        ValorInmueble,
+        NoBanos,
+        ServiciosPublicos,
+        NoHabitaciones,
+        Estado,
+        NoTerraza,
+        Descripcion,
+      } = inmuebleseleccion;
+
+      const detalles = [
+        { label: "Numero Niveles", value: NoNiveles },
+        { label: "Valor Inmueble", value: ValorInmueble },
+        { label: "Numero Baños", value: NoBanos },
+        { label: "Servicios Publicos", value: ServiciosPublicos },
+        { label: "Numero Habitaciones", value: NoHabitaciones },
+        { label: "Estado", value: Estado },
+        { label: "Numero Terrazas", value: NoTerraza },
+        { label: "Descripcion", value: Descripcion },
+      ];
+
       return (
-        <tr>
-          <td>{inmuebleseleccion.NoNiveles}</td>
-          <td>${inmuebleseleccion.ValorInmueble}</td>
-          <td>{inmuebleseleccion.NoBanos}</td>
-          <td>{inmuebleseleccion.ServiciosPublicos}</td>
-          <td>{inmuebleseleccion.NoHabitaciones}</td>
-          <td>{inmuebleseleccion.Estado}</td>
-          <td>{inmuebleseleccion.NoTerraza}</td>
-        </tr>
+        <>
+          {detalles.map(
+            (detalle, index) =>
+              detalle.value && (
+                <tr key={index}>
+                  <th>{detalle.label}</th>
+                  <td>{detalle.value}</td>
+                </tr>
+              )
+          )}
+        </>
       );
     } else {
-      return null; // Otra opción es retornar un mensaje de carga o cualquier otro contenido que desees mostrar mientras se carga la información
+      return null;
     }
   };
 
@@ -362,7 +395,6 @@ export const Inmueble = () => {
   const handleCloseModal = () => {
     setMostrarModal(false);
   };
-
 
   // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -416,36 +448,26 @@ export const Inmueble = () => {
   }, []);
 
   const redireccion = (ruta) => {
-    localStorage.removeItem("NITPropie")
+    localStorage.removeItem("NITPropie");
     window.location.href = ruta;
   };
 
+  // Objeto para descripciones de filtros
+  const filtroDescriptions = {
+    tipo: "Tipo",
+    estrato: "Estrato",
+    estado: "Estado",
+  };
 
-
-// Objeto para descripciones de filtros
-const filtroDescriptions = {
-  tipo: "Tipo",
-  estrato: "Estrato",
-  estado: "Estado",
-
-};
-
-
-
-// Formatear los filtros aplicados
-let formattedFilters = "";
-if (Object.values(filtroData).filter(value => value).length > 0) {
-formattedFilters = Object.keys(filtroData)
-  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
-  .map(key => ` ${filtroDescriptions[key]}: ${filtroData[key]}`);
-
-} else {
-  formattedFilters = " Ninguno";
-}
-
-
-
-
+  // Formatear los filtros aplicados
+  let formattedFilters = "";
+  if (Object.values(filtroData).filter((value) => value).length > 0) {
+    formattedFilters = Object.keys(filtroData)
+      .filter((key) => filtroData[key]) // Filtrar solo los valores que no están vacíos
+      .map((key) => ` ${filtroDescriptions[key]}: ${filtroData[key]}`);
+  } else {
+    formattedFilters = " Ninguno";
+  }
 
   //AQUI EMPIEZA GENERACION DE PDF
   const ArrenPDF = () => {
@@ -469,17 +491,15 @@ formattedFilters = Object.keys(filtroData)
     doc.text("Inmuebles", 43, 20);
     doc.setFontSize(13);
     doc.setTextColor(128);
-   // Title next to the logo
+    // Title next to the logo
     doc.setFontSize(6);
 
     doc.setFontSize(13);
     doc.setTextColor(128);
-    doc.text("Adminmuebles", 43, 26); 
+    doc.text("Adminmuebles", 43, 26);
 
     doc.setFontSize(7);
     doc.text(` Filtros aplicados:\n${formattedFilters}`, 43, 31);
-
-  
 
     addHoraEmision();
     const date = new Date();
@@ -498,15 +518,14 @@ formattedFilters = Object.keys(filtroData)
       "Diciembre",
     ];
 
-    const formattedDate = `${monthNames[date.getMonth()]
-      }/${date.getDate()}/${date.getFullYear()}`;
+    const formattedDate = `${
+      monthNames[date.getMonth()]
+    }/${date.getDate()}/${date.getFullYear()}`;
     doc.setTextColor(128); // Gris
     doc.setFontSize(10);
     doc.text(formattedDate, 190, 18, null, null, "right");
 
-
     const columns = [
-
       { header: "NIT", dataKey: "NoMatricula" },
       { header: "Propietario", dataKey: "NombrePropietario" },
       { header: "Dirección", dataKey: "Direccion" },
@@ -515,11 +534,9 @@ formattedFilters = Object.keys(filtroData)
       { header: "Barrio", dataKey: "Barrio" },
       { header: "Tipo", dataKey: "Tipo" },
       { header: "Estado", dataKey: "Estado" },
-
     ];
 
     const data = infoinmueble.map((Inmueble) => ({
-
       NoMatricula: Inmueble.NoMatricula,
       NombrePropietario: Inmueble.NombrePropietario,
       Direccion: Inmueble.Direccion,
@@ -528,7 +545,6 @@ formattedFilters = Object.keys(filtroData)
       Barrio: Inmueble.Barrio,
       Tipo: Inmueble.Tipo,
       Estado: Inmueble.Estado,
-
     }));
     const itemsPerPage = 32;
     let startY = 45;
@@ -567,17 +583,17 @@ formattedFilters = Object.keys(filtroData)
         "Noviembre",
         "Diciembre",
       ];
-      const formattedDate = `${monthNames[date.getMonth()]
-        }/${date.getDate()}/${date.getFullYear()}`;
+      const formattedDate = `${
+        monthNames[date.getMonth()]
+      }/${date.getDate()}/${date.getFullYear()}`;
       doc.setTextColor(128); // Gris
       doc.setFontSize(10);
       doc.text(formattedDate, 190, 18, null, null, "right");
 
-
       addHoraEmision();
       doc.addImage(logo, "PNG", 15, 15, 20, 15);
       doc.setFontSize(13);
-      doc.text("Adminmuebles", 43, 26); 
+      doc.text("Adminmuebles", 43, 26);
     }
 
     const totalPages = doc.internal.getNumberOfPages();
@@ -594,20 +610,8 @@ formattedFilters = Object.keys(filtroData)
       );
     }
     doc.save("Inmuebles");
-
-
-
   };
   //AQUI TERMINA
-
-
-
-
-
-
-
-
-
 
   return (
     <>
@@ -745,7 +749,8 @@ formattedFilters = Object.keys(filtroData)
               disabled={currentPage === 1}
             />
             {pagesToShow.map((page) => (
-              <Pagination.Item className="item-paginador"
+              <Pagination.Item
+                className="item-paginador"
                 key={page}
                 active={page === currentPage}
                 onClick={() => setCurrentPage(page)}
@@ -771,18 +776,7 @@ formattedFilters = Object.keys(filtroData)
           </Modal.Header>
           <Modal.Body>
             <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Numero Niveles</th>
-                  <th>Valor Inmueble</th>
-                  <th>Numero Baños</th>
-                  <th>Servicios Publicos</th>
-                  <th>Numero Habitaciones</th>
-                  <th>Estado</th>
-                  <th>Numero Terrazas</th>
-                </tr>
-              </thead>
-              <tbody>{createrowDetalles()}</tbody>
+              <thead>{createrowDetalles()}</thead>
             </Table>
           </Modal.Body>
         </Modal>

@@ -21,6 +21,36 @@ router.post('/api/config', async (req, res) => {
 
 
 //Funcion para traer su información
+
+router.get('/fechas', (req, res) => {
+  const connection = getConnection(); // Obtiene la conexión a la base de datos
+  try {
+    const query = `
+      SELECT inmueble.VAseguramiento AS fechaAseguramiento, NULL AS fechaFinContrato
+      FROM inmueble
+      UNION ALL
+      SELECT NULL AS fechaAseguramiento, contratoarrendamiento.FechaFinContrato AS fechaFinContrato
+      FROM contratoarrendamiento
+    `;
+    
+    // Ejecutar la consulta y esperar los resultados
+    connection.query(query, (error, results) => {
+      if (error) {
+        console.error('Error al ejecutar la consulta:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+        return;
+      }
+
+      // Enviar las fechas al cliente
+      res.json(results);
+    });
+  } catch (error) {
+    console.error('Error al ejecutar la consulta:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
 router.get("/Infouser", (req, res) => {
   const { correousuario } = req.query;
   const connection = getConnection(); 
@@ -896,33 +926,33 @@ router.post("/Rcodeudor", async (req, res) => {
 
 // Registrar Usuario
 router.post("/RegistrarUsuario", async (req, res) => {
-  const connection = getConnection(); 
-  const { nombre, apellido, correo, contrasena, telefono } = req.body;
+  const connection = getConnection();
+  const { nombre, apellido, correo, contrasena, telefono, rol } = req.body;
 
   // Validación básica de entrada
-  if (!nombre || !apellido || !correo || !contrasena || !telefono) {
+  if (!nombre || !apellido || !correo || !contrasena || !telefono || !rol) {
     return res
       .status(400)
       .json({ message: "Todos los campos son obligatorios" });
   }
 
   try {
-      connection.query("SELECT * FROM trabajador WHERE Correo = ?",
-      [correo], (error, results) => {
-        if (results == "") {
-          const idrol = Math.floor(Math.random() * 2) + 1;
-    // Insertar el nuevo usuario en la base de datos
-     connection.query(
-      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
-      [nombre, apellido, correo, contrasena, telefono, idrol]
-    );
-
-    res.status(201).json({ message: "Usuario registrado exitosamente" });
-        }
-        else {
+    connection.query(
+      "SELECT * FROM trabajador WHERE Correo = ?",
+      [correo],
+      (error, results) => {
+        if (results.length === 0) {
+          // Insertar el nuevo usuario en la base de datos
+          connection.query(
+            "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
+            [nombre, apellido, correo, contrasena, telefono, rol]
+          );
+          res.status(201).json({ message: "Usuario registrado exitosamente" });
+        } else {
           res.status(400).json({ error: "Correo Duplicado" });
-        }})
-   
+        }
+      }
+    );
   } catch (error) {
     res.status(500).json({ message: "Error al registrar usuario" });
   }

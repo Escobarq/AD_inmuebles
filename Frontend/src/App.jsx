@@ -38,6 +38,7 @@ import { Notifi } from "./Components/Notifi/Notifi";
 import useRoleInfo from "./Components/Hooks/useRoleInfo";
 import Crearuser from "./Components/Register/EditarPerfil/Crearuser";
 import { Contraseña } from "./Components/CambiarContraseña/Contraseña";
+import { OperacionInmobi } from "./Components/View/Informes/OperacionInmobi";
 
 
 
@@ -121,6 +122,7 @@ function App() {
             <Route path="/RInmuebleO" element={<RInmuebleO />} />
             <Route path="/Carrendatario" element={<ContratoA />} />
             <Route path="/Contraseñanew" element={<Contraseña />} />
+            <Route path="/Operacionimbo" element={<OperacionInmobi />} />
             {roleId === 3 && (
               <>
                 <Route path="/AsignarRol" element={<AsignarRol />} />

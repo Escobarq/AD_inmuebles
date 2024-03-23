@@ -17,10 +17,10 @@
 }
 
 .notification-popover {
-  width: 300px; /* Ancho del Popover */
+  width: 100vh; /* Ancho del Popover */
   position: absolute;
   top: calc(100% + 10px); /* Coloca el Popover debajo del botón de notificación con un margen superior */
-  left: -60%; /* Centra el Popover horizontalmente */
+  left: -100%; /* Centra el Popover horizontalmente */
   transform: translateX(-50%);
   z-index: 999;
   padding: 10px; /* Agrega un espacio alrededor del contenido del Popover */
@@ -33,7 +33,7 @@
 
 .popover-body {
   background-color: #f8f9fa;
-  max-height: 300px; /* Altura máxima del cuerpo de notificaciones */
+  max-height: max-content; /* Altura máxima del cuerpo de notificaciones */
   overflow-y: auto; /* Cambia el color de fondo del cuerpo */
 }
 
@@ -64,4 +64,7 @@
 
 .notification-item span {
   display: block; /* Alinear cada detalle en una línea separada */
+}
+.tittle{
+  font-size: 0.8rem;
 }
