@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare, faUserSlash ,faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import { Table, Button, Modal } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
-import { Link } from "react-router-dom";
 import useActualizarEstadoEmpleados from "../../Hooks/InhabilitarEmpleado";
 import { toast } from "react-toastify";
 import { useMediaQuery } from "@react-hook/media-query";
@@ -105,8 +104,8 @@ export const AsignarRol = () => {
   };
 
   const createRowRol = (roles) => {
-    const truncatedPassword = roles.Contrasena.length > 10 ? roles.Contrasena.substring(0, 10) + '...' : roles.Contrasena;
-  
+    const maskedPassword = '*'.repeat(roles.Contrasena.length);  
+    
     if (roles.Idrol === 1 || roles.Idrol === 2) {
       return (
         <tr key={roles.IdTrabajador}>
@@ -114,7 +113,7 @@ export const AsignarRol = () => {
           <td>{roles.Nombre}</td>
           <td>{roles.Apellido}</td>
           <td>{roles.Correo}</td>
-          <td>{truncatedPassword}</td>
+          <td>{maskedPassword}</td>
           <td>{roles.Telefono}</td>
           <td>{convertirIdRolATexto(roles.Idrol)}</td>
           <td >
@@ -153,7 +152,41 @@ export const AsignarRol = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoRol.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const [pagesToShow, setPagesToShow] = useState([]);
+  const [pageCount, setPageCount] = useState(0); // Agregamos el estado de pageCount
+
+  const renderPaginator = (pageCount) => {
+    // Pasamos pageCount como parámetro
+    const maxPagesToShow = 10; // Cambia el número máximo de páginas mostradas
+
+    if (pageCount <= maxPagesToShow) {
+      setPagesToShow(Array.from({ length: pageCount }, (_, i) => i + 1));
+    } else {
+      if (currentPage <= maxPagesToShow - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(Array.from({ length: maxPagesToShow }, (_, i) => i + 1));
+      } else if (currentPage >= pageCount - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => pageCount - maxPagesToShow + i + 1
+          )
+        );
+      } else {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => currentPage - Math.floor(maxPagesToShow / 2) + i
+          )
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    const newPageCount = Math.ceil(infoRol.length / itemsPerPage);
+    setPageCount(newPageCount); // Actualizamos el estado de pageCount
+    renderPaginator(newPageCount); // Llamamos a la función renderPaginator con el nuevo pageCount
+  }, [infoRol, itemsPerPage, currentPage]);
 
   const EditarPerfil = (EmpleadosID) => {
     // Encuentra el empleado seleccionado
@@ -221,30 +254,26 @@ export const AsignarRol = () => {
         </div>
       </div>
       <div className="paginador">
-        <Pagination >
-          <Pagination.Prev
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-          />
-          {[...Array(Math.ceil(infoRol.length / itemsPerPage))].map(
-            (item, index) => (
-              <Pagination.Item
-                key={index}
-                active={index + 1 === currentPage}
-                onClick={() => paginate(index + 1)}
+          <Pagination>
+            <Pagination.Prev
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            {pagesToShow.map((page) => (
+              <Pagination.Item className="item-paginador"
+                key={page}
+                active={page === currentPage}
+                onClick={() => setCurrentPage(page)}
               >
-                {index + 1}
+                {page}
               </Pagination.Item>
-            )
-          )}
-          <Pagination.Next
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(infoRol.length / itemsPerPage)
-            }
-          />
-        </Pagination>
-      </div>
+            ))}
+            <Pagination.Next
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pageCount}
+            />
+          </Pagination>
+        </div>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>

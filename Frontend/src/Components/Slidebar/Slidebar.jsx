@@ -93,7 +93,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
   const renderMenuItems = () => {
     const roleId = parseInt(Rol);
 
-    if (roleId === 1) {
+    if (roleId === 1 || roleId ===2) {
       //Administrador
       return (
         <>
@@ -315,18 +315,12 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
               </Nav.Link>
             </OverlayTrigger>
           </Nav.Item>
-        </>
-      );
-
-    } else if (roleId === 2) {
-      return (
-        <>
           <Nav.Item>
             <OverlayTrigger
               placement="right"
               overlay={
                 showTooltip ? (
-                  <Tooltip id="tooltip-prop">Propietarios</Tooltip>
+                  <Tooltip id="tooltip-prop">Informe Operacion Inmobiliaria</Tooltip>
                 ) : (
                   <></>
                 )
@@ -334,39 +328,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
             >
               <Nav.Link
                 as={NavLink}
-                to="/Propietario"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  className="icons_sliderbard"
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faUserTie}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Propietarios
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Inmuebles</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/Inmueble"
+                to="/Operacionimbo"
                 className="nav-link text-white"
                 aria-current="page"
                 exact={undefined}
@@ -376,134 +338,10 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
                   width="32"
                   height="32"
                   style={{ color: "#ffffff" }}
-                  icon={faHouseUser}
+                  icon={faTable}
                 />
                 <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Inmuebles
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Arrendatarios</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/Arrendatario"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faPersonShelter}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Arrendatarios
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Codeudores</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/Codeudor"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faPeopleRoof}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Codeudores
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Recibo Arrendatarios</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/H_recibos"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faReceipt}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Recibo Arrendatarios
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Recibo Gasto</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/H_gastos"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faReceipt}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Recibo Gastos
+                  Informe Operacion Inmobiliaria 
                 </p>
               </Nav.Link>
             </OverlayTrigger>

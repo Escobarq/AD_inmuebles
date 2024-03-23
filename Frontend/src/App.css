@@ -100,3 +100,13 @@
   background-color: #222 !important;
   color: #fff;
 }
+.dark-mode .modales-content {
+  background-color: #222 !important;
+  color: #fff;
+}
+.modal-header{
+  border-bottom-color: transparent ;
+}
+.modal-footer{
+  border-top-color: transparent ;
+}

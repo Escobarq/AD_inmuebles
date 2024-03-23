@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
@@ -77,34 +76,31 @@ export const Arrendatario = () => {
   const fetchData = async () => {
     try {
       const queryParams = new URLSearchParams(filtroData);
-      const response = await fetch(
-        `http://localhost:3006/Varrendatario?${queryParams.toString()}`
-      );
+      const response = await fetch(`http://localhost:3006/Varrendatario?${queryParams.toString()}`);
+  
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+  
       const data = await response.json();
-
-      const arrendatarioActivos = data.filter(
-        (Arrendatarios) => Arrendatarios.booleanos === "true"
-      );
-
-      setinfoarrendatario(arrendatarioActivos);
-
-      if (arrendatarioActivos.length == 0) {
+  
+      setinfoarrendatario(data); // Establecer todos los datos recibidos
+  
+      if (data.length === 0) {
         setNoResult(true);
       } else {
         setNoResult(false);
       }
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("Error fetching data:", error);
+      errores(); // Mostrar el mensaje de error
     }
   };
+  
 
   const createheader = () => {
     return (
       <tr>
-        <th>ID</th>
         <th>Tipo de Documento</th>
         <th>No. Documento</th>
         <th>Nombre Arrendatario</th>
@@ -119,7 +115,6 @@ export const Arrendatario = () => {
   const createrow = (Arrendatarios) => {
     return (
       <tr key={Arrendatarios.IdArrendatario}>
-        <td>{Arrendatarios.IdArrendatario}</td>
         <td>{Arrendatarios.TipoDocumento}</td>
         <td>{Arrendatarios.DocumentoIdentidad}</td>
         <td>{Arrendatarios.NombreCompleto}</td>
@@ -165,7 +160,41 @@ export const Arrendatario = () => {
     indexOfFirstItem,
     indexOfLastItem
   );
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const [pagesToShow, setPagesToShow] = useState([]);
+  const [pageCount, setPageCount] = useState(0); // Agregamos el estado de pageCount
+
+  const renderPaginator = (pageCount) => {
+    // Pasamos pageCount como parámetro
+    const maxPagesToShow = 10; // Cambia el número máximo de páginas mostradas
+
+    if (pageCount <= maxPagesToShow) {
+      setPagesToShow(Array.from({ length: pageCount }, (_, i) => i + 1));
+    } else {
+      if (currentPage <= maxPagesToShow - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(Array.from({ length: maxPagesToShow }, (_, i) => i + 1));
+      } else if (currentPage >= pageCount - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => pageCount - maxPagesToShow + i + 1
+          )
+        );
+      } else {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => currentPage - Math.floor(maxPagesToShow / 2) + i
+          )
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    const newPageCount = Math.ceil(infoarrendatario.length / itemsPerPage);
+    setPageCount(newPageCount); // Actualizamos el estado de pageCount
+    renderPaginator(newPageCount); // Llamamos a la función renderPaginator con el nuevo pageCount
+  }, [infoarrendatario, itemsPerPage, currentPage]);
  //Tooltip 
  const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
@@ -288,26 +317,21 @@ const redireccion = (ruta) => {
         <div className="paginador">
           <Pagination>
             <Pagination.Prev
-              onClick={() => paginate(currentPage - 1)}
+              onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
             />
-            {[...Array(Math.ceil(infoarrendatario.length / itemsPerPage))].map(
-              (item, index) => (
-                <Pagination.Item
-                  key={index}
-                  active={index + 1 === currentPage}
-                  onClick={() => paginate(index + 1)}
-                >
-                  {index + 1}
-                </Pagination.Item>
-              )
-            )}
+            {pagesToShow.map((page) => (
+              <Pagination.Item className="item-paginador"
+                key={page}
+                active={page === currentPage}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </Pagination.Item>
+            ))}
             <Pagination.Next
-              onClick={() => paginate(currentPage + 1)}
-              disabled={
-                currentPage ===
-                Math.ceil(infoarrendatario.length / itemsPerPage)
-              }
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pageCount}
             />
           </Pagination>
         </div>

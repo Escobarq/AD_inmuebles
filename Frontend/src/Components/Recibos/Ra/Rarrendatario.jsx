@@ -7,7 +7,8 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import logo from "../../../assets/Logo.jpg";
-
+import moment from "moment";
+import "moment/locale/es";
 export const Rarrendatario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -15,8 +16,9 @@ export const Rarrendatario = () => {
   const [showContratoModal, setShowContratoModal] = useState(false);
   const [selectedContrato, setSelectedContrato] = useState("");
   const [ContratosDisponibles, setContratosDisponibles] = useState([]);
-  const [PagoArrenda, setPagoArrenda] = useState([]);
-
+  const [showFechaModal, setShowFechaModal] = useState(false);
+  const [FechasPagosFijas, setFechasPagosFijas] = useState([]);
+  const [selectedFecha, setSelectedFecha] = useState("");
 
   const funcional = (text) =>
     toast.success(text, {
@@ -27,33 +29,47 @@ export const Rarrendatario = () => {
     toast.error(text, {
       theme: "colored",
     });
-    const [currentDate, setCurrentDate] = useState(getCurrentDate());
-    // Función para obtener la fecha actual en formato YYYY-MM-DD
-    function getCurrentDate() {
-      const date = new Date();
-      const year = date.getFullYear();
-      let month = (1 + date.getMonth()).toString();
-      month = month.length > 1 ? month : "0" + month;
-      let day = date.getDate().toString();
-      day = day.length > 1 ? day : "0" + day;
-      return `${year}-${month}-${day}`;
-    }
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
 
-    useEffect(() => {
-      cargarContratosDisponibles();
-      setCurrentDate(getCurrentDate());
-    }, []);
+  // Función para obtener la fecha actual en formato YYYY-MM-DD
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
 
+
+  useEffect(() => {
+    cargarContratosDisponibles();
+    setCurrentDate(getCurrentDate());
+  }, []);
   const cargarContratosDisponibles = async () => {
     try {
       const response = await axios.get(
         "http://localhost:3006/contrato-arren-inmue"
       );
       const Contratos = response.data.map((prop) => prop);
-
       setContratosDisponibles(Contratos);
-
       console.log(response.data);
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
+    }
+  };
+  const cargarFechasContratos = async (Contrato) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3006/VPagoArren?IdContrato=${Contrato.IdContrato}&estado=Pendiente`
+      );
+      const FechasPagosFijas = response.data.map((prop) => prop);
+      setFechasPagosFijas(FechasPagosFijas);
+      console.log("fechas", FechasPagosFijas);
     } catch (error) {
       console.error("Error al cargar las matrículas:", error);
       toast.error(
@@ -65,25 +81,37 @@ export const Rarrendatario = () => {
   const onSubmitRegistro = async (data) => {
     data.NombreArrendatario = selectedContrato.NombreArrendatario;
     data.IdContrato = selectedContrato.IdContrato;
+    data.IdPagosSeleccionados = Array.from(IdpagosSeleccionados);
     data.IdArrendatario = selectedContrato.IdArrendatario;
     data.FechaPago = currentDate;
-    data.Estado = "Pagado";
+    data.ValorPago = selectedContrato.ValorPago
     data.NoDocumento = selectedContrato.DocumentoIdentidad;
     data.NoMatricula = selectedContrato.NoMatricula;
     data.TipoInmueble = selectedContrato.TipoInmueble;
+    data.FechaPagoFija = getCurrentDate(selectedFecha.FechaPagoFija);
+    if (currentDate > selectedFecha.FechaPagoFija) {
+      data.Estado = "Atrasado"
+    }
+    else if (currentDate < selectedFecha.FechaPagoFija) {
+      data.Estado = "Adelantado"
+    }
+    else {
+
+      data.Estado = "AlDia"
+    }
+
     try {
       const response = await fetch("http://localhost:3006/RPagoArrendamiento", {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data), // Aquí debes asegurarte de que data contenga todos los campos necesarios
       });
       if (response.ok) {
-        setPagoArrenda(data);
         handleGuardarClick(data),
-        funcional('se an enviado los datos correctamente'),
-        setShowSaveModal(false); // Muestra el modal de confirmación
+          funcional('se an enviado los datos correctamente'),
+          setShowSaveModal(false); // Muestra el modal de confirmación
         reset();
       }
     } catch (error) {
@@ -99,7 +127,12 @@ export const Rarrendatario = () => {
 
   const handleContratoChange = async (Contrato) => {
     setSelectedContrato(Contrato);
+    cargarFechasContratos(Contrato)
     setShowContratoModal(false);
+  };
+  const handleFechasChange = async (Fechas) => {
+    setSelectedFecha(Fechas);
+    setShowFechaModal(false);
   };
 
   const handleCancelClick = () => {
@@ -113,10 +146,41 @@ export const Rarrendatario = () => {
     window.location.href = "/H_recibos";
   };
   
+  const [pagosSeleccionados, setPagosSeleccionados] = useState(new Set());
+  const [IdpagosSeleccionados, setIdPagosSeleccionados] = useState(new Set());
+  const [ValorTotal, setValorTotal] = useState(0);
+
+  // Función para manejar el cambio de estado cuando se hace clic en el interruptor
+  const handleSwitchChange  = async (index) => {
+    const nuevaListaFechasPagos = new Set(pagosSeleccionados);
+    const nuevaListaPagos = new Set(IdpagosSeleccionados);
+    const cantidadCamposSeleccionados = nuevaListaPagos.size;
+    // Si el índice ya está en el conjunto, lo eliminamos, de lo contrario lo agregamos
+    if (nuevaListaFechasPagos.has(formatDate(index.FechaPagoFija))) {
+      nuevaListaFechasPagos.delete(formatDate(index.FechaPagoFija));
+    } else {
+      nuevaListaFechasPagos.add(formatDate(index.FechaPagoFija));
+    }
+    if (nuevaListaPagos.has(index.IdPagoArrendamiento)) {
+      nuevaListaPagos.delete(index.IdPagoArrendamiento);
+    } else {
+      nuevaListaPagos.add(index.IdPagoArrendamiento);
+    }
+    // Actualizar el estado con la nueva lista de pagos seleccionados
+    setPagosSeleccionados(nuevaListaFechasPagos);
+    setIdPagosSeleccionados(nuevaListaPagos);
+    
+  };
+
+  useEffect(() => {
+    const valorPago = selectedContrato ? selectedContrato.ValorPago : 0;
+    const valorTotalPago = valorPago * IdpagosSeleccionados.size;
+    setValorTotal(valorTotalPago);
+  }, [IdpagosSeleccionados, selectedContrato]);
 
   //FUNCION PARA GENERAR PDF
   const handleGuardarClick = async (data) => {
-    
+
     const order = [
       "NoDocumento",
       "NombreArrendatario",
@@ -124,8 +188,8 @@ export const Rarrendatario = () => {
       "TipoInmueble",
       "FormaPago",
       "ValorPago",
-      "FechaInicio",
-      "FechaFin",
+      "FechaPago",
+      "FechaPagoFija",
       "Estado",
     ];
     try {
@@ -139,6 +203,9 @@ export const Rarrendatario = () => {
       const footerText = `Hora de emisión: ${currentTime}`;
       const textWidth = (await pdfDoc.embedFont("Helvetica")).widthOfTextAtSize(currentfech, fontSize);
       const textX = width - padding - textWidth;
+
+
+
 
       page.drawText(footerText, {
         x: padding,
@@ -201,14 +268,34 @@ export const Rarrendatario = () => {
             font: await pdfDoc.embedFont("Helvetica-Bold"),
             align: "right",
           });
+
+
+
           //la respuesta debajo del nombre del campo
-          page.drawText(`${element}`, {
-            x: leftX,
-            y: yOffset - fontSize * 1.5,
-            size: fontSize,
-            color: rgb(0, 0, 0),
-            align: "left",
-          });
+
+          if (key == "ValorPago"){
+
+            page.drawText(`$${element}`, {
+              x: leftX,
+              y: yOffset - fontSize * 1.5,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              align: "left",
+            });
+
+          } else {
+
+            page.drawText(`${element}`, {
+              x: leftX,
+              y: yOffset - fontSize * 1.5,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              align: "left",
+            });
+
+          }
+
+         
 
           if (leftX === padding) {
             leftX = rightX;
@@ -249,16 +336,31 @@ export const Rarrendatario = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "Recibo.Arrendatario_pdf";
+      link.download = "Recibo-Arrendatario.pdf";
       link.click();
-      console.log("imprima");
       window.location.href = "/H_recibos"
     } catch (error) {
       console.log(error)
     }
   };
 
-  
+  function formatDate(fechaString) {
+    return moment(fechaString).format("MMMM , D , YYYY");
+  }
+
+  moment.updateLocale("es", {
+    months:
+      "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
+        "_"
+      ),
+    monthsShort:
+      "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+    weekdays: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
+    weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
+    weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
+  });
+
+
   //AQUI TERMINA PDF
 
   return (
@@ -269,7 +371,7 @@ export const Rarrendatario = () => {
           <div className="form-propietario">
             <Form.Group controlId="fecha">
               <Form.Label>Fecha de Pago:</Form.Label>
-              <Form.Control
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 defaultValue={currentDate}
@@ -296,7 +398,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>No Documento Arrendatario:</Form.Label>
-              <Form.Control
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={
@@ -308,7 +410,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>No Matricula Inmueble:</Form.Label>
-              <Form.Control
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={selectedContrato ? selectedContrato.NoMatricula : ""}
@@ -318,7 +420,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>Nombre Arrendatario:</Form.Label>
-              <Form.Control
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={
@@ -330,7 +432,7 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="nombre">
               <Form.Label>Tipo de Inmueble:</Form.Label>
-              <Form.Control
+              <Form.Control required
                 className="InputsRegistros"
                 disabled
                 value={selectedContrato ? selectedContrato.TipoInmueble : ""}
@@ -341,9 +443,10 @@ export const Rarrendatario = () => {
             <Form.Group controlId="suma">
               <Form.Label>Valor del Pago:</Form.Label>
               <Form.Control
+              disable
                 className="InputsRegistros"
                 type="number"
-                {...register("ValorPago")}
+                value={ ValorTotal ? ValorTotal : selectedContrato ? selectedContrato.ValorPago :  "" }
               />
             </Form.Group>
 
@@ -360,22 +463,16 @@ export const Rarrendatario = () => {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group controlId="periodoDesde">
-              <Form.Label>Fecha Inicial de Pago:</Form.Label>
+            <Form.Group controlId="documentoIdentidad">
+              <Form.Label>Lista de Fechas De Pagos:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                type="date"
-                {...register("FechaInicio")}
-              />
-            </Form.Group>
+                value={pagosSeleccionados ? Array.from(pagosSeleccionados).join(', ') : ""}
+                onChange={(e) => handleFechasChange(e.target.value)}
+                onClick={() => setShowFechaModal(true)}
+              >
 
-            <Form.Group controlId="periodoHasta">
-              <Form.Label>Fecha Final Pago:</Form.Label>
-              <Form.Control
-                className="InputsRegistros"
-                type="date"
-                {...register("FechaFin")}
-              />
+              </Form.Control>
             </Form.Group>
           </div>
           <div
@@ -428,6 +525,27 @@ export const Rarrendatario = () => {
               </ListGroup.Item>
             ))}
           </ListGroup>
+        </Modal.Body>
+      </Modal>
+      {/* Modal de lista de Fechas Fijas de Contrato */}
+      <Modal
+        show={showFechaModal}
+        onHide={() => setShowFechaModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Fecha del Pago</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {FechasPagosFijas.map((Fechas, index) => (
+            <Form.Check // prettier-ignore
+              type="switch"
+              key={index}
+              id={`custom-switch-${index}`}
+              label={formatDate(Fechas.FechaPagoFija)}
+              onChange={() => handleSwitchChange(Fechas)}              
+            />
+          ))}
+
         </Modal.Body>
       </Modal>
 

@@ -6,13 +6,21 @@ import { crearInmueble } from "../../Hooks/RegisterInmueble";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { set } from "date-fns";
 export const RInmuebleB = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [selectedPropietario, setSelectedPropietario] = useState("");
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [currentDate, setCurrentDate] = useState(getCurrentDate());
+  const [propetarioData, setpropetarioData] = useState({
+    DocumentoIdentidad: "",
+  });
 
   const notify = () =>
     toast.success("Se Registro correctamente", {
@@ -30,12 +38,36 @@ export const RInmuebleB = () => {
 
   const { register, handleSubmit, reset } = useForm();
   useEffect(() => {
-    fetchData();
-  }, []);
+    setCurrentDate(getCurrentDate());
+    if (location.search) {
+      const propietario = {
+        DocumentoIdentidad: searchParams.get("DocumentoIdentidad"),
+      };
+      console.log("Datos de propietario recibidos:", propietario);
+      setpropetarioData(propietario);
+      fetchData(propietario);
+    } else {
+      // Si no hay parámetros de consulta en la URL, significa que se está creando un nuevo propietario
+      setpropetarioData({
+        DocumentoIdentidad: "",
+      });
+      fetchData();
+    }
+  }, [location.search]);
+  function getCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : "0" + month;
+    let day = date.getDate().toString();
+    day = day.length > 1 ? day : "0" + day;
+    return `${year}-${month}-${day}`;
+  }
 
-  const fetchData = async () => {
+
+  const fetchData = async (propietario) => {
     try {
-      const response = await axios.get("http://localhost:3006/Vpropietarios?");
+      const response = await axios.get(`http://localhost:3006/Vpropietarios?Cedula=${propietario.DocumentoIdentidad}`);
       const Propietarios = response.data.map((prop) => prop);
       setPropietariosDisponibles(Propietarios);
     } catch (error) {
@@ -56,6 +88,7 @@ export const RInmuebleB = () => {
   const onsubmitRegistro = async (data) => {
     data.Id_Propietario = selectedPropietario.IdPropietario;
     data.Tipo = "Bodega";
+    data.aseguramiento = currentDate;
     try {
       await crearInmueble(data);
       notify();
@@ -73,14 +106,16 @@ export const RInmuebleB = () => {
   };
   const handlePropietarioChange = async (Propietario) => {
     setSelectedPropietario(Propietario);
-    console.log(Propietario);
     setMostrarModalA(false);
   };
 
   const handleSelectChange = (event) => {
+    const urlParams = new URLSearchParams({
+      DocumentoIdentidad: propetarioData.DocumentoIdentidad,
+    });
     const selectedOption = event.target.value;
     if (selectedOption) {
-      window.location.assign(`/${selectedOption}`);
+      window.location.assign(`/${selectedOption}?${urlParams.toString()}`);
     }
   };
 
@@ -211,12 +246,30 @@ export const RInmuebleB = () => {
             />
           </Form.Group>
 
+          <Form.Group controlId="formNoHabitaciones">
+            <Form.Label>Area Construida en M2</Form.Label>
+            <Form.Control
+              className="InputsRegistros"
+              {...register("AreaM")}
+              type="number"
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formNoNiveles">
+            <Form.Label>Fecha de Aseguramiento:</Form.Label>
+            <Form.Control
+            value={currentDate}
+            disabled
+              className="InputsRegistros"
+              type="date"
+            />
+          </Form.Group>
+
           <Form.Group controlId="formNoNiveles">
             <Form.Label>Vencimiento de Aseguramiento:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              required
-              {...register("aseguramiento")}
+              {...register("vaseguramiento")}
               type="date"
             />
           </Form.Group>

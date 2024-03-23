@@ -89,15 +89,16 @@ export const Propietarios = () => {
 
   moment.updateLocale("es", {
     months:
-      "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split(
+      "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
         "_"
       ),
     monthsShort:
-      "ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),
-    weekdays: "domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),
-    weekdaysShort: "dom._lun._mar._mié._jue._vie._sáb.".split("_"),
-    weekdaysMin: "do_lu_ma_mi_ju_vi_sá".split("_"),
+      "Ene._Feb._Mar._Abr._May._Jun._Jul._Ago._Sep._Oct._Nov._Dic.".split("_"),
+    weekdays: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
+    weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
+    weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
   });
+
 
   const fetchData = async () => {
     try {
@@ -116,7 +117,7 @@ export const Propietarios = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>NIT</th>
+        <th>No Identidad</th>
         <th>Nombre</th>
         <th>Dirección</th>
         <th>Teléfono</th>
@@ -188,7 +189,41 @@ export const Propietarios = () => {
     return () => window.removeEventListener("resize", updateTooltipVisibility);
   }, []);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const [pagesToShow, setPagesToShow] = useState([]);
+  const [pageCount, setPageCount] = useState(0); // Agregamos el estado de pageCount
+
+  const renderPaginator = (pageCount) => {
+    // Pasamos pageCount como parámetro
+    const maxPagesToShow = 10; // Cambia el número máximo de páginas mostradas
+
+    if (pageCount <= maxPagesToShow) {
+      setPagesToShow(Array.from({ length: pageCount }, (_, i) => i + 1));
+    } else {
+      if (currentPage <= maxPagesToShow - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(Array.from({ length: maxPagesToShow }, (_, i) => i + 1));
+      } else if (currentPage >= pageCount - Math.floor(maxPagesToShow / 2)) {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => pageCount - maxPagesToShow + i + 1
+          )
+        );
+      } else {
+        setPagesToShow(
+          Array.from(
+            { length: maxPagesToShow },
+            (_, i) => currentPage - Math.floor(maxPagesToShow / 2) + i
+          )
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    const newPageCount = Math.ceil(infopropietario.length / itemsPerPage);
+    setPageCount(newPageCount); // Actualizamos el estado de pageCount
+    renderPaginator(newPageCount); // Llamamos a la función renderPaginator con el nuevo pageCount
+  }, [infopropietario, itemsPerPage, currentPage]);
 
   //Pros para enviar a registro propetario
   const handleEditPropetario = (PropetarioId) => {
@@ -211,7 +246,7 @@ export const Propietarios = () => {
         Direccion: propetario.Direccion
       });
 
-      const url = `/RPropietario?${urlParams.toString()}`;
+      const url = `/RPropietario?${urlParams}`;
       window.location.href = url;
     } else {
       console.error("No se encontró el propetario con ID:", PropetarioId);
@@ -315,25 +350,21 @@ export const Propietarios = () => {
         <div className="paginador">
           <Pagination>
             <Pagination.Prev
-              onClick={() => paginate(currentPage - 1)}
+              onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
             />
-            {[...Array(Math.ceil(infopropietario.length / itemsPerPage))].map(
-              (item, index) => (
-                <Pagination.Item
-                  key={index}
-                  active={index + 1 === currentPage}
-                  onClick={() => paginate(index + 1)}
-                >
-                  {index + 1}
-                </Pagination.Item>
-              )
-            )}
+            {pagesToShow.map((page) => (
+              <Pagination.Item className="item-paginador"
+                key={page}
+                active={page === currentPage}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </Pagination.Item>
+            ))}
             <Pagination.Next
-              onClick={() => paginate(currentPage + 1)}
-              disabled={
-                currentPage === Math.ceil(infopropietario.length / itemsPerPage)
-              }
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === pageCount}
             />
           </Pagination>
         </div>
