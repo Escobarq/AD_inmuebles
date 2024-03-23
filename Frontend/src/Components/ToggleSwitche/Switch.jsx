@@ -37,7 +37,8 @@ export const Switch = () => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton:false className="ModalSobreNosotros">Sobre Nosotros</Modal.Header>
+        <Modal.Header closeButton:false className="ModalSobreNosotros">
+          <h1>Sobre Nosotros</h1></Modal.Header>
         <Modal.Body className="ModalSobreNosotros">
           <Row>
             <Col md={6}>
