@@ -101,6 +101,18 @@ export const ReArrendatario = () => {
   const handleMostrarAClick = async () => {
     setMostrarModalA(true);
   };
+  const Renvio = async () => {
+    const urlParams = new URLSearchParams({
+      TipoDocumento: arrendatarioData.TipoDocumento,
+      DocumentoIdentidad: arrendatarioData.DocumentoIdentidad,
+      NombreCompleto: arrendatarioData.NombreCompleto,
+      Telefono: arrendatarioData.Telefono,
+      Correo: arrendatarioData.Correo,
+      Estado: arrendatarioData.Estado,
+    });
+    const url = `/Registrocodeudor?${urlParams.toString()}`;
+    window.location.href = url;
+  };
 
   const handleCodeudorChange = async (Codeudor) => {
     setSelectedCodeudor(Codeudor);
@@ -113,6 +125,7 @@ export const ReArrendatario = () => {
       ...prevState,
       [name]: value,
     }));
+    console.log(arrendatarioData);
   };
 
   const onSubmitRegistro = async (data) => {
@@ -156,7 +169,7 @@ export const ReArrendatario = () => {
               <Form.Control
                 required
                 className="InputsRegistros"
-                {...register("nombrearrendatario")}
+                {...register("NombreCompleto")}
                 defaultValue={arrendatarioData.NombreCompleto}
                 onChange={handleInputChange}
               />
@@ -168,7 +181,7 @@ export const ReArrendatario = () => {
                 required
                 className="InputsRegistros"
                 as="select"
-                {...register("tipodocumento")}
+                {...register("TipoDocumento")}
                 defaultValue={arrendatarioData.TipoDocumento}
                 onChange={handleInputChange}
               >
@@ -186,7 +199,7 @@ export const ReArrendatario = () => {
               <Form.Control
                 required
                 className="InputsRegistros"
-                {...register("numerodocumento")}
+                {...register("DocumentoIdentidad")}
                 defaultValue={arrendatarioData.DocumentoIdentidad}
                 onChange={handleInputChange}
               />
@@ -197,7 +210,7 @@ export const ReArrendatario = () => {
               <Form.Control
                 required
                 className="InputsRegistros"
-                {...register("telefono")}
+                {...register("Telefono")}
                 defaultValue={arrendatarioData.Telefono}
                 onChange={handleInputChange}
               />
@@ -210,7 +223,7 @@ export const ReArrendatario = () => {
                 controlId="correo"
                 className="InputsRegistros"
                 type="email"
-                {...register("correo")}
+                {...register("Correo")}
                 defaultValue={arrendatarioData.Correo}
                 onChange={handleInputChange}
               />
@@ -325,6 +338,7 @@ export const ReArrendatario = () => {
             </ListGroup>
           </Modal.Body>
           <Modal.Footer>
+            <p onClick={Renvio}>Agregar Nuevo Codeudor</p>
             <a href="/Registrocodeudor">Agregar Nuevo Codeudor</a>
           </Modal.Footer>
         </Modal>

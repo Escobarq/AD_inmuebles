@@ -43,9 +43,10 @@ export const Rarrendatario = () => {
   }
 
 
-  useEffect(() => {                
+  useEffect(() => {
     cargarContratosDisponibles();
     setCurrentDate(getCurrentDate());
+    
   }, []);
 
   const cargarContratosDisponibles = async () => {
@@ -146,6 +147,38 @@ export const Rarrendatario = () => {
     window.location.href = "/H_recibos";
   };
 
+  const [pagosSeleccionados, setPagosSeleccionados] = useState(new Set());
+  const [IdpagosSeleccionados, setIdPagosSeleccionados] = useState(new Set());
+
+  // Función para manejar el cambio de estado cuando se hace clic en el interruptor
+  const handleSwitchChange = (index) => {
+    const nuevaListaFechasPagos = new Set(pagosSeleccionados);
+    const nuevaListaPagos = new Set(IdpagosSeleccionados);
+
+    // Si el índice ya está en el conjunto, lo eliminamos, de lo contrario lo agregamos
+    if (nuevaListaFechasPagos.has(formatDate(index.FechaPagoFija))) {
+      nuevaListaFechasPagos.delete(formatDate(index.FechaPagoFija));
+    } else {
+      nuevaListaFechasPagos.add(formatDate(index.FechaPagoFija));
+    }
+    if (nuevaListaPagos.has(index.IdPagoArrendamiento)) {
+      nuevaListaPagos.delete(index.IdPagoArrendamiento);
+    } else {
+      nuevaListaPagos.add(index.IdPagoArrendamiento);
+    }
+    console.log(nuevaListaFechasPagos);
+    console.log(nuevaListaPagos);
+    // Actualizar el estado con la nueva lista de pagos seleccionados
+    setPagosSeleccionados(nuevaListaFechasPagos);
+    setIdPagosSeleccionados(nuevaListaPagos);
+  };
+
+  const mostrarFechasSeleccionadas = () => {
+    // Convertir el conjunto de fechas seleccionadas a una cadena separada por comas
+    return Array.from(pagosSeleccionados)
+      .map((index) => formatDate(FechasPagosFijas[index]))
+      .join(', ');
+  };
 
   //FUNCION PARA GENERAR PDF
   const handleGuardarClick = async (data) => {
@@ -174,7 +207,7 @@ export const Rarrendatario = () => {
       const textX = width - padding - textWidth;
 
 
-      
+
 
       page.drawText(footerText, {
         x: padding,
@@ -237,14 +270,34 @@ export const Rarrendatario = () => {
             font: await pdfDoc.embedFont("Helvetica-Bold"),
             align: "right",
           });
+
+
+
           //la respuesta debajo del nombre del campo
-          page.drawText(`${element}`, {
-            x: leftX,
-            y: yOffset - fontSize * 1.5,
-            size: fontSize,
-            color: rgb(0, 0, 0),
-            align: "left",
-          });
+
+          if (key == "ValorPago"){
+
+            page.drawText(`$${element}`, {
+              x: leftX,
+              y: yOffset - fontSize * 1.5,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              align: "left",
+            });
+
+          } else {
+
+            page.drawText(`${element}`, {
+              x: leftX,
+              y: yOffset - fontSize * 1.5,
+              size: fontSize,
+              color: rgb(0, 0, 0),
+              align: "left",
+            });
+
+          }
+
+         
 
           if (leftX === padding) {
             leftX = rightX;
@@ -413,19 +466,14 @@ export const Rarrendatario = () => {
 
             <Form.Group controlId="documentoIdentidad">
               <Form.Label>Lista de Fechas De Pagos:</Form.Label>
-              <Form.Select
+              <Form.Control
                 className="InputsRegistros"
-                value={selectedFecha ? selectedFecha.FechaPagoFija : ""}
+                value={mostrarFechasSeleccionadas ? mostrarFechasSeleccionadas : ""}
                 onChange={(e) => handleFechasChange(e.target.value)}
                 onClick={() => setShowFechaModal(true)}
               >
-                <option value="">Seleccionar Fecha</option>
-                {FechasPagosFijas.map((Fecha, index) => (
-                  <option key={index} value={Fecha.FechaPagoFija}>
-                    {formatDate(Fecha.FechaPagoFija)}
-                  </option>
-                ))}
-              </Form.Select>
+
+              </Form.Control>
             </Form.Group>
           </div>
           <div
@@ -489,18 +537,16 @@ export const Rarrendatario = () => {
           <Modal.Title>Seleccionar Fecha del Pago</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ListGroup>
-            {FechasPagosFijas.map((Fechas, index) => (
-              <ListGroup.Item
-                key={index}
-                action
-                onClick={() => handleFechasChange(Fechas)}
-              >
-                {formatDate(Fechas.FechaPagoFija)}
-                
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
+          {FechasPagosFijas.map((Fechas, index) => (
+            <Form.Check // prettier-ignore
+              type="switch"
+              key={index}
+              id={`custom-switch-${index}`}
+              label={formatDate(Fechas.FechaPagoFija)}
+              onChange={() => handleSwitchChange(Fechas)}              
+            />
+          ))}
+
         </Modal.Body>
       </Modal>
 

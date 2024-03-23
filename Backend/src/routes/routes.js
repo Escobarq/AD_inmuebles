@@ -963,26 +963,26 @@ router.post("/RegistrarUsuario", async (req, res) => {
 router.post("/Rarrendatario", async (req, res) => {
   const connection = getConnection(); 
   const {
-    tipodocumento,
     IdCodeudor,
-    numerodocumento,
-    nombrearrendatario,
-    telefono,
-    correo,
-    estado = "Libre",
+    TipoDocumento,
+    DocumentoIdentidad,
+    NombreCompleto,
+    Telefono,
+    Correo,
+    Estado= "Libre",
   } = req.body;
 
   try {
     connection.query(
       "INSERT INTO arrendatario (NombreCompleto, IdCodeudor, TipoDocumento, DocumentoIdentidad, Telefono,  Correo, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [
-        nombrearrendatario,
+        NombreCompleto,
         IdCodeudor,
-        tipodocumento,
-        numerodocumento,
-        telefono,
-        correo,
-        estado,
+        TipoDocumento,
+        DocumentoIdentidad,
+        Telefono,
+        Correo,
+        Estado,
       ],
       (error, results) => {
         if (error) {
@@ -1137,30 +1137,30 @@ router.put("/Rarrendatarios/:id", async (req, res) => {
   const connection = getConnection(); 
   const { id } = req.params;
   const {
-    tipodocumento,
-    numerodocumento,
-    nombrearrendatario,
-    telefono,
-    correo,
+    NombreCompleto,
+        TipoDocumento,
+        DocumentoIdentidad,
+        Telefono,
+        Correo,
   } = req.body;
   try {
 
 
     const updatedFields = {};
-    if (nombrearrendatario){
-      updatedFields["NombreCompleto"] = nombrearrendatario;
+    if (NombreCompleto){
+      updatedFields["NombreCompleto"] = NombreCompleto;
     }
-    if (tipodocumento){
-      updatedFields["TipoDocumento"] = tipodocumento;
+    if (TipoDocumento){
+      updatedFields["TipoDocumento"] = TipoDocumento;
     }
-    if (numerodocumento){
-      updatedFields["DocumentoIdentidad"] = numerodocumento;
+    if (DocumentoIdentidad){
+      updatedFields["DocumentoIdentidad"] = DocumentoIdentidad;
     }
-    if (telefono){
-      updatedFields["Telefono"] = telefono;
+    if (Telefono){
+      updatedFields["Telefono"] = Telefono;
     }
-    if (correo){
-      updatedFields["Correo"] = correo;      
+    if (Correo){
+      updatedFields["Correo"] = Correo;      
     }
 
     // Verificar si se proporcionaron campos para actualizar
