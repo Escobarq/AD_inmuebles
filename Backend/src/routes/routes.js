@@ -1136,7 +1136,10 @@ router.post("/RComision", async (req, res) => {
     AdminInmobiliaria,
     AseoEntrega,
     Mantenimiento,
+    CuotaExtra,
+    PagoRecibo,
     ValorTotal,
+    Descripcion,
   } = req.body;
 
   try {
@@ -1149,7 +1152,7 @@ router.post("/RComision", async (req, res) => {
 
 
     connection.query(
-      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento, ValorTotal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento, ValorTotal, CuotaExtra,PagoRecibos, Descripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)",
       [
         IdPropietario,
         IdInmueble,
@@ -1161,6 +1164,9 @@ router.post("/RComision", async (req, res) => {
         AseoEntrega,
         Mantenimiento,
         ValorTotal,
+        CuotaExtra,
+        PagoRecibo,
+        Descripcion,
       ],
       (error, results) => {
         if (error) {
