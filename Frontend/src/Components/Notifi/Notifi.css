@@ -15,7 +15,9 @@
   background-color: transparent;
   border: none;
 }
-
+.notification-body{
+  overflow-y: hidden;
+}
 .notification-popover {
   width: 100vh; /* Ancho del Popover */
   position: absolute;
@@ -33,7 +35,7 @@
 
 .popover-body {
   background-color: #f8f9fa;
-  max-height: max-content; /* Altura máxima del cuerpo de notificaciones */
+  max-height: 300px; /* Altura máxima del cuerpo de notificaciones */
   overflow-y: auto; /* Cambia el color de fondo del cuerpo */
 }
 
@@ -67,4 +69,12 @@
 }
 .tittle{
   font-size: 0.8rem;
+}
+.notification-list {
+  max-height: 300px; /* Set a maximum height */
+  overflow-y: auto; /* Add a vertical scrollbar when needed */
+}
+
+.notification-list::-webkit-scrollbar {
+  width: 0; /* Hide the scrollbar */
 }

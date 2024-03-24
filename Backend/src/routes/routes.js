@@ -66,6 +66,52 @@ router.get("/Infouser", (req, res) => {
     }
   });
 });
+//Calculo Total General Propietarios de sus inmuebles
+router.get("/inmuebles-general", (req, res) => {
+  const connection = getConnection();  
+  const sql = `
+  SELECT
+    p.IdPropietario,
+    p.NombreCompleto,
+    JSON_ARRAYAGG(
+      JSON_OBJECT(
+        'Tipo', i.Tipo,
+        'IdInmueble', i.IdInmueble,
+        'ValorInmueble', i.ValorInmueble,
+        'Deposito', COALESCE(c.ValorDeposito, 'N/A')
+      )
+    ) AS InmueblesAsociados
+  FROM
+    propietario p
+  JOIN
+    inmueble i ON p.IdPropietario = i.IdPropietario
+  LEFT JOIN
+    contratoarrendamiento c ON i.IdInmueble = c.IdInmueble
+  GROUP BY
+    p.IdPropietario,
+    p.NombreCompleto;
+  `;
+
+  connection.query(sql, (error, results) => {
+    if (error) {
+      console.error("Error al realizar la consulta:", error);
+      res.status(500).json({ message: "Error del servidor" });
+    } else {
+      // Parsear los resultados para asegurar que los datos están en formato JSON
+      const parsedResults = results.map(row => {
+        return {
+          IdPropietario: row.IdPropietario,
+          NombreCompleto: row.NombreCompleto,
+          InmueblesAsociados: JSON.parse(row.InmueblesAsociados)
+        };
+      });
+
+      res.status(200).json(parsedResults);
+    }
+  });
+});
+
+
 
 router.get("/Vpropietarios", (req, res) => {
   const connection = getConnection(); 
@@ -206,7 +252,8 @@ router.get("/propietarios-inmuebles", (req, res) => {
     i.Ciudad,
     i.Barrio,
     i.Tipo AS TipoInmueble,
-    i.NoMatricula
+    i.NoMatricula,
+    i.ValorInmueble
 FROM 
     propietario p
 LEFT JOIN 
@@ -220,7 +267,7 @@ WHERE
     AND i.NoMatricula IS NOT NULL
     AND i.Estado <> 'Ocupado'
 ORDER BY 
-    p.IdPropietario ASC`;
+    p.IdPropietario ASC;`;
 
     connection.query(query, (error, results) => {
       if (error) {

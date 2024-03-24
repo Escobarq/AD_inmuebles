@@ -55,7 +55,7 @@
     },
     "windows": [
       {
-        "minimizable": false,
+        "minimizable": true,
         "maximized": true,
         "fullscreen": false,
         "height": 900,

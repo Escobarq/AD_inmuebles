@@ -23,7 +23,10 @@
   justify-content: flex-start;
 }
 
-.total_general{
+.total-general{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
     width: 100%;
 }
 .ContArrendatario {
