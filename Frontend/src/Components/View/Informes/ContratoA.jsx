@@ -62,6 +62,12 @@ export const ContratoA = () => {
     weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
   });
 
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+    }).format(value);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -101,7 +107,7 @@ export const ContratoA = () => {
         <td>{Contrato.NoMatricula}</td>
         <td>{formatDate(Contrato.FechaInicioContrato)}</td>
         <td style={{ backgroundColor: colorFechaFinContrato }}>{formatDate(Contrato.FechaFinContrato)}</td>
-        <td>{Contrato.ValorDeposito}</td>
+        <td>{formatCurrency(Contrato.ValorDeposito)}</td>
         <td>{Contrato.CuotasPendientes}</td>
         <td>{Contrato.EstadoContrato}</td>
       </tr>

@@ -88,7 +88,12 @@ export const H_recibos = () => {
     weekdaysShort: "Dom._Lun._Mar._Mié._Jue._Vie._Sáb.".split("_"),
     weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
   });
-
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+    }).format(value);
+  };
   const createrow = (PArrendamiento) => {
     if (PArrendamiento.FechaPago == null) {
       return (
@@ -99,7 +104,7 @@ export const H_recibos = () => {
           <td>Pendiente</td>
           <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
           <td>{PArrendamiento.FormaPago}</td>
-          <td>{PArrendamiento.ValorPago}</td>
+          <td>{formatCurrency(PArrendamiento.ValorPago)}</td>
           <td>{PArrendamiento.Estado}</td>
           <td>{PArrendamiento.DiasDMora}</td>
         </tr>
@@ -113,7 +118,7 @@ export const H_recibos = () => {
           <td>{formatDate(PArrendamiento.FechaPago)}</td>
           <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
           <td>{PArrendamiento.FormaPago}</td>
-          <td>{PArrendamiento.ValorPago}</td>
+          <td>{formatCurrency(PArrendamiento.ValorPago)}</td>
           <td>{PArrendamiento.Estado}</td>
           <td>{PArrendamiento.DiasDMora}</td>
         </tr>
