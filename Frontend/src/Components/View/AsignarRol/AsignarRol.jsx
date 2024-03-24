@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare, faUserSlash ,faUserPlus} from "@fortawesome/free-solid-svg-icons";
 import { Table, Button, Modal } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
-import { Link } from "react-router-dom";
 import useActualizarEstadoEmpleados from "../../Hooks/InhabilitarEmpleado";
 import { toast } from "react-toastify";
 import { useMediaQuery } from "@react-hook/media-query";
@@ -105,8 +104,8 @@ export const AsignarRol = () => {
   };
 
   const createRowRol = (roles) => {
-    const truncatedPassword = roles.Contrasena.length > 10 ? roles.Contrasena.substring(0, 10) + '...' : roles.Contrasena;
-  
+    const maskedPassword = '*'.repeat(roles.Contrasena.length);  
+    
     if (roles.Idrol === 1 || roles.Idrol === 2) {
       return (
         <tr key={roles.IdTrabajador}>
@@ -114,7 +113,7 @@ export const AsignarRol = () => {
           <td>{roles.Nombre}</td>
           <td>{roles.Apellido}</td>
           <td>{roles.Correo}</td>
-          <td>{truncatedPassword}</td>
+          <td>{maskedPassword}</td>
           <td>{roles.Telefono}</td>
           <td>{convertirIdRolATexto(roles.Idrol)}</td>
           <td >

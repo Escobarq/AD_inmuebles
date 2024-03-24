@@ -167,23 +167,29 @@ function ContactForm() {
           <Form.Group>
             <Form.Label>Contraseña:</Form.Label>
             <div className="password-input">
-              <Form.Control
-                className="form-control"
-                id="Contraseña"
-                onBlur={onChange}
-                type={shown ? "text" : "password"}
-                placeholder="Contraseña"
-                value={Empleadosdata.Contrasena}
-                onChange={(e) =>
-                  setEmpleadosdata({
-                    ...Empleadosdata,
-                    Contrasena: e.target.value,
-                  })
-                }
-              />
-              <Button style={{margin:'1%'}} variant="success" onClick={switchShown}>
-                {shown ? "Ocultar" : "Mostrar"}
-              </Button>
+              <InputGroup>
+                <Form.Control
+                  className="form-control"
+                  id="Contraseña"
+                  onBlur={onChange}
+                  type={shown ? "text" : "password"}
+                  placeholder="Contraseña"
+                  value={Empleadosdata.Contrasena}
+                  onChange={(e) =>
+                    setEmpleadosdata({
+                      ...Empleadosdata,
+                      Contrasena: e.target.value,
+                    })
+                  }
+                />
+                <InputGroup.Text style={{ height: "100%" }}>
+                  <FontAwesomeIcon
+                    icon={shown ? faEyeSlash : faEye}
+                    onClick={switchShown}
+                    style={{ cursor: "pointer", height: "1.5rem" }}
+                  />
+                </InputGroup.Text>
+              </InputGroup>
             </div>
           </Form.Group>
           <Form.Group>

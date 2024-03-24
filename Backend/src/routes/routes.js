@@ -21,6 +21,36 @@ router.post('/api/config', async (req, res) => {
 
 
 //Funcion para traer su información
+
+router.get('/fechas', (req, res) => {
+  const connection = getConnection(); // Obtiene la conexión a la base de datos
+  try {
+    const query = `
+      SELECT inmueble.VAseguramiento AS fechaAseguramiento, NULL AS fechaFinContrato
+      FROM inmueble
+      UNION ALL
+      SELECT NULL AS fechaAseguramiento, contratoarrendamiento.FechaFinContrato AS fechaFinContrato
+      FROM contratoarrendamiento
+    `;
+    
+    // Ejecutar la consulta y esperar los resultados
+    connection.query(query, (error, results) => {
+      if (error) {
+        console.error('Error al ejecutar la consulta:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+        return;
+      }
+
+      // Enviar las fechas al cliente
+      res.json(results);
+    });
+  } catch (error) {
+    console.error('Error al ejecutar la consulta:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
 router.get("/Infouser", (req, res) => {
   const { correousuario } = req.query;
   const connection = getConnection(); 
@@ -36,6 +66,52 @@ router.get("/Infouser", (req, res) => {
     }
   });
 });
+//Calculo Total General Propietarios de sus inmuebles
+router.get("/inmuebles-general", (req, res) => {
+  const connection = getConnection();  
+  const sql = `
+  SELECT
+    p.IdPropietario,
+    p.NombreCompleto,
+    JSON_ARRAYAGG(
+      JSON_OBJECT(
+        'Tipo', i.Tipo,
+        'IdInmueble', i.IdInmueble,
+        'ValorInmueble', i.ValorInmueble,
+        'Deposito', COALESCE(c.ValorDeposito, 'N/A')
+      )
+    ) AS InmueblesAsociados
+  FROM
+    propietario p
+  JOIN
+    inmueble i ON p.IdPropietario = i.IdPropietario
+  LEFT JOIN
+    contratoarrendamiento c ON i.IdInmueble = c.IdInmueble
+  GROUP BY
+    p.IdPropietario,
+    p.NombreCompleto;
+  `;
+
+  connection.query(sql, (error, results) => {
+    if (error) {
+      console.error("Error al realizar la consulta:", error);
+      res.status(500).json({ message: "Error del servidor" });
+    } else {
+      // Parsear los resultados para asegurar que los datos están en formato JSON
+      const parsedResults = results.map(row => {
+        return {
+          IdPropietario: row.IdPropietario,
+          NombreCompleto: row.NombreCompleto,
+          InmueblesAsociados: JSON.parse(row.InmueblesAsociados)
+        };
+      });
+
+      res.status(200).json(parsedResults);
+    }
+  });
+});
+
+
 
 router.get("/Vpropietarios", (req, res) => {
   const connection = getConnection(); 
@@ -176,7 +252,8 @@ router.get("/propietarios-inmuebles", (req, res) => {
     i.Ciudad,
     i.Barrio,
     i.Tipo AS TipoInmueble,
-    i.NoMatricula
+    i.NoMatricula,
+    i.ValorInmueble
 FROM 
     propietario p
 LEFT JOIN 
@@ -190,7 +267,7 @@ WHERE
     AND i.NoMatricula IS NOT NULL
     AND i.Estado <> 'Ocupado'
 ORDER BY 
-    p.IdPropietario ASC`;
+    p.IdPropietario ASC;`;
 
     connection.query(query, (error, results) => {
       if (error) {
@@ -496,11 +573,12 @@ router.get("/contrato-arren-inmue", (req, res) => {
   arrendatario.Nombrecompleto AS NombreArrendatario,
   inmueble.IdInmueble,
   inmueble.NoMatricula,
-  inmueble.Tipo AS TipoInmueble
+  inmueble.Tipo AS TipoInmueble,
+  inmueble.ValorInmueble AS ValorPago
 FROM contratoarrendamiento
 JOIN arrendatario ON contratoarrendamiento.IdArrendatario = arrendatario.IdArrendatario
 JOIN inmueble ON contratoarrendamiento.idInmueble = inmueble.IdInmueble
-WHERE contratoarrendamiento.EstadoContrato = 'Vigente';
+WHERE contratoarrendamiento.EstadoContrato = 'Vigente', contratoarrendamiento.;
   `;
 
   connection.query(query, (error, results) => {
@@ -896,33 +974,33 @@ router.post("/Rcodeudor", async (req, res) => {
 
 // Registrar Usuario
 router.post("/RegistrarUsuario", async (req, res) => {
-  const connection = getConnection(); 
-  const { nombre, apellido, correo, contrasena, telefono } = req.body;
+  const connection = getConnection();
+  const { nombre, apellido, correo, contrasena, telefono, rol } = req.body;
 
   // Validación básica de entrada
-  if (!nombre || !apellido || !correo || !contrasena || !telefono) {
+  if (!nombre || !apellido || !correo || !contrasena || !telefono || !rol) {
     return res
       .status(400)
       .json({ message: "Todos los campos son obligatorios" });
   }
 
   try {
-      connection.query("SELECT * FROM trabajador WHERE Correo = ?",
-      [correo], (error, results) => {
-        if (results == "") {
-          const idrol = Math.floor(Math.random() * 2) + 1;
-    // Insertar el nuevo usuario en la base de datos
-     connection.query(
-      "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
-      [nombre, apellido, correo, contrasena, telefono, idrol]
-    );
-
-    res.status(201).json({ message: "Usuario registrado exitosamente" });
-        }
-        else {
+    connection.query(
+      "SELECT * FROM trabajador WHERE Correo = ?",
+      [correo],
+      (error, results) => {
+        if (results.length === 0) {
+          // Insertar el nuevo usuario en la base de datos
+          connection.query(
+            "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
+            [nombre, apellido, correo, contrasena, telefono, rol]
+          );
+          res.status(201).json({ message: "Usuario registrado exitosamente" });
+        } else {
           res.status(400).json({ error: "Correo Duplicado" });
-        }})
-   
+        }
+      }
+    );
   } catch (error) {
     res.status(500).json({ message: "Error al registrar usuario" });
   }
@@ -933,26 +1011,26 @@ router.post("/RegistrarUsuario", async (req, res) => {
 router.post("/Rarrendatario", async (req, res) => {
   const connection = getConnection(); 
   const {
-    tipodocumento,
     IdCodeudor,
-    numerodocumento,
-    nombrearrendatario,
-    telefono,
-    correo,
-    estado = "Libre",
+    TipoDocumento,
+    DocumentoIdentidad,
+    NombreCompleto,
+    Telefono,
+    Correo,
+    Estado= "Libre",
   } = req.body;
 
   try {
     connection.query(
       "INSERT INTO arrendatario (NombreCompleto, IdCodeudor, TipoDocumento, DocumentoIdentidad, Telefono,  Correo, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [
-        nombrearrendatario,
+        NombreCompleto,
         IdCodeudor,
-        tipodocumento,
-        numerodocumento,
-        telefono,
-        correo,
-        estado,
+        TipoDocumento,
+        DocumentoIdentidad,
+        Telefono,
+        Correo,
+        Estado,
       ],
       (error, results) => {
         if (error) {
@@ -1009,7 +1087,7 @@ router.post("/RConArrendamiento", async (req, res) => {
 router.put("/RPagoArrendamiento", async (req, res) => {
   const connection = getConnection(); 
   const {
-    IdPagoArrendamiento,
+    IdPagosSeleccionados,
     FechaPago,
     ValorPago,
     FormaPago,
@@ -1017,29 +1095,29 @@ router.put("/RPagoArrendamiento", async (req, res) => {
   } = req.body;
 
   try {
-    connection.query(
-      " Update pagos_arrendamiento set FechaPago = ?,ValorPago = ?,FormaPago = ?, Estado = ? where IdPagoArrendamiento = ?",
-      [
-        FechaPago, 
-        ValorPago,
-        FormaPago,
-        Estado,
-        IdPagoArrendamiento,
-      ],
-      (error, results) => {
-        if (error) {
-          console.error("Error al añadir Un pago de arrendamiento:", error);
-          res
-            .status(500)
-            .json({ error: "Error al añadir Pago de arrendamiento" });
-        } else {
-          console.log(" Pago Arrenmiento agregado:", results);
-          res
-            .status(201)
-            .json({ message: "Pago Arrenmiento registrado exitosamente" });
+    // Itera sobre la lista de IDs y actualiza cada registro
+    for (const id of IdPagosSeleccionados) {
+      connection.query(
+        "UPDATE pagos_arrendamiento SET FechaPago = ?, ValorPago = ?, FormaPago = ?, Estado = ? WHERE IdPagoArrendamiento = ?",
+        [
+          FechaPago, 
+          ValorPago,
+          FormaPago,
+          Estado,
+          id,
+        ],
+        (error, results) => {
+          if (error) {
+            console.error("Error al actualizar el pago de arrendamiento con ID:", id, error);
+          } else {
+            console.log("Pago de arrendamiento actualizado con ID:", id);
+          }
         }
-      }
-    );
+      );
+    }
+
+    // Envía una respuesta exitosa al finalizar la actualización
+    res.status(200).json({ message: "Pagos de arrendamiento actualizados exitosamente" });
   } catch (error) {
     console.error("Error al añadir Pago Arrenmiento: ", error);
     res.status(500).json({ error: "Error al Pago Arrenmiento" });
@@ -1107,30 +1185,30 @@ router.put("/Rarrendatarios/:id", async (req, res) => {
   const connection = getConnection(); 
   const { id } = req.params;
   const {
-    tipodocumento,
-    numerodocumento,
-    nombrearrendatario,
-    telefono,
-    correo,
+    NombreCompleto,
+        TipoDocumento,
+        DocumentoIdentidad,
+        Telefono,
+        Correo,
   } = req.body;
   try {
 
 
     const updatedFields = {};
-    if (nombrearrendatario){
-      updatedFields["NombreCompleto"] = nombrearrendatario;
+    if (NombreCompleto){
+      updatedFields["NombreCompleto"] = NombreCompleto;
     }
-    if (tipodocumento){
-      updatedFields["TipoDocumento"] = tipodocumento;
+    if (TipoDocumento){
+      updatedFields["TipoDocumento"] = TipoDocumento;
     }
-    if (numerodocumento){
-      updatedFields["DocumentoIdentidad"] = numerodocumento;
+    if (DocumentoIdentidad){
+      updatedFields["DocumentoIdentidad"] = DocumentoIdentidad;
     }
-    if (telefono){
-      updatedFields["Telefono"] = telefono;
+    if (Telefono){
+      updatedFields["Telefono"] = Telefono;
     }
-    if (correo){
-      updatedFields["Correo"] = correo;      
+    if (Correo){
+      updatedFields["Correo"] = Correo;      
     }
 
     // Verificar si se proporcionaron campos para actualizar

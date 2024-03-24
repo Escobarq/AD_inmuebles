@@ -334,6 +334,8 @@ export const ReciboGastos = () => {
               font: await pdfDoc.embedFont("Helvetica-Bold"),
               align: "right",
             });
+
+
             //la respuesta debajo del nombre del campo
             if (key == "PagoArriendo" || key == "AseoEntrega" || key == "AdminInmobiliaria" || key == "Mantenimiento" || key == "ValorTotal") {
               page.drawText(`$${value}`, {
@@ -354,6 +356,9 @@ export const ReciboGastos = () => {
                 align: "left",
               });
             }
+
+
+
 
             // Datos de la tabla
             const tableData = [
@@ -440,7 +445,7 @@ export const ReciboGastos = () => {
       const link = document.createElement("a");
       link.href = url;
 
-      link.download = "Recibo Gastos_pdf";
+      link.download = "Recibo Gastos.pdf";
       link.click();
       window.location.href = "/H_gastos"
 

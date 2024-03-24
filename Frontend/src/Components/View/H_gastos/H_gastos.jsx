@@ -6,7 +6,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";

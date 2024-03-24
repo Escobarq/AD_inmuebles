@@ -10,6 +10,7 @@ import axios from "axios";
 export const Contrato = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const [valorDeposito, setValorDeposito] = useState("");
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showMatriculaModal, setShowMatriculaModal] = useState(false);
@@ -20,7 +21,9 @@ export const Contrato = () => {
   const [selectedTipoInmueble, setSelectedTipoInmueble] = useState("");
   const [selectedMatricula, setSelectedMatricula] = useState("");
   const [matriculasDisponibles, setMatriculasDisponibles] = useState([]);
-  const { register, handleSubmit, reset , watch } = useForm({ mode: "onChange" });
+  const { register, handleSubmit, reset, setValue, watch } = useForm({
+    mode: "onChange",
+  });
   const [selectedIdInmueble, setSelectedIdInmueble] = useState(null);
   const [selectedIdArrendatario, setSelectedIdArrendatario] = useState("");
 
@@ -101,45 +104,48 @@ export const Contrato = () => {
     setShowCancelModal(true); // Mostrar modal de confirmación antes de cancelar
   };
 
+ 
   const handleSubmitForm = async () => {
-   
     // Aquí puedes enviar los datos del formulario al backend
     try {
       if (location.search !== "") {
-        const response = await axios.post("http://localhost:3006/contratoarrendamiento", {
-          IdArrendatario: selectedIdArrendatario,
-          IdInmueble: inmuebleData.IdInmueble,
-          FechaInicioContrato: currentDate,
-          FechaPagoFija: currentDate,
-          FechaFinContrato: watch("FechaFinContrato"),
-          EstadoContrato: ("Vigente"),
-          ValorDeposito: watch("ValorDeposito")
-        });
+        const response = await axios.post(
+          "http://localhost:3006/contratoarrendamiento",
+          {
+            IdArrendatario: selectedIdArrendatario,
+            IdInmueble: inmuebleData.IdInmueble,
+            FechaInicioContrato: currentDate,
+            FechaPagoFija: currentDate,
+            FechaFinContrato: watch("FechaFinContrato"),
+            EstadoContrato: "Vigente",
+            ValorDeposito: watch("ValorDeposito"),
+          }
+        );
         console.log("Respuesta del servidor:", response.data);
         toast.success("Contrato de arrendamiento creado correctamente");
         console.log(selectedIdInmueble);
         reset();
         // Después de guardar los datos, redirigir a la página de Carrendatario
-       window.location.href = "/Carrendatario";
-        
-      } else{
-        const response = await axios.post("http://localhost:3006/contratoarrendamiento", {
-          IdArrendatario: selectedIdArrendatario,
-          IdInmueble: selectedIdInmueble,
-          FechaInicioContrato: currentDate,
-          FechaPagoFija: currentDate,
-          FechaFinContrato: watch("FechaFinContrato"),
-          EstadoContrato: ("Vigente"),
-          ValorDeposito: watch("ValorDeposito")
-        });
+        window.location.href = "/Carrendatario";
+      } else {
+        const response = await axios.post(
+          "http://localhost:3006/contratoarrendamiento",
+          {
+            IdArrendatario: selectedIdArrendatario,
+            IdInmueble: selectedIdInmueble,
+            FechaInicioContrato: currentDate,
+            FechaPagoFija: currentDate,
+            FechaFinContrato: watch("FechaFinContrato"),
+            EstadoContrato: "Vigente",
+            ValorDeposito: watch("ValorDeposito"),
+          }
+        );
         console.log("Respuesta del servidor:", response.data);
         toast.success("Contrato de arrendamiento creado correctamente");
         reset();
         // Después de guardar los datos, redirigir a la página de Carrendatario
-       window.location.href = "/Carrendatario";
-        
+        window.location.href = "/Carrendatario";
       }
-
     } catch (error) {
       console.error("Error al guardar el contrato:", error);
       toast.error("Error al guardar el contrato. Inténtalo de nuevo.");
@@ -158,11 +164,16 @@ export const Contrato = () => {
       if (inmueble) {
         setSelectedTipoInmueble(inmueble.TipoInmueble);
         setSelectedIdInmueble(inmueble.IdInmueble);
-        console.log("ID del inmueble:", inmueble.IdInmueble); // Imprimir ID del inmueble en la consola
+
+        // Calcular el valor del depósito como la mitad del valor del inmueble
+        const mitadValorInmueble = inmueble.ValorInmueble / 2;
+        setValorDeposito(mitadValorInmueble);
+
+        // Establecer el valor del depósito en el campo del formulario utilizando setValue
+        setValue("ValorDeposito", mitadValorInmueble);
       } else {
         setSelectedTipoInmueble("");
         setSelectedIdInmueble(null);
-        console.log("No se encontró el inmueble asociado"); // Mensaje de error si no se encuentra el inmueble
       }
     } catch (error) {
       console.error("Error al obtener el tipo de inmueble:", error);
@@ -177,73 +188,72 @@ export const Contrato = () => {
     setSelectedArrendatario(selected);
     setSelectedCodeudor(selected.NombreCodeudor);
     setSelectedIdArrendatario(selected.IdArrendatario);
-    setShowArrendatarioModal(false)
+    setShowArrendatarioModal(false);
   };
-
-
 
   return (
     <div className="contener-home contener-rpropietario">
       <h2>Generación Nuevo Contrato</h2>
       <div className="container">
-        <Form className="form-propietario" onSubmit={handleSubmit(handleConfirmSave)}>
+        <Form
+          className="form-propietario"
+          onSubmit={handleSubmit(handleConfirmSave)}
+        >
           <Form.Group controlId="Matricula" className="mb-3">
             <Form.Label>Número de Matrícula:</Form.Label>
             {location.search !== "" && (
-            <>
-               <Form.Control
-              type="text"
-              value={inmuebleData.NoMatricula}
-              readOnly
-              disabled={!selectedTipoInmueble}
-            />
-            </>
-          )}
+              <>
+                <Form.Control
+                  type="text"
+                  value={inmuebleData.NoMatricula}
+                  readOnly
+                  disabled={!selectedTipoInmueble}
+                />
+              </>
+            )}
             {location.search == "" && (
-            <>
-               <InputGroup>            
-              <Form.Select
-                value={selectedMatricula}
-                onChange={(e) => handleMatriculaChange(e.target.value)}
-                onClick={() => setShowMatriculaModal(true)}
-              >
-                <option value="">Seleccionar Matrícula</option>
-                {matriculasDisponibles.map((matricula, index) => (
-                  <option key={index} value={matricula}>
-                    {matricula}
-                  </option>
-                ))}
-              </Form.Select>
-            </InputGroup>
-            </>
-          )}           
+              <>
+                <InputGroup>
+                  <Form.Select
+                    value={selectedMatricula}
+                    onChange={(e) => handleMatriculaChange(e.target.value)}
+                    onClick={() => setShowMatriculaModal(true)}
+                  >
+                    <option value="">Seleccionar Matrícula</option>
+                    {matriculasDisponibles.map((matricula, index) => (
+                      <option key={index} value={matricula}>
+                        {matricula}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </InputGroup>
+              </>
+            )}
           </Form.Group>
 
           <Form.Group controlId="TipoInmueble" className="mb-3">
             <Form.Label>Tipo de Inmueble:</Form.Label>
 
             {location.search !== "" && (
-            <>
-               <Form.Control
-              type="text"
-              value={inmuebleData.Tipo}
-              readOnly
-              disabled={!selectedTipoInmueble}
-            />
-            </>
-          )}
+              <>
+                <Form.Control
+                  type="text"
+                  value={inmuebleData.Tipo}
+                  readOnly
+                  disabled={!selectedTipoInmueble}
+                />
+              </>
+            )}
             {location.search == "" && (
-            <>
-               <Form.Control
-              type="text"
-              value={selectedTipoInmueble}
-              readOnly
-              disabled={!selectedTipoInmueble}
-            />
-            </>
-          )}           
-
-           
+              <>
+                <Form.Control
+                  type="text"
+                  value={selectedTipoInmueble}
+                  readOnly
+                  disabled={!selectedTipoInmueble}
+                />
+              </>
+            )}
           </Form.Group>
 
           <Form.Group controlId="Arrendatario" className="mb-3">
@@ -282,7 +292,12 @@ export const Contrato = () => {
 
           <Form.Group controlId="FechaInicioContrato">
             <Form.Label>Fecha Inicio Contrato:</Form.Label>
-            <Form.Control value={currentDate} disabled type="date" {...register("FechaInicioContrato")} />
+            <Form.Control
+              value={currentDate}
+              disabled
+              type="date"
+              {...register("FechaInicioContrato")}
+            />
           </Form.Group>
 
           <Form.Group controlId="FechaFinContrato">
@@ -292,9 +307,13 @@ export const Contrato = () => {
 
           <Form.Group controlId="FechaPagoFija">
             <Form.Label>Fecha Pago Fija:</Form.Label>
-            <Form.Control type="date" value={currentDate} disabled {...register("FechaPagoFija")} />
+            <Form.Control
+              type="date"
+              value={currentDate}
+              disabled
+              {...register("FechaPagoFija")}
+            />
           </Form.Group>
-
 
           <Form.Group controlId="documentoidentidad">
             <Form.Label>Valor Deposito:</Form.Label>
@@ -303,29 +322,28 @@ export const Contrato = () => {
               <Form.Control type="number" {...register("ValorDeposito")} />
             </InputGroup>
           </Form.Group>
-
         </Form>
-          <div className="contener-buttons d-flex justify-content-center">
-            <div className="save_deleter">
-              <Button
-                type="button"
-                variant="success m-2"
-                onClick={handleConfirmSave}
-              >
-                <FontAwesomeIcon icon={faSave} />
-                <span className="text_button ms-2">Guardar</span>
-              </Button>
+        <div className="contener-buttons d-flex justify-content-center">
+          <div className="save_deleter">
+            <Button
+              type="button"
+              variant="success m-2"
+              onClick={handleConfirmSave}
+            >
+              <FontAwesomeIcon icon={faSave} />
+              <span className="text_button ms-2">Guardar</span>
+            </Button>
 
-              <Button
-                type="button"
-                variant="danger m-2"
-                onClick={() => setShowCancelModal(true)}
-              >
-                <FontAwesomeIcon icon={faTimes} />
-                <span className="text_button ms-2">Cancelar</span>
-              </Button>
-            </div>
+            <Button
+              type="button"
+              variant="danger m-2"
+              onClick={() => setShowCancelModal(true)}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+              <span className="text_button ms-2">Cancelar</span>
+            </Button>
           </div>
+        </div>
       </div>
 
       {/* Modal para seleccionar la matrícula */}

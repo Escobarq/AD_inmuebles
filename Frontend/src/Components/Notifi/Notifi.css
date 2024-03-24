@@ -15,12 +15,14 @@
   background-color: transparent;
   border: none;
 }
-
+.notification-body{
+  overflow-y: hidden;
+}
 .notification-popover {
-  width: 300px; /* Ancho del Popover */
+  width: 100vh; /* Ancho del Popover */
   position: absolute;
   top: calc(100% + 10px); /* Coloca el Popover debajo del botón de notificación con un margen superior */
-  left: -60%; /* Centra el Popover horizontalmente */
+  left: -100%; /* Centra el Popover horizontalmente */
   transform: translateX(-50%);
   z-index: 999;
   padding: 10px; /* Agrega un espacio alrededor del contenido del Popover */
@@ -64,4 +66,15 @@
 
 .notification-item span {
   display: block; /* Alinear cada detalle en una línea separada */
+}
+.tittle{
+  font-size: 0.8rem;
+}
+.notification-list {
+  max-height: 300px; /* Set a maximum height */
+  overflow-y: auto; /* Add a vertical scrollbar when needed */
+}
+
+.notification-list::-webkit-scrollbar {
+  width: 0; /* Hide the scrollbar */
 }

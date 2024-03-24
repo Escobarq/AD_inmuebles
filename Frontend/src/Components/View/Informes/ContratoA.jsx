@@ -62,6 +62,12 @@ export const ContratoA = () => {
     weekdaysMin: "Do_Lu_Ma_Mi_Ju_Vi_Sá".split("_"),
   });
 
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+    }).format(value);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -72,7 +78,7 @@ export const ContratoA = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>No Contrato</th>
+        <th>Cont Cliente</th>
         <th>No Documento</th>
         <th>Arrendatario</th>
         <th>Matricula Inmueble</th>
@@ -101,7 +107,7 @@ export const ContratoA = () => {
         <td>{Contrato.NoMatricula}</td>
         <td>{formatDate(Contrato.FechaInicioContrato)}</td>
         <td style={{ backgroundColor: colorFechaFinContrato }}>{formatDate(Contrato.FechaFinContrato)}</td>
-        <td>{Contrato.ValorDeposito}</td>
+        <td>{formatCurrency(Contrato.ValorDeposito)}</td>
         <td>{Contrato.CuotasPendientes}</td>
         <td>{Contrato.EstadoContrato}</td>
       </tr>
@@ -378,15 +384,9 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
             <option value="Vigente">Vigente</option>
             <option value="Finalizado">Finalizado</option>
           </select>
-          <label className="l1">Fecha Final Maxima: </label>
-          <input
-            className="input-filtroRe"
-            value={filtroData.FechaFinMAX}
-            onChange={handleChange}
-            type="date"
-            name="FechaFinMAX"
-            id=""
-          />
+
+      
+
         </div>
         <Button
           variant="primary"
