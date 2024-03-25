@@ -578,7 +578,7 @@ router.get("/contrato-arren-inmue", (req, res) => {
 FROM contratoarrendamiento
 JOIN arrendatario ON contratoarrendamiento.IdArrendatario = arrendatario.IdArrendatario
 JOIN inmueble ON contratoarrendamiento.idInmueble = inmueble.IdInmueble
-WHERE contratoarrendamiento.EstadoContrato = 'Vigente', contratoarrendamiento.;
+WHERE contratoarrendamiento.EstadoContrato = 'Vigente';
   `;
 
   connection.query(query, (error, results) => {
@@ -1091,30 +1091,46 @@ router.put("/RPagoArrendamiento", async (req, res) => {
     FechaPago,
     ValorPago,
     FormaPago,
-    Estado,
+
   } = req.body;
 
   try {
     // Itera sobre la lista de IDs y actualiza cada registro
     for (const id of IdPagosSeleccionados) {
       connection.query(
-        "UPDATE pagos_arrendamiento SET FechaPago = ?, ValorPago = ?, FormaPago = ?, Estado = ? WHERE IdPagoArrendamiento = ?",
-        [
-          FechaPago, 
-          ValorPago,
-          FormaPago,
-          Estado,
-          id,
-        ],
-        (error, results) => {
-          if (error) {
-            console.error("Error al actualizar el pago de arrendamiento con ID:", id, error);
-          } else {
-            console.log("Pago de arrendamiento actualizado con ID:", id);
+          "SELECT FechaPago, FechaPagoFija FROM pagos_arrendamiento WHERE IdPagoArrendamiento = ?",
+          [id],
+          (error, results) => {
+              if (error) {
+                  console.error("Error al obtener la información del pago de arrendamiento con ID:", id, error);
+              } else {
+                  const { FechaPagoFija } = results[0];
+                  let Estado;
+  
+                  if (FechaPago < FechaPagoFija) {
+                      Estado = 'Adelantado';
+                  } else if (FechaPago > FechaPagoFija) {
+                      Estado = 'Atrasado';
+                  } else {
+                      Estado = 'AlDia';
+                  }
+  
+                  connection.query(
+                      "UPDATE pagos_arrendamiento SET FechaPago = ?, ValorPago = ?, FormaPago = ?, Estado = ? WHERE IdPagoArrendamiento = ?",
+                      [FechaPago, ValorPago, FormaPago, Estado, id],
+                      (error, results) => {
+                          if (error) {
+                              console.error("Error al actualizar el pago de arrendamiento con ID:", id, error);
+                          } else {
+                              console.log("Pago de arrendamiento actualizado con ID:", id);
+                          }
+                      }
+                  );
+              }
           }
-        }
       );
-    }
+  }
+  
 
     // Envía una respuesta exitosa al finalizar la actualización
     res.status(200).json({ message: "Pagos de arrendamiento actualizados exitosamente" });

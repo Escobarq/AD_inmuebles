@@ -6,7 +6,7 @@ import axios from 'axios';
 import "./Notifi.css";
 
 export const Notifi = () => {
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(true);
   const [notificationsAseguramiento, setNotificationsAseguramiento] = useState([]);
   const [notificationsContrato, setNotificationsContrato] = useState([]);
 

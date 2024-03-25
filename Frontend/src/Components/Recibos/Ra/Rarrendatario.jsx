@@ -89,16 +89,6 @@ export const Rarrendatario = () => {
     data.NoMatricula = selectedContrato.NoMatricula;
     data.TipoInmueble = selectedContrato.TipoInmueble;
     data.FechaPagoFija = getCurrentDate(selectedFecha.FechaPagoFija);
-    if (currentDate > selectedFecha.FechaPagoFija) {
-      data.Estado = "Atrasado"
-    }
-    else if (currentDate < selectedFecha.FechaPagoFija) {
-      data.Estado = "Adelantado"
-    }
-    else {
-
-      data.Estado = "AlDia"
-    }
 
     try {
       const response = await fetch("http://localhost:3006/RPagoArrendamiento", {
@@ -463,9 +453,13 @@ export const Rarrendatario = () => {
               </Form.Select>
             </Form.Group>
 
+          </div>
             <Form.Group controlId="documentoIdentidad">
               <Form.Label>Lista de Fechas De Pagos:</Form.Label>
               <Form.Control
+               as="textarea"
+               rows={2}
+               style={{ width: "100%", resize: "none" }}
                 className="InputsRegistros"
                 value={pagosSeleccionados ? Array.from(pagosSeleccionados).join(', ') : ""}
                 onChange={(e) => handleFechasChange(e.target.value)}
@@ -474,7 +468,6 @@ export const Rarrendatario = () => {
 
               </Form.Control>
             </Form.Group>
-          </div>
           <div
             className="buttons"
             style={{
