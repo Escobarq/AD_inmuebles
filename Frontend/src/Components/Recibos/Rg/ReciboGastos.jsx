@@ -573,7 +573,7 @@ return (
           </Form.Group>
 
           <Form.Group>
-            <label htmlFor="">Pago Administración: <input type="number" name="PorcentajeAD" onChange={(e) => handleCalcular(e.target)} defaultValue={8} id="" /></label>
+            <label htmlFor="">Pago Administración:  Ingrese el % <input type="number" name="PorcentajeAD" onChange={(e) => handleCalcular(e.target)} defaultValue={8} id="" /></label>
             <input 
               type="number"
               className="form-control InputsRegistros"
