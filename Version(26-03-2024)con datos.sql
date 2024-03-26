@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `arrendatario` (
   KEY `Id_Codeudor` (`IdCodeudor`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.arrendatario: 11 rows
+-- Volcando datos para la tabla adminmuebles.arrendatario: 12 rows
 /*!40000 ALTER TABLE `arrendatario` DISABLE KEYS */;
 INSERT INTO `arrendatario` (`IdArrendatario`, `IdCodeudor`, `NombreCompleto`, `TipoDocumento`, `DocumentoIdentidad`, `Telefono`, `Correo`, `Estado`, `booleanos`) VALUES
 	(1, 1, 'emanuel ortensio', 'Cedula Ciudadania', '111552262', '3135025146', 'emanuel@gmail.com', 'Libre', 'true'),
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `comision_propietario` (
   KEY `IdInmueble` (`IdInmueble`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.comision_propietario: 42 rows
+-- Volcando datos para la tabla adminmuebles.comision_propietario: 44 rows
 /*!40000 ALTER TABLE `comision_propietario` DISABLE KEYS */;
 INSERT INTO `comision_propietario` (`IdComisionPropietario`, `IdPropietario`, `IdInmueble`, `FechaElaboracion`, `ElaboradoPor`, `FormaPago`, `PagoArriendo`, `AdmInmobi`, `AseoEntrega`, `Mantenimiento`, `PagoRecibos`, `CuotaExtra`, `Descripcion`, `ValorTotal`) VALUES
 	(3, 11, 25, '2024-03-04', 'Juan Pérez', 'Efectivo', 250000, 120, 300, 5000, NULL, NULL, NULL, NULL),
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `contratoarrendamiento` (
   KEY `IdInmueble` (`IdInmueble`)
 ) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.contratoarrendamiento: 40 rows
+-- Volcando datos para la tabla adminmuebles.contratoarrendamiento: 45 rows
 /*!40000 ALTER TABLE `contratoarrendamiento` DISABLE KEYS */;
 INSERT INTO `contratoarrendamiento` (`IdContrato`, `IdArrendatario`, `IdInmueble`, `FechaInicioContrato`, `FechaFinContrato`, `EstadoContrato`, `ValorDeposito`, `MesesAlquiler`, `CuotasPendientes`, `FechaPagoFija`) VALUES
 	(2, 1, 2, '2023-11-02', '2025-05-02', 'Vigente', 1200000.00000, 18, 18, NULL),
@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS `inmueble` (
   KEY `Id_Propietario` (`IdPropietario`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.inmueble: 33 rows
+-- Volcando datos para la tabla adminmuebles.inmueble: 34 rows
 /*!40000 ALTER TABLE `inmueble` DISABLE KEYS */;
 INSERT INTO `inmueble` (`IdInmueble`, `IdPropietario`, `NoMatricula`, `Direccion`, `Estrato`, `Ciudad`, `Barrio`, `Tipo`, `NoNiveles`, `NoBanos`, `ServiciosPublicos`, `NoHabitaciones`, `Estado`, `NoTerraza`, `AreaConstruidaM2`, `Aseguramiento`, `ValorInmueble`, `booleanos`, `Descripcion`, `VAseguramiento`) VALUES
 	(11, 5, 2, 'Holas', '3', 'jhkjhjh', 'si soy', 'Apartamento', '1', '1', 'jhkjhkjhk', NULL, 'Ocupado', '2', NULL, '2024-02-12', 2000, 'true', 'trdfgjkjfdgfgf', NULL),
@@ -299,7 +299,7 @@ CREATE TABLE IF NOT EXISTS `pagos_arrendamiento` (
   KEY `IdContrato` (`IdContrato`)
 ) ENGINE=MyISAM AUTO_INCREMENT=243 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.pagos_arrendamiento: 182 rows
+-- Volcando datos para la tabla adminmuebles.pagos_arrendamiento: 212 rows
 /*!40000 ALTER TABLE `pagos_arrendamiento` DISABLE KEYS */;
 INSERT INTO `pagos_arrendamiento` (`IdPagoArrendamiento`, `IdArrendatario`, `IdContrato`, `FechaPago`, `FechaPagoFija`, `ValorPago`, `FormaPago`, `Estado`, `DiasDMora`, `booleanos`) VALUES
 	(1, 1, 1, '2024-03-02', NULL, 1500000, 'Transferencia', 'Pagado', 0, 'true'),
@@ -346,36 +346,6 @@ INSERT INTO `pagos_arrendamiento` (`IdPagoArrendamiento`, `IdArrendatario`, `IdC
 	(42, 26, 10, '2024-03-13', NULL, 8000, 'Transferencia', 'Pagado', -43, 'true'),
 	(43, 26, 10, '2024-03-13', NULL, 3000, 'Efectivo', 'Pagado', 8, 'true'),
 	(44, 30, 25, NULL, '2024-03-15', 50000, 'Efectivo', 'Adelantado', -6, 'true'),
-	(45, 30, 26, NULL, '2024-03-15', NULL, NULL, NULL, NULL, 'true'),
-	(46, 30, 26, NULL, '2024-04-15', NULL, NULL, NULL, NULL, 'true'),
-	(47, 30, 26, NULL, '2024-05-15', NULL, NULL, NULL, NULL, 'true'),
-	(48, 30, 26, NULL, '2024-06-15', NULL, NULL, NULL, NULL, 'true'),
-	(49, 30, 26, NULL, '2024-07-15', NULL, NULL, NULL, NULL, 'true'),
-	(50, 30, 26, NULL, '2024-08-15', NULL, NULL, NULL, NULL, 'true'),
-	(51, 30, 26, NULL, '2024-09-15', NULL, NULL, NULL, NULL, 'true'),
-	(52, 30, 26, NULL, '2024-10-15', NULL, NULL, NULL, NULL, 'true'),
-	(53, 30, 26, NULL, '2024-11-15', NULL, NULL, NULL, NULL, 'true'),
-	(54, 30, 26, NULL, '2024-12-15', NULL, NULL, NULL, NULL, 'true'),
-	(55, 30, 26, NULL, '2025-01-15', NULL, NULL, NULL, NULL, 'true'),
-	(56, 30, 26, NULL, '2025-02-15', NULL, NULL, NULL, NULL, 'true'),
-	(57, 30, 26, NULL, '2025-03-15', NULL, NULL, NULL, NULL, 'true'),
-	(58, 27, 27, NULL, '2024-03-15', NULL, NULL, NULL, NULL, 'true'),
-	(59, 27, 27, NULL, '2024-04-15', NULL, NULL, NULL, NULL, 'true'),
-	(60, 27, 27, NULL, '2024-05-15', NULL, NULL, NULL, NULL, 'true'),
-	(61, 27, 27, NULL, '2024-06-15', NULL, NULL, NULL, NULL, 'true'),
-	(62, 27, 27, NULL, '2024-07-15', NULL, NULL, NULL, NULL, 'true'),
-	(63, 27, 27, NULL, '2024-08-15', NULL, NULL, NULL, NULL, 'true'),
-	(64, 27, 27, NULL, '2024-09-15', NULL, NULL, NULL, NULL, 'true'),
-	(65, 27, 27, NULL, '2024-10-15', NULL, NULL, NULL, NULL, 'true'),
-	(66, 27, 27, NULL, '2024-11-15', NULL, NULL, NULL, NULL, 'true'),
-	(67, 27, 27, NULL, '2024-12-15', NULL, NULL, NULL, NULL, 'true'),
-	(68, 27, 27, NULL, '2025-01-15', NULL, NULL, NULL, NULL, 'true'),
-	(69, 27, 27, NULL, '2025-02-15', NULL, NULL, NULL, NULL, 'true'),
-	(70, 29, 28, '2024-04-16', '2024-03-16', 200, NULL, NULL, NULL, 'true'),
-	(71, 29, 28, '2024-04-16', '2024-04-16', 3200, NULL, NULL, NULL, 'true'),
-	(72, 29, 28, NULL, '2024-05-16', NULL, NULL, NULL, NULL, 'true'),
-	(73, 29, 28, NULL, '2024-06-16', NULL, NULL, NULL, NULL, 'true'),
-	(74, 29, 28, NULL, '2024-07-16', NULL, NULL, NULL, NULL, 'true'),
 	(75, 29, 32, NULL, '2024-03-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
 	(76, 29, 32, '2024-03-18', '2024-04-18', 70000, 'Efectivo', 'Adelantado', -31, 'true'),
 	(77, 29, 32, NULL, '2024-05-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
@@ -644,6 +614,16 @@ INSERT INTO `trabajador` (`IdTrabajador`, `Nombre`, `Apellido`, `Correo`, `Contr
 	(6, 'Arenas', 'Quezad', 'ramy@gmail.com', '65878544', '3132025146', 1, 'true');
 /*!40000 ALTER TABLE `trabajador` ENABLE KEYS */;
 
+-- Volcando estructura para vista adminmuebles.vista_operacion_inmobiliaria
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `vista_operacion_inmobiliaria` (
+	`Nombre Propietario` VARCHAR(100) NULL COLLATE 'latin1_swedish_ci',
+	`Tipos de Inmuebles` TEXT NULL COLLATE 'latin1_swedish_ci',
+	`Pago Arriendo Total` DECIMAL(32,0) NULL,
+	`Administración Inmobiliaria Total` DECIMAL(32,0) NULL,
+	`Valor Depósito` DECIMAL(20,5) NULL
+) ENGINE=MyISAM;
+
 -- Volcando estructura para disparador adminmuebles.actualizar_cuotas_pendientes
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
@@ -798,6 +778,11 @@ CREATE TRIGGER `generar_pagos_arrendamiento_despues_de_insertar` AFTER INSERT ON
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- Volcando estructura para vista adminmuebles.vista_operacion_inmobiliaria
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `vista_operacion_inmobiliaria`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `vista_operacion_inmobiliaria` AS select `p`.`NombreCompleto` AS `Nombre Propietario`,group_concat(distinct concat(`i`.`Tipo`,' (NoMatricula: ',`i`.`NoMatricula`,')') separator ',') AS `Tipos de Inmuebles`,sum(`pa`.`ValorPago`) AS `Pago Arriendo Total`,sum(`cp`.`AdmInmobi`) AS `Administración Inmobiliaria Total`,`ca`.`ValorDeposito` AS `Valor Depósito` from ((((`propietario` `p` join `inmueble` `i` on((`i`.`IdPropietario` = `p`.`IdPropietario`))) join `comision_propietario` `cp` on((`cp`.`IdInmueble` = `i`.`IdInmueble`))) join `contratoarrendamiento` `ca` on((`ca`.`IdInmueble` = `i`.`IdInmueble`))) join `pagos_arrendamiento` `pa` on((`pa`.`IdContrato` = `ca`.`IdContrato`))) group by `p`.`NombreCompleto`,`ca`.`ValorDeposito`;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
