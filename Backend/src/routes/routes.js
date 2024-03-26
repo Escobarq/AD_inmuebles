@@ -71,25 +71,20 @@ router.get("/inmuebles-general", (req, res) => {
   const connection = getConnection();  
   const sql = `
   SELECT
-    p.IdPropietario,
-    p.NombreCompleto,
-    JSON_ARRAYAGG(
-      JSON_OBJECT(
-        'Tipo', i.Tipo,
-        'IdInmueble', i.IdInmueble,
-        'ValorInmueble', i.ValorInmueble,
-        'Deposito', COALESCE(c.ValorDeposito, 'N/A')
-      )
-    ) AS InmueblesAsociados
+    p.NombreCompleto AS 'Nombre Propietario',
+    GROUP_CONCAT(DISTINCT CONCAT(i.Tipo, ' (NoMatricula: ', i.NoMatricula, ')')) AS 'Tipos de Inmuebles',
+    SUM(cp.PagoArriendo) AS 'Pago Arriendo Total',
+    SUM(cp.AdmInmobi) AS 'Administración Inmobiliaria Total',
+    ca.ValorDeposito AS 'Valor Depósito'
   FROM
     propietario p
-  JOIN
-    inmueble i ON p.IdPropietario = i.IdPropietario
-  LEFT JOIN
-    contratoarrendamiento c ON i.IdInmueble = c.IdInmueble
+  INNER JOIN inmueble i ON i.IdPropietario = p.IdPropietario
+  INNER JOIN comision_propietario cp ON cp.IdInmueble = i.IdInmueble
+  INNER JOIN contratoarrendamiento ca ON ca.IdInmueble = i.IdInmueble
   GROUP BY
-    p.IdPropietario,
-    p.NombreCompleto;
+    p.NombreCompleto, ca.ValorDeposito
+  ORDER BY
+    p.NombreCompleto ASC;
   `;
 
   connection.query(sql, (error, results) => {
@@ -97,19 +92,11 @@ router.get("/inmuebles-general", (req, res) => {
       console.error("Error al realizar la consulta:", error);
       res.status(500).json({ message: "Error del servidor" });
     } else {
-      // Parsear los resultados para asegurar que los datos están en formato JSON
-      const parsedResults = results.map(row => {
-        return {
-          IdPropietario: row.IdPropietario,
-          NombreCompleto: row.NombreCompleto,
-          InmueblesAsociados: JSON.parse(row.InmueblesAsociados)
-        };
-      });
-
-      res.status(200).json(parsedResults);
+      res.status(200).json(results);
     }
   });
 });
+
 
 
 
@@ -578,7 +565,7 @@ router.get("/contrato-arren-inmue", (req, res) => {
 FROM contratoarrendamiento
 JOIN arrendatario ON contratoarrendamiento.IdArrendatario = arrendatario.IdArrendatario
 JOIN inmueble ON contratoarrendamiento.idInmueble = inmueble.IdInmueble
-WHERE contratoarrendamiento.EstadoContrato = 'Vigente', contratoarrendamiento.;
+WHERE contratoarrendamiento.EstadoContrato = 'Vigente';
   `;
 
   connection.query(query, (error, results) => {
@@ -1091,30 +1078,46 @@ router.put("/RPagoArrendamiento", async (req, res) => {
     FechaPago,
     ValorPago,
     FormaPago,
-    Estado,
+
   } = req.body;
 
   try {
     // Itera sobre la lista de IDs y actualiza cada registro
     for (const id of IdPagosSeleccionados) {
       connection.query(
-        "UPDATE pagos_arrendamiento SET FechaPago = ?, ValorPago = ?, FormaPago = ?, Estado = ? WHERE IdPagoArrendamiento = ?",
-        [
-          FechaPago, 
-          ValorPago,
-          FormaPago,
-          Estado,
-          id,
-        ],
-        (error, results) => {
-          if (error) {
-            console.error("Error al actualizar el pago de arrendamiento con ID:", id, error);
-          } else {
-            console.log("Pago de arrendamiento actualizado con ID:", id);
+          "SELECT FechaPago, FechaPagoFija FROM pagos_arrendamiento WHERE IdPagoArrendamiento = ?",
+          [id],
+          (error, results) => {
+              if (error) {
+                  console.error("Error al obtener la información del pago de arrendamiento con ID:", id, error);
+              } else {
+                  const { FechaPagoFija } = results[0];
+                  let Estado;
+  
+                  if (FechaPago < FechaPagoFija) {
+                      Estado = 'Adelantado';
+                  } else if (FechaPago > FechaPagoFija) {
+                      Estado = 'Atrasado';
+                  } else {
+                      Estado = 'AlDia';
+                  }
+  
+                  connection.query(
+                      "UPDATE pagos_arrendamiento SET FechaPago = ?, ValorPago = ?, FormaPago = ?, Estado = ? WHERE IdPagoArrendamiento = ?",
+                      [FechaPago, ValorPago, FormaPago, Estado, id],
+                      (error, results) => {
+                          if (error) {
+                              console.error("Error al actualizar el pago de arrendamiento con ID:", id, error);
+                          } else {
+                              console.log("Pago de arrendamiento actualizado con ID:", id);
+                          }
+                      }
+                  );
+              }
           }
-        }
       );
-    }
+  }
+  
 
     // Envía una respuesta exitosa al finalizar la actualización
     res.status(200).json({ message: "Pagos de arrendamiento actualizados exitosamente" });
@@ -1136,7 +1139,10 @@ router.post("/RComision", async (req, res) => {
     AdminInmobiliaria,
     AseoEntrega,
     Mantenimiento,
+    CuotaExtra,
+    PagoRecibo,
     ValorTotal,
+    Descripcion,
   } = req.body;
 
   try {
@@ -1149,7 +1155,7 @@ router.post("/RComision", async (req, res) => {
 
 
     connection.query(
-      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento, ValorTotal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO comision_propietario (IdPropietario, IdInmueble, FechaElaboracion, ElaboradoPor, FormaPago, PagoArriendo, AdmInmobi, AseoEntrega, Mantenimiento, ValorTotal, CuotaExtra,PagoRecibos, Descripcion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)",
       [
         IdPropietario,
         IdInmueble,
@@ -1161,6 +1167,9 @@ router.post("/RComision", async (req, res) => {
         AseoEntrega,
         Mantenimiento,
         ValorTotal,
+        CuotaExtra,
+        PagoRecibo,
+        Descripcion,
       ],
       (error, results) => {
         if (error) {

@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         localhost
--- Versión del servidor:         8.0.32 - MySQL Community Server - GPL
+-- Versión del servidor:         8.0.30 - MySQL Community Server - GPL
 -- SO del servidor:              Win64
 -- HeidiSQL Versión:             12.1.0.6537
 -- --------------------------------------------------------
@@ -39,24 +39,23 @@ CREATE TABLE IF NOT EXISTS `arrendatario` (
   `booleanos` varchar(50) DEFAULT 'true',
   PRIMARY KEY (`IdArrendatario`) USING BTREE,
   KEY `Id_Codeudor` (`IdCodeudor`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.arrendatario: 13 rows
+-- Volcando datos para la tabla adminmuebles.arrendatario: 11 rows
 /*!40000 ALTER TABLE `arrendatario` DISABLE KEYS */;
 INSERT INTO `arrendatario` (`IdArrendatario`, `IdCodeudor`, `NombreCompleto`, `TipoDocumento`, `DocumentoIdentidad`, `Telefono`, `Correo`, `Estado`, `booleanos`) VALUES
-	(1, 1, 'Emanuel Nandez', 'Cedula Ciudadania', '111222333', '1112223334', 'carlos@gmail.com', 'Ocupado', 'true'),
+	(1, 1, 'emanuel ortensio', 'Cedula Ciudadania', '111552262', '3135025146', 'emanuel@gmail.com', 'Libre', 'true'),
 	(2, 2, 'Ana Rodríguez', 'Cedula Ciudadania', '444555666', '4294967295', 'ana@gmail.com', 'Ocupado', 'true'),
-	(21, 4, 'Mariano ', 'Cedula Ciudadania', '1192', '4294967295', 'q@q.cos', 'Ocupado', 'true'),
-	(26, 5, 'Juanda', 'Cedula Ciudadania', '1234567890', '1234567890', 'nose@gmail.com', 'Ocupado', 'true'),
+	(21, 4, 'Mariano ', 'Cedula Ciudadania', '1192', '4294967295', 'q@q.cos', 'Libre', 'true'),
+	(26, 5, 'Juanda', 'Cedula Ciudadania', '1234567890', '1234567890', 'nose@gmail.com', 'Libre', 'true'),
 	(27, 3, 'jeison', 'Cedula Ciudadania', '323232', '1234567890', 'jeison@gmail.com', 'Ocupado', 'true'),
 	(28, 3, 'juan', 'Cedula Ciudadania', '25689711', '3132025146', 'hola@gmail.com', 'Ocupado', 'true'),
 	(29, 1, 'Manuel', 'Cedula Ciudadania', '3256444', '1234567890', 'carlos@gmail.com', 'Ocupado', 'true'),
 	(30, 3, 'ingryd', 'Cedula Extranjeria', '65998899', '6565466', 'ingri@gmail.com', 'Ocupado', 'true'),
-	(31, 3, 'Ramy pruebas', 'Cedula Ciudadania', '5643132123', '1112223334', 'carlos@gmail.com', 'Ocupado', 'true'),
+	(31, 3, 'Ramy pruebas', 'Cedula Ciudadania', '5643132123', '1112223334', 'carlos@gmail.com', 'Libre', 'true'),
 	(32, 1, 'Carlos López saavedra', 'Cedula Ciudadania', '989899', '1112223334', 'carlos@gmail.com', 'Ocupado', 'true'),
-	(33, 2, 'Marianp sanchez', 'Cedula Ciudadania', '14556586', '1234567890', 'mariano@gmail.com', 'Ocupado', 'true'),
-	(34, 1, 'luiciano mendez', 'Cedula Ciudadania', '256897117', '1112223334', 'luciano@gmail.com', 'Ocupado', 'true'),
-	(35, 1, 'Ramy pruebae', 'Cedula Ciudadania', '7487477', '3132025146', 'ramy@gmail.com', 'Ocupado', 'true');
+	(33, 2, 'marianoos', 'Cedula Ciudadania', '6456443', '3135025146', 'mar@gmail.com', 'Ocupado', 'true'),
+	(34, 2, 'hernando', 'Cedula Ciudadania', '87633', '3135025146', 'hernando@gmail.com', 'Libre', 'true');
 /*!40000 ALTER TABLE `arrendatario` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.codeudor
@@ -93,57 +92,62 @@ CREATE TABLE IF NOT EXISTS `comision_propietario` (
   `AdmInmobi` int unsigned DEFAULT NULL,
   `AseoEntrega` int unsigned DEFAULT NULL,
   `Mantenimiento` int unsigned DEFAULT NULL,
+  `PagoRecibos` int DEFAULT NULL,
+  `CuotaExtra` int DEFAULT NULL,
+  `Descripcion` varchar(250) DEFAULT NULL,
   `ValorTotal` int DEFAULT NULL,
   PRIMARY KEY (`IdComisionPropietario`) USING BTREE,
   KEY `IdPropietario` (`IdPropietario`) USING BTREE,
   KEY `IdInmueble` (`IdInmueble`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 
 -- Volcando datos para la tabla adminmuebles.comision_propietario: 42 rows
 /*!40000 ALTER TABLE `comision_propietario` DISABLE KEYS */;
-INSERT INTO `comision_propietario` (`IdComisionPropietario`, `IdPropietario`, `IdInmueble`, `FechaElaboracion`, `ElaboradoPor`, `FormaPago`, `PagoArriendo`, `AdmInmobi`, `AseoEntrega`, `Mantenimiento`, `ValorTotal`) VALUES
-	(3, 11, 25, '2024-03-04', 'Juan Pérez', 'Efectivo', 250000, 120, 300, 5000, NULL),
-	(4, 11, 20, '2024-03-04', 'Juan Pérez', 'Transferencia', 50000000, 30, 20, 3000, NULL),
-	(5, 12, 26, '2024-03-04', 'Juan Pérez', 'Efectivo', 2000, 400, 20, 0, NULL),
-	(6, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL),
-	(7, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL),
-	(8, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL),
-	(9, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL),
-	(10, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL),
-	(11, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL),
-	(12, 2, 2, '2024-03-02', 'Juan Pérez', '', 3333333333, 3333333333, 0, 0, NULL),
-	(13, 4, 28, '2024-03-02', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 0, 0, NULL),
-	(14, 17, 18, '2024-03-06', 'Juan Pérez', 'Transferencia', 25000, 1500, 0, 0, NULL),
-	(15, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 25000, 1500, 0, 0, NULL),
-	(16, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 25000, 1500, 0, 0, NULL),
-	(17, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 350, 1500, 0, 0, NULL),
-	(18, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 350, 56, 0, 0, NULL),
-	(19, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 350, 56, 0, 0, NULL),
-	(20, 15, 19, '2024-03-28', 'Juan Pérez', 'Efectivo', 350, 56, 0, 0, NULL),
-	(21, 4, 28, '2024-03-07', 'Juan Pérez', 'Efectivo', 9000, 20, 10, 200, 8770),
-	(22, 4, 28, '2024-03-08', 'Juan Pérez', '', 0, 0, 0, 0, NULL),
-	(23, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL),
-	(24, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL),
-	(25, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL),
-	(26, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL),
-	(27, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL),
-	(28, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL),
-	(29, 1, 34, '2024-03-13', 'Juan Pérez', '', 3000, 80, 90, 0, NULL),
-	(30, 1, 33, '2024-03-13', 'Juan Pérez', 'Efectivo', 4444, 44, 44, 44, 4312),
-	(31, 1, 33, '2024-03-13', 'Juan Pérez', 'Efectivo', 60000, 77, 77, 77, 59769),
-	(32, 1, 33, '2024-03-13', 'Juan Pérez', 'Efectivo', 555, 5, 5, 5, 540),
-	(33, 1, 34, '2024-03-13', 'Juan Pérez', 'Transferencia', 6666, 55, 44, 33, 6534),
-	(34, 4, 28, '2024-03-13', 'Juan Pérez', 'Transferencia', 90000, 80, 700, NULL, NULL),
-	(35, 4, 28, '2024-03-13', 'Juan Pérez', '', 6000, 40, 55, 7, 5898),
-	(36, 1, 34, '2024-03-13', 'Juan Pérez', 'Transferencia', 777, 77, 77, 77, 546),
-	(37, 4, 28, '2024-03-13', 'Juan Pérez', 'Efectivo', 5000, 300, 10, 20, 4670),
-	(38, 4, 28, '2024-03-13', 'Juan Pérez', '', 6000, 20, 10, 2, 5968),
-	(39, 4, 28, '2024-03-14', 'Juan Pérez', 'Efectivo', 50000, 300, 100, 200, 49400),
-	(40, 1, 34, '2024-03-16', 'Juan Pérez', 'Transferencia', 555555, 55, 55, 55, 555390),
-	(41, 1, 33, '2024-03-16', 'Juan Pérez', '', 36846, 66, 22, 222, 36536),
-	(42, 1, 34, '2024-03-16', 'Juan Pérez', 'Transferencia', 8888, 8, 8, 8, 8864),
-	(43, 1, 34, '2024-03-16', 'Juan Pérez', 'Transferencia', 4444, 4, 4, 4, 4432),
-	(44, 1, 1, '2024-03-16', 'Juan Pérez', 'Transferencia', 44, 1, 5, 20, 18);
+INSERT INTO `comision_propietario` (`IdComisionPropietario`, `IdPropietario`, `IdInmueble`, `FechaElaboracion`, `ElaboradoPor`, `FormaPago`, `PagoArriendo`, `AdmInmobi`, `AseoEntrega`, `Mantenimiento`, `PagoRecibos`, `CuotaExtra`, `Descripcion`, `ValorTotal`) VALUES
+	(3, 11, 25, '2024-03-04', 'Juan Pérez', 'Efectivo', 250000, 120, 300, 5000, NULL, NULL, NULL, NULL),
+	(4, 11, 20, '2024-03-04', 'Juan Pérez', 'Transferencia', 50000000, 30, 20, 3000, NULL, NULL, NULL, NULL),
+	(5, 12, 26, '2024-03-04', 'Juan Pérez', 'Efectivo', 2000, 400, 20, 0, NULL, NULL, NULL, NULL),
+	(6, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL, NULL, NULL, NULL),
+	(7, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL, NULL, NULL, NULL),
+	(8, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL, NULL, NULL, NULL),
+	(9, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL, NULL, NULL, NULL),
+	(10, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL, NULL, NULL, NULL),
+	(11, 1, 1, '2024-03-04', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 33333, 33333, NULL, NULL, NULL, NULL),
+	(12, 2, 2, '2024-03-02', 'Juan Pérez', '', 3333333333, 3333333333, 0, 0, NULL, NULL, NULL, NULL),
+	(13, 4, 28, '2024-03-02', 'Juan Pérez', 'Efectivo', 3333333333, 3333333333, 0, 0, NULL, NULL, NULL, NULL),
+	(14, 17, 18, '2024-03-06', 'Juan Pérez', 'Transferencia', 25000, 1500, 0, 0, NULL, NULL, NULL, NULL),
+	(15, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 25000, 1500, 0, 0, NULL, NULL, NULL, NULL),
+	(16, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 25000, 1500, 0, 0, NULL, NULL, NULL, NULL),
+	(17, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 350, 1500, 0, 0, NULL, NULL, NULL, NULL),
+	(18, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 350, 56, 0, 0, NULL, NULL, NULL, NULL),
+	(19, 1, 1, '2024-03-06', 'Juan Pérez', 'Efectivo', 350, 56, 0, 0, NULL, NULL, NULL, NULL),
+	(20, 15, 19, '2024-03-28', 'Juan Pérez', 'Efectivo', 350, 56, 0, 0, NULL, NULL, NULL, NULL),
+	(21, 4, 28, '2024-03-07', 'Juan Pérez', 'Efectivo', 9000, 20, 10, 200, NULL, NULL, NULL, 8770),
+	(22, 4, 28, '2024-03-08', 'Juan Pérez', '', 0, 0, 0, 0, NULL, NULL, NULL, NULL),
+	(23, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL, NULL, NULL, NULL),
+	(24, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL, NULL, NULL, NULL),
+	(25, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL, NULL, NULL, NULL),
+	(26, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL, NULL, NULL, NULL),
+	(27, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL, NULL, NULL, NULL),
+	(28, 4, 28, '2024-03-08', 'Juan Pérez', 'Efectivo', 0, 0, 0, 0, NULL, NULL, NULL, NULL),
+	(29, 1, 34, '2024-03-13', 'Juan Pérez', '', 3000, 80, 90, 0, NULL, NULL, NULL, NULL),
+	(30, 1, 33, '2024-03-13', 'Juan Pérez', 'Efectivo', 4444, 44, 44, 44, NULL, NULL, NULL, 4312),
+	(31, 1, 33, '2024-03-13', 'Juan Pérez', 'Efectivo', 60000, 77, 77, 77, NULL, NULL, NULL, 59769),
+	(32, 1, 33, '2024-03-13', 'Juan Pérez', 'Efectivo', 555, 5, 5, 5, NULL, NULL, NULL, 540),
+	(33, 1, 34, '2024-03-13', 'Juan Pérez', 'Transferencia', 6666, 55, 44, 33, NULL, NULL, NULL, 6534),
+	(34, 4, 28, '2024-03-13', 'Juan Pérez', 'Transferencia', 90000, 80, 700, NULL, NULL, NULL, NULL, NULL),
+	(35, 4, 28, '2024-03-13', 'Juan Pérez', '', 6000, 40, 55, 7, NULL, NULL, NULL, 5898),
+	(36, 1, 34, '2024-03-13', 'Juan Pérez', 'Transferencia', 777, 77, 77, 77, NULL, NULL, NULL, 546),
+	(37, 4, 28, '2024-03-13', 'Juan Pérez', 'Efectivo', 5000, 300, 10, 20, NULL, NULL, NULL, 4670),
+	(38, 4, 28, '2024-03-13', 'Juan Pérez', '', 6000, 20, 10, 2, NULL, NULL, NULL, 5968),
+	(39, 4, 28, '2024-03-14', 'Juan Pérez', 'Efectivo', 50000, 300, 100, 200, NULL, NULL, NULL, 49400),
+	(40, 1, 34, '2024-03-16', 'Juan Pérez', 'Transferencia', 555555, 55, 55, 55, NULL, NULL, NULL, 555390),
+	(41, 1, 33, '2024-03-16', 'Juan Pérez', '', 36846, 66, 22, 222, NULL, NULL, NULL, 36536),
+	(42, 1, 34, '2024-03-16', 'Juan Pérez', 'Transferencia', 8888, 8, 8, 8, NULL, NULL, NULL, 8864),
+	(43, 1, 34, '2024-03-16', 'Juan Pérez', 'Transferencia', 4444, 4, 4, 4, NULL, NULL, NULL, 4432),
+	(44, 1, 1, '2024-03-16', 'Juan Pérez', 'Transferencia', 44, 1, 5, 20, NULL, NULL, NULL, 18),
+	(45, 2, 22, '2024-03-24', 'Juan Pérez', 'Efectivo', 2500, 200, 0, 200, 0, 0, 'Se hizo mantenimiento a la cerradura de la puerta de la bodega', 2100),
+	(46, 2, 22, '2024-03-24', 'Juan Pérez', 'Efectivo', 2500, 200, 0, 200, 0, 0, 'Se hizo mantenimiento a la cerradura de la puerta de la bodega', 2100);
 /*!40000 ALTER TABLE `comision_propietario` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.contratoarrendamiento
@@ -161,9 +165,9 @@ CREATE TABLE IF NOT EXISTS `contratoarrendamiento` (
   PRIMARY KEY (`IdContrato`),
   KEY `IdArrendatario` (`IdArrendatario`),
   KEY `IdInmueble` (`IdInmueble`)
-) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.contratoarrendamiento: 43 rows
+-- Volcando datos para la tabla adminmuebles.contratoarrendamiento: 40 rows
 /*!40000 ALTER TABLE `contratoarrendamiento` DISABLE KEYS */;
 INSERT INTO `contratoarrendamiento` (`IdContrato`, `IdArrendatario`, `IdInmueble`, `FechaInicioContrato`, `FechaFinContrato`, `EstadoContrato`, `ValorDeposito`, `MesesAlquiler`, `CuotasPendientes`, `FechaPagoFija`) VALUES
 	(2, 1, 2, '2023-11-02', '2025-05-02', 'Vigente', 1200000.00000, 18, 18, NULL),
@@ -178,10 +182,10 @@ INSERT INTO `contratoarrendamiento` (`IdContrato`, `IdArrendatario`, `IdInmueble
 	(11, 30, 36, '2024-03-14', '2024-09-14', 'Vigente', 98000000.00000, 6, 6, NULL),
 	(12, 2, NULL, '2024-03-14', '2024-11-14', 'Vigente', 90000.00000, 8, 8, NULL),
 	(13, 1, NULL, '2024-03-14', '2025-02-14', 'Vigente', 3600000.00000, 11, 11, NULL),
-	(14, 21, NULL, '2020-02-10', '2020-02-12', 'Vigente', 9000000.00000, 0, 0, NULL),
-	(15, 21, 15, '2020-02-10', '2020-02-12', 'Vigente', 9000000.00000, 0, 0, NULL),
-	(16, 21, 15, '2020-02-10', '2020-02-12', 'Vigente', 9000000.00000, 0, 0, NULL),
-	(17, 26, 15, '2020-02-10', '2020-02-12', 'Vigente', 9000000.00000, 0, 0, NULL),
+	(14, 21, NULL, '2020-02-10', '2020-02-12', 'Finalizado', 9000000.00000, 0, 0, NULL),
+	(15, 21, 15, '2020-02-10', '2020-02-12', 'Finalizado', 9000000.00000, 0, 0, NULL),
+	(16, 21, 15, '2020-02-10', '2020-02-12', 'Finalizado', 9000000.00000, 0, 0, NULL),
+	(17, 26, 15, '2020-02-10', '2020-02-12', 'Finalizado', 9000000.00000, 0, 0, NULL),
 	(18, 2, NULL, '2024-03-01', '2024-04-05', 'Vigente', 8000.00000, 1, 1, NULL),
 	(19, 1, 31, '2024-03-02', '2024-04-03', 'Vigente', 98989.00000, 1, 1, NULL),
 	(20, 1, 31, '2024-03-02', '2024-04-03', 'Vigente', 98989.00000, 1, 1, NULL),
@@ -200,15 +204,17 @@ INSERT INTO `contratoarrendamiento` (`IdContrato`, `IdArrendatario`, `IdInmueble
 	(33, 26, 26, '2024-03-18', '2025-03-17', 'Vigente', 90000.00000, 11, 11, '2024-03-18'),
 	(34, 21, 25, '2024-03-18', '2025-03-18', 'Vigente', 70000.00000, 12, 11, '2024-03-18'),
 	(35, 27, 22, '2024-03-18', '2025-03-17', 'Vigente', 9000.00000, 11, 11, '2024-03-18'),
-	(36, 1, 23, '2024-03-18', '2024-03-17', 'Vigente', 70000.00000, 0, 0, '2024-03-18'),
+	(36, 1, 23, '2024-03-18', '2024-03-17', 'Finalizado', 70000.00000, 0, 0, '2024-03-18'),
 	(37, 28, 2, '2024-03-18', '2025-03-17', 'Vigente', 9000.00000, 11, 10, '2024-03-18'),
 	(38, 2, 20, '2024-03-18', '2025-03-18', 'Vigente', 80000.00000, 13, 13, '2024-03-18'),
 	(39, 30, 34, '2024-03-18', '2025-03-17', 'Vigente', 50000.00000, 12, 10, '2024-03-18'),
-	(40, 31, 37, '2024-03-18', '2025-03-17', 'Vigente', 90000.00000, 12, 9, '2024-03-18'),
-	(41, 32, 38, '2024-03-18', '2025-03-17', 'Vigente', 92000.00000, 11, 9, '2024-03-18'),
-	(42, 33, 29, '2024-03-20', '2025-03-19', 'Vigente', 90000.00000, 11, 11, '2024-03-20'),
-	(43, 34, 32, '2024-03-20', '2025-03-19', 'Vigente', 94100000.00000, 11, 11, '2024-03-30'),
-	(44, 35, 30, '2024-03-31', '2025-03-30', 'Vigente', 910000.00000, 11, 10, '2024-03-31');
+	(40, 31, 37, '2024-03-18', '2025-03-17', 'Finalizado', 90000.00000, 12, -1, '2024-03-18'),
+	(41, 32, 38, '2024-03-18', '2025-03-17', 'Finalizado', 92000.00000, 11, -1, '2024-03-18'),
+	(42, 33, 39, '2024-03-25', '2025-03-24', 'Vigente', 4500.00000, 11, 11, '2024-03-25'),
+	(43, 34, 40, '2024-03-25', '2025-03-24', 'Finalizado', 100000.00000, 11, 0, '2024-03-25'),
+	(44, 32, 38, '2024-03-25', '2025-03-24', 'Vigente', 2500.00000, 11, 11, '2024-03-25'),
+	(45, 34, 15, '2024-03-25', '2025-03-24', 'Finalizado', 1000.00000, 11, 0, '2024-03-25'),
+	(46, 34, 15, '2024-03-25', '2025-03-24', 'Finalizado', 1000.00000, 12, 0, '2024-03-25');
 /*!40000 ALTER TABLE `contratoarrendamiento` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.inmueble
@@ -237,7 +243,7 @@ CREATE TABLE IF NOT EXISTS `inmueble` (
   KEY `Id_Propietario` (`IdPropietario`) USING BTREE
 ) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.inmueble: 34 rows
+-- Volcando datos para la tabla adminmuebles.inmueble: 33 rows
 /*!40000 ALTER TABLE `inmueble` DISABLE KEYS */;
 INSERT INTO `inmueble` (`IdInmueble`, `IdPropietario`, `NoMatricula`, `Direccion`, `Estrato`, `Ciudad`, `Barrio`, `Tipo`, `NoNiveles`, `NoBanos`, `ServiciosPublicos`, `NoHabitaciones`, `Estado`, `NoTerraza`, `AreaConstruidaM2`, `Aseguramiento`, `ValorInmueble`, `booleanos`, `Descripcion`, `VAseguramiento`) VALUES
 	(11, 5, 2, 'Holas', '3', 'jhkjhjh', 'si soy', 'Apartamento', '1', '1', 'jhkjhkjhk', NULL, 'Ocupado', '2', NULL, '2024-02-12', 2000, 'true', 'trdfgjkjfdgfgf', NULL),
@@ -248,7 +254,7 @@ INSERT INTO `inmueble` (`IdInmueble`, `IdPropietario`, `NoMatricula`, `Direccion
 	(12, 22, 900, 'fgff', '1', 'fdgfdg', 'dfgfdg', 'Apartamento', '9', '3', 'fgfgfdgfdfdfgfdg', NULL, 'Ocupado', '9', NULL, '2024-02-12', 8000, 'true', 'dfgfgfgf', NULL),
 	(13, 25, 900, 'fgff', '8', 'fgfg', 'fhfh', 'Apartamento', '9', '2', 'sd', NULL, 'Ocupado', '6', NULL, '2024-02-12', 700, 'true', 'dfdfdf', NULL),
 	(14, 14, 2, 'fdfd', '1', 'palmira', 'fhfh', 'Apartamento', '2', '2', 'fgffgf', NULL, 'Ocupado', '1', NULL, '2024-02-12', 1000000, 'true', '  n n n nvbvbbvbvvb', NULL),
-	(15, 15, 896, 'calle #2 cr33', '3', 'palmira', 'dfdfd', 'Apartamento', '2', '9', 'jiisgsdjsdjdjss', NULL, 'Ocupado', '1', NULL, '2024-02-12', 2000, 'true', 'vgygg', NULL),
+	(15, 15, 896, 'calle #2 cr33', '3', 'palmira', 'dfdfd', 'Apartamento', '2', '9', 'jiisgsdjsdjdjss', NULL, 'Disponible', '1', NULL, '2024-02-12', 2000, 'true', 'vgygg', NULL),
 	(16, 16, 55, 'kj,k,kj,jk,', '4', 'fgfgfd', 'dfgfgfdg', 'Bodega', NULL, '5', 'gfgfgf', NULL, NULL, NULL, NULL, NULL, 20000, 'false', ',k.kl.jk.', NULL),
 	(17, 16, 2001, 'carrera 90', '1', 'palmira', 'paraiso', 'Apartamento', '3', '3', 'agua y luz', NULL, NULL, '2', NULL, '2024-02-16', 200000, 'true', 'nada de mascotas', NULL),
 	(18, 17, 200089, 'carrera 10 no 3 # 5e98', '4', 'villa hermosda', 'paraiso papa', 'Apartamento', '5', '7', '', NULL, 'Ocupado', '2', NULL, '2024-04-05', 3000000, 'true', 'no se permite perros', NULL),
@@ -256,24 +262,24 @@ INSERT INTO `inmueble` (`IdInmueble`, `IdPropietario`, `NoMatricula`, `Direccion
 	(20, 11, 22555, 'carrera nose', '3', 'hila', 'manuel', 'Bodega', NULL, '3', 'gua NOMAS', NULL, 'Ocupado', NULL, NULL, NULL, 2500, 'true', 'ggfgfdffdd', NULL),
 	(21, 1, 22555, 'carrera nose', '3', 'hila', 'manuel', 'Bodega', NULL, '3', 'gua NOMAS', NULL, 'Ocupado', NULL, NULL, NULL, 2500, 'true', 'ggfgfdffdd', NULL),
 	(22, 2, 22555, 'carrera nose', '3', 'hila', 'manuel', 'Bodega', NULL, '3', 'gua NOMAS', NULL, 'Ocupado', NULL, NULL, NULL, 2500, 'true', 'ggfgfdffdd', NULL),
-	(23, 5, 22555, 'carrera nose', '3', 'hila', 'manuel', 'Bodega', NULL, '3', 'gua NOMAS', NULL, 'Ocupado', NULL, NULL, NULL, 2500, 'true', 'ggfgfdffdd', NULL),
+	(23, 5, 22555, 'carrera nose', '3', 'hila', 'manuel', 'Bodega', NULL, '3', 'gua NOMAS', NULL, 'Disponible', NULL, NULL, NULL, 2500, 'true', 'ggfgfdffdd', NULL),
 	(24, 11, 45, 'nose por palmira', '4', 'hila', 'manuel', 'Bodega', NULL, '3', 'gua NOMAS', NULL, 'Ocupado', NULL, NULL, NULL, 5536, 'true', 'dfdsfddssd', NULL),
 	(25, 11, 4546, 'Calle 123', '6', 'hila', 'manueldfd', 'Bodega', NULL, '3', 'sdfs', NULL, 'Ocupado', NULL, NULL, NULL, 20000, 'true', 'dfdsfsdfds', NULL),
 	(26, 12, 456, 'nose por palmira', '4', 'gfdgfdgf', 'manuel', 'Casa', NULL, '4', 'sgfdgmg', NULL, 'Ocupado', NULL, NULL, '2024-04-02', 20000, 'true', 'dfgifhdgifdgfg', NULL),
 	(27, 17, 56465, 'carrera alcancela', '1', 'hila', 'encuentrela', 'Oficina', NULL, '7', 'gua NOMAS', NULL, 'Ocupado', NULL, NULL, '2024-03-30', 30000, 'true', 'dfdgfd', NULL),
 	(28, 4, 455645646, 'carrera enbusca', '3', 'encuntrela', 'aqui en mi casa', 'Local', NULL, '8', 'lfjkvklfjg', NULL, 'Ocupado', NULL, NULL, '2024-04-05', 20000, 'true', 'no kgatos gucataela', NULL),
-	(29, 25, 525, 'Calle 123', '4', 'Ciudad A', 'manuel', 'Apartamento', '2', NULL, 'gua NOMAS', NULL, 'Ocupado', '1', NULL, '2024-03-06', 560000, 'true', 'no se permiten mascotas', NULL),
-	(30, 25, 4558, 'nose por palmira', '3', 'hila', 'manuel', 'Apartamento', '9', NULL, 'gua NOMAS', NULL, 'Ocupado', '7', NULL, '2024-03-07', 60000, 'true', 'jnjknjk', NULL),
+	(29, 25, NULL, 'Calle 123', '4', 'Ciudad A', 'manuel', 'Apartamento', '2', NULL, 'gua NOMAS', NULL, 'Disponible', '1', NULL, '2024-03-06', 560000, 'true', 'no se permiten mascotas', NULL),
+	(30, 25, NULL, 'nose por palmira', '3', 'hila', 'manuel', 'Apartamento', '9', NULL, 'gua NOMAS', NULL, 'Disponible', '7', NULL, '2024-03-07', 60000, 'true', 'jnjknjk', NULL),
 	(31, 24, 65498489, 'nose por palmira', '4', 'Ciudad A', 'manuel', 'Oficina', NULL, '9', 'gua NOMAS', NULL, 'Ocupado', NULL, NULL, '2024-04-06', 23000, 'true', 'no hay agua', NULL),
-	(32, 25, 9342420, 'nose por palmira', '5', 'Ciudad A', 'Barrio X', 'Apartamento', '2', '4', 'gua NOMAS', '3', 'Ocupado', '7', NULL, '2024-04-06', 50000, 'true', 'ggvh', NULL),
+	(32, 25, NULL, 'nose por palmira', '5', 'Ciudad A', 'Barrio X', 'Apartamento', '2', '4', 'gua NOMAS', '3', 'Disponible', '7', NULL, '2024-04-06', 50000, 'true', 'ggvh', NULL),
 	(33, 1, 598489, 'nose por palmira', '3', 'Ciudad A', 'Barrio X', 'Apartamento', '1', '9', 'gua NOMAS', '7', 'Ocupado', '9', NULL, '2024-04-05', 3000, 'true', 'cydfhdjfh', NULL),
 	(34, 1, 315456, 'gfghf', '1', 'fgfg', 'ghgfhfg', 'Apartamento', '2', '4', 'fghfghfgh', '1', 'Ocupado', '2', NULL, '2024-04-05', 3000, 'false', 'ghgfhfghgf', NULL),
 	(35, 21, 35224000, 'calle 6c 98-65', '4', 'Ciudad A', 'paraiso', 'Bodega', NULL, '6', 'agua NOMAS', NULL, 'Ocupado', NULL, NULL, '2024-10-19', 900000, 'true', 'No se permiten mascotas', NULL),
 	(36, 26, 6598989, 'calle 6c 98-65', '6', 'Ciudad A', 'manuel', 'Bodega', NULL, '8', 'gas, agua, luz', '8', 'Ocupado', '5', NULL, '2024-10-04', 6000000, 'true', '', NULL),
-	(37, 1, 54564, 'nose por palmira', '2', 'gghghngf', 'dsfsd', 'Apartamento', '6', '8', 'ghjdghjhhfd', '9', 'Ocupado', '2', NULL, '2024-04-06', 20000, 'true', 'asxsal,ldnckmsnkds', NULL),
+	(37, 1, 54564, 'nose por palmira', '2', 'gghghngf', 'dsfsd', 'Apartamento', '6', '8', 'ghjdghjhhfd', '9', 'Disponible', '2', NULL, '2024-04-06', 20000, 'true', 'asxsal,ldnckmsnkds', NULL),
 	(38, 36, 232123165, 'carrera nose', '3', 'Ciudad A', 'Barrio X', 'Apartamento', '6', '6', 'knmbk', '8', 'Ocupado', '9', NULL, '2024-03-18', 5000, 'true', '5643132', NULL),
-	(39, 41, 5489456, 'calle 6c 98-65', '5', 'mani', 'Barrio X', 'Casa', NULL, '6', 'gua NOMAS', NULL, 'Disponible', NULL, NULL, '2024-03-20', 5000, 'true', 'No se permiten mascotas', NULL),
-	(40, 1, 564659, 'calle 6c 98-65', '3', 'Ciudad A', 'Barrio X', 'Oficina', NULL, '88', 'NOSE ', NULL, 'Disponible', NULL, '555544.555', '2024-03-20', 5000, 'true', 'Sirve todo gucci', '2025-03-20');
+	(39, 23, 893949304, 'caller 60', '', 'palmira', 'alexo', 'Apartamento', '3', '6', 'agua, gas etc', '2', 'Ocupado', '1', NULL, '4444-03-12', 9000, 'true', 'manuelitas', NULL),
+	(40, 4, 6348763, 'transversal 29 5E75', '4', 'kjdhkjshd', 'ufhhdsjs', 'Apartamento', '3', '23', 'agua', '4', 'Disponible', '2', NULL, '2024-03-25', 200000, 'true', 'kbskjhdsjkd', '2025-03-24');
 /*!40000 ALTER TABLE `inmueble` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.pagos_arrendamiento
@@ -291,9 +297,9 @@ CREATE TABLE IF NOT EXISTS `pagos_arrendamiento` (
   PRIMARY KEY (`IdPagoArrendamiento`) USING BTREE,
   KEY `Id_Arrendatario` (`IdArrendatario`) USING BTREE,
   KEY `IdContrato` (`IdContrato`)
-) ENGINE=MyISAM AUTO_INCREMENT=219 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=243 DEFAULT CHARSET=latin1;
 
--- Volcando datos para la tabla adminmuebles.pagos_arrendamiento: 218 rows
+-- Volcando datos para la tabla adminmuebles.pagos_arrendamiento: 182 rows
 /*!40000 ALTER TABLE `pagos_arrendamiento` DISABLE KEYS */;
 INSERT INTO `pagos_arrendamiento` (`IdPagoArrendamiento`, `IdArrendatario`, `IdContrato`, `FechaPago`, `FechaPagoFija`, `ValorPago`, `FormaPago`, `Estado`, `DiasDMora`, `booleanos`) VALUES
 	(1, 1, 1, '2024-03-02', NULL, 1500000, 'Transferencia', 'Pagado', 0, 'true'),
@@ -455,65 +461,89 @@ INSERT INTO `pagos_arrendamiento` (`IdPagoArrendamiento`, `IdArrendatario`, `IdC
 	(157, 30, 39, NULL, '2025-01-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
 	(158, 30, 39, '2024-03-18', '2025-02-18', 89100, 'Efectivo', 'Adelantado', -337, 'true'),
 	(159, 31, 40, '2024-03-18', '2024-03-18', 60000, 'Efectivo', 'Adelantado', 0, 'true'),
-	(160, 31, 40, NULL, '2024-04-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(161, 31, 40, NULL, '2024-05-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(162, 31, 40, NULL, '2024-06-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(163, 31, 40, NULL, '2024-07-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(164, 31, 40, NULL, '2024-08-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(160, 31, 40, '2024-03-22', '2024-04-18', 20000, 'Efectivo', 'AlDia', -27, 'true'),
+	(161, 31, 40, '2024-03-22', '2024-05-18', 20000, 'Efectivo', 'AlDia', -57, 'true'),
+	(162, 31, 40, '2024-03-22', '2024-06-18', 20000, 'Efectivo', 'AlDia', -88, 'true'),
+	(163, 31, 40, '2024-03-22', '2024-07-18', 20000, 'Efectivo', 'AlDia', -118, 'true'),
+	(164, 31, 40, '2024-03-22', '2024-08-18', NULL, 'Efectivo', 'AlDia', -149, 'true'),
 	(165, 31, 40, '2024-03-18', '2024-09-18', 800000, 'Efectivo', 'Adelantado', -184, 'true'),
-	(166, 31, 40, NULL, '2024-10-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(167, 31, 40, NULL, '2024-11-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(168, 31, 40, NULL, '2024-12-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(169, 31, 40, NULL, '2025-01-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(170, 31, 40, NULL, '2025-02-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(171, 32, 41, '2024-03-20', '2024-03-18', 800000, 'Efectivo', 'Atrasado', 2, 'true'),
-	(172, 32, 41, '2024-03-20', '2024-04-18', 200000000, 'Efectivo', 'Adelantado', -29, 'true'),
-	(173, 32, 41, NULL, '2024-05-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(174, 32, 41, NULL, '2024-06-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(175, 32, 41, NULL, '2024-07-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(176, 32, 41, NULL, '2024-08-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(177, 32, 41, NULL, '2024-09-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(178, 32, 41, NULL, '2024-10-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(179, 32, 41, NULL, '2024-11-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(180, 32, 41, NULL, '2024-12-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(181, 32, 41, NULL, '2025-01-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(182, 32, 41, NULL, '2025-02-18', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(183, 33, 42, NULL, '2024-03-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(184, 33, 42, NULL, '2024-04-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(185, 33, 42, NULL, '2024-05-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(186, 33, 42, NULL, '2024-06-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(187, 33, 42, NULL, '2024-07-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(188, 33, 42, NULL, '2024-08-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(189, 33, 42, NULL, '2024-09-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(190, 33, 42, NULL, '2024-10-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(191, 33, 42, NULL, '2024-11-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(192, 33, 42, NULL, '2024-12-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(193, 33, 42, NULL, '2025-01-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(194, 33, 42, NULL, '2025-02-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(195, 34, 43, NULL, '2024-03-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(196, 34, 43, NULL, '2024-04-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(197, 34, 43, NULL, '2024-05-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(198, 34, 43, NULL, '2024-06-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(199, 34, 43, NULL, '2024-07-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(200, 34, 43, NULL, '2024-08-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(201, 34, 43, NULL, '2024-09-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(202, 34, 43, NULL, '2024-10-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(203, 34, 43, NULL, '2024-11-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(204, 34, 43, NULL, '2024-12-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(205, 34, 43, NULL, '2025-01-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(206, 34, 43, NULL, '2025-02-20', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(207, 35, 44, NULL, '2024-03-31', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(208, 35, 44, NULL, '2024-04-30', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(209, 35, 44, NULL, '2024-05-31', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(210, 35, 44, NULL, '2024-06-30', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(211, 35, 44, NULL, '2024-07-31', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(212, 35, 44, NULL, '2024-08-31', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(213, 35, 44, NULL, '2024-09-30', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(214, 35, 44, NULL, '2024-10-31', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(215, 35, 44, NULL, '2024-11-30', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(216, 35, 44, NULL, '2024-12-31', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(217, 35, 44, NULL, '2025-01-31', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
-	(218, 35, 44, '2024-03-20', '2025-02-28', 60000, 'Efectivo', 'Adelantado', -345, 'true');
+	(166, 31, 40, '2024-03-22', '2024-10-18', NULL, 'Efectivo', 'AlDia', -210, 'true'),
+	(167, 31, 40, '2024-03-22', '2024-11-18', NULL, 'Efectivo', 'AlDia', -241, 'true'),
+	(168, 31, 40, '2024-03-22', '2024-12-18', NULL, 'Efectivo', 'AlDia', -271, 'true'),
+	(169, 31, 40, '2024-03-22', '2025-01-18', NULL, 'Efectivo', 'AlDia', -302, 'true'),
+	(170, 31, 40, '2024-03-22', '2025-02-18', NULL, 'Efectivo', 'AlDia', -333, 'true'),
+	(171, 32, 41, '2024-03-22', '2024-03-18', 4000000, 'Efectivo', 'AlDia', 4, 'true'),
+	(172, 32, 41, '2024-03-22', '2024-04-18', 4000000, 'Efectivo', 'AlDia', -27, 'true'),
+	(173, 32, 41, '2024-03-22', '2024-05-18', 4000000, 'Efectivo', 'AlDia', -57, 'true'),
+	(174, 32, 41, '2024-03-22', '2024-06-18', 4000000, 'Efectivo', 'AlDia', -88, 'true'),
+	(175, 32, 41, '2024-03-22', '2024-07-18', 2000000, 'Efectivo', 'AlDia', -118, 'true'),
+	(176, 32, 41, '2024-03-22', '2024-08-18', 2000000, 'Efectivo', 'AlDia', -149, 'true'),
+	(177, 32, 41, '2024-03-22', '2024-09-18', NULL, 'Transferencia', 'AlDia', -180, 'true'),
+	(178, 32, 41, '2024-03-22', '2024-10-18', NULL, 'Transferencia', 'AlDia', -210, 'true'),
+	(179, 32, 41, '2024-03-22', '2024-11-18', 1500000000, 'Efectivo', 'AlDia', -241, 'true'),
+	(180, 32, 41, '2024-03-22', '2024-12-18', 1500000000, 'Efectivo', 'AlDia', -271, 'true'),
+	(181, 32, 41, '2024-03-22', '2025-01-18', 1500000000, 'Efectivo', 'AlDia', -302, 'true'),
+	(182, 32, 41, '2024-03-22', '2025-02-18', 1500000000, 'Efectivo', 'AlDia', -333, 'true'),
+	(183, 33, 42, NULL, '2024-03-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(184, 33, 42, NULL, '2024-04-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(185, 33, 42, NULL, '2024-05-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(186, 33, 42, NULL, '2024-06-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(187, 33, 42, NULL, '2024-07-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(188, 33, 42, NULL, '2024-08-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(189, 33, 42, NULL, '2024-09-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(190, 33, 42, NULL, '2024-10-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(191, 33, 42, NULL, '2024-11-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(192, 33, 42, NULL, '2024-12-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(193, 33, 42, NULL, '2025-01-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(194, 33, 42, NULL, '2025-02-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(195, 34, 43, NULL, '2024-03-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(196, 34, 43, NULL, '2024-04-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(197, 34, 43, NULL, '2024-05-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(198, 34, 43, NULL, '2024-06-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(199, 34, 43, NULL, '2024-07-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(200, 34, 43, NULL, '2024-08-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(201, 34, 43, NULL, '2024-09-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(202, 34, 43, NULL, '2024-10-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(203, 34, 43, NULL, '2024-11-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(204, 34, 43, NULL, '2024-12-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(205, 34, 43, NULL, '2025-01-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(206, 34, 43, NULL, '2025-02-25', 200000, 'Efectivo', 'Adelantado', NULL, 'true'),
+	(207, 32, 44, NULL, '2024-03-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(208, 32, 44, NULL, '2024-04-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(209, 32, 44, NULL, '2024-05-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(210, 32, 44, NULL, '2024-06-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(211, 32, 44, NULL, '2024-07-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(212, 32, 44, NULL, '2024-08-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(213, 32, 44, NULL, '2024-09-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(214, 32, 44, NULL, '2024-10-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(215, 32, 44, NULL, '2024-11-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(216, 32, 44, NULL, '2024-12-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(217, 32, 44, NULL, '2025-01-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(218, 32, 44, NULL, '2025-02-25', 0, 'Pendiente', 'Pendiente', NULL, 'true'),
+	(219, 34, 45, '2024-03-25', '2024-03-25', 2000, 'Efectivo', 'AlDia', 0, 'true'),
+	(220, 34, 45, '2024-03-25', '2024-04-25', 2000, 'Efectivo', 'AlDia', -31, 'true'),
+	(221, 34, 45, '2024-03-25', '2024-05-25', 2000, 'Efectivo', 'AlDia', -61, 'true'),
+	(222, 34, 45, '2024-03-25', '2024-06-25', 2000, 'Efectivo', 'AlDia', -92, 'true'),
+	(223, 34, 45, '2024-03-25', '2024-07-25', 2000, 'Efectivo', 'AlDia', -122, 'true'),
+	(224, 34, 45, '2024-03-25', '2024-08-25', 2000, 'Efectivo', 'AlDia', -153, 'true'),
+	(225, 34, 45, '2024-03-25', '2024-09-25', 2000, 'Efectivo', 'AlDia', -184, 'true'),
+	(226, 34, 45, '2024-03-25', '2024-10-25', 2000, 'Efectivo', 'AlDia', -214, 'true'),
+	(227, 34, 45, '2024-03-25', '2024-11-25', 2000, 'Efectivo', 'AlDia', -245, 'true'),
+	(228, 34, 45, '2024-03-25', '2024-12-25', 2000, 'Efectivo', 'AlDia', -275, 'true'),
+	(229, 34, 45, '2024-03-25', '2025-01-25', 2000, 'Efectivo', 'AlDia', -306, 'true'),
+	(230, 34, 45, '2024-03-25', '2025-02-25', 2000, 'Efectivo', 'AlDia', -337, 'true'),
+	(231, 34, 46, '2024-03-25', '2024-03-25', 2000, 'Efectivo', 'AlDia', 0, 'true'),
+	(232, 34, 46, '2024-03-25', '2024-04-25', 2000, 'Efectivo', 'Adelantado', -31, 'true'),
+	(233, 34, 46, '2024-03-25', '2024-05-25', 2000, 'Efectivo', 'Adelantado', -61, 'true'),
+	(234, 34, 46, '2024-03-25', '2024-06-25', 2000, 'Efectivo', 'Adelantado', -92, 'true'),
+	(235, 34, 46, '2024-03-25', '2024-07-25', 2000, 'Efectivo', 'Adelantado', -122, 'true'),
+	(236, 34, 46, '2024-03-25', '2024-08-25', 2000, 'Efectivo', 'Adelantado', -153, 'true'),
+	(237, 34, 46, '2024-03-25', '2024-09-25', 2000, 'Efectivo', 'Adelantado', -184, 'true'),
+	(238, 34, 46, '2024-03-25', '2024-10-25', 2000, 'Efectivo', 'Adelantado', -214, 'true'),
+	(239, 34, 46, '2024-03-25', '2024-11-25', 2000, 'Efectivo', 'Adelantado', -245, 'true'),
+	(240, 34, 46, '2024-03-25', '2024-12-25', 2000, 'Efectivo', 'Adelantado', -275, 'true'),
+	(241, 34, 46, '2024-03-25', '2025-01-25', 2000, 'Efectivo', 'Adelantado', -306, 'true'),
+	(242, 34, 46, '2024-03-25', '2025-02-25', 2000, 'Efectivo', 'Adelantado', -337, 'true');
 /*!40000 ALTER TABLE `pagos_arrendamiento` ENABLE KEYS */;
 
 -- Volcando estructura para tabla adminmuebles.propietario
@@ -614,10 +644,10 @@ INSERT INTO `trabajador` (`IdTrabajador`, `Nombre`, `Apellido`, `Correo`, `Contr
 	(6, 'Arenas', 'Quezad', 'ramy@gmail.com', '65878544', '3132025146', 1, 'true');
 /*!40000 ALTER TABLE `trabajador` ENABLE KEYS */;
 
--- Volcando estructura para disparador adminmuebles.actualizar_cuotas_pendientes_despues_de_actualizar
+-- Volcando estructura para disparador adminmuebles.actualizar_cuotas_pendientes
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
-CREATE TRIGGER `actualizar_cuotas_pendientes_despues_de_actualizar` AFTER UPDATE ON `pagos_arrendamiento` FOR EACH ROW BEGIN
+CREATE TRIGGER `actualizar_cuotas_pendientes` AFTER UPDATE ON `pagos_arrendamiento` FOR EACH ROW BEGIN
     DECLARE cuotas_pendientes INT;
 
     -- Calcular el número de cuotas pendientes para el contrato actual
@@ -627,8 +657,36 @@ CREATE TRIGGER `actualizar_cuotas_pendientes_despues_de_actualizar` AFTER UPDATE
 
     -- Actualizar el campo CuotasPendientes en la tabla contratoarrendamiento
     UPDATE contratoarrendamiento
-    SET CuotasPendientes = cuotas_pendientes - 1
+    SET CuotasPendientes = cuotas_pendientes
     WHERE IdContrato = NEW.IdContrato;
+
+    -- Verificar si las cuotas pendientes son 0 o menos
+    IF cuotas_pendientes <= 0 THEN
+        -- Actualizar el estado del contrato a Finalizado
+        UPDATE contratoarrendamiento
+        SET EstadoContrato = 'Finalizado'
+        WHERE IdContrato = NEW.IdContrato;
+    END IF;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- Volcando estructura para disparador adminmuebles.actualizar_estado_finalizado
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `actualizar_estado_finalizado` AFTER UPDATE ON `contratoarrendamiento` FOR EACH ROW BEGIN
+    -- Verificar si el estado del contrato se actualizó a 'Finalizado'
+    IF NEW.EstadoContrato = 'Finalizado' THEN
+        -- Actualizar el estado del inmueble asociado a 'Disponible'
+        UPDATE inmueble
+        SET Estado = 'Disponible'
+        WHERE IdInmueble = NEW.IdInmueble;
+
+        -- Actualizar el estado del arrendatario a 'Libre'
+        UPDATE arrendatario
+        SET Estado = 'Libre'
+        WHERE IdArrendatario = NEW.IdArrendatario;
+    END IF;
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
@@ -653,11 +711,30 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `Before_Insert_ContratoArrendamiento` BEFORE INSERT ON `contratoarrendamiento` FOR EACH ROW BEGIN
-    SET NEW.MesesAlquiler = TIMESTAMPDIFF(MONTH, NEW.FechaInicioContrato, NEW.FechaFinContrato);
-    SET NEW.CuotasPendientes = NEW.MesesAlquiler - (
+    DECLARE meses_contrato INT;
+    DECLARE cuotas_pagadas INT;
+    DECLARE cuotas_pendientes INT;
+    
+    SET meses_contrato = TIMESTAMPDIFF(MONTH, NEW.FechaInicioContrato, NEW.FechaFinContrato);
+    
+    -- Verificar si la fecha de inicio y fin están en el mismo mes
+    IF DATE_FORMAT(NEW.FechaInicioContrato, '%Y-%m') = DATE_FORMAT(NEW.FechaFinContrato, '%Y-%m') THEN
+        SET meses_contrato = meses_contrato + 1; -- Incluir el mes final
+    END IF;
+    
+    SET cuotas_pagadas = (
         SELECT COUNT(*) FROM pagos_Arrendamiento
         WHERE IdContrato = NEW.IdContrato
     );
+    
+    SET cuotas_pendientes = meses_contrato - cuotas_pagadas;
+    
+    IF cuotas_pendientes < 0 THEN
+        SET cuotas_pendientes = 0; -- No pueden haber cuotas pendientes negativas
+    END IF;
+    
+    SET NEW.MesesAlquiler = meses_contrato +1;
+    SET NEW.CuotasPendientes = cuotas_pendientes + 1;
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
@@ -671,17 +748,29 @@ CREATE TRIGGER `calcular_dias_demora_despues_de_actualizar` BEFORE UPDATE ON `pa
     
     -- Calcular la diferencia en días
     SET diferencia_dias = DATEDIFF(NEW.FechaPago, NEW.FechaPagoFija);
+    IF diferencia_dias < 0 THEN
+        SET NEW.Estado = "Adelantado"; -- No pueden haber cuotas pendientes negativas
+    END IF;
+    
+    IF diferencia_dias > 0 THEN
+        SET NEW.Estado = "Atrasado"; -- No pueden haber cuotas pendientes negativas
+    END IF;
+    IF diferencia_dias = 0 THEN
+        SET NEW.Estado = "AlDia"; -- No pueden haber cuotas pendientes negativas
+    END IF;
     
     -- Asignar el valor de la diferencia a la columna DiasDemora en la fila NEW
     SET NEW.DiasDMora = diferencia_dias;
+    
+     
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
 
--- Volcando estructura para disparador adminmuebles.generar_pagos
+-- Volcando estructura para disparador adminmuebles.generar_pagos_arrendamiento_despues_de_insertar
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
-CREATE TRIGGER `generar_pagos` AFTER INSERT ON `contratoarrendamiento` FOR EACH ROW BEGIN
+CREATE TRIGGER `generar_pagos_arrendamiento_despues_de_insertar` AFTER INSERT ON `contratoarrendamiento` FOR EACH ROW BEGIN
     DECLARE fecha_pago DATE;
     DECLARE diferencia_meses INT;
     DECLARE i INT;

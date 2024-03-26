@@ -93,9 +93,12 @@ export const H_gastos = () => {
         <th>Elaborado Por</th>
         <th>Pago Arriendo</th>
         <th>Administracion</th>
-        <th>Aseo Entrega</th>
+        <th>Aseo</th>
         <th>Mantenimiento</th>
+        <th>Cuota Extraordinaria</th>
+        <th>Pagos de Recibos</th>
         <th>Valor Total</th>
+        <th>Descripción</th>
       </tr>
     );
   };
@@ -128,7 +131,10 @@ export const H_gastos = () => {
         <td>${CPropietario.AdmInmobi}</td>
         <td>${CPropietario.AseoEntrega}</td>
         <td>${CPropietario.Mantenimiento}</td>
+        <td>${CPropietario.CuotaExtra}</td>
+        <td>${CPropietario.PagoRecibos}</td>
         <td>${CPropietario.ValorTotal}</td>
+        <td>{CPropietario.Descripcion}</td>
       </tr>
     );
   };
