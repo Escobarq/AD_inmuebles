@@ -71,25 +71,20 @@ router.get("/inmuebles-general", (req, res) => {
   const connection = getConnection();  
   const sql = `
   SELECT
-    p.IdPropietario,
-    p.NombreCompleto,
-    JSON_ARRAYAGG(
-      JSON_OBJECT(
-        'Tipo', i.Tipo,
-        'IdInmueble', i.IdInmueble,
-        'ValorInmueble', i.ValorInmueble,
-        'Deposito', COALESCE(c.ValorDeposito, 'N/A')
-      )
-    ) AS InmueblesAsociados
+    p.NombreCompleto AS 'Nombre Propietario',
+    GROUP_CONCAT(DISTINCT CONCAT(i.Tipo, ' (NoMatricula: ', i.NoMatricula, ')')) AS 'Tipos de Inmuebles',
+    SUM(cp.PagoArriendo) AS 'Pago Arriendo Total',
+    SUM(cp.AdmInmobi) AS 'Administración Inmobiliaria Total',
+    ca.ValorDeposito AS 'Valor Depósito'
   FROM
     propietario p
-  JOIN
-    inmueble i ON p.IdPropietario = i.IdPropietario
-  LEFT JOIN
-    contratoarrendamiento c ON i.IdInmueble = c.IdInmueble
+  INNER JOIN inmueble i ON i.IdPropietario = p.IdPropietario
+  INNER JOIN comision_propietario cp ON cp.IdInmueble = i.IdInmueble
+  INNER JOIN contratoarrendamiento ca ON ca.IdInmueble = i.IdInmueble
   GROUP BY
-    p.IdPropietario,
-    p.NombreCompleto;
+    p.NombreCompleto, ca.ValorDeposito
+  ORDER BY
+    p.NombreCompleto ASC;
   `;
 
   connection.query(sql, (error, results) => {
@@ -97,19 +92,11 @@ router.get("/inmuebles-general", (req, res) => {
       console.error("Error al realizar la consulta:", error);
       res.status(500).json({ message: "Error del servidor" });
     } else {
-      // Parsear los resultados para asegurar que los datos están en formato JSON
-      const parsedResults = results.map(row => {
-        return {
-          IdPropietario: row.IdPropietario,
-          NombreCompleto: row.NombreCompleto,
-          InmueblesAsociados: JSON.parse(row.InmueblesAsociados)
-        };
-      });
-
-      res.status(200).json(parsedResults);
+      res.status(200).json(results);
     }
   });
 });
+
 
 
 
