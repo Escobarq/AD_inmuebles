@@ -14,7 +14,7 @@ import axios from "axios";
 export const ReciboGastos = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [infogastos, setinfogastos] = useState([]);
+  const [, setinfogastos] = useState([]);
   const [Nombre, setNombre] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [mostrarModalB, setMostrarModalB] = useState(false);
@@ -37,7 +37,7 @@ export const ReciboGastos = () => {
     handleSubmit(onsubmitGastos)(); // Envia los datos
     setShowSaveModal(false); // Cierra el modal
   };
-  const alertError = () =>{
+  const alertError = () => {
     toast.error("Alerta el los valores de los conceptos no coinciden ", {
       theme: "dark",
     });
@@ -54,7 +54,7 @@ export const ReciboGastos = () => {
     fetchData();
     setCurrentDate(getCurrentDate());
   }, []);
- 
+
 
   const fetchData = async () => {
     try {
@@ -104,10 +104,6 @@ export const ReciboGastos = () => {
     setShowCancelModal(false); // Cierra el modal
   };
 
-  const handleSave = () => {
-    setShowSaveModal(true);
-    // Validar que todos los campos estén llenos antes de guardar
-  };
 
   const handleCancel = () => {
     setShowCancelModal(true);
@@ -118,10 +114,10 @@ export const ReciboGastos = () => {
 
     if (name == "PorcentajeAD") {
       if (value == 0) {
-        setvalorAD((ValorPA*8)/100)
+        setvalorAD((ValorPA * 8) / 100)
       }
       else {
-        setvalorAD((ValorPA*value)/100)
+        setvalorAD((ValorPA * value) / 100)
       }
       setPorcentajeAD(value)
     }
@@ -143,14 +139,14 @@ export const ReciboGastos = () => {
     setvalorTotal(res)
   }, [handleCalcular]);
 
-  const errores = (text) =>{
+  const errores = (text) => {
     toast.error(text, {
       theme: "colored",
 
       autoClose: 2000,
     });
   };
-  const notify = (text) =>{
+  const notify = (text) => {
     toast.success(text, {
       theme: "colored",
 
@@ -158,14 +154,15 @@ export const ReciboGastos = () => {
     });
   };
   const onsubmitGastos = async (data) => {
-    if (valorTotal < 0 || 
-      valorAE == 0 && data.Descripcion == "" || 
+    if (valorTotal < 0 ||
+      valorAE == 0 && data.Descripcion == "" ||
       valorM == 0 && data.Descripcion == "" ||
       valorCE == 0 && data.Descripcion == "" ||
-      valorPR == 0 && data.Descripcion == "" ) {
+      valorPR == 0 && data.Descripcion == "") {
       alertError();
     } else {
       data.FechaPago = currentDate
+
       data.PagoArriendo = ValorPA;
       data.AdminInmobiliaria = valorAD;
       data.AseoEntrega = valorAE;
@@ -222,7 +219,7 @@ export const ReciboGastos = () => {
   const handleInmuebleChange = async (Inmueble) => {
     setvalorPA(Inmueble.ValorInmueble)
     setSelectedInmueble(Inmueble);
-    setvalorAD(Inmueble.ValorInmueble*0.08)
+    setvalorAD(Inmueble.ValorInmueble * 0.08)
     setMostrarModalB(false);
   };
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
@@ -245,21 +242,18 @@ export const ReciboGastos = () => {
       "Matricula",
       "FormaPago",
       "FechaPago",
-      //"AdminInmobiliaria",
-      // "PagoArriendo",
-      // "AseoEntrega",
-      // "Mantenimiento",
       "ElaboradoPor",
-      // "ValorTotal",
+
     ];
 
     try {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage();
       const { width, height } = page.getSize();
-      const fontSize = 19;
+      const fontSize = 16;
       const padding = 50;
-      const middle = width / 2;
+      // eslint-disable-next-line no-unused-vars
+      const middle = width / 10;
       const currentDate = new Date().toLocaleDateString();
       const currentTime = new Date().toLocaleTimeString();
       const footerText = `Hora de emisión: ${currentTime}`;
@@ -322,6 +316,26 @@ export const ReciboGastos = () => {
         font: await pdfDoc.embedFont("Helvetica"),
       });
       //línea horizontal en el encabezado
+      //Nombre del campo en negrita y centrado
+      page.drawText("Descripción:", {
+       x: width / 10,
+         y: height - padding - fontSize * 37,
+        size: fontSize + 4,
+        color: rgb(0, 0, 0),
+        font: await pdfDoc.embedFont("Helvetica-Bold"),
+        align: "right",
+      });
+
+      // Respuesta debajo del nombre del campo
+      page.drawText(`${data.Descripcion}`, {
+       x: width / 10,
+       y: height - padding - fontSize * 39,
+        size: fontSize + 3,
+        color: rgb(0, 0, 0),
+        align: "left",
+      });
+
+
 
       page.drawLine({
         start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
@@ -378,7 +392,7 @@ export const ReciboGastos = () => {
               });
             }
 
-
+            //ValorPA ,valorAD,valorAE,valorM,valorCE,valorPR
 
 
             // Datos de la tabla
@@ -387,16 +401,19 @@ export const ReciboGastos = () => {
               { concepto: "Admin Inmobiliaria", valor: valorAD },
               { concepto: "Aseo Entrega", valor: valorAE },
               { concepto: "Mantenimiento", valor: valorM },
-              { concepto: "Valor Total", valor: data.ValorTotal }
+              { concepto: "Cuota Extra", valor: valorCE },
+              { concepto: "Pago Recibos", valor: valorPR },
+              { concepto: "Valor Total", valor: valorTotal }
+
             ];
 
             // Posiciones iniciales para dibujar la tabla
             let tableX = padding;
-            let tableY = height - padding - fontSize * 24;
+            let tableY = height - padding - fontSize * 22;
 
 
             // Dibujar líneas horizontales y verticales
-            const rowHeight = 33; // Altura de cada fila
+            const rowHeight = 25; // Altura de cada fila
             const columnWidth = 450; // Ancho de cada columna
             const lineWidth = 0.5; // Grosor de las líneas
             const tableHeight = rowHeight * (tableData.length + 1); // Altura total de la tabla
@@ -419,7 +436,7 @@ export const ReciboGastos = () => {
                 x: tableX,
                 y: rowY - fontSize * 1.1, // Ajusta la posición vertical según tu diseño
                 size: fontSize,
-             
+
               });
               page.drawText(`$${row.valor}`, {
                 x: tableX + 279, // Ajusta la posición horizontal según tu diseño
@@ -442,7 +459,7 @@ export const ReciboGastos = () => {
               leftX = rightX;
             } else {
               leftX = padding;
-              yOffset -= fontSize * 5;
+              yOffset -= fontSize * 4;
               if (yOffset < padding) {
                 // Si llegamos al límite de la página, continuamos en la siguiente página
                 page.drawText(`${key}:`, {
@@ -474,176 +491,176 @@ export const ReciboGastos = () => {
       console.error("Error al generar el PDF:", error);
     }
   };
-return (
-  <div className="home-2">
-    <div className="contenedor-formulario" id="recibo-gastos">
-      <h1 className="tit">Recibo de Gastos</h1>
-      <form onSubmit={handleSubmit(onsubmitGastos)} className="tod">
-        <div className="fila-formulario1">
-          <Form.Group>
-            <label htmlFor="fecha">Fecha de Pago:</label>
-            <input required
-              type="date"
-              className="form-control InputsRegistros"
-              id="fecha"
-              defaultValue={currentDate}
-              disabled                
-            />
-          </Form.Group>
+  return (
+    <div className="home-2">
+      <div className="contenedor-formulario" id="recibo-gastos">
+        <h1 className="tit">Recibo de Gastos</h1>
+        <form onSubmit={handleSubmit(onsubmitGastos)} className="tod">
+          <div className="fila-formulario1">
+            <Form.Group>
+              <label htmlFor="fecha">Fecha de Pago:</label>
+              <input required
+                type="date"
+                className="form-control InputsRegistros"
+                id="fecha"
+                defaultValue={currentDate}
+                disabled
+              />
+            </Form.Group>
 
-          <Form.Group>
-            <label htmlFor="entregadoPor">Entregado por:</label>
-            <input required
-              type="text"
-              className="form-control InputsRegistros"
-              id="entregadoPor"
-              defaultValue={Nombre}
-              disabled
-            />
+            <Form.Group>
+              <label htmlFor="entregadoPor">Entregado por:</label>
+              <input required
+                type="text"
+                className="form-control InputsRegistros"
+                id="entregadoPor"
+                defaultValue={Nombre}
+                disabled
+              />
 
-          </Form.Group>
+            </Form.Group>
 
-          <Form.Group>
-            <Form.Label>Propietario del inmueble</Form.Label>
-            <Form.Select
-              className="InputsRegistros"
+            <Form.Group>
+              <Form.Label>Propietario del inmueble</Form.Label>
+              <Form.Select
+                className="InputsRegistros"
 
-              value={
-                selectedPropietario ? selectedPropietario.IdPropietario : "a?"
-              }
-              onChange={(e) => handlePropietarioChange(e.target.value)}
-              onClick={() => handleMostrarAClick(true)}
-            >
-              <option value="">Seleccionar Numero de Propietario</option>
-              {PropietariosDisponibles.map((Propietario, index) => (
-                <option key={index} value={Propietario.IdPropietario}>
-                  {Propietario.NombreCompleto}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
+                value={
+                  selectedPropietario ? selectedPropietario.IdPropietario : "a?"
+                }
+                onChange={(e) => handlePropietarioChange(e.target.value)}
+                onClick={() => handleMostrarAClick(true)}
+              >
+                <option value="">Seleccionar Numero de Propietario</option>
+                {PropietariosDisponibles.map((Propietario, index) => (
+                  <option key={index} value={Propietario.IdPropietario}>
+                    {Propietario.NombreCompleto}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
 
-          <Form.Group>
-            <Form.Label>Inmueble</Form.Label>
+            <Form.Group>
+              <Form.Label>Inmueble</Form.Label>
 
-            <Form.Select
-              className="InputsRegistros"
-              value={selectedInmueble ? selectedInmueble.IdInmueble : "a?"}
+              <Form.Select
+                className="InputsRegistros"
+                value={selectedInmueble ? selectedInmueble.IdInmueble : "a?"}
 
-              onChange={(e) => handleInmuebleChange(e.target.value)}
-              onClick={() => handleMostrarBClick(true)}
-            >
-              <option value="">Seleccionar Numero de Matricula</option>
-              {InmueblesDisponibles.map((Inmueble, index) => (
-                <option key={index} value={Inmueble.IdInmueble}>
+                onChange={(e) => handleInmuebleChange(e.target.value)}
+                onClick={() => handleMostrarBClick(true)}
+              >
+                <option value="">Seleccionar Numero de Matricula</option>
+                {InmueblesDisponibles.map((Inmueble, index) => (
+                  <option key={index} value={Inmueble.IdInmueble}>
 
-                  {Inmueble.NoMatricula} {Inmueble.Tipo}
+                    {Inmueble.NoMatricula} {Inmueble.Tipo}
 
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-        </div>
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </div>
 
-        <label>Forma de pago</label>
-        <select
-          className="InputsRegistros"
-          {...register("FormaPago")}
-          id="seleccionGasto3"
+          <label>Forma de pago</label>
+          <select
+            className="InputsRegistros"
+            {...register("FormaPago")}
+            id="seleccionGasto3"
 
-        >
-          <option value="">Seleccione Forma de Pago</option>
-          <option value="Efectivo">Efectivo</option>
-          <option value="Transferencia">Transferencia</option>
+          >
+            <option value="">Seleccione Forma de Pago</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
 
-        </select>
+          </select>
 
-        <div className="fila-formulario1">
+          <div className="fila-formulario1">
 
-        <Form.Group>
-            <label htmlFor="fecha">Pago Arriendo:</label>
-            
-            <input required
-              type="number"
-              className="form-control InputsRegistros"
-              name="PagoArriendo"
-              value={selectedInmueble ? selectedInmueble.ValorInmueble: 0}
-              disabled
-            />
-          </Form.Group>
+            <Form.Group>
+              <label htmlFor="fecha">Pago Arriendo:</label>
 
-          <Form.Group>
-            <label htmlFor="">Pago Administración:  Ingrese el % <input type="number" name="PorcentajeAD" onChange={(e) => handleCalcular(e.target)} defaultValue={8} id="" /></label>
-            <input 
-              type="number"
-              className="form-control InputsRegistros"
-              name="AdmInmobi"
-              onChange={(e) => handleCalcular(e.target)}
-              value={PorcentajeAD ? (selectedInmueble.ValorInmueble* PorcentajeAD)/100 :  selectedInmueble ? selectedInmueble.ValorInmueble* 0.08: 0}
-              disabled
-            />
-          </Form.Group>
+              <input required
+                type="number"
+                className="form-control InputsRegistros"
+                name="PagoArriendo"
+                value={selectedInmueble ? selectedInmueble.ValorInmueble : 0}
+                disabled
+              />
+            </Form.Group>
 
-          <Form.Group>
-            <label htmlFor="fecha">Gasto de Aseo:</label>
-            <input 
-              type="number"
-              className="form-control InputsRegistros"
-              name="AseoEntrega"
-              defaultValue={0}
-              onChange={(e) => handleCalcular(e.target)}
-            />            
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="fecha">Gasto de Mantenimiento:</label>
-            <input 
-              type="numnumberber"
-              className="form-control InputsRegistros"
-              name="Mantenimiento"
-              defaultValue={0}
-              onChange={(e) => handleCalcular(e.target)}
-            />              
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="fecha">Pagos de Recibos:</label>
-            <input 
-              type="numnumberber"
-              className="form-control InputsRegistros"
-              name="PagoRecibo"
-              defaultValue={0}
-              onChange={(e) => handleCalcular(e.target)}
-            />              
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="fecha">Cuotas Extraordinarias:</label>
-            <input 
-              type="numnumberber"
-              className="form-control InputsRegistros"
-              name="CuotaExtra"
-              defaultValue={0}
-              onChange={(e) => handleCalcular(e.target)}
-            />              
-          </Form.Group>
-          <Form.Group controlId="formNoIdentidadPropietario">
-            <Form.Label>Descripción</Form.Label>
-            <Form.Control
-              className="InputsRegistros"
-              {...register("Descripcion")}
-              as="textarea"
-              rows={2}
-              style={{ width: "100%", resize: "none" }}
-            />
-          </Form.Group>
-          <Form.Group>
-            <label htmlFor="fecha">Valor Total:</label>
-            <input 
-              type="numnumberber"
-              className="form-control InputsRegistros"
-              name="Mantenimiento"
-              value={valorTotal ? valorTotal: 0}
-              onChange={(e) => handleCalcular(e.target)}
-            />              
-          </Form.Group>
+            <Form.Group>
+              <label htmlFor="">Pago Administración:  Ingrese el % <input type="number" name="PorcentajeAD" onChange={(e) => handleCalcular(e.target)} defaultValue={8} id="" /></label>
+              <input
+                type="number"
+                className="form-control InputsRegistros"
+                name="AdmInmobi"
+                onChange={(e) => handleCalcular(e.target)}
+                value={PorcentajeAD ? (selectedInmueble.ValorInmueble * PorcentajeAD) / 100 : selectedInmueble ? selectedInmueble.ValorInmueble * 0.08 : 0}
+                disabled
+              />
+            </Form.Group>
+
+            <Form.Group>
+              <label htmlFor="fecha">Gasto de Aseo:</label>
+              <input
+                type="number"
+                className="form-control InputsRegistros"
+                name="AseoEntrega"
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <label htmlFor="fecha">Gasto de Mantenimiento:</label>
+              <input
+                type="numnumberber"
+                className="form-control InputsRegistros"
+                name="Mantenimiento"
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <label htmlFor="fecha">Pagos de Recibos:</label>
+              <input
+                type="numnumberber"
+                className="form-control InputsRegistros"
+                name="PagoRecibo"
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <label htmlFor="fecha">Cuotas Extraordinarias:</label>
+              <input
+                type="numnumberber"
+                className="form-control InputsRegistros"
+                name="CuotaExtra"
+                defaultValue={0}
+                onChange={(e) => handleCalcular(e.target)}
+              />
+            </Form.Group>
+            <Form.Group controlId="formNoIdentidadPropietario">
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("Descripcion")}
+                as="textarea"
+                rows={2}
+                style={{ width: "100%", resize: "none" }}
+              />
+            </Form.Group>
+            <Form.Group>
+              <label htmlFor="fecha">Valor Total:</label>
+              <input
+                type="numnumberber"
+                className="form-control InputsRegistros"
+                name="Mantenimiento"
+                value={valorTotal ? valorTotal : 0}
+                onChange={(e) => handleCalcular(e.target)}
+              />
+            </Form.Group>
           </div>
         </form>
       </div>
