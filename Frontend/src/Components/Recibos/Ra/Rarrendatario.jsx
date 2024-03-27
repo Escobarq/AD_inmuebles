@@ -372,6 +372,7 @@ export const Rarrendatario = () => {
             <Form.Group controlId="documentoIdentidad">
               <Form.Label>Contrato:</Form.Label>
               <Form.Select
+              required
                 className="InputsRegistros"
                 value={selectedContrato ? selectedContrato.IdContrato : ""}
                 onChange={(e) => handleContratoChange(e.target.value)}
@@ -457,6 +458,7 @@ export const Rarrendatario = () => {
             <Form.Group controlId="documentoIdentidad">
               <Form.Label>Lista de Fechas De Pagos:</Form.Label>
               <Form.Control
+              required
                as="textarea"
                rows={2}
                style={{ width: "100%", resize: "none" }}
