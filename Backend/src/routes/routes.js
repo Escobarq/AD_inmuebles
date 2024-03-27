@@ -66,25 +66,11 @@ router.get("/Infouser", (req, res) => {
     }
   });
 });
-//Calculo Total General Propietarios de sus inmuebles
+// Calculo Total General Propietarios de sus inmuebles
 router.get("/inmuebles-general", (req, res) => {
   const connection = getConnection();  
   const sql = `
-  SELECT
-    p.NombreCompleto AS 'Nombre Propietario',
-    GROUP_CONCAT(DISTINCT CONCAT(i.Tipo, ' (NoMatricula: ', i.NoMatricula, ')')) AS 'Tipos de Inmuebles',
-    SUM(cp.PagoArriendo) AS 'Pago Arriendo Total',
-    SUM(cp.AdmInmobi) AS 'Administración Inmobiliaria Total',
-    ca.ValorDeposito AS 'Valor Depósito'
-  FROM
-    propietario p
-  INNER JOIN inmueble i ON i.IdPropietario = p.IdPropietario
-  INNER JOIN comision_propietario cp ON cp.IdInmueble = i.IdInmueble
-  INNER JOIN contratoarrendamiento ca ON ca.IdInmueble = i.IdInmueble
-  GROUP BY
-    p.NombreCompleto, ca.ValorDeposito
-  ORDER BY
-    p.NombreCompleto ASC;
+    SELECT * FROM vista_operacion_inmobiliaria;
   `;
 
   connection.query(sql, (error, results) => {
