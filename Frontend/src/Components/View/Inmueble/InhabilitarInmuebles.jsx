@@ -45,8 +45,7 @@ export const InhabilitarInmuebles = () => {
   const createheader = () => {
     return (
       <tr>
-        <th>Id propietario</th>
-        <th>Id inmueble</th>
+        <th>Nombre Propietario</th>
         <th>Dirección</th>
         <th>Estrato</th>
         <th>Ciudad</th>
@@ -59,9 +58,8 @@ export const InhabilitarInmuebles = () => {
 
   const createrow = (inmueble) => {
     return (
-      <tr key={inmueble.Id_Inmueble}>
-        <td>{inmueble.Id_Propietario}</td>
-        <td>{inmueble.Id_Inmueble}</td>
+      <tr key={inmueble.IdInmueble}>
+        <td>{inmueble.NombrePropietario}</td>
         <td>{inmueble.Direccion}</td>
         <td>{inmueble.Estrato}</td>
         <td>{inmueble.Ciudad}</td>
@@ -72,7 +70,7 @@ export const InhabilitarInmuebles = () => {
           <Button
             className="btn-opciones"
             variant="danger"
-            onClick={() => handleOpenModal(inmueble.Id_Inmueble)}
+            onClick={() => handleOpenModal(inmueble.IdInmueble)}
           >
             <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />
           </Button>
@@ -86,8 +84,8 @@ export const InhabilitarInmuebles = () => {
   };
 
   // Función para mostrar el modal de confirmación
-  const handleOpenModal = (InmuebleId) => {
-    setInmueblesBoolean(InmuebleId);
+  const handleOpenModal = (IdInmueble) => {
+    setInmueblesBoolean(IdInmueble);
     setShowModal(true);
   };
 
@@ -97,12 +95,12 @@ export const InhabilitarInmuebles = () => {
   };
 
   // Función para inhabilitar el inmueble
-  const InhabilitarInmueble = async (InmuebleId) => {
+  const InhabilitarInmueble = async (IdInmueble) => {
     try {
-      await actualizarEstadoInmueble(InmuebleId, "true");
+      await actualizarEstadoInmueble(IdInmueble, "true");
 
       const updatedInmueble = infoinmueble.map((inmueble) =>
-        inmueble.Id_Inmueble === InmuebleId
+        inmueble.IdInmueble === IdInmueble
           ? { ...inmueble, booleanos: "true" }
           : inmueble
       );

@@ -9,7 +9,7 @@ import {
   faPeopleRoof,
   faReceipt,
   faTable,
-  faTableList,
+  faFileContract,
   faRightFromBracket,
   faUserShield,
   faSun,
@@ -227,6 +227,37 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
               placement="right"
               overlay={
                 showTooltip ? (
+                  <Tooltip id="tooltip-prop">Contrato Arrendamiento</Tooltip>
+                ) : (
+                  <></>
+                )
+              }
+            >
+              <Nav.Link
+                as={NavLink}
+                to="/Carrendatario"
+                className="nav-link text-white"
+                aria-current="page"
+                exact={undefined}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <FontAwesomeIcon
+                  width="32"
+                  height="32"
+                  style={{ color: "#ffffff" }}
+                  icon={faFileContract}
+                />
+                <p className="Links_Icons" style={{ margin: "2%" }}>
+                  Contrato Arrendamiento
+                </p>
+              </Nav.Link>
+            </OverlayTrigger>
+          </Nav.Item>
+          <Nav.Item>
+            <OverlayTrigger
+              placement="right"
+              overlay={
+                showTooltip ? (
                   <Tooltip id="tooltip-prop">Pagos Arrendamiento</Tooltip>
                 ) : (
                   <></>
@@ -280,37 +311,6 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
                 />
                 <p className="Links_Icons" style={{ margin: "2%" }}>
                   Comision Propietario
-                </p>
-              </Nav.Link>
-            </OverlayTrigger>
-          </Nav.Item>
-          <Nav.Item>
-            <OverlayTrigger
-              placement="right"
-              overlay={
-                showTooltip ? (
-                  <Tooltip id="tooltip-prop">Informe Arrendamiento</Tooltip>
-                ) : (
-                  <></>
-                )
-              }
-            >
-              <Nav.Link
-                as={NavLink}
-                to="/Carrendatario"
-                className="nav-link text-white"
-                aria-current="page"
-                exact={undefined}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <FontAwesomeIcon
-                  width="32"
-                  height="32"
-                  style={{ color: "#ffffff" }}
-                  icon={faTable}
-                />
-                <p className="Links_Icons" style={{ margin: "2%" }}>
-                  Informe Arrendamiento
                 </p>
               </Nav.Link>
             </OverlayTrigger>

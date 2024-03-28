@@ -54,6 +54,7 @@ export const Inmueble = () => {
       errores();
     }
   };
+  
   function formatDate(fechaString) {
     return moment(fechaString).format("MMMM , D , YYYY");
   }
