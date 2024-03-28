@@ -155,10 +155,10 @@ export const ReciboGastos = () => {
   };
   const onsubmitGastos = async (data) => {
     if (valorTotal < 0 ||
-      valorAE == 0 && data.Descripcion == "" ||
-      valorM == 0 && data.Descripcion == "" ||
-      valorCE == 0 && data.Descripcion == "" ||
-      valorPR == 0 && data.Descripcion == "") {
+      valorAE != 0 && data.Descripcion == "" ||
+      valorM != 0 && data.Descripcion == "" ||
+      valorCE != 0 && data.Descripcion == "" ||
+      valorPR != 0 && data.Descripcion == "") {
       alertError();
     } else {
       data.FechaPago = currentDate
