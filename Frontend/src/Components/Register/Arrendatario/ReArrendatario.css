@@ -5,6 +5,9 @@
     justify-content: center;
 
   }
+  .redireccion:hover {
+    cursor: pointer;
+  }
   .correoin{
     margin-bottom: 0px;
     width: 100px;
