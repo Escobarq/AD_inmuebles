@@ -170,6 +170,8 @@ export const Rarrendatario = () => {
 
   //FUNCION PARA GENERAR PDF
   const handleGuardarClick = async (data) => {
+    data.ValorTotal = ValorTotal
+    data.ListaFechasPagadas = Array.from(pagosSeleccionados).join('; ')
 
     const order = [
       "NoDocumento",
@@ -177,9 +179,9 @@ export const Rarrendatario = () => {
       "NoMatricula",
       "TipoInmueble",
       "FormaPago",
-      "ValorPago",
+      "ValorTotal",
       "FechaPago",
-      "FechaPagoFija",
+      "ListaFechasPagadas",
       "Estado",
     ];
     try {
@@ -263,7 +265,7 @@ export const Rarrendatario = () => {
 
           //la respuesta debajo del nombre del campo
 
-          if (key == "ValorPago"){
+          if (key == "ValorTotal"){
 
             page.drawText(`$${element}`, {
               x: leftX,
@@ -273,7 +275,19 @@ export const Rarrendatario = () => {
               align: "left",
             });
 
-          } else {
+          } else if (key === "ListaFechasPagadas") {
+            const listaFechas = element.split(';');
+            listaFechas.forEach((fecha, index) => {
+                page.drawText(`• ${fecha}`, {
+                    x: leftX,
+                    y: yOffset - fontSize * (1.5 + index * 1.5),
+                    size: fontSize,
+                    color: rgb(0, 0, 0),
+                    align: "left",
+                });
+            });
+        }
+          else {
 
             page.drawText(`${element}`, {
               x: leftX,

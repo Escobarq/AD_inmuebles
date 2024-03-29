@@ -278,13 +278,13 @@ formattedFilters = Object.keys(filtroData)
     const data = infoPArrendamiento.map((Arrendamiento) => ({
       IdPagoArrendamiento: Arrendamiento.IdPagoArrendamiento,
       IdArrendatario: Arrendamiento.IdArrendatario,
-      FechaPago: formatDate(Arrendamiento.FechaPago),
+      FechaPago:  Arrendamiento.FechaPago == null ? "Pendiente" : formatDate(Arrendamiento.FechaPago),
       FechaInicio: formatDate(Arrendamiento.FechaInicio),
       FechaFin: formatDate(Arrendamiento.FechaFin),
       ValorPago: `$${Arrendamiento.ValorPago}`,
       FormaPago: Arrendamiento.FormaPago,
       Estado: Arrendamiento.Estado,
-      DiasDMora: Arrendamiento.DiasDMora,
+      DiasDMora: Arrendamiento.DiasDMora == null ? "Pendiente" : Arrendamiento.DiasDMora,
     }));
     const itemsPerPage = 21;
     let startY = 45;
