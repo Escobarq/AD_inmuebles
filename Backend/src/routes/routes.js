@@ -673,33 +673,31 @@ router.post("/RPropietario", async (req, res) => {
   } = req.body;
 
   try {
-    connection.query(
-      "INSERT INTO propietario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Direccion, Correo, Banco, TipoCuenta, Telefono, NumeroCuenta, FechaIngreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [
-        NombreCompleto,
-        TipoDocumento,
-        DocumentoIdentidad,
-        direccion,
-        Correo,
-        Banco,
-        TipoCuenta,
-        Telefono,
-        NumeroCuenta,
-        FechaIngreso,
-      ],
-      (error, results) => {
-        if (error) {
-          console.error("Error al añadir propietario:", error);
-          res.status(500).json({ error: "Error al añadir propietario" });
-          console.log(FechaIngreso, "aaaaaaaaaaa");
-        } else {
-          console.log("Propietario agregado:", results);
-          res
-            .status(201)
-            .json({ message: "Propietario registrado exitosamente" });
-        }
+
+    connection.query("SELECT * FROM propietario WHERE DocumentoIdentidad = ?",
+    [DocumentoIdentidad], (error, results) => {
+      if (results == "") {
+        connection.query(
+          "INSERT INTO propietario (NombreCompleto, TipoDocumento, DocumentoIdentidad, Direccion, Correo, Banco, TipoCuenta, Telefono, NumeroCuenta, FechaIngreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [
+            NombreCompleto,
+            TipoDocumento,
+            DocumentoIdentidad,
+            direccion,
+            Correo,
+            Banco,
+            TipoCuenta,
+            Telefono,
+            NumeroCuenta,
+            FechaIngreso,
+          ],
+        );
+        res.status(200).json({ message: "Propietario registrado correctamente" });
+
+      } else {
+        res.status(400).json({ error: "Numero de Documento de Propietario duplicado" }); 
       }
-    );
+    });     
   } catch (error) {
     console.error("Error al añadir propietario:", error,);
     res.status(500).json({ error: "Error al añadir propietario" });
@@ -994,32 +992,32 @@ router.post("/Rarrendatario", async (req, res) => {
   } = req.body;
 
   try {
-    connection.query(
-      "INSERT INTO arrendatario (NombreCompleto, IdCodeudor, TipoDocumento, DocumentoIdentidad, Telefono,  Correo, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [
-        NombreCompleto,
-        IdCodeudor,
-        TipoDocumento,
-        DocumentoIdentidad,
-        Telefono,
-        Correo,
-        Estado,
-      ],
-      (error, results) => {
-        if (error) {
-          console.error("Error al añadir arrendatario:", error);
-          res.status(500).json({ error: "Error al añadir arrendatario" });
-        } else {
-          console.log("arrendatario agregado:", results);
-          res
-            .status(201)
-            .json({ message: "Arrendatario registrado exitosamente" });
-        }
+    
+    connection.query("SELECT * FROM arrendatario WHERE DocumentoIdentidad = ?",
+    [DocumentoIdentidad], (error, results) => {
+      if (results == "") {
+        connection.query(
+          "INSERT INTO arrendatario (NombreCompleto, IdCodeudor, TipoDocumento, DocumentoIdentidad, Telefono,  Correo, Estado) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          [
+            NombreCompleto,
+            IdCodeudor,
+            TipoDocumento,
+            DocumentoIdentidad,
+            Telefono,
+            Correo,
+            Estado,
+          ],
+        );
+        res.status(200).json({ message: "Arrendatario registrado correctamente" });
+
+      } else {
+        res.status(400).json({ error: "Numero de Documento de Arrendatario duplicado" }); 
       }
-    );
+    });
+
   } catch (error) {
-    console.error("Error al añadir propietario:", error);
-    res.status(500).json({ error: "Error al añadir propietario" });
+    console.error("Error al añadir Arrendatario:", error);
+    res.status(500).json({ error: "Error al añadir Arrendatario" });
   }
 });
 // Ruta para registrar un contratoarrendatario

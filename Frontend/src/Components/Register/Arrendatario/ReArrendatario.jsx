@@ -29,6 +29,7 @@ export const ReArrendatario = () => {
       theme: "dark",
     });
   };
+  const ErrorCC = () => toast.error("El Numero de documento ya existe", { theme: "dark" });
 
   const handleConfirmSave = () => {
     handleSubmit(onSubmitRegistro)(); // Envia los datos
@@ -151,7 +152,10 @@ export const ReArrendatario = () => {
         },
         body: JSON.stringify(data),
       });
-      if (response.ok) {
+      if (response.status === 400){
+        ErrorCC();
+    }
+      else if (response.ok) {
         setShowSaveModal(true);
         notify();
         reset();
