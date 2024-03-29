@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "./Rpropietario.css";
 import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const RPropietario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -27,6 +28,7 @@ export const RPropietario = () => {
     FechaIngreso: "",
     direccion: "",
   });
+  const ErrorCC = () => toast.error("El Numero de documento ya existe", { theme: "dark" });
 
   useEffect(() => {
     setCurrentDate(getCurrentDate());
@@ -90,8 +92,10 @@ export const RPropietario = () => {
         },
         body: JSON.stringify(formData),
       });
-      console.log(formData)
-      if (response.ok) {
+      if (response.status === 400){
+        ErrorCC();
+    }
+      else if (response.ok) {
 
         setShowSaveModal(false); // Muestra el modal de confirmación
         const urlParams = new URLSearchParams({
