@@ -709,21 +709,37 @@ router.post("/RPropietario", async (req, res) => {
 // Ruta para cambiar la contraseña del trabajador y actualizar otros datos
 router.post("/api/changePassword", (req, res) => {
   const connection = getConnection(); 
-  const { correo, newPassword, nombre, apellido } = req.body;
-
-  // Consulta SQL para buscar el trabajador por su correo electrónico y actualizar sus datos
+  const { correo, newPassword, oldPassword, nombre, apellido } = req.body;
   const sql = `UPDATE trabajador SET Contrasena = ?, Nombre = ?, Apellido = ? WHERE Correo = ?`;
-
-  // Ejecutar la consulta SQL
-  connection.query(sql, [newPassword, nombre, apellido, correo], (err, result) => {
-    if (err) {
-      console.error("Error al cambiar la contraseña:", err);
-      res.status(500).json({ error: "Error al cambiar la contraseña" });
+  connection.query(`select * from trabajador where Correo = ?`, [correo], async (err, result) => {
+    if (result) {
+      bcrypt.compare(result.Contrasena, oldPassword, async (err, coinciden) => {
+        if (err) {
+          return res.status(401).json({ message: "Contraseña incorrecta" });
+        } else if( coinciden == true) {
+          const contrasenaEncryptada = await bcrypt.hash(newPassword, rondasDeSal);
+        connection.query(sql, [contrasenaEncryptada, nombre, apellido, correo], (err, result) => {
+        if (err) {
+          console.error("Error al cambiar la contraseña:", err);
+          res.status(500).json({ error: "Error al cambiar la contraseña" });
+        } else {
+          console.log("Datos actualizados exitosamente");
+          res.status(200).json({ message: "Datos actualizados exitosamente" });
+        }
+      });
+        }
+        else{
+          return res.status(400).json({ message: "Contraseña incorrecta" });
+        }
+      });            
     } else {
-      console.log("Datos actualizados exitosamente");
-      res.status(200).json({ message: "Datos actualizados exitosamente" });
+      res.status(500).json({ error: "Error en la busqueda" });
     }
   });
+  // Consulta SQL para buscar el trabajador por su correo electrónico y actualizar sus datos
+
+
+  // Ejecutar la consulta SQL
 });
 
 // Ruta para registrar un Inmueble
@@ -941,7 +957,7 @@ router.post("/Rcodeudor", async (req, res) => {
             return res.status(200).json({ message: "Inicio de sesión exitoso" });
           }
           else{
-            return res.status(401).json({ message: "Contraseña incorrecta" });
+            return res.status(400).json({ message: "Contraseña incorrecta" });
           }
         });
       } else {
@@ -955,15 +971,7 @@ router.post("/Rcodeudor", async (req, res) => {
 router.post("/RegistrarUsuario", async (req, res) => {
   const connection = getConnection();
   const { nombre, apellido, correo, contrasena, telefono, rol } = req.body;
-  var newcontrasena
-bcrypt.hash(contrasena, rondasDeSal, (err, contrasenaEncryptada) => {
-	if (err) {
-		console.log("Error hasheando:", err);
-	} else {
-		console.log("Y hasheada es: " + contrasenaEncryptada);
-     newcontrasena = contrasenaEncryptada
-	}
-});
+  const contrasenaEncryptada = await bcrypt.hash(Contrasena, rondasDeSal);
 
   // Validación básica de entrada
   if (!nombre || !apellido || !correo || !contrasena || !telefono || !rol) {
@@ -981,7 +989,7 @@ bcrypt.hash(contrasena, rondasDeSal, (err, contrasenaEncryptada) => {
           // Insertar el nuevo usuario en la base de datos
           connection.query(
             "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
-            [nombre, apellido, correo, newcontrasena, telefono, rol]
+            [nombre, apellido, correo, contrasenaEncryptada, telefono, rol]
           );
           res.status(201).json({ message: "Usuario registrado exitosamente" });
         } else {
@@ -1442,47 +1450,59 @@ router.put("/Vempleados/:id", (req, res) => {
     }
   );
 });
+
 //Ruta actualizar rol empleado
-const fields = [
-  "Nombre",
-  "Apellido",
-  "DocumentoIdentidad",
-  "Correo",
-  "Contrasena",
-  "Telefono",
-  "Idrol",
-];
+
 
 router.put("/empleados/:id", async (req, res) => {
   const connection = getConnection(); 
+  const {Nombre,
+    Apellido,
+    Correo,
+    Contrasena,
+    Telefono, Idrol} = req.body
   const id = req.params.id; // ID del empleado a actualizar
+  var newcontrasena
+bcrypt.hash(Contrasena, rondasDeSal, (err, contrasenaEncryptada) => {
+	if (err) {
+		console.log("Error hasheando:", err);
+	} else {
+		console.log("Y hasheada es: " + contrasenaEncryptada);
+     newcontrasena = contrasenaEncryptada
+	}
+});
 
   // Construimos el array de valores a actualizar
   const updateValues = [];
   const updateFields = [];
-  console.log(req.body.Contrasena);
+  if (Nombre) {
+    updateValues.push(Nombre);
+     updateFields.push(`Nombre = ?`);     
+  }
+  if (Apellido) {
+     updateValues.push(Apellido);
+    updateFields.push(`Apellido = ?`);
+  }
+  if (Contrasena) {
+    const contrasenaEncryptada = await bcrypt.hash(Contrasena, rondasDeSal);
+    updateValues.push(contrasenaEncryptada);
+    updateFields.push(`Contrasena = ?`);
+      }
+  
+  if (Correo) {
+     updateValues.push(Correo);
+    updateFields.push(`Correo = ?`);
+  }
+  if (Telefono) {
+     updateValues.push(Telefono);
+    updateFields.push(`Telefono = ?`);
+  }
+  if (Idrol) {
+     updateValues.push(Idrol);
+    updateFields.push(`Idrol = ?`);
+  }
  
-  fields.forEach((field) => {
-    if (req.body[field]) {
-
-      if (field != "Contrasena"){
-        updateValues.push(req.body[field]);
-        console.log("a ", req.body[field]);
-        updateFields.push(`${field} = ?`);
-      }
-      else {
-        bcrypt.hash(req.body[field], rondasDeSal, (err, contrasenaEncryptada) => {
-          if (err) {
-            console.log("Error hasheando:", err);
-          } else {
-            updateValues.push(contrasenaEncryptada);
-            updateFields.push(`${field} = ?`);
-            console.log( "b1 ", req.body[field]);
-          }
-        });
-      }
-    }
-  });
+  
 
   // Si no hay campos para actualizar, respondemos con un error
   if (updateValues.length === 0) {
