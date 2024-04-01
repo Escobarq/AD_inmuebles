@@ -11,12 +11,12 @@ import { toast } from "react-toastify";
 export const ReArrendatario = () => {
   const [CodeudoresDisponibles, setCodeudoresDisponibles] = useState([]);
   const [selectedCodeudor, setSelectedCodeudor] = useState("");
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const navigate = useNavigate();
-  
+
 
   const notify = () => {
     toast.success("Se registró correctamente", {
@@ -152,9 +152,9 @@ export const ReArrendatario = () => {
         },
         body: JSON.stringify(data),
       });
-      if (response.status === 400){
+      if (response.status === 400) {
         ErrorCC();
-    }
+      }
       else if (response.ok) {
         setShowSaveModal(true);
         notify();
@@ -180,9 +180,17 @@ export const ReArrendatario = () => {
                 required
                 className="InputsRegistros"
                 {...register("NombreCompleto")}
-                value = {arrendatarioData ? arrendatarioData.NombreCompleto : ""}
+                value={arrendatarioData ? arrendatarioData.NombreCompleto : ""}
                 onChange={handleInputChange}
+                type="text"
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^A-Za-z\s]/gi, "");
+                }}
+                maxLength={50}
               />
+              {errors.NombreCompleto && (
+                <div className="error">{errors.NombreCompleto.message}</div>
+              )}
             </Form.Group>
 
             <Form.Group controlId="formtipodocumento">
@@ -193,7 +201,6 @@ export const ReArrendatario = () => {
                 as="select"
                 {...register("TipoDocumento")}
                 value={arrendatarioData.TipoDocumento}
-                onChange={handleInputChange}
               >
                 <option selected value={"Cedula Ciudadania"}>
                   Cédula de Ciudadanía
@@ -207,24 +214,57 @@ export const ReArrendatario = () => {
             <Form.Group controlId="formnumerodocumento">
               <Form.Label>N° Documento Identidad:</Form.Label>
               <Form.Control
-                required
+                type="text"
                 className="InputsRegistros"
-                {...register("DocumentoIdentidad")}
-                value={ arrendatarioData ? arrendatarioData.DocumentoIdentidad : ""}
-                onChange={handleInputChange}
+                {...register("DocumentoIdentidad", {
+                  required: "Este campo es obligatorio",
+                  pattern: {
+                    value: /^[0-9]{1,10}$/,
+                    message:
+                      "El número de identidad debe ser un número entre 1000000000 y 9999999999",
+                  },
+                })}
+                defaultValue={arrendatarioData ? arrendatarioData.DocumentoIdentidad : ""}
+
+                onInput={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^0-9]/g, "")
+                    .slice(0, 10);
+                }}
               />
+              {errors.DocumentoIdentidad && (
+                <div className="error">{errors.DocumentoIdentidad.message}</div>
+              )}
             </Form.Group>
 
             <Form.Group controlId="formtelefono">
               <Form.Label> Teléfono Arrendatario: </Form.Label>
               <Form.Control
                 required
-                className="InputsRegistros"
-                {...register("Telefono")}
-                value={ arrendatarioData ? arrendatarioData.Telefono : ""}
+                type="text"
+                maxLength={10}
+               className="InputsRegistros"
+                {...register("Telefono",{
+                required: "Este campo es obligatorio",
+                validate: {
+                  validNumber: (value) =>
+                    /^[0-9]*$/.test(value) ||
+                    "Por favor, introduce solo números",
+                },}
+                )}
+                value={arrendatarioData ? arrendatarioData.Telefono : ""}
                 onChange={handleInputChange}
+                onKeyDown={(e) => {
+                  const regex = /^[0-9]*$/;
+                  if (!regex.test(e.key)&& e.key !== "Backspace") {
+                    e.preventDefault();
+                  }
+                }}
               />
             </Form.Group>
+
+
+
 
             <Form.Group controlId="correo">
               <Form.Label> Correo Arrendatario: </Form.Label>
@@ -233,11 +273,28 @@ export const ReArrendatario = () => {
                 controlId="correo"
                 className="InputsRegistros"
                 type="email"
-                {...register("Correo")}
-                value={ arrendatarioData ? arrendatarioData.Correo : ""}
+                name="correo"
+                {...register("Correo",{
+                  required: "Este campo es obligatorio",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Por favor ingresa un correo electrónico válido",
+                  },
+                }
+                )}
+                value={arrendatarioData ? arrendatarioData.Correo : ""}
                 onChange={handleInputChange}
+                onKeyDown={(e) => {
+                  const regex = /[a-zA-Z0-9._-]/; // Permitir letras, números y caracteres especiales permitidos
+                  if (!regex.test(e.key) && e.key !== "@") {
+                    e.preventDefault();
+                  }
+                }}
               />
             </Form.Group>
+
+
+
 
             <Form.Group controlId="formNoIdentidadCodeudor">
               <Form.Label>Codeudor del inmueble</Form.Label>

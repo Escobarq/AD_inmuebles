@@ -941,7 +941,7 @@ router.post("/Rcodeudor", async (req, res) => {
             return res.status(200).json({ message: "Inicio de sesión exitoso" });
           }
           else{
-            return res.status(401).json({ message: "Contraseña incorrecta" });
+            return res.status(200).json({ message: "Contraseña incorrecta" });
           }
         });
       } else {
