@@ -4,7 +4,7 @@
 
 # Tauri - Adminmuebles
 
-Guia para rapida para correr el proyecto y ejecutarlo de manera correcta
+Guia para rapida para correr el proyecto y ejecutarlo de manera correcta sin errores
 
 
 

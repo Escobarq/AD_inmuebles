@@ -142,19 +142,6 @@ export const InhabilitarArren = () => {
     <>
       <div className="contener-home">
         <div className="conten-filtro">
-          <div className="conten-inputs">
-            <label className="l1">No. Cedula: </label>
-            <input
-              className="input-filtroRe"
-              type="number"
-              name=""
-              max={9999999999}
-              id=""
-            />
-            <label className="l1">Estado: </label>
-            <input className="input-filtroRe" type="text" name="" id="" />
-          </div>
-         
           <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Arrendatario")}>
               <FontAwesomeIcon className="icon" icon={faUserSlash} /> Ver
               Habilitados

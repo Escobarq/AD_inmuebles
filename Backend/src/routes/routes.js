@@ -1363,7 +1363,7 @@ router.put("/VINmuebles/:id", (req, res) => {
 
   // Consulta SQL para actualizar el estado del inmueble
   connection.query(
-    "UPDATE inmueble SET booleanos = ? WHERE IdInmueble = ?",
+    "UPDATE inmueble SET Booleanos = ? WHERE IdInmueble = ?",
     [nuevoEstado, id],
     (error, results) => {
       if (error) {
@@ -1377,6 +1377,7 @@ router.put("/VINmuebles/:id", (req, res) => {
     }
   );
 });
+
 //Aactualizar inmueble
 router.put("/actualizarInmueble", (req, res) => {
   const connection = getConnection(); 
