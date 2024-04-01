@@ -2,6 +2,9 @@
 const express = require("express");
 const router = express.Router();
 const { configureDatabase, getConnection } = require('../db'); // Importar la función configureDatabase y getConnection desde db.js
+const bcrypt = require("bcryptjs");
+const rondasDeSal = 10;
+
 
 //Configurando Servidor
 router.post('/api/config', async (req, res) => {
@@ -931,11 +934,16 @@ router.post("/Rcodeudor", async (req, res) => {
   
       if (results.length > 0) {
         const user = results[0];
-        if (user.Contrasena === contrausuario) {
-          return res.status(200).json({ message: "Inicio de sesión exitoso" });
-        } else {
-          return res.status(401).json({ message: "Contraseña incorrecta" });
-        }
+        bcrypt.compare(contrausuario, user.Contrasena, (err, coinciden) => {
+          if (err) {
+            return res.status(401).json({ message: "Contraseña incorrecta" });
+          } else if( coinciden == true) {
+            return res.status(200).json({ message: "Inicio de sesión exitoso" });
+          }
+          else{
+            return res.status(401).json({ message: "Contraseña incorrecta" });
+          }
+        });
       } else {
         return res.status(404).json({ message: "Usuario no encontrado o no autorizado para iniciar sesión" });
       }
@@ -947,6 +955,15 @@ router.post("/Rcodeudor", async (req, res) => {
 router.post("/RegistrarUsuario", async (req, res) => {
   const connection = getConnection();
   const { nombre, apellido, correo, contrasena, telefono, rol } = req.body;
+  var newcontrasena
+bcrypt.hash(contrasena, rondasDeSal, (err, contrasenaEncryptada) => {
+	if (err) {
+		console.log("Error hasheando:", err);
+	} else {
+		console.log("Y hasheada es: " + contrasenaEncryptada);
+     newcontrasena = contrasenaEncryptada
+	}
+});
 
   // Validación básica de entrada
   if (!nombre || !apellido || !correo || !contrasena || !telefono || !rol) {
@@ -964,7 +981,7 @@ router.post("/RegistrarUsuario", async (req, res) => {
           // Insertar el nuevo usuario en la base de datos
           connection.query(
             "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
-            [nombre, apellido, correo, contrasena, telefono, rol]
+            [nombre, apellido, correo, newcontrasena, telefono, rol]
           );
           res.status(201).json({ message: "Usuario registrado exitosamente" });
         } else {
@@ -1436,18 +1453,34 @@ const fields = [
   "Idrol",
 ];
 
-router.put("/empleados/:id", (req, res) => {
+router.put("/empleados/:id", async (req, res) => {
   const connection = getConnection(); 
   const id = req.params.id; // ID del empleado a actualizar
 
   // Construimos el array de valores a actualizar
   const updateValues = [];
   const updateFields = [];
-
+  console.log(req.body.Contrasena);
+ 
   fields.forEach((field) => {
     if (req.body[field]) {
-      updateValues.push(req.body[field]);
-      updateFields.push(`${field} = ?`);
+
+      if (field != "Contrasena"){
+        updateValues.push(req.body[field]);
+        console.log("a ", req.body[field]);
+        updateFields.push(`${field} = ?`);
+      }
+      else {
+        bcrypt.hash(req.body[field], rondasDeSal, (err, contrasenaEncryptada) => {
+          if (err) {
+            console.log("Error hasheando:", err);
+          } else {
+            updateValues.push(contrasenaEncryptada);
+            updateFields.push(`${field} = ?`);
+            console.log( "b1 ", req.body[field]);
+          }
+        });
+      }
     }
   });
 
@@ -1459,14 +1492,16 @@ router.put("/empleados/:id", (req, res) => {
   }
 
   // Realiza la actualización en la base de datos
-  connection.query(
+  await connection.query(
     `UPDATE trabajador SET ${updateFields.join(", ")} WHERE IdTrabajador = ?`,
     [...updateValues, id],
     (error, results) => {
       if (error) {
+        
         console.error("Error al actualizar el empleado:", error);
         res.status(500).json({ error: "Error interno del servidor" });
       } else {
+        console.log("b", updateValues);
         res.status(200).json({ message: "Empleado actualizado exitosamente" });
       }
     }

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2"
   }
