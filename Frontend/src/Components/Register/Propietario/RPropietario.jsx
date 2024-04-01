@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable no-useless-escape */
+import { useState, useEffect } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +12,12 @@ export const RPropietario = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [identidadesRegistradas, setIdentidadesRegistradas] = useState([]);
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -28,7 +34,8 @@ export const RPropietario = () => {
     FechaIngreso: "",
     direccion: "",
   });
-  const ErrorCC = () => toast.error("El Numero de documento ya existe", { theme: "dark" });
+  const ErrorCC = () =>
+    toast.error("El Numero de documento ya existe", { theme: "dark" });
 
   useEffect(() => {
     setCurrentDate(getCurrentDate());
@@ -77,7 +84,7 @@ export const RPropietario = () => {
   const onSubmitRegistro = async (data) => {
     const formData = {
       ...propetarioData,
-      ...data // Agregar los nuevos datos del formulario
+      ...data, // Agregar los nuevos datos del formulario
     };
     formData.FechaIngreso = currentDate;
     try {
@@ -92,18 +99,19 @@ export const RPropietario = () => {
         },
         body: JSON.stringify(formData),
       });
-      if (response.status === 400){
+      if (response.status === 400) {
         ErrorCC();
-    }
-      else if (response.ok) {
-
+      } else if (response.ok) {
         setShowSaveModal(false); // Muestra el modal de confirmación
         const urlParams = new URLSearchParams({
           DocumentoIdentidad: formData.DocumentoIdentidad,
         });
         const url = `/RInmuebleA?${urlParams.toString()}`;
         reset();
-        setIdentidadesRegistradas([...identidadesRegistradas, data.DocumentoIdentidad]); // Agregar el número de identidad a la lista de registros
+        setIdentidadesRegistradas([
+          ...identidadesRegistradas,
+          data.DocumentoIdentidad,
+        ]); // Agregar el número de identidad a la lista de registros
         window.location.href = url;
       }
     } catch (error) {
@@ -127,15 +135,23 @@ export const RPropietario = () => {
           className="form-propietario"
           onSubmit={handleSubmit(onSubmitRegistro)}
         >
-           <Form.Group controlId="formnombrepropietario" className="formSelect">
+          <Form.Group controlId="formnombrepropietario" className="formSelect">
             <Form.Label>Nombre de Propietario:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("NombreCompleto")}
+              {...register("NombreCompleto", {
+                required: "Este campo es obligatorio",
+              })}
               type="text"
               defaultValue={propetarioData.NombreCompleto}
-              required
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^A-Za-z\s]/gi, "");
+              }}
+              maxLength={50} // Ajusta la longitud máxima según tus necesidades
             />
+            {errors.NombreCompleto && (
+              <div className="error">{errors.NombreCompleto.message}</div>
+            )}
           </Form.Group>
 
           <Form.Group controlId="formTipoDocumento" className="formSelect">
@@ -167,7 +183,13 @@ export const RPropietario = () => {
             <Form.Label>Dirección Del Propietario:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("direccion")}
+              {...register("direccion", {
+                required: "Este campo es obligatorio",
+                pattern: {
+                  value: /^[A-Za-z0-9\s]+(?:-[A-Za-z0-9\s]+)*$/i,
+                  message: "Por favor ingresa una dirección válida en Colombia",
+                },
+              })}
               type="text"
               defaultValue={propetarioData.direccion}
               onChange={(e) =>
@@ -176,31 +198,70 @@ export const RPropietario = () => {
                   direccion: e.target.value,
                 })
               }
+              maxLength={100} // Ajusta la longitud máxima según tus necesidades
+              onKeyDown={(e) => {
+                const regex = /^[A-Za-z0-9\s\-#]+$/; // Permitir letras, números, espacios y guiones
+                if (!regex.test(e.key)) {
+                  e.preventDefault();
+                }
+              }}
             />
+            {errors.direccion && (
+              <div className="error">{errors.direccion.message}</div>
+            )}
           </Form.Group>
 
           <Form.Group controlId="formDocumentoIdentidad">
             <Form.Label>Número de Identidad:</Form.Label>
             <Form.Control
-              maxLength={10}
-              max={10}
+              type="text"
               className="InputsRegistros"
-              {...register("DocumentoIdentidad")}
+              {...register("DocumentoIdentidad", {
+                required: "Este campo es obligatorio",
+                pattern: {
+                  value: /^[0-9]{1,10}$/,
+                  message:
+                    "El número de identidad debe ser un número entre 1000000000 y 9999999999",
+                },
+              })}
               defaultValue={propetarioData.DocumentoIdentidad}
-              required
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .replace(/[^0-9]/g, "")
+                  .slice(0, 10);
+              }}
             />
+            {errors.DocumentoIdentidad && (
+              <div className="error">{errors.DocumentoIdentidad.message}</div>
+            )}
           </Form.Group>
 
           <Form.Group controlId="formTelefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
+              type="text"
               maxLength={10}
-              max={10}
               className="InputsRegistros"
-              {...register("Telefono")}
+              {...register("Telefono", {
+                required: "Este campo es obligatorio",
+                validate: {
+                  validNumber: (value) =>
+                    /^[0-9]*$/.test(value) ||
+                    "Por favor, introduce solo números",
+                },
+              })}
               defaultValue={propetarioData.Telefono}
               required
+              onKeyDown={(e) => {
+                const regex = /^[0-9]*$/;
+                if (!regex.test(e.key)&& e.key !== "Backspace") {
+                  e.preventDefault();
+                }
+              }}
             />
+            {errors.Telefono && (
+              <div className="error">{errors.Telefono.message}</div>
+            )}
           </Form.Group>
 
           <Form.Group controlId="formcorreoelectronico">
@@ -209,13 +270,28 @@ export const RPropietario = () => {
               className="InputsRegistros"
               type="email"
               name="correo"
-              {...register("Correo")}
+              {...register("Correo", {
+                required: "Este campo es obligatorio",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Por favor ingresa un correo electrónico válido",
+                },
+              })}
               defaultValue={propetarioData.Correo}
               required
               onChange={(e) =>
                 setpropetarioData({ ...propetarioData, Correo: e.target.value })
               }
+              onKeyDown={(e) => {
+                const regex = /[a-zA-Z0-9._-]/; // Permitir letras, números y caracteres especiales permitidos
+                if (!regex.test(e.key) && e.key !== "@") {
+                  e.preventDefault();
+                }
+              }}
             />
+            {errors.Correo && (
+              <div className="error">{errors.Correo.message}</div>
+            )}
           </Form.Group>
 
           <Form.Group controlId="formbanco">
@@ -223,30 +299,33 @@ export const RPropietario = () => {
             <Form.Select
               className="InputsRegistros"
               {...register("Banco")}
-
               type="text"
               defaultValue={propetarioData.Banco}
-
               required
             >
-            <option value="">Seleccione un banco</option>
-             <option value="Banco Agrario de Colombia"> Banco Agrario de Colombia</option>
+              <option value="">Seleccione un banco</option>
+              <option value="Banco Agrario de Colombia">
+                {" "}
+                Banco Agrario de Colombia
+              </option>
               <option value="Banco AV Villas">Banco AV Villas</option>
               <option value="Banco de Bogotá">Banco de Bogotá</option>
               <option value="Bancolombia">Bancolombia</option>
               <option value="BBVA Colombia">BBVA</option>
               <option value="Banco Caja Social">Banco Caja Social</option>
               <option value="CorpBanca">CorpBanca</option>
-              <option value="Banco De la República">Banco De la República</option>
+              <option value="Banco De la República">
+                Banco De la República
+              </option>
               <option value="Davivienda">Davivienda</option>
               <option value="Banco Occidente">Banco Occidente</option>
               <option value="Banco Popular">Banco Popular</option>
-              <option value="Banco Santander Colombia">Banco Santander Colombia</option>
+              <option value="Banco Santander Colombia">
+                Banco Santander Colombia
+              </option>
               <option value="Banco WWB">Banco WWB</option>
-              
             </Form.Select>
           </Form.Group>
-
 
           <Form.Group controlId="formTipoCuenta">
             <Form.Label>Tipo De Cuenta</Form.Label>
@@ -269,7 +348,6 @@ export const RPropietario = () => {
               <option value="">Seleccion Tipo Cuenta</option>
               <option value="Cuenta Ahorros">Cuenta Ahorros</option>
               <option value="Cuenta Corriente">Cuenta Corriente</option>
-              
             </Form.Select>
           </Form.Group>
 
@@ -277,11 +355,27 @@ export const RPropietario = () => {
             <Form.Label>Número de Cuenta:</Form.Label>
             <Form.Control
               className="InputsRegistros"
-              {...register("NumeroCuenta")}
-              max={9999999999}
+              {...register("NumeroCuenta", {
+                required: "Este campo es obligatorio",
+                pattern: {
+                  value: /^[0-9\-]+$/,
+                  message: "Por favor ingresa un número de cuenta válido",
+                },
+              })}
+              type="text"
               defaultValue={propetarioData.NumeroCuenta}
-              required
+              maxLength={20} // Ajusta la longitud máxima según tus necesidades
+              onChange={(e) => {
+                const value = e.target.value;
+                const regex = /^[0-9\-]*$/; // Permitir números y -
+                if (!regex.test(value)) {
+                  e.target.value = value.slice(0, -1); // Eliminar el último carácter no válido
+                }
+              }}
             />
+            {errors.NumeroCuenta && (
+              <div className="error">{errors.NumeroCuenta.message}</div>
+            )}
           </Form.Group>
 
           <Form.Group controlId="formfechaingreso">
@@ -289,7 +383,6 @@ export const RPropietario = () => {
             <Form.Control
               className="InputsRegistros"
               disabled
-
               type="date"
               defaultValue={currentDate} // Usar propetarioData.FechaIngreso si está definido, de lo contrario, usar currentDate
             />
@@ -328,9 +421,11 @@ export const RPropietario = () => {
               ¿Estás seguro de que deseas guardar los cambios?
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
+              <Button
+                variant="secondary"
+                onClick={() => setShowSaveModal(false)}
+              >
                 No
-
               </Button>
               <Button variant="primary" onClick={handleConfirmSave}>
                 Sí
@@ -339,7 +434,10 @@ export const RPropietario = () => {
           </Modal>
 
           {/* Modal de confirmación de cancelar */}
-          <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
+          <Modal
+            show={showCancelModal}
+            onHide={() => setShowCancelModal(false)}
+          >
             <Modal.Header closeButton>
               <Modal.Title>Confirmación</Modal.Title>
             </Modal.Header>
@@ -364,4 +462,3 @@ export const RPropietario = () => {
     </div>
   );
 };
-
