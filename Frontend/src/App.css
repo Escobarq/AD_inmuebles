@@ -3,7 +3,9 @@
 * {
   font-family: "Poppins", sans-serif;
 }
-
+.error{
+  display: block;
+}
 .Contener-todo {
   display: flex;
   width: 100%;
