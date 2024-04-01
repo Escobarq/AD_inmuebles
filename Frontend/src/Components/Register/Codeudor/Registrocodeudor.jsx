@@ -15,6 +15,7 @@ export const Registrocodeudor = () => {
   const notify = () => toast.success("Se registró correctamente", { theme: "dark" });
   const error = () => toast.error("Hubo algún error al enviar los datos", { theme: "dark" });
   const errora = () => toast.error("Hubo algún error al enviar los datos al servidor", { theme: "dark" });
+  const ErrorCC = () => toast.error("El Numero de documento ya existe", { theme: "dark" });
 
   const { register, handleSubmit, reset, setValue } = useForm({ mode: "onChange" });
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -81,8 +82,10 @@ export const Registrocodeudor = () => {
         },
         body: JSON.stringify(data),
       });
-
-      if (response.ok) {
+      if (response.status === 400){
+        ErrorCC();
+    }
+      else if (response.ok) {
         setShowSaveModal(true);
         notify();
         reset();
@@ -109,7 +112,6 @@ export const Registrocodeudor = () => {
   const handleConfirmSave = () => {
     handleSubmit(onSubmitRegistro)();
     setShowSaveModal(false);
-    reset();
   };
 
   const handleConfirmCancel = () => {

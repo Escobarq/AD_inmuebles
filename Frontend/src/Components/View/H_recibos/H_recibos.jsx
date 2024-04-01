@@ -1,9 +1,8 @@
 import { Table, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { faFilePdf, faFileSignature } from "@fortawesome/free-solid-svg-icons";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
 import "moment/locale/es";
@@ -73,6 +72,7 @@ export const H_recibos = () => {
       </tr>
     );
   };
+
   function formatDate(fechaString) {
     return moment(fechaString).format("MMMM , D , YYYY");
   }
@@ -94,8 +94,36 @@ export const H_recibos = () => {
       currency: "COP",
     }).format(value);
   };
+  
   const createrow = (PArrendamiento) => {
-    if (PArrendamiento.FechaPago == null) {
+    const estadoColores = {
+      AlDia: { backgroundColor: 'green', color: 'white' },
+      Adelantado: { backgroundColor: 'blue', color: 'white' },
+      Pendiente: { backgroundColor: 'yellow', color: 'black' },
+      Atrasado: { backgroundColor: 'red', color: 'white' },
+    };
+  
+    let estadoStyle;
+    let diasTexto = PArrendamiento.DiasDMora;
+  
+    if (PArrendamiento.Estado === 'AlDia' && PArrendamiento.DiasDMora === 0) {
+      estadoStyle = estadoColores['AlDia'];
+    } else if (PArrendamiento.Estado === 'Adelantado' && PArrendamiento.DiasDMora < 0) {
+      estadoStyle = estadoColores['Adelantado'];
+      diasTexto = Math.abs(PArrendamiento.DiasDMora) + ' días adelantado';
+    } else if (PArrendamiento.Estado === 'Atrasado' && PArrendamiento.DiasDMora < 0) {
+      estadoStyle = estadoColores['Atrasado'];
+      diasTexto = Math.abs(PArrendamiento.DiasDMora) + ' días atrasado';
+    } else {
+      estadoStyle = estadoColores[PArrendamiento.Estado] || { backgroundColor: 'white', color: 'black' };
+    }
+  
+    const rowStyle = {
+      backgroundColor: estadoStyle.backgroundColor,
+      color: estadoStyle.color,
+    };
+  
+    if (PArrendamiento.FechaPago === null) {
       return (
         <tr key={PArrendamiento.IdPagoArrendamiento}>
           <td>{PArrendamiento.IdPagoArrendamiento}</td>
@@ -105,8 +133,8 @@ export const H_recibos = () => {
           <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
           <td>{PArrendamiento.FormaPago}</td>
           <td>{formatCurrency(PArrendamiento.ValorPago)}</td>
-          <td>{PArrendamiento.Estado}</td>
-          <td>{PArrendamiento.DiasDMora}</td>
+          <td style={rowStyle}>{PArrendamiento.Estado}</td>
+          <td>{diasTexto}</td>
         </tr>
       );
     } else {
@@ -119,12 +147,13 @@ export const H_recibos = () => {
           <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
           <td>{PArrendamiento.FormaPago}</td>
           <td>{formatCurrency(PArrendamiento.ValorPago)}</td>
-          <td>{PArrendamiento.Estado}</td>
-          <td>{PArrendamiento.DiasDMora}</td>
+          <td style={rowStyle}>{PArrendamiento.Estado}</td>
+          <td>{diasTexto}</td>
         </tr>
       );
     }
   };
+  
   // Variables Paginacion
   useEffect(() => {
     // Cambiar el número de ítems por página según el tamaño de la pantalla
@@ -278,13 +307,13 @@ formattedFilters = Object.keys(filtroData)
     const data = infoPArrendamiento.map((Arrendamiento) => ({
       IdPagoArrendamiento: Arrendamiento.IdPagoArrendamiento,
       IdArrendatario: Arrendamiento.IdArrendatario,
-      FechaPago: formatDate(Arrendamiento.FechaPago),
+      FechaPago:  Arrendamiento.FechaPago == null ? "Pendiente" : formatDate(Arrendamiento.FechaPago),
       FechaInicio: formatDate(Arrendamiento.FechaInicio),
       FechaFin: formatDate(Arrendamiento.FechaFin),
       ValorPago: `$${Arrendamiento.ValorPago}`,
       FormaPago: Arrendamiento.FormaPago,
       Estado: Arrendamiento.Estado,
-      DiasDMora: Arrendamiento.DiasDMora,
+      DiasDMora: Arrendamiento.DiasDMora == null ? "Pendiente" : Arrendamiento.DiasDMora,
     }));
     const itemsPerPage = 21;
     let startY = 45;
@@ -419,11 +448,9 @@ formattedFilters = Object.keys(filtroData)
               )
             }
           >
-            <Button variant="success" className="btn-add">
-              <Link to="/ReArrendamiento">
+            <Button variant="success" className="btn-add" onClick={() => redireccion("/ReArrendamiento")}>
                 <FontAwesomeIcon className="icon" icon={faUserPlus} />
                 <p className="AgregarPA">Agregar Pago Arrendamiento</p>
-              </Link>
             </Button>
           </OverlayTrigger>
 

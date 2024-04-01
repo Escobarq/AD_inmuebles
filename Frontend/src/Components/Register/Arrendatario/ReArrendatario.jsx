@@ -29,6 +29,7 @@ export const ReArrendatario = () => {
       theme: "dark",
     });
   };
+  const ErrorCC = () => toast.error("El Numero de documento ya existe", { theme: "dark" });
 
   const handleConfirmSave = () => {
     handleSubmit(onSubmitRegistro)(); // Envia los datos
@@ -131,6 +132,12 @@ export const ReArrendatario = () => {
   const onSubmitRegistro = async (data) => {
     data.IdCodeudor = selectedCodeudor.IdCodeudor;
     console.log(data);
+    if (arrendatarioData) {
+      data.NombreCompleto = arrendatarioData.NombreCompleto
+      data.DocumentoIdentidad = arrendatarioData.DocumentoIdentidad
+      data.Correo = arrendatarioData.Correo
+      data.Telefono = arrendatarioData.Telefono
+    }
     try {
       const url = arrendatarioData.IdArrendatario
         ? `http://localhost:3006/Rarrendatarios/${arrendatarioData.IdArrendatario}`
@@ -145,7 +152,10 @@ export const ReArrendatario = () => {
         },
         body: JSON.stringify(data),
       });
-      if (response.ok) {
+      if (response.status === 400){
+        ErrorCC();
+    }
+      else if (response.ok) {
         setShowSaveModal(true);
         notify();
         reset();
@@ -170,7 +180,7 @@ export const ReArrendatario = () => {
                 required
                 className="InputsRegistros"
                 {...register("NombreCompleto")}
-                defaultValue={arrendatarioData.NombreCompleto}
+                value = {arrendatarioData ? arrendatarioData.NombreCompleto : ""}
                 onChange={handleInputChange}
               />
             </Form.Group>
@@ -182,10 +192,10 @@ export const ReArrendatario = () => {
                 className="InputsRegistros"
                 as="select"
                 {...register("TipoDocumento")}
-                defaultValue={arrendatarioData.TipoDocumento}
+                value={arrendatarioData.TipoDocumento}
                 onChange={handleInputChange}
               >
-                <option value={"Cedula Ciudadania"}>
+                <option selected value={"Cedula Ciudadania"}>
                   Cédula de Ciudadanía
                 </option>
                 <option value={"Cedula Extranjeria"}>
@@ -200,7 +210,7 @@ export const ReArrendatario = () => {
                 required
                 className="InputsRegistros"
                 {...register("DocumentoIdentidad")}
-                defaultValue={arrendatarioData.DocumentoIdentidad}
+                value={ arrendatarioData ? arrendatarioData.DocumentoIdentidad : ""}
                 onChange={handleInputChange}
               />
             </Form.Group>
@@ -211,7 +221,7 @@ export const ReArrendatario = () => {
                 required
                 className="InputsRegistros"
                 {...register("Telefono")}
-                defaultValue={arrendatarioData.Telefono}
+                value={ arrendatarioData ? arrendatarioData.Telefono : ""}
                 onChange={handleInputChange}
               />
             </Form.Group>
@@ -224,7 +234,7 @@ export const ReArrendatario = () => {
                 className="InputsRegistros"
                 type="email"
                 {...register("Correo")}
-                defaultValue={arrendatarioData.Correo}
+                value={ arrendatarioData ? arrendatarioData.Correo : ""}
                 onChange={handleInputChange}
               />
             </Form.Group>
@@ -338,8 +348,7 @@ export const ReArrendatario = () => {
             </ListGroup>
           </Modal.Body>
           <Modal.Footer>
-            <p onClick={Renvio}>Agregar Nuevo Codeudor</p>
-            <a href="/Registrocodeudor">Agregar Nuevo Codeudor</a>
+            <p className="redireccion" onClick={Renvio}>Agregar Nuevo Codeudor</p>
           </Modal.Footer>
         </Modal>
       </div>

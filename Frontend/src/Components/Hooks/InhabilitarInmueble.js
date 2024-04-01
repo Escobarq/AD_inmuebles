@@ -5,12 +5,12 @@ const useActualizarEstadoInmueble = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const actualizarEstadoInmueble = async (InmuebleId, nuevoEstado) => {
+  const actualizarEstadoInmueble = async (IdInmueble, nuevoEstado) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:3006/VINmuebles/${InmuebleId}`, {
+      const response = await fetch(`http://localhost:3006/VINmuebles/${IdInmueble}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

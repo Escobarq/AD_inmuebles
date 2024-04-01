@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 
 export const Contraseña = () => {
@@ -14,7 +16,7 @@ export const Contraseña = () => {
   const [userData, setUserData] = useState({
     nombre: "",
     apellido: "",
-    correo: ""
+    correo: "",
   });
   const [error, setError] = useState(false); // Inicializar como falso
   const [userEmail, setUserEmail] = useState(""); // Estado para almacenar el correo del usuario
@@ -24,19 +26,27 @@ export const Contraseña = () => {
     const userEmailFromStorage = localStorage.getItem("items");
     if (userEmailFromStorage) {
       setUserEmail(userEmailFromStorage);
-      setUserData(prevData => ({...prevData, correo: userEmailFromStorage}));
+      setUserData((prevData) => ({
+        ...prevData,
+        correo: userEmailFromStorage,
+      }));
     }
   }, []);
 
   const handleChangePassword = () => {
     const { oldPassword, newPassword } = passwordData;
-  
+
     // Hacer una solicitud POST al servidor para cambiar la contraseña
     axios
-      .post("http://localhost:3006/api/changePassword", { ...userData, ...passwordData })
+      .post("http://localhost:3006/api/changePassword", {
+        ...userData,
+        ...passwordData,
+      })
       .then((response) => {
         if (response.status === 200) {
-          toast.success("Contraseña actualizada exitosamente", { theme: "colored" });
+          toast.success("Contraseña actualizada exitosamente", {
+            theme: "colored",
+          });
           setShowPasswordModal(false);
         } else {
           toast.error("Ocurrió un error", { theme: "colored" });
@@ -79,12 +89,9 @@ export const Contraseña = () => {
 
   return (
     <div className="contener-home contener-rpropietario">
-        <h1>Editar Perfil</h1>
+      <h1>Editar Perfil</h1>
       <div className="container">
-        <Form
-          style={{ width: "100%" }}
-          className="form-propietario"
-        >
+        <Form style={{ width: "100%" }} className="form-propietario">
           <Form.Group controlId="formNombre" className="mb-3">
             <Form.Label>Nombre</Form.Label>
             <Form.Control
@@ -92,7 +99,9 @@ export const Contraseña = () => {
               placeholder="Ingresa tu nombre"
               name="nombre"
               value={userData.nombre}
-              onChange={(e) => setUserData({...userData, nombre: e.target.value})}
+              onChange={(e) =>
+                setUserData({ ...userData, nombre: e.target.value })
+              }
             />
           </Form.Group>
 
@@ -103,7 +112,9 @@ export const Contraseña = () => {
               placeholder="Ingresa tu apellido"
               name="apellido"
               value={userData.apellido}
-              onChange={(e) => setUserData({...userData, apellido: e.target.value})}
+              onChange={(e) =>
+                setUserData({ ...userData, apellido: e.target.value })
+              }
             />
           </Form.Group>
 
@@ -158,16 +169,18 @@ export const Contraseña = () => {
         </Form>
         <div className="contener-buttons d-flex justify-content-center">
           <Button variant="primary" className="m-2" onClick={handleSaveChanges}>
+            <FontAwesomeIcon icon={faSave} className="me-2" />
             Guardar cambios
           </Button>
           <Button
             variant="danger"
             onClick={handleCancelChanges}
-            className="ms-2"
+            className="m-2"
           >
+            <FontAwesomeIcon icon={faTimes} className="me-2" />
             Cancelar
           </Button>
-          </div>
+        </div>
         <Modal
           show={showPasswordModal}
           onHide={() => setShowPasswordModal(false)}
