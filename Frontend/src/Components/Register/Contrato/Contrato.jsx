@@ -322,6 +322,7 @@ export const Contrato = () => {
               <Form.Control type="number" {...register("ValorDeposito")} />
             </InputGroup>
           </Form.Group>
+          
         </Form>
         <div className="contener-buttons d-flex justify-content-center">
           <div className="save_deleter">
