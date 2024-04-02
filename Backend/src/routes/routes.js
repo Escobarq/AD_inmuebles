@@ -710,37 +710,63 @@ router.post("/RPropietario", async (req, res) => {
 router.post("/api/changePassword", (req, res) => {
   const connection = getConnection(); 
   const { correo, newPassword, oldPassword, nombre, apellido } = req.body;
-  const sql = `UPDATE trabajador SET Contrasena = ?, Nombre = ?, Apellido = ? WHERE Correo = ?`;
-  connection.query(`select * from trabajador where Correo = ?`, [correo], async (err, result) => {
-    if (result) {
-      bcrypt.compare(result.Contrasena, oldPassword, async (err, coinciden) => {
+
+  const getPasswordQuery = `SELECT Contrasena FROM trabajador WHERE Correo = ?`;
+  const updatePasswordQuery = `UPDATE trabajador SET Contrasena = ? WHERE Correo = ?`;
+  const updateNameQuery = `UPDATE trabajador SET Nombre = ?, Apellido = ? WHERE Correo = ?`;
+
+  connection.query(getPasswordQuery, [correo], async (err, results) => {
+    if (err) {
+      console.error("Error al buscar trabajador:", err);
+      return res.status(500).json({ error: "Error en la búsqueda" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    const trabajador = results[0];
+
+    // Si se proporciona una nueva contraseña, verificar y actualizar
+    if (newPassword) {
+      bcrypt.compare(oldPassword, trabajador.Contrasena, async (err, coinciden) => {
         if (err) {
+          return res.status(500).json({ error: "Error al comparar contraseñas" });
+        }
+
+        if (!coinciden) {
           return res.status(401).json({ message: "Contraseña incorrecta" });
-        } else if( coinciden == true) {
-          const contrasenaEncryptada = await bcrypt.hash(newPassword, rondasDeSal);
-        connection.query(sql, [contrasenaEncryptada, nombre, apellido, correo], (err, result) => {
-        if (err) {
-          console.error("Error al cambiar la contraseña:", err);
-          res.status(500).json({ error: "Error al cambiar la contraseña" });
-        } else {
-          console.log("Datos actualizados exitosamente");
-          res.status(200).json({ message: "Datos actualizados exitosamente" });
         }
+
+        // Hash de la nueva contraseña
+        const contrasenaEncryptada = await bcrypt.hash(newPassword, rondasDeSal);
+
+        connection.query(updatePasswordQuery, [contrasenaEncryptada, correo], (err, result) => {
+          if (err) {
+            console.error("Error al cambiar la contraseña:", err);
+            return res.status(500).json({ error: "Error al cambiar la contraseña" });
+          }
+
+          console.log("Contraseña actualizada exitosamente");
+          return res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+        });
       });
-        }
-        else{
-          return res.status(400).json({ message: "Contraseña incorrecta" });
-        }
-      });            
     } else {
-      res.status(500).json({ error: "Error en la busqueda" });
+      // Si no se proporciona una nueva contraseña, solo actualizar nombre y apellido
+      connection.query(updateNameQuery, [nombre, apellido, correo], (err, result) => {
+        if (err) {
+          console.error("Error al actualizar nombre y apellido:", err);
+          return res.status(500).json({ error: "Error al actualizar nombre y apellido" });
+        }
+
+        console.log("Nombre y apellido actualizados exitosamente");
+        return res.status(200).json({ message: "Nombre y apellido actualizados exitosamente" });
+      });
     }
   });
-  // Consulta SQL para buscar el trabajador por su correo electrónico y actualizar sus datos
-
-
-  // Ejecutar la consulta SQL
 });
+
+
 
 // Ruta para registrar un Inmueble
 router.post("/Reinmueble", async (req, res) => {
@@ -971,7 +997,7 @@ router.post("/Rcodeudor", async (req, res) => {
 router.post("/RegistrarUsuario", async (req, res) => {
   const connection = getConnection();
   const { nombre, apellido, correo, contrasena, telefono, rol } = req.body;
-  const contrasenaEncryptada = await bcrypt.hash(Contrasena, rondasDeSal);
+  const contrasenaEncryptada = await bcrypt.hash(contrasena, rondasDeSal);
 
   // Validación básica de entrada
   if (!nombre || !apellido || !correo || !contrasena || !telefono || !rol) {
