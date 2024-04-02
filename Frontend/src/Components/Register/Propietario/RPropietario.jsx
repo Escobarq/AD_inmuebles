@@ -16,8 +16,8 @@ export const RPropietario = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
   } = useForm();
+  
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -149,9 +149,6 @@ export const RPropietario = () => {
               }}
               maxLength={50} // Ajusta la longitud máxima según tus necesidades
             />
-            {errors.NombreCompleto && (
-              <div className="error">{errors.NombreCompleto.message}</div>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formTipoDocumento" className="formSelect">
@@ -185,10 +182,6 @@ export const RPropietario = () => {
               className="InputsRegistros"
               {...register("direccion", {
                 required: "Este campo es obligatorio",
-                pattern: {
-                  value: /^[A-Za-z0-9\s]+(?:-[A-Za-z0-9\s]+)*$/i,
-                  message: "Por favor ingresa una dirección válida en Colombia",
-                },
               })}
               type="text"
               defaultValue={propetarioData.direccion}
@@ -206,9 +199,6 @@ export const RPropietario = () => {
                 }
               }}
             />
-            {errors.direccion && (
-              <div className="error">{errors.direccion.message}</div>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formDocumentoIdentidad">
@@ -218,11 +208,6 @@ export const RPropietario = () => {
               className="InputsRegistros"
               {...register("DocumentoIdentidad", {
                 required: "Este campo es obligatorio",
-                pattern: {
-                  value: /^[0-9]{1,10}$/,
-                  message:
-                    "El número de identidad debe ser un número entre 1000000000 y 9999999999",
-                },
               })}
               defaultValue={propetarioData.DocumentoIdentidad}
               onInput={(e) => {
@@ -231,9 +216,6 @@ export const RPropietario = () => {
                   .slice(0, 10);
               }}
             />
-            {errors.DocumentoIdentidad && (
-              <div className="error">{errors.DocumentoIdentidad.message}</div>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formTelefono">
@@ -244,11 +226,6 @@ export const RPropietario = () => {
               className="InputsRegistros"
               {...register("Telefono", {
                 required: "Este campo es obligatorio",
-                validate: {
-                  validNumber: (value) =>
-                    /^[0-9]*$/.test(value) ||
-                    "Por favor, introduce solo números",
-                },
               })}
               defaultValue={propetarioData.Telefono}
               required
@@ -259,9 +236,6 @@ export const RPropietario = () => {
                 }
               }}
             />
-            {errors.Telefono && (
-              <div className="error">{errors.Telefono.message}</div>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formcorreoelectronico">
@@ -272,10 +246,6 @@ export const RPropietario = () => {
               name="correo"
               {...register("Correo", {
                 required: "Este campo es obligatorio",
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "Por favor ingresa un correo electrónico válido",
-                },
               })}
               defaultValue={propetarioData.Correo}
               required
@@ -289,9 +259,6 @@ export const RPropietario = () => {
                 }
               }}
             />
-            {errors.Correo && (
-              <div className="error">{errors.Correo.message}</div>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formbanco">
@@ -357,10 +324,6 @@ export const RPropietario = () => {
               className="InputsRegistros"
               {...register("NumeroCuenta", {
                 required: "Este campo es obligatorio",
-                pattern: {
-                  value: /^[0-9\-]+$/,
-                  message: "Por favor ingresa un número de cuenta válido",
-                },
               })}
               type="text"
               defaultValue={propetarioData.NumeroCuenta}
@@ -373,9 +336,6 @@ export const RPropietario = () => {
                 }
               }}
             />
-            {errors.NumeroCuenta && (
-              <div className="error">{errors.NumeroCuenta.message}</div>
-            )}
           </Form.Group>
 
           <Form.Group controlId="formfechaingreso">

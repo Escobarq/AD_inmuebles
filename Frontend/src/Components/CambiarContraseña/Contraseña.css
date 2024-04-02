@@ -1,0 +1,12 @@
+.text-muted {
+    color: black; /* Color predeterminado */
+  }
+  
+  .text-valid {
+    color: green; /* Color cuando se cumplen los requisitos */
+  }
+  
+  .text-invalid {
+    color: red; /* Color cuando no se cumplen los requisitos */
+  }
+  

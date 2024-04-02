@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Button, Form, InputGroup } from "react-bootstrap";
+import { Modal, Button, Form, InputGroup, ProgressBar } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,12 +10,14 @@ import {
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { crearUser } from "../../Hooks/RegisterUser";
+import zxcvbn from "zxcvbn";
 
 const Crearuser = () => {
+  const [password, setPassword] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const { reset } = useForm({ mode: "onChange" });
-  const [password, setPassword] = useState("");
   const [shown, setShown] = useState(false);
 
   const RedireccionForm = () => {
@@ -25,11 +27,6 @@ const Crearuser = () => {
   const RedireccionForms = () => {
     reset();
     window.location.href = "/AsignarRol";
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setShowSaveModal(true);
   };
 
   const falla = (text) => {
@@ -63,6 +60,34 @@ const Crearuser = () => {
     }
   };
 
+  const isPasswordValid = (password) => {
+    // Define expresiones regulares para validar la contraseña
+    const upperCaseRegex = /^(?=.*[A-Z])/;
+    const lowerCaseRegex = /^(?=.*[a-z])/;
+    const specialCharRegex = /^(?=.*[!@#$%^&*])/;
+    const digitRegex = /^(?=.*[0-9])/;
+
+    // Aplica las expresiones regulares para verificar cada criterio de validación
+    return (
+      password.length >= 8 &&
+      upperCaseRegex.test(password) &&
+      lowerCaseRegex.test(password) &&
+      specialCharRegex.test(password) &&
+      digitRegex.test(password)
+    );
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!isPasswordValid(password)) {
+      toast.error("La contraseña no cumple con los requisitos de seguridad", {
+        theme: "colored",
+      });
+      return;
+    }
+    setShowSaveModal(true);
+  };
+
   const enviarFormulario = async () => {
     const formData = {
       nombre: document.getElementById("nombre").value,
@@ -76,7 +101,12 @@ const Crearuser = () => {
     onsubmitNewUser(formData);
   };
 
-  const onChange = ({ currentTarget }) => setPassword(currentTarget.value);
+  const onChange = ({ currentTarget }) => {
+    setPassword(currentTarget.value);
+    const strength = zxcvbn(currentTarget.value).score;
+    setPasswordStrength(strength);
+  };
+
   const switchShown = () => setShown(!shown);
 
   return (
@@ -144,23 +174,29 @@ const Crearuser = () => {
                   required
                   max={12}
                 />
-                <InputGroup.Text
-                style={{ height: "100%"}}
-                >
+                <InputGroup.Text style={{ height: "100%" }}>
                   <FontAwesomeIcon
                     icon={shown ? faEyeSlash : faEye}
                     onClick={switchShown}
-                    style={{ cursor: "pointer" ,height:"1.5rem"}}
+                    style={{ cursor: "pointer", height: "1.5rem" }}
                   />
                 </InputGroup.Text>
               </InputGroup>
             </div>
-            <div className="password-hint">
-              <p className="text-danger">
-                Por favor, recuerde muy bien su contraseña.
-              </p>
-            </div>
+            <ProgressBar
+            now={(passwordStrength  + 1) * 20} // Convertir el puntaje en un valor entre 0 y 100
+            label={`${passwordStrength  * 25}%`} // Mostrar la fuerza de la contraseña como porcentaje
+          />
+            {!isPasswordValid(password) && (
+              <Form.Text className="text-danger">
+                La contraseña debe tener al menos 8 caracteres y contener al
+                menos una letra mayúscula, una letra minúscula, un número y un
+                carácter especial.
+              </Form.Text>
+            )}
           </Form.Group>
+        
+
           <Form.Group controlId="formNoIdentidadCodeudor">
             <Form.Label>Selecione Rol</Form.Label>
             <Form.Select
