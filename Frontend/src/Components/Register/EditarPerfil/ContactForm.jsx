@@ -69,15 +69,7 @@ function ContactForm() {
   };
 
   const handleConfirmSave = async () => {
-    const {
-      Nombre,
-      Apellido,
-      DocumentoIdentidad,
-      Correo,
-      Contrasena,
-      Telefono,
-    } = Empleadosdata;
-
+    console.log(Empleadosdata);
     try {
       const response = await fetch(
         `http://localhost:3006/empleados/${Empleadosdata.IdTrabajador}`,
@@ -86,15 +78,7 @@ function ContactForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            Nombre,
-            Apellido,
-            DocumentoIdentidad,
-            Correo,
-            Contrasena,
-            Telefono,
-            Idrol: rol,
-          }),
+          body: JSON.stringify(Empleadosdata),
         }
       );
       if (!response.ok) {
@@ -247,10 +231,10 @@ function ContactForm() {
               className="form-control"
               name="Rol"
               id="Rol"
-              value={rol}
-              onChange={handleChange}
+              onChange={(e) =>
+                setEmpleadosdata({ ...Empleadosdata, Idrol: e.target.value })}
             >
-              <option value="">Seleccione un rol</option>
+              <option value={Empleadosdata.Idrol}>Seleccione un rol</option>
               <option value="2">Asistente</option>
               <option value="1">Administrador</option>
             </Form.Control>
