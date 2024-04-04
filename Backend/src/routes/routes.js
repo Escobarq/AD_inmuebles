@@ -707,64 +707,69 @@ router.post("/RPropietario", async (req, res) => {
   }
 });
 // Ruta para cambiar la contraseña del trabajador y actualizar otros datos
-router.post("/api/changePassword", (req, res) => {
-  const connection = getConnection(); 
-  const { correo, newPassword, oldPassword, nombre, apellido } = req.body;
-
-  const getPasswordQuery = `SELECT Contrasena FROM trabajador WHERE Correo = ?`;
-  const updatePasswordQuery = `UPDATE trabajador SET Contrasena = ? WHERE Correo = ?`;
-  const updateNameQuery = `UPDATE trabajador SET Nombre = ?, Apellido = ? WHERE Correo = ?`;
-
-  connection.query(getPasswordQuery, [correo], async (err, results) => {
-    if (err) {
-      console.error("Error al buscar trabajador:", err);
-      return res.status(500).json({ error: "Error en la búsqueda" });
+router.post("/api/changePassword", async (req, res) => {
+  try {
+    const { correo, newPassword, oldPassword, nombre, apellido } = req.body;
+    
+    // Verificar que se proporcionen correo y al menos uno de los campos: newPassword, nombre o apellido
+    if (!correo || (!newPassword && !nombre && !apellido)) {
+      return res.status(400).json({ error: "Correo y al menos un campo: newPassword, nombre o apellido son requeridos" });
     }
 
+    const connection = getConnection();
+
+    // Obtener la contraseña actual del trabajador
+    const getPasswordQuery = `SELECT Contrasena FROM trabajador WHERE Correo = ?`;
+
+    // Función para obtener la contraseña del trabajador
+    const getPassword = () => {
+      return new Promise((resolve, reject) => {
+        connection.query(getPasswordQuery, [correo], (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(results);
+          }
+        });
+      });
+    };
+
+    // Obtener resultados de la consulta
+    const results = await getPassword();
+
+    // Verificar si hay resultados y continuar con tu lógica
     if (results.length === 0) {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
-
     const trabajador = results[0];
 
     // Si se proporciona una nueva contraseña, verificar y actualizar
     if (newPassword) {
-      bcrypt.compare(oldPassword, trabajador.Contrasena, async (err, coinciden) => {
-        if (err) {
-          return res.status(500).json({ error: "Error al comparar contraseñas" });
-        }
+      const coinciden = await bcrypt.compare(oldPassword, trabajador.Contrasena);
+      if (!coinciden) {
+        return res.status(401).json({ message: "Contraseña incorrecta" });
+      }
 
-        if (!coinciden) {
-          return res.status(401).json({ message: "Contraseña incorrecta" });
-        }
-
-        // Hash de la nueva contraseña
-        const contrasenaEncryptada = await bcrypt.hash(newPassword, rondasDeSal);
-
-        connection.query(updatePasswordQuery, [contrasenaEncryptada, correo], (err, result) => {
-          if (err) {
-            console.error("Error al cambiar la contraseña:", err);
-            return res.status(500).json({ error: "Error al cambiar la contraseña" });
-          }
-
-          console.log("Contraseña actualizada exitosamente");
-          return res.status(200).json({ message: "Contraseña actualizada exitosamente" });
-        });
-      });
-    } else {
-      // Si no se proporciona una nueva contraseña, solo actualizar nombre y apellido
-      connection.query(updateNameQuery, [nombre, apellido, correo], (err, result) => {
-        if (err) {
-          console.error("Error al actualizar nombre y apellido:", err);
-          return res.status(500).json({ error: "Error al actualizar nombre y apellido" });
-        }
-
-        console.log("Nombre y apellido actualizados exitosamente");
-        return res.status(200).json({ message: "Nombre y apellido actualizados exitosamente" });
-      });
+      const contrasenaEncryptada = await bcrypt.hash(newPassword, rondasDeSal);
+      const updatePasswordQuery = `UPDATE trabajador SET Contrasena = ? WHERE Correo = ?`;
+      await connection.query(updatePasswordQuery, [contrasenaEncryptada, correo]);
+      console.log("Contraseña actualizada exitosamente");
+      return res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+    } 
+    
+    // Si se proporciona nombre o apellido, actualizarlos
+    if (nombre || apellido) {
+      const updateNameQuery = `UPDATE trabajador SET Nombre = ?, Apellido = ? WHERE Correo = ?`;
+      await connection.query(updateNameQuery, [nombre, apellido, correo]);
+      console.log("Nombre y apellido actualizados exitosamente");
+      return res.status(200).json({ message: "Nombre y apellido actualizados exitosamente" });
     }
-  });
+  } catch (error) {
+    console.error("Error al procesar la solicitud:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
 });
+
 
 
 

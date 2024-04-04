@@ -179,8 +179,7 @@ function ContactForm() {
                   id="Contraseña"
                   onBlur={onChange}
                   type={shown ? "text" : "password"}
-                  placeholder="Contraseña"
-                  value={Empleadosdata.Contrasena}
+                  placeholder="Ingrese Una Nueva Contraseña"
                   onChange={(e) =>
                     setEmpleadosdata({
                       ...Empleadosdata,

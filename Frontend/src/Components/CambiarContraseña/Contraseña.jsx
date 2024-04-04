@@ -31,11 +31,15 @@ export const Contraseña = () => {
 
   useEffect(() => {
     const userEmailFromStorage = localStorage.getItem("items");
+    const username = localStorage.getItem("user");
+    const userapellido = localStorage.getItem("apellido");
     if (userEmailFromStorage) {
       setUserEmail(userEmailFromStorage);
       setUserData((prevData) => ({
         ...prevData,
         correo: userEmailFromStorage,
+        nombre: username,
+        apellido: userapellido,
       }));
     }
   }, []);
