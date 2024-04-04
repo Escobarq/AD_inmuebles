@@ -38,7 +38,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": [
+        "backend/backend-adminmuebles.exe"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {
