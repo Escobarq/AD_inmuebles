@@ -16,6 +16,20 @@
     height: 0;
 }
 
+.iconManual{    
+    width:50px ;
+    height:25px ;
+    position: absolute;
+    cursor: pointer;
+    right: 4%;
+    bottom: 0;
+}
+.iconManual:hover{    
+    color:rgb(136, 136, 57);
+}
+
+
+
 /* The slider */
 .slider {
     position: absolute;
