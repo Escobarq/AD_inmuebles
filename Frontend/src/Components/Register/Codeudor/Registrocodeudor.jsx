@@ -124,13 +124,22 @@ export const Registrocodeudor = () => {
       <h2>Registro Codeudor</h2>
       <div className="container">
         <Form className="form-propietario" onSubmit={handleSubmit(onSubmitRegistro)}>
+
           <Form.Group controlId="formnombre">
             <Form.Label>Nombre:</Form.Label>
             <Form.Control
+              
+              {...register("NombreCompleto",{
+                required: "Este campo es obligatorio",
+              }
+              )}
               type="text"
-              {...register("NombreCompleto")}
               required
               onChange={(e) => setValue("NombreCompleto", e.target.value)}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^A-Za-z\s]/gi, "");
+              }}
+              maxLength={50}
             />
           </Form.Group>
 
@@ -155,20 +164,37 @@ export const Registrocodeudor = () => {
             <Form.Control
               {...register("DocumentoIdentidad")}
               maxLength={10}
+              type="text"
               required
               onChange={(e) => setValue("DocumentoIdentidad", e.target.value)}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .replace(/[^0-9]/g, "")
+                  .slice(0, 10);
+              }}
             />
           </Form.Group>
+
+
+
 
           <Form.Group controlId="formtelefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
               {...register("Telefono")}
               maxLength={10}
+              type="text"
               required
               onChange={(e) => setValue("Telefono", e.target.value)}
+              onKeyDown={(e) => {
+                const regex = /^[0-9]*$/;
+                if (!regex.test(e.key)&& e.key !== "Backspace") {
+                  e.preventDefault();
+                }
+              }}
             />
           </Form.Group>
+
 
           <Form.Group controlId="formcorreo">
             <Form.Label>Correo:</Form.Label>
@@ -176,8 +202,16 @@ export const Registrocodeudor = () => {
               type="email"
               {...register("Correo")}
               onChange={(e) => setValue("Correo", e.target.value)}
+              onKeyDown={(e) => {
+                const regex = /[a-zA-Z0-9._-]/; // Permitir letras, números y caracteres especiales permitidos
+                if (!regex.test(e.key) && e.key !== "@") {
+                  e.preventDefault();
+                }
+              }}
+
             />
           </Form.Group>
+
 
           <Form.Group controlId="formdireccion">
             <Form.Label>Dirección:</Form.Label>

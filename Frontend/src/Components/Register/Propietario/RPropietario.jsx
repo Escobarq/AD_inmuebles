@@ -238,6 +238,8 @@ export const RPropietario = () => {
             />
           </Form.Group>
 
+
+
           <Form.Group controlId="formcorreoelectronico">
             <Form.Label>Correo Electrónico:</Form.Label>
             <Form.Control

@@ -609,12 +609,18 @@ export const ReciboGastos = () => {
                 name="AseoEntrega"
                 defaultValue={0}
                 onChange={(e) => handleCalcular(e.target)}
+                onKeyDown={(e) => {
+                  const regex = /^[0-9]*$/;
+                  if (!regex.test(e.key)&& e.key !== "Backspace") {
+                    e.preventDefault();
+                  }
+                }}
               />
             </Form.Group>
             <Form.Group>
               <label htmlFor="fecha">Gasto de Mantenimiento:</label>
               <input
-                type="numnumberber"
+                type="number"
                 className="form-control InputsRegistros"
                 name="Mantenimiento"
                 defaultValue={0}
@@ -624,21 +630,33 @@ export const ReciboGastos = () => {
             <Form.Group>
               <label htmlFor="fecha">Pagos de Recibos:</label>
               <input
-                type="numnumberber"
+                type="number"
                 className="form-control InputsRegistros"
                 name="PagoRecibo"
                 defaultValue={0}
                 onChange={(e) => handleCalcular(e.target)}
+                onKeyDown={(e) => {
+                  const regex = /^[0-9]*$/;
+                  if (!regex.test(e.key)&& e.key !== "Backspace") {
+                    e.preventDefault();
+                  }
+                }}
               />
             </Form.Group>
             <Form.Group>
               <label htmlFor="fecha">Cuotas Extraordinarias:</label>
               <input
-                type="numnumberber"
+                type="number"
                 className="form-control InputsRegistros"
                 name="CuotaExtra"
                 defaultValue={0}
                 onChange={(e) => handleCalcular(e.target)}
+                onKeyDown={(e) => {
+                  const regex = /^[0-9]*$/;
+                  if (!regex.test(e.key)&& e.key !== "Backspace") {
+                    e.preventDefault();
+                  }
+                }}
               />
             </Form.Group>
             <Form.Group controlId="formNoIdentidadPropietario">
