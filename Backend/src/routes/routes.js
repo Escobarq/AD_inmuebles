@@ -707,24 +707,71 @@ router.post("/RPropietario", async (req, res) => {
   }
 });
 // Ruta para cambiar la contraseña del trabajador y actualizar otros datos
-router.post("/api/changePassword", (req, res) => {
-  const connection = getConnection(); 
-  const { correo, newPassword, nombre, apellido } = req.body;
-
-  // Consulta SQL para buscar el trabajador por su correo electrónico y actualizar sus datos
-  const sql = `UPDATE trabajador SET Contrasena = ?, Nombre = ?, Apellido = ? WHERE Correo = ?`;
-
-  // Ejecutar la consulta SQL
-  connection.query(sql, [newPassword, nombre, apellido, correo], (err, result) => {
-    if (err) {
-      console.error("Error al cambiar la contraseña:", err);
-      res.status(500).json({ error: "Error al cambiar la contraseña" });
-    } else {
-      console.log("Datos actualizados exitosamente");
-      res.status(200).json({ message: "Datos actualizados exitosamente" });
+router.post("/api/changePassword", async (req, res) => {
+  try {
+    const { correo, newPassword, oldPassword, nombre, apellido } = req.body;
+    
+    // Verificar que se proporcionen correo y al menos uno de los campos: newPassword, nombre o apellido
+    if (!correo || (!newPassword && !nombre && !apellido)) {
+      return res.status(400).json({ error: "Correo y al menos un campo: newPassword, nombre o apellido son requeridos" });
     }
-  });
+
+    const connection = getConnection();
+
+    // Obtener la contraseña actual del trabajador
+    const getPasswordQuery = `SELECT Contrasena FROM trabajador WHERE Correo = ?`;
+
+    // Función para obtener la contraseña del trabajador
+    const getPassword = () => {
+      return new Promise((resolve, reject) => {
+        connection.query(getPasswordQuery, [correo], (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(results);
+          }
+        });
+      });
+    };
+
+    // Obtener resultados de la consulta
+    const results = await getPassword();
+
+    // Verificar si hay resultados y continuar con tu lógica
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    const trabajador = results[0];
+
+    // Si se proporciona una nueva contraseña, verificar y actualizar
+    if (newPassword) {
+      const coinciden = await bcrypt.compare(oldPassword, trabajador.Contrasena);
+      if (!coinciden) {
+        return res.status(401).json({ message: "Contraseña incorrecta" });
+      }
+
+      const contrasenaEncryptada = await bcrypt.hash(newPassword, rondasDeSal);
+      const updatePasswordQuery = `UPDATE trabajador SET Contrasena = ? WHERE Correo = ?`;
+      await connection.query(updatePasswordQuery, [contrasenaEncryptada, correo]);
+      console.log("Contraseña actualizada exitosamente");
+      return res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+    } 
+    
+    // Si se proporciona nombre o apellido, actualizarlos
+    if (nombre || apellido) {
+      const updateNameQuery = `UPDATE trabajador SET Nombre = ?, Apellido = ? WHERE Correo = ?`;
+      await connection.query(updateNameQuery, [nombre, apellido, correo]);
+      console.log("Nombre y apellido actualizados exitosamente");
+      return res.status(200).json({ message: "Nombre y apellido actualizados exitosamente" });
+    }
+  } catch (error) {
+    console.error("Error al procesar la solicitud:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
 });
+
+
+
 
 // Ruta para registrar un Inmueble
 router.post("/Reinmueble", async (req, res) => {
@@ -941,7 +988,7 @@ router.post("/Rcodeudor", async (req, res) => {
             return res.status(200).json({ message: "Inicio de sesión exitoso" });
           }
           else{
-            return res.status(200).json({ message: "Contraseña incorrecta" });
+            return res.status(400).json({ message: "Contraseña incorrecta" });
           }
         });
       } else {
@@ -955,15 +1002,7 @@ router.post("/Rcodeudor", async (req, res) => {
 router.post("/RegistrarUsuario", async (req, res) => {
   const connection = getConnection();
   const { nombre, apellido, correo, contrasena, telefono, rol } = req.body;
-  var newcontrasena
-bcrypt.hash(contrasena, rondasDeSal, (err, contrasenaEncryptada) => {
-	if (err) {
-		console.log("Error hasheando:", err);
-	} else {
-		console.log("Y hasheada es: " + contrasenaEncryptada);
-     newcontrasena = contrasenaEncryptada
-	}
-});
+  const contrasenaEncryptada = await bcrypt.hash(contrasena, rondasDeSal);
 
   // Validación básica de entrada
   if (!nombre || !apellido || !correo || !contrasena || !telefono || !rol) {
@@ -981,7 +1020,7 @@ bcrypt.hash(contrasena, rondasDeSal, (err, contrasenaEncryptada) => {
           // Insertar el nuevo usuario en la base de datos
           connection.query(
             "INSERT INTO trabajador (nombre, apellido, correo, contrasena, telefono, Idrol) VALUES (?, ?, ?, ?, ?, ?)",
-            [nombre, apellido, correo, newcontrasena, telefono, rol]
+            [nombre, apellido, correo, contrasenaEncryptada, telefono, rol]
           );
           res.status(201).json({ message: "Usuario registrado exitosamente" });
         } else {
@@ -1442,47 +1481,59 @@ router.put("/Vempleados/:id", (req, res) => {
     }
   );
 });
+
 //Ruta actualizar rol empleado
-const fields = [
-  "Nombre",
-  "Apellido",
-  "DocumentoIdentidad",
-  "Correo",
-  "Contrasena",
-  "Telefono",
-  "Idrol",
-];
+
 
 router.put("/empleados/:id", async (req, res) => {
   const connection = getConnection(); 
+  const {Nombre,
+    Apellido,
+    Correo,
+    Contrasena,
+    Telefono, Idrol} = req.body
   const id = req.params.id; // ID del empleado a actualizar
+  var newcontrasena
+bcrypt.hash(Contrasena, rondasDeSal, (err, contrasenaEncryptada) => {
+	if (err) {
+		console.log("Error hasheando:", err);
+	} else {
+		console.log("Y hasheada es: " + contrasenaEncryptada);
+     newcontrasena = contrasenaEncryptada
+	}
+});
 
   // Construimos el array de valores a actualizar
   const updateValues = [];
   const updateFields = [];
-  console.log(req.body.Contrasena);
+  if (Nombre) {
+    updateValues.push(Nombre);
+     updateFields.push(`Nombre = ?`);     
+  }
+  if (Apellido) {
+     updateValues.push(Apellido);
+    updateFields.push(`Apellido = ?`);
+  }
+  if (Contrasena) {
+    const contrasenaEncryptada = await bcrypt.hash(Contrasena, rondasDeSal);
+    updateValues.push(contrasenaEncryptada);
+    updateFields.push(`Contrasena = ?`);
+      }
+  
+  if (Correo) {
+     updateValues.push(Correo);
+    updateFields.push(`Correo = ?`);
+  }
+  if (Telefono) {
+     updateValues.push(Telefono);
+    updateFields.push(`Telefono = ?`);
+  }
+  if (Idrol) {
+     updateValues.push(Idrol);
+    updateFields.push(`Idrol = ?`);
+  }
  
-  fields.forEach((field) => {
-    if (req.body[field]) {
-
-      if (field != "Contrasena"){
-        updateValues.push(req.body[field]);
-        console.log("a ", req.body[field]);
-        updateFields.push(`${field} = ?`);
-      }
-      else {
-        bcrypt.hash(req.body[field], rondasDeSal, (err, contrasenaEncryptada) => {
-          if (err) {
-            console.log("Error hasheando:", err);
-          } else {
-            updateValues.push(contrasenaEncryptada);
-            updateFields.push(`${field} = ?`);
-            console.log( "b1 ", req.body[field]);
-          }
-        });
-      }
-    }
-  });
+  
 
   // Si no hay campos para actualizar, respondemos con un error
   if (updateValues.length === 0) {

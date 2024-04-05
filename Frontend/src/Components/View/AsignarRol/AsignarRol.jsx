@@ -104,7 +104,7 @@ export const AsignarRol = () => {
   };
 
   const createRowRol = (roles) => {
-    const maskedPassword = '*'.repeat(roles.Contrasena.length);  
+    const maskedPassword = '*'.repeat(Math.min(10,roles.Contrasena.length));  
     
     if (roles.Idrol === 1 || roles.Idrol === 2) {
       return (

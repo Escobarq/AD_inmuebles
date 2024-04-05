@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { Form, Button, Modal } from "react-bootstrap";
+import { Form, Button, Modal, ProgressBar, FormControl } from "react-bootstrap";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import "./Contraseña.css";
+import zxcvbn from "zxcvbn";
 
 export const Contraseña = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -18,25 +20,33 @@ export const Contraseña = () => {
     apellido: "",
     correo: "",
   });
-  const [error, setError] = useState(false); // Inicializar como falso
-  const [userEmail, setUserEmail] = useState(""); // Estado para almacenar el correo del usuario
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [passwordValidation, setPasswordValidation] = useState({
+    uppercase: false,
+    lowercase: false,
+    minLength: false,
+  });
+  const [error, setError] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
-    // Obtener el correo del usuario del localStorage al cargar el componente
     const userEmailFromStorage = localStorage.getItem("items");
+    const username = localStorage.getItem("user");
+    const userapellido = localStorage.getItem("apellido");
     if (userEmailFromStorage) {
       setUserEmail(userEmailFromStorage);
       setUserData((prevData) => ({
         ...prevData,
         correo: userEmailFromStorage,
+        nombre: username,
+        apellido: userapellido,
       }));
     }
   }, []);
 
   const handleChangePassword = () => {
-    const { oldPassword, newPassword } = passwordData;
+    passwordData;
 
-    // Hacer una solicitud POST al servidor para cambiar la contraseña
     axios
       .post("http://localhost:3006/api/changePassword", {
         ...userData,
@@ -61,18 +71,37 @@ export const Contraseña = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPasswordData({ ...passwordData, [name]: value });
+
+    const updatedValidation = {
+      uppercase: /[A-Z]/.test(value),
+      lowercase: /[a-z]/.test(value),
+      minLength: value.length >= 8,
+    };
+    setPasswordValidation(updatedValidation);
+
+    const strength = Object.values(updatedValidation).filter(
+      (valid) => valid
+    ).length;
+    setPasswordStrength(strength);
   };
 
   const handleSaveChanges = () => {
+    const passwordValidationValues = Object.values(passwordValidation);
+    const fulfilledCriteria = passwordValidationValues.filter(
+      (valid) => valid
+    ).length;
+    const criteriaCount = passwordValidationValues.length;
+    const passwordStrengthPercentage =
+      (fulfilledCriteria / criteriaCount) * 100;
+
     if (
       passwordData.newPassword !== passwordData.confirmPassword ||
-      !userData.nombre ||
-      !userData.apellido
+      !passwordData.newPassword ||
+      !passwordData.confirmPassword ||
+      passwordStrengthPercentage < 50
     ) {
-      // Si las contraseñas no coinciden o faltan el nombre o apellido, establecer error a true
       setError(true);
     } else {
-      // Si las contraseñas coinciden y se proporciona el nombre y apellido, establecer error a false y mostrar el modal
       setError(false);
       setShowPasswordModal(true);
     }
@@ -86,6 +115,17 @@ export const Contraseña = () => {
     window.location.href = "/Inmueble";
     setShowConfirmModal(false);
   };
+
+  const isPasswordValid = (password) => {
+    return (
+      password.length >= 8 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password) &&
+      /\d/.test(password) &&
+      /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)
+    );
+  };
+  const passwordScore = zxcvbn(passwordData.newPassword).score;
 
   return (
     <div className="contener-home contener-rpropietario">
@@ -142,12 +182,30 @@ export const Contraseña = () => {
 
           <Form.Group controlId="formNewPassword" className="mb-3">
             <Form.Label>Contraseña nueva</Form.Label>
-            <Form.Control
+            <FormControl
               type="password"
               placeholder="Ingresa tu nueva contraseña"
               name="newPassword"
               value={passwordData.newPassword}
               onChange={handleInputChange}
+            />
+            {passwordData.newPassword &&
+              !isPasswordValid(passwordData.newPassword) && (
+                <Form.Text className="text-danger">
+                  La contraseña debe tener al menos 8 caracteres y contener al
+                  menos una letra mayúscula, una letra minúscula, un número y un
+                  carácter especial.
+                </Form.Text>
+              )}
+            {error && (
+              <Form.Text className="text-danger">
+                Las contraseñas no coinciden o faltan datos
+              </Form.Text>
+            )}
+            {/* Barra de progreso de la contraseña */}
+            <ProgressBar
+              now={(passwordScore + 1) * 20} // Convertir el puntaje en un valor entre 0 y 100
+              label={`${passwordScore * 25}%`} // Mostrar la fuerza de la contraseña como porcentaje
             />
           </Form.Group>
 

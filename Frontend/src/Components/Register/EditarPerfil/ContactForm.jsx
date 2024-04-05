@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { InputGroup, Modal, Button, Form } from "react-bootstrap";
+import { InputGroup, Modal, Button, Form, ProgressBar } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -10,10 +10,12 @@ import {
   faEye,
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
+import zxcvbn from "zxcvbn";
 
 function ContactForm() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const [password, setPassword] = useState("");
   const [shown, setShown] = useState(false);
   const [Empleadosdata, setEmpleadosdata] = useState({
@@ -67,15 +69,7 @@ function ContactForm() {
   };
 
   const handleConfirmSave = async () => {
-    const {
-      Nombre,
-      Apellido,
-      DocumentoIdentidad,
-      Correo,
-      Contrasena,
-      Telefono,
-    } = Empleadosdata;
-
+    console.log(Empleadosdata);
     try {
       const response = await fetch(
         `http://localhost:3006/empleados/${Empleadosdata.IdTrabajador}`,
@@ -84,15 +78,7 @@ function ContactForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            Nombre,
-            Apellido,
-            DocumentoIdentidad,
-            Correo,
-            Contrasena,
-            Telefono,
-            Idrol: rol,
-          }),
+          body: JSON.stringify(Empleadosdata),
         }
       );
       if (!response.ok) {
@@ -105,8 +91,6 @@ function ContactForm() {
     }
   };
 
-  const { reset } = useForm({ mode: "onChange" });
-
   const RedireccionForm = () => {
     setShowCancelModal(true); // Actualiza el estado para ocultar el modal
   };
@@ -117,9 +101,31 @@ function ContactForm() {
     setRol(event.target.value);
   };
 
-  const onChange = ({ currentTarget }) => setPassword(currentTarget.value);
+  const onChange = ({ currentTarget }) => {
+    setPassword(currentTarget.value);
+    const strength = zxcvbn(currentTarget.value).score;
+    setPasswordStrength(strength);
+  };
+
   const switchShown = () => setShown(!shown);
 
+  const isPasswordValid = (password) => {
+    // Define expresiones regulares para validar la contraseña
+    const upperCaseRegex = /^(?=.*[A-Z])/;
+    const lowerCaseRegex = /^(?=.*[a-z])/;
+    const specialCharRegex = /^(?=.*[!@#$%^&*])/;
+    const digitRegex = /^(?=.*[0-9])/;
+
+    // Aplica las expresiones regulares para verificar cada criterio de validación
+    return (
+      password.length >= 8 &&
+      upperCaseRegex.test(password) &&
+      lowerCaseRegex.test(password) &&
+      specialCharRegex.test(password) &&
+      digitRegex.test(password)
+    );
+  };
+  
   return (
     <div className="contener-home contener-rpropietario">
       <h2> Actualizar Informacion de Empleados</h2>
@@ -173,8 +179,7 @@ function ContactForm() {
                   id="Contraseña"
                   onBlur={onChange}
                   type={shown ? "text" : "password"}
-                  placeholder="Contraseña"
-                  value={Empleadosdata.Contrasena}
+                  placeholder="Ingrese Una Nueva Contraseña"
                   onChange={(e) =>
                     setEmpleadosdata({
                       ...Empleadosdata,
@@ -191,7 +196,19 @@ function ContactForm() {
                 </InputGroup.Text>
               </InputGroup>
             </div>
+            <ProgressBar
+              now={(passwordStrength + 1) * 20}
+              label={`${passwordStrength * 25}%`}
+            />
+            {password && !isPasswordValid(password) && (
+              <Form.Text className="text-danger">
+                La contraseña debe tener al menos 8 caracteres y contener al
+                menos una letra mayúscula, una letra minúscula, un número y un
+                carácter especial.
+              </Form.Text>
+            )}
           </Form.Group>
+
           <Form.Group>
             <Form.Label>Telefono:</Form.Label>
             <Form.Control
@@ -213,10 +230,10 @@ function ContactForm() {
               className="form-control"
               name="Rol"
               id="Rol"
-              value={rol}
-              onChange={handleChange}
+              onChange={(e) =>
+                setEmpleadosdata({ ...Empleadosdata, Idrol: e.target.value })}
             >
-              <option value="">Seleccione un rol</option>
+              <option value={Empleadosdata.Idrol}>Seleccione un rol</option>
               <option value="2">Asistente</option>
               <option value="1">Administrador</option>
             </Form.Control>

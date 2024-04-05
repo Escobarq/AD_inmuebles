@@ -38,7 +38,6 @@ export const RInmuebleO = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
   } = useForm();
 
   useEffect(() => {
@@ -167,6 +166,17 @@ export const RInmuebleO = () => {
               className="InputsRegistros"
               {...register("Nmatricula")}
               type="number"
+              onKeyDown={(e) => {
+                const key = e.key;
+                const regex = /^[a-zA-Z0-9]+$/;
+                if (
+                  !regex.test(key) &&
+                  key !== "Backspace" &&
+                  key !== "Delete"
+                ) {
+                  e.preventDefault();
+                }
+              }}
             />
           </Form.Group>
 
@@ -176,6 +186,12 @@ export const RInmuebleO = () => {
               className="InputsRegistros"
               {...register("Direccion")}
               type="text"
+              onKeyDown={(e) => {
+                const regex = /^[A-Za-z0-9\s\-#]+$/; // Permitir letras, números, espacios y guiones
+                if (!regex.test(e.key)) {
+                  e.preventDefault();
+                }
+              }}
             />
           </Form.Group>
 
@@ -185,6 +201,19 @@ export const RInmuebleO = () => {
               className="InputsRegistros"
               {...register("Ciudad")}
               type="text"
+              onKeyDown={(e) => {
+                const key = e.key;
+
+                // Permitimos solo letras y espacios
+                const regex = /^[a-zA-Z\s]+$/;
+                if (
+                  !regex.test(key) &&
+                  key !== "Backspace" &&
+                  key !== "Delete"
+                ) {
+                  e.preventDefault();
+                }
+              }}
             />
           </Form.Group>
 
@@ -194,6 +223,12 @@ export const RInmuebleO = () => {
               className="InputsRegistros"
               {...register("Barrio")}
               type="text"
+              onKeyDown={(e) => {
+                const regex = /^[A-Za-z0-9\s\-#]+$/; // Permitir letras, números, espacios y guiones
+                if (!regex.test(e.key)) {
+                  e.preventDefault();
+                }
+              }}
             />
           </Form.Group>
 
@@ -203,6 +238,10 @@ export const RInmuebleO = () => {
               className="InputsRegistros"
               {...register("ValorIn")}
               type="number"
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .replace(/[^0-9]/g, "")
+              }}
             />
           </Form.Group>
 
@@ -232,6 +271,10 @@ export const RInmuebleO = () => {
               className="InputsRegistros"
               {...register("Nbanos")}
               type="number"
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .replace(/[^0-9]/g, "")
+              }}
             />
           </Form.Group>
 
@@ -241,6 +284,10 @@ export const RInmuebleO = () => {
               className="InputsRegistros"
               {...register("Spublicos")}
               type="text"
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .replace(/[^A-Za-z\s,]/g, "")
+              }}
             />
           </Form.Group>
 
@@ -250,6 +297,10 @@ export const RInmuebleO = () => {
               className="InputsRegistros"
               {...register("AreaM")}
               type="number"
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .replace(/[^0-9],/g, "")
+              }}
             />
           </Form.Group>
 
@@ -299,6 +350,10 @@ export const RInmuebleO = () => {
               required
               as="textarea"
               rows={2}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .replace(/[^A-Za-z\s]/g, "")
+              }}
               style={{ width: "100%", resize: "none" }}
             />
           </Form.Group>

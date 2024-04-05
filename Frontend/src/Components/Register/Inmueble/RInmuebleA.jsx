@@ -13,10 +13,7 @@ export const RInmuebleA = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [mostrarModalA, setMostrarModalA] = useState(false);
   const [selectedPropietario, setSelectedPropietario] = useState("");
-  const [DocumentoPropie, setDocumentoPropie] = useState("");
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
-  const [focusedField, setFocusedField] = useState(""); // Agregar esta línea antes de usar focusedField
-  const [showWarning, setShowWarning] = useState(false); // Agregar esta línea antes de usar showWarning
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const [currentDate, setCurrentDate] = useState(getCurrentDate());
@@ -33,12 +30,17 @@ export const RInmuebleA = () => {
     toast.error("Hubo un error al ingresar los datos, intenta nuevamente", {
       theme: "colored",
     });
-    const Nmatricula = () =>
+  const Nmatricula = () =>
     toast.error("Numero de Matricula duplicado", {
       theme: "colored",
     });
 
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
     setCurrentDate(getCurrentDate());
@@ -69,29 +71,31 @@ export const RInmuebleA = () => {
   }
 
   const fetchData = async (propietario) => {
-      try {
-        const response = await axios.get(`http://localhost:3006/Vpropietarios?Cedula=${propietario.DocumentoIdentidad}`);
-        const Propietarios = response.data.map((prop) => prop);
-        setPropietariosDisponibles(Propietarios);
-      } catch (error) {
-        console.error("Error al cargar las matrículas:", error);
-        toast.error(
-          "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
-        );
-      }
+    try {
+      const response = await axios.get(
+        `http://localhost:3006/Vpropietarios?Cedula=${propietario.DocumentoIdentidad}`
+      );
+      const Propietarios = response.data.map((prop) => prop);
+      setPropietariosDisponibles(Propietarios);
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
+    }
   };
   const fetchData2 = async () => {
-      try {
-        const response = await axios.get("http://localhost:3006/Vpropietarios?");
-        const Propietarios = response.data.map((prop) => prop);
-        setPropietariosDisponibles(Propietarios);
-        console.log("a");
-      } catch (error) {
-        console.error("Error al cargar las matrículas:", error);
-        toast.error(
-          "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
-        );
-      }
+    try {
+      const response = await axios.get("http://localhost:3006/Vpropietarios?");
+      const Propietarios = response.data.map((prop) => prop);
+      setPropietariosDisponibles(Propietarios);
+      console.log("a");
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
+    }
   };
 
   const handleCloseModalA = () => {
@@ -147,43 +151,6 @@ export const RInmuebleA = () => {
     setShowCancelModal(false); // Cierra el modal
   };
 
-  
-  const handleTextChange = (event) => {
-    const fieldValue = event.target.value;
-    const fieldName = event.target.name;
-
-    // Expresión regular para permitir solo letras y espacios
-    const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/;
-
-    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
-    if (!regex.test(fieldValue) && focusedField === fieldName) {
-      setShowWarning(true);
-    } else {
-      setShowWarning(false);
-    }
-
-  };
-
-  const handleNumberChange = (event) => {
-    const fieldValue = event.target.value;
-    const fieldName = event.target.name;
-
-    // Expresión regular para permitir solo números
-    const regex = /^[0-9]*$/;
-
-    // Si el campo no cumple con la expresión regular y el campo enfocado es el mismo que el actual, muestra la alerta de advertencia
-    if (!regex.test(fieldValue) && focusedField === fieldName) {
-      setShowWarning(true);
-    } else {
-      setShowWarning(false);
-    }
-  };
-
-  const handleFieldFocus = (fieldName) => {
-    setFocusedField(fieldName);
-  };
-
-
   return (
     <div className="contener-home contener-rpropietario">
       <h2>Registro Inmueble</h2>
@@ -214,18 +181,28 @@ export const RInmuebleA = () => {
                 <option value="RInmuebleC">Casa</option>
               </Form.Select>
             </Form.Group>
-
             <Form.Group controlId="formNoMatricula">
-              <Form.Label>No. Matricula:</Form.Label>
+              <Form.Label>No. Matrícula:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("Nmatricula")}
-                onChange={handleNumberChange}
-                onFocus={() => handleFieldFocus("Nmatricula")}
+                {...register("Nmatricula", {
+                  required: "Este campo es obligatorio",
+                })}
                 required
+                onKeyDown={(e) => {
+                  const key = e.key;
+                  const regex = /^[a-zA-Z0-9]+$/;
+                  if (
+                    !regex.test(key) &&
+                    key !== "Backspace" &&
+                    key !== "Delete"
+                  ) {
+                    e.preventDefault();
+                  }
+                }}
               />
-              {focusedField === "Nmatricula" && showWarning && (
-                <span className="error-message">Solo se permiten números</span>
+              {errors.Nmatricula && (
+                <span className="error">{errors.Nmatricula.message}</span>
               )}
             </Form.Group>
 
@@ -233,42 +210,71 @@ export const RInmuebleA = () => {
               <Form.Label>Dirección:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("Direccion")}
-                onChange={handleTextChange}
-                 />
-                 </Form.Group>
+                {...register("Direccion", {
+                  required: "Este campo es obligatorio",
+                  pattern: {
+                    value: /^[A-Za-z0-9\s]+(?:-[A-Za-z0-9\s]+)*$/i,
+                    message:
+                      "Por favor ingresa una dirección válida en Colombia",
+                  },
+                })}
+                type="text"
+                maxLength={100} // Ajusta la longitud máxima según tus necesidades
+                onKeyDown={(e) => {
+                  const regex = /^[A-Za-z0-9\s\-#]+$/; // Permitir letras, números, espacios y guiones
+                  if (!regex.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+              />
+              {errors.Direccion && (
+                <div className="error">{errors.direccion.message}</div>
+              )}
+            </Form.Group>
 
             <Form.Group controlId="formCiudad">
               <Form.Label>Ciudad:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
-                {...register("Ciudad")}
-                onChange={handleTextChange}
-              onFocus={() => handleFieldFocus("Ciudad")}
-              required
-            />
-            {focusedField === "Ciudad" && showWarning && (
-              <span className="error-message">
-                Solo se permiten letras y espacios
-              </span>
-            )}
-          </Form.Group>
+                {...register("Ciudad", {
+                  required: "Este campo es obligatorio",
+                })}
+                required
+                onKeyDown={(e) => {
+                  const key = e.key;
+
+                  // Permitimos solo letras y espacios
+                  const regex = /^[a-zA-Z\s]+$/;
+                  if (
+                    !regex.test(key) &&
+                    key !== "Backspace" &&
+                    key !== "Delete"
+                  ) {
+                    e.preventDefault();
+                  }
+                }}
+              />
+              {errors.Ciudad && (
+                <span className="error">{errors.Ciudad.message}</span>
+              )}
+            </Form.Group>
 
             <Form.Group controlId="formBarrio">
               <Form.Label>Barrio:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 {...register("Barrio")}
-                onChange={handleTextChange}
-              onFocus={() => handleFieldFocus("Barrio")}
-              required
-            />
-            {focusedField === "Barrio" && showWarning && (
-              <span className="error-message">
-                Solo se permiten letras y espacios
-              </span>
-            )}
-          </Form.Group>
+                required
+                type="text"
+                maxLength={100} // Ajusta la longitud máxima según tus necesidades
+                onKeyDown={(e) => {
+                  const regex = /^[A-Za-z0-9\s\-#]+$/; // Permitir letras, números, espacios y guiones
+                  if (!regex.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+              />
+            </Form.Group>
 
             <Form.Group controlId="formEstrato">
               <Form.Label>Estrato:</Form.Label>
@@ -295,56 +301,52 @@ export const RInmuebleA = () => {
               <Form.Control
                 className="InputsRegistros"
                 {...register("Nbanos")}
-                onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("Nbanos")}
-              required
-            />
-            {focusedField === "Nbanos" && showWarning && (
-              <span className="error-message">Solo se permiten números</span>
-            )}
-          </Form.Group>
+                required
+                onInput={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^0-9]/g, "")
+                }}
+              />
+            </Form.Group>
 
             <Form.Group controlId="formValorIn">
               <Form.Label>Valor:</Form.Label>
               <Form.Control
-              type="number"
+                type="number"
                 className="InputsRegistros"
                 {...register("ValorIn")}
-                onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("ValorIn")}
-              required
-            />
-            {focusedField === "ValorIn" && showWarning && (
-              <span className="error-message">Solo se permiten números</span>
-            )}
-          </Form.Group>
+                required
+                onInput={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^0-9]/g, "")
+                }}
+              />
+            </Form.Group>
 
             <Form.Group controlId="formNoHabitaciones">
               <Form.Label>No. Habitaciones:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 {...register("NoHabita")}
-                onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("NoHabita")}
-              required
-            />
-            {focusedField === "NoHabita" && showWarning && (
-              <span className="error-message">Solo se permiten números</span>
-            )}
-          </Form.Group>
+                required
+                onInput={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^0-9]/g, "")
+                }}
+              />
+            </Form.Group>
 
             <Form.Group controlId="formNoNiveles">
               <Form.Label>No. Niveles:</Form.Label>
               <Form.Control
                 className="InputsRegistros"
                 {...register("NoNiveles")}
-                onChange={handleNumberChange}
-                onFocus={() => handleFieldFocus("NoNiveles")}
                 required
+                onInput={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^0-9]/g, "")
+                }}
               />
-              {focusedField === "NoNiveles" && showWarning && (
-                <span className="error-message">Solo se permiten números</span>
-              )}
             </Form.Group>
 
             <Form.Group controlId="formTerraza">
@@ -352,30 +354,27 @@ export const RInmuebleA = () => {
               <Form.Control
                 className="InputsRegistros"
                 {...register("NoTerraza")}
-                onChange={handleNumberChange}
-              onFocus={() => handleFieldFocus("NoTerraza")}
-              required
-            />
-            {focusedField === "NoTerraza" && showWarning && (
-              <span className="error-message">Solo se permiten números</span>
-            )}
-          </Form.Group>
+                required
+                onInput={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^0-9]/g, "")
+                }}
+              />
+            </Form.Group>
 
             <Form.Group controlId="formServiciosPublicos">
               <Form.Label>Servicios Publicos:</Form.Label>
               <Form.Control
+              type="text"
                 className="InputsRegistros"
                 {...register("Spublicos")}
-                onChange={handleTextChange}
-              onFocus={() => handleFieldFocus("ServiciosPublicos")}
-              required
-            />
-            {focusedField === "ServiciosPublicos" && showWarning && (
-              <span className="error-message">
-                Solo se permiten letras y espacios
-              </span>
-            )}
-          </Form.Group>
+                required
+                onInput={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^A-Za-z\s,]/g, "")
+                }}
+              />
+            </Form.Group>
 
             <Form.Group controlId="formAseguramiento">
               <Form.Label>FechA de Aseguramiento:</Form.Label>
@@ -412,16 +411,20 @@ export const RInmuebleA = () => {
                 ))}
               </Form.Select>
             </Form.Group>
-          <Form.Group controlId="formNoIdentidadPropietario">
-            <Form.Label>Descripción</Form.Label>
-            <Form.Control
-              className="InputsRegistros"
-              {...register("Descripcion")}
-              as="textarea"
-              rows={2}
-              style={{ width: "100%", resize: "none" }}
-            />
-          </Form.Group>
+            <Form.Group controlId="formNoIdentidadPropietario">
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                className="InputsRegistros"
+                {...register("Descripcion")}
+                as="textarea"
+                rows={2}
+                onInput={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^A-Za-z\s,]/g, "")
+                }}
+                style={{ width: "100%", resize: "none" }}
+              />
+            </Form.Group>
           </div>
           {/*Botones para guardar y cancelar*/}
           <div className="col-md-12">
