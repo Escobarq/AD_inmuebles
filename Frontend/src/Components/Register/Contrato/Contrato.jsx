@@ -121,9 +121,7 @@ export const Contrato = () => {
             ValorDeposito: watch("ValorDeposito"),
           }
         );
-        console.log("Respuesta del servidor:", response.data);
         toast.success("Contrato de arrendamiento creado correctamente");
-        console.log(selectedIdInmueble);
         reset();
         // Después de guardar los datos, redirigir a la página de Carrendatario
         window.location.href = "/Carrendatario";
@@ -140,7 +138,6 @@ export const Contrato = () => {
             ValorDeposito: watch("ValorDeposito"),
           }
         );
-        console.log("Respuesta del servidor:", response.data);
         toast.success("Contrato de arrendamiento creado correctamente");
         reset();
         // Después de guardar los datos, redirigir a la página de Carrendatario
@@ -319,7 +316,7 @@ export const Contrato = () => {
             <Form.Label>Valor Deposito:</Form.Label>
             <InputGroup>
               <InputGroup.Text>$</InputGroup.Text>
-              <Form.Control type="number" {...register("ValorDeposito")} />
+              <Form.Control disabled type="number" {...register("ValorDeposito")} />
             </InputGroup>
           </Form.Group>
           

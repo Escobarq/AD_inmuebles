@@ -144,12 +144,12 @@ JOIN codeudor ON arrendatario.IdCodeudor = codeudor.IdCodeudor `; // Inicializa 
     const queryParams = []; // Almacena los valores de los parámetros
 
     if (Cedula) {
-      query += " AND DocumentoIdentidad = ?";
+      query += " AND arrendatario.DocumentoIdentidad = ?";
       queryParams.push(Cedula);
     }
 
     if (Estado) {
-      query += " AND Estado = ?";
+      query += " AND arrendatario.Estado = ?";
       queryParams.push(Estado);
     }
 
@@ -1048,6 +1048,12 @@ router.post("/Rarrendatario", async (req, res) => {
   } = req.body;
 
   try {
+    console.log( IdCodeudor,
+      TipoDocumento,
+      DocumentoIdentidad,
+      NombreCompleto,
+      Telefono,
+      Correo,);
     
     connection.query("SELECT * FROM arrendatario WHERE DocumentoIdentidad = ?",
     [DocumentoIdentidad], (error, results) => {
