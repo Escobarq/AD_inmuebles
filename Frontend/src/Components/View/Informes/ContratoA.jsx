@@ -10,13 +10,14 @@ import logo from "../../../assets/Logo.jpg";
 import { Button, Table } from "react-bootstrap";
 import useContratoInfo from '../../Hooks/useObtenerInfoContrac';
 import { useMediaQuery } from "@react-hook/media-query";
+import NoResultImg from "../../../assets/NoResult.gif";
 
 export const ContratoA = () => {
   const contratoInfo = useContratoInfo('http://localhost:3006/contratoFiltro');
   const [infoarrendatario, setinfoarrendatario] = useState([]);
   const pdfContentRef = useRef(null);
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
-
+  const [NoResult, setNoResult] = useState(false);
 
   const [filtroData, setFiltroData] = useState({
     FechaFinMIN: "",
@@ -40,6 +41,12 @@ export const ContratoA = () => {
       }
       const data = await response.json();
       setinfoarrendatario(data);
+
+      if (data == 0) {
+        setNoResult(true);
+      } else {
+        setNoResult(false);
+      }
 
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -410,12 +417,18 @@ if (Object.values(filtroData).filter(value => value).length > 0) {
         <div className="ContArrendatario">
           <h1>Contrato Arrendatario</h1>
         </div>
+        {NoResult == true ? (
+            <div>
+              <img className="Noresult" src={NoResultImg} alt="" />
+            </div>
+          ) : (
         <div className="table-container" ref={pdfContentRef}>
           <Table striped bordered hover>
             <thead>{createheader()}</thead>
             <tbody>{currentItems.map((Contrato) => createrow(Contrato))}</tbody>
           </Table>
         </div>
+          )}
       </div>
       <div className="paginador">
           <Pagination>
