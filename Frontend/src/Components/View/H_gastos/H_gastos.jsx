@@ -14,7 +14,7 @@ import { useMediaQuery } from "@react-hook/media-query";
 import axios from "axios";
 import logo from "../../../assets/Logo.jpg";
 import { toast } from "react-toastify";
-
+import NoResultImg from "../../../assets/NoResult.gif";
 
 export const H_gastos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
@@ -22,6 +22,7 @@ export const H_gastos = () => {
   const [PropietariosDisponibles, setPropietariosDisponibles] = useState([]);
   const [selectedPropietario, setSelectedPropietario] = useState("");
   const [mostrarModalA, setMostrarModalA] = useState(false);
+  const [NoResult, setNoResult] = useState(false);
   const [filtroData, setFiltroData] = useState({
     Propietario: "",
     FechaElaboracionMin: "",
@@ -67,6 +68,11 @@ export const H_gastos = () => {
       }
       const data = await response.json();
       setinfoComision(data);
+      if (data == 0) {
+        setNoResult(true);
+      } else {
+        setNoResult(false);
+      }
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -458,6 +464,11 @@ formattedFilters = Object.keys(filtroData)
           </h1>
         </div>
         <div className="view_esp">
+        {NoResult == true ? (
+            <div>
+              <img className="Noresult" src={NoResultImg} alt="" />
+            </div>
+          ) : (
           <div className="table-container">
             <Table striped bordered hover>
               <thead> {createheader()} </thead>
@@ -466,6 +477,7 @@ formattedFilters = Object.keys(filtroData)
               </tbody>
             </Table>
           </div>
+          )}
         </div>
         <div className="paginador">
           <Pagination>

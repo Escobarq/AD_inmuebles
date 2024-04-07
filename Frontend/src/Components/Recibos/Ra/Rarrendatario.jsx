@@ -170,8 +170,8 @@ export const Rarrendatario = () => {
 
   //FUNCION PARA GENERAR PDF
   const handleGuardarClick = async (data) => {
-    data.ValorTotal = ValorTotal
-    data.ListaFechasPagadas = Array.from(pagosSeleccionados).join('; ')
+    data.ValorTotal = ValorTotal;
+    data.ListaFechasPagadas = Array.from(pagosSeleccionados).join('; ');
 
     const order = [
       "NoDocumento",
@@ -186,7 +186,7 @@ export const Rarrendatario = () => {
     ];
     try {
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage();
+      let page = pdfDoc.addPage();
       const { width, height } = page.getSize();
       const fontSize = 19;
       const padding = 50;
@@ -195,9 +195,6 @@ export const Rarrendatario = () => {
       const footerText = `Hora de emisión: ${currentTime}`;
       const textWidth = (await pdfDoc.embedFont("Helvetica")).widthOfTextAtSize(currentfech, fontSize);
       const textX = width - padding - textWidth;
-
-
-
 
       page.drawText(footerText, {
         x: padding,
@@ -213,7 +210,6 @@ export const Rarrendatario = () => {
       const logoImageBytes = await fetch(logo).then((res) => res.arrayBuffer());
       const logoImage = await pdfDoc.embedJpg(logoImageBytes);
 
-      //encabezado-pdf
       page.drawImage(logoImage, {
         x: padding - 10,
         y: height - padding - fontSize * 0.6,
@@ -238,7 +234,6 @@ export const Rarrendatario = () => {
         font: await pdfDoc.embedFont("Helvetica"),
       });
 
-      // Título del recibo
       page.drawText("Recibo de Arrendatario", {
         x: width / 10,
         y: height - padding - fontSize * 6,
@@ -247,94 +242,94 @@ export const Rarrendatario = () => {
       });
       yOffset -= fontSize * 9;
 
-      // los campos y las respuestas en el orden especificado
-      for (const key of order) {
-        const element = data[key];
-        if (element) {
-          //el nombre del campo en negrita y centrado
-          page.drawText(`${key}:`, {
-            x: leftX,
-            y: yOffset,
-            size: fontSize,
-            color: rgb(0, 0, 0),
-            font: await pdfDoc.embedFont("Helvetica-Bold"),
-            align: "right",
-          });
+      let fechasPagadas = data.ListaFechasPagadas.split(';');
+      let pageCounter = 0;
 
-
-
-          //la respuesta debajo del nombre del campo
-
-          if (key == "ValorTotal"){
-
-            page.drawText(`$${element}`, {
-              x: leftX,
-              y: yOffset - fontSize * 1.5,
-              size: fontSize,
-              color: rgb(0, 0, 0),
-              align: "left",
-            });
-
-          } else if (key === "ListaFechasPagadas") {
-            const listaFechas = element.split(';');
-            listaFechas.forEach((fecha, index) => {
-                page.drawText(`• ${fecha}`, {
+            // los campos y las respuestas en el orden especificado
+            for (const key of order) {
+              const element = data[key];
+              if (element) {
+                //el nombre del campo en negrita y centrado
+                page.drawText(`${key}:`, {
+                  x: leftX,
+                  y: yOffset,
+                  size: fontSize,
+                  color: rgb(0, 0, 0),
+                  font: await pdfDoc.embedFont("Helvetica-Bold"),
+                  align: "right",
+                });
+      
+      
+      
+                //la respuesta debajo del nombre del campo
+      
+                if (key == "ValorTotal"){
+      
+                  page.drawText(`$${element}`, {
                     x: leftX,
-                    y: yOffset - fontSize * (1.5 + index * 1.5),
+                    y: yOffset - fontSize * 1.5,
                     size: fontSize,
                     color: rgb(0, 0, 0),
                     align: "left",
-                });
-            });
-        }
-          else {
-
-            page.drawText(`${element}`, {
-              x: leftX,
-              y: yOffset - fontSize * 1.5,
-              size: fontSize,
-              color: rgb(0, 0, 0),
-              align: "left",
-            });
-
-          }
-
-         
-
-          if (leftX === padding) {
-            leftX = rightX;
-          } else {
-            leftX = padding;
-            yOffset -= fontSize * 5;
-            if (yOffset < padding) {
-              page.drawText(`${key}:`, {
-                x: leftX,
-                y: yOffset,
-                size: fontSize,
-                color: rgb(0, 0, 0),
-
-                font: await pdfDoc.embedFont("Helvetica"),
-                align: "center",
-              });
+                  });
+      
+                } else if (key === "ListaFechasPagadas") {
+                  for (const fecha of fechasPagadas) {
+                    if (pageCounter >= 7) {
+                      page = pdfDoc.addPage();
+                      yOffset = height - padding - fontSize * 2;
+                      pageCounter = 0;
+                    }
+                    page.drawText(`• ${fecha}`, {
+                        x: leftX,
+                    y: yOffset - fontSize * (1.5 * 1.5),
+                      size: fontSize,
+                      color: rgb(0, 0, 0),
+                      align: "left",
+                    });
+                    yOffset -= fontSize * 1.5;
+                    pageCounter++;
+                  }
+                  // Calcular fechas faltantes y agregarlas a la última página
+                  const todasFechas = Array.from(pagosSeleccionados); // Supongamos que esto es una función que obtiene todas las fechas disponibles
+                  console.log();
+                  const octavoRegistroEnAdelante = todasFechas.slice(7); // Obtiene todos los elementos a partir del octavo registro
+                  const fechasFaltantes = octavoRegistroEnAdelante.filter(fecha => !fechasPagadas.includes(fecha));
+              }
+                else {
+      
+                  page.drawText(`${element}`, {
+                    x: leftX,
+                    y: yOffset - fontSize * 1.5,
+                    size: fontSize,
+                    color: rgb(0, 0, 0),
+                    align: "left",
+                  });
+      
+                }
+      
+               
+      
+                if (leftX === padding) {
+                  leftX = rightX;
+                } else {
+                  leftX = padding;
+                  yOffset -= fontSize * 5;
+                  if (yOffset < padding) {
+                    page.drawText(`${key}:`, {
+                      x: leftX,
+                      y: yOffset,
+                      size: fontSize,
+                      color: rgb(0, 0, 0),
+      
+                      font: await pdfDoc.embedFont("Helvetica"),
+                      align: "center",
+                    });
+                  }
+                }
+              }
             }
-          }
-        }
-      }
-      // línea encabezado
-      page.drawLine({
-        start: { x: padding, y: height - padding - fontSize * 0.9 - 20 },
-        end: { x: width - padding, y: height - padding - fontSize * 0.9 - 20 },
-        thickness: 1,
-        color: rgb(0.7, 0.7, 0.7),
-      });
 
-      //línea arriba de la hora actual
-      page.drawLine({
-        start: { x: padding, y: padding + fontSize * 0.5 + 20 },
-        end: { x: width - padding, y: padding + fontSize * 0.5 + 20 },
-        thickness: 1,
-        color: rgb(0.7, 0.7, 0.7),
-      });
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
@@ -346,7 +341,8 @@ export const Rarrendatario = () => {
     } catch (error) {
       console.log(error)
     }
-  };
+};
+
 
   function formatDate(fechaString) {
     return moment(fechaString).format("MMMM , D , YYYY");
@@ -448,7 +444,7 @@ export const Rarrendatario = () => {
             <Form.Group controlId="suma">
               <Form.Label>Valor del Pago:</Form.Label>
               <Form.Control
-              disable
+                disabled
                 className="InputsRegistros"
                 type="number"
                 value={ ValorTotal ? ValorTotal : selectedContrato ? selectedContrato.ValorPago :  "" }
