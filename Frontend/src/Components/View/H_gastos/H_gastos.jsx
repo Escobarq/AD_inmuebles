@@ -34,11 +34,13 @@ export const H_gastos = () => {
     setFiltroData({ ...filtroData, [name]: value });
   };
   const resetPropie = () => {
-    setSelectedPropietario("Seleccione Propietario");
+    setSelectedPropietario("");
     setFiltroData({ ...filtroData, "Propietario": "" });
     setMostrarModalA(false);
+    fetchDataPropietario("");
   };
   const handlePropietarioChange = async (Propietario) => {
+    console.log(Propietario);
     setSelectedPropietario(Propietario);
     setFiltroData({ ...filtroData, ["Propietario"]: Propietario.IdPropietario });
     fetchDataPropietario(Propietario);
@@ -494,11 +496,16 @@ formattedFilters = Object.keys(filtroData)
         aria-labelledby="example-modal-sizes-title-lg"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Seleccionar Propietario</Modal.Title>
-          <p onClick={resetPropie} >Reset</p>
-        </Modal.Header>
-        <Modal.Body>
+          <Modal.Title>Seleccionar Propietario</Modal.Title>             
+          </Modal.Header>
+        <Modal.Body>         
           <ListGroup>
+          <ListGroup.Item
+                action
+                onClick={resetPropie}
+              >
+                Reset filtro Propietario
+              </ListGroup.Item>
             {PropietariosDisponibles.map((Propietario, index) => (
               <ListGroup.Item
                 key={index}

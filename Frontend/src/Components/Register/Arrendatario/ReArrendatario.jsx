@@ -221,11 +221,12 @@ export const ReArrendatario = () => {
                   pattern: {
                     value: /^[0-9]{1,10}$/,
                     message:
-                      "El número de identidad debe ser un número entre 1000000000 y 9999999999",
+                    "El número de identidad debe ser un número entre 1000000000 y 9999999999",
                   },
                 })}
-                defaultValue={arrendatarioData ? arrendatarioData.DocumentoIdentidad : ""}
-
+                value={arrendatarioData ? arrendatarioData.DocumentoIdentidad : ""}
+                onChange={handleInputChange}
+                
                 onInput={(e) => {
                   e.target.value = e.target.value
                     .replace(/[^0-9]/g, "")
