@@ -39,9 +39,6 @@ import useRoleInfo from "./Components/Hooks/useRoleInfo";
 import Crearuser from "./Components/Register/EditarPerfil/Crearuser";
 import { Contraseña } from "./Components/CambiarContraseña/Contraseña";
 import { OperacionInmobi } from "./Components/View/Informes/OperacionInmobi";
-import { ManualUsuario } from "./Components/ToggleSwitche/ManualUsuario";
-
-
 
 function App() {
   const location = useLocation();
@@ -90,8 +87,7 @@ function App() {
             />
           )}
 
-          {
-            roleId !== 3 &&
+          {roleId !== 3 &&
             location.pathname !== "/" &&
             location.pathname !== "/login" && <Notifi />}
 
@@ -137,7 +133,6 @@ function App() {
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
           <Switch />
-          <ManualUsuario />
         </div>
       </>
     );

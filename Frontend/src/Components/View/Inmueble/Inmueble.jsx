@@ -351,6 +351,7 @@ export const Inmueble = () => {
       const {
         NoNiveles,
         ValorInmueble,
+        AreaConstruidaM2,
         NoBanos,
         ServiciosPublicos,
         NoHabitaciones,
@@ -361,6 +362,7 @@ export const Inmueble = () => {
 
       const detalles = [
         { label: "Numero Niveles", value: NoNiveles },
+        { label: "Area Construida en M2", value: AreaConstruidaM2 },
         { label: "Valor Inmueble", value: ValorInmueble },
         { label: "Numero Baños", value: NoBanos },
         { label: "Servicios Publicos", value: ServiciosPublicos },

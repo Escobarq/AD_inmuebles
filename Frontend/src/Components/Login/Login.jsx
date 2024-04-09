@@ -9,8 +9,6 @@ import { Configure } from "../Configure/Configure";
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-
-
   const a = () =>
     toast.success("Se inicio correctamente", {
       theme: "dark",

@@ -275,6 +275,7 @@ export const EditarDatosIn = () => {
               <Form.Label>Area Construida en M2</Form.Label>
               <Form.Control
                 type="number"
+                step="0.01" 
                 className="InputsRegistros"
                 placeholder="Area Construida"
                 name=" AreaConstruidaM2"

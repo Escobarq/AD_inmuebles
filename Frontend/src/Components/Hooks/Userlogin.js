@@ -1,3 +1,4 @@
+// Userlogin.js
 export const userLogin = async (data) => {
   try {
     const response = await fetch('http://localhost:3006/Login_user', {
@@ -11,7 +12,14 @@ export const userLogin = async (data) => {
     if (response.ok) {
       const responseData = await response.json();
       localStorage.setItem('items', data.correousuario); // Reinicia el formulario si la solicitud es exitosa
-      window.location.href = '/Inmueble'; 
+
+      // Verificar si el correo del usuario es del superusuario
+      if (data.correousuario === 'superusuario@outlook.com') {
+        window.location.href = '/AsignarRol'; // Redirigir a la página de AsignarRol si el correo es del superusuario
+      } else {
+        window.location.href = '/Inmueble'; // Redirigir a la página de Inmueble si no es del superusuario
+      }
+
       return responseData; // Devuelve los datos de respuesta si la solicitud es exitosa
     } else if (response.status === 401) {
       throw new Error('Contraseña incorrecta'); // Lanza un error si la contraseña es incorrecta

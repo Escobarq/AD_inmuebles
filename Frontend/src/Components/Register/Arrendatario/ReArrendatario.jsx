@@ -126,7 +126,6 @@ export const ReArrendatario = () => {
       ...prevState,
       [name]: value,
     }));
-    console.log(arrendatarioData);
   };
 
   const onSubmitRegistro = async (data) => {
@@ -180,7 +179,7 @@ export const ReArrendatario = () => {
                 required
                 className="InputsRegistros"
                 {...register("NombreCompleto")}
-                value={arrendatarioData ? arrendatarioData.NombreCompleto : ""}
+                defaultValue={arrendatarioData ? arrendatarioData.NombreCompleto : ""}
                 onChange={handleInputChange}
                 type="text"
                 onInput={(e) => {
@@ -200,7 +199,7 @@ export const ReArrendatario = () => {
                 className="InputsRegistros"
                 as="select"
                 {...register("TipoDocumento")}
-                value={arrendatarioData.TipoDocumento}
+                defaultValue={arrendatarioData.TipoDocumento}
               >
                 <option selected value={"Cedula Ciudadania"}>
                   Cédula de Ciudadanía
@@ -224,7 +223,7 @@ export const ReArrendatario = () => {
                     "El número de identidad debe ser un número entre 1000000000 y 9999999999",
                   },
                 })}
-                value={arrendatarioData ? arrendatarioData.DocumentoIdentidad : ""}
+                defaultValue={arrendatarioData ? arrendatarioData.DocumentoIdentidad : ""}
                 onChange={handleInputChange}
                 
                 onInput={(e) => {
@@ -253,7 +252,7 @@ export const ReArrendatario = () => {
                     "Por favor, introduce solo números",
                 },}
                 )}
-                value={arrendatarioData ? arrendatarioData.Telefono : ""}
+                defaultValue={arrendatarioData ? arrendatarioData.Telefono : ""}
                 onChange={handleInputChange}
                 onKeyDown={(e) => {
                   const regex = /^[0-9]*$/;
@@ -283,7 +282,7 @@ export const ReArrendatario = () => {
                   },
                 }
                 )}
-                value={arrendatarioData ? arrendatarioData.Correo : ""}
+                defaultValue={arrendatarioData ? arrendatarioData.Correo : ""}
                 onChange={handleInputChange}
                 onKeyDown={(e) => {
                   const regex = /[a-zA-Z0-9._-]/; // Permitir letras, números y caracteres especiales permitidos
@@ -304,7 +303,6 @@ export const ReArrendatario = () => {
                 value={selectedCodeudor ? selectedCodeudor.IdCodeudor : ""}
                 onChange={(e) => handleCodeudorChange(e.target.value)}
                 onClick={() => handleMostrarAClick(true)}
-                disabled={arrendatarioData.IdArrendatario ? true : false} // Bloquear si es una solicitud PUT
               >
                 <option value="">Seleccionar Numero de Codeudor</option>
                 {CodeudoresDisponibles.map((Codeudor, index) => (

@@ -9,6 +9,8 @@ import {
   ModalFooter,
 } from "react-bootstrap";
 import "./Switch.css";
+import { ManualUsuario } from "../ToggleSwitche/ManualUsuario";
+// ToggleSwitche/ManualUsuario
 
 export const Switch = () => {
   const [showModal, setShowModal] = useState(false);
@@ -19,16 +21,17 @@ export const Switch = () => {
 
   return (
     <>
+    <ManualUsuario/>
       <OverlayTrigger
         placement="top"
         overlay={<Tooltip id="tooltip-top">Ver mas</Tooltip>}
       >
         <label className="switch">
+        
           <input type="checkbox" onChange={handleSwitchChange} />
           <span className="slider"></span>
         </label>
       </OverlayTrigger>
-
       <Modal
       
         show={showModal}

@@ -16,10 +16,11 @@
     height: 0;
 }
 
-.iconManual{    
-    width:50px ;
-    height:25px ;
-    position: absolute;
+.iconManual{
+    font-size: .7em;
+    width:3.5em ;
+    height:2em ;
+    position: fixed;
     cursor: pointer;
     right: 4%;
     bottom: 0;
@@ -27,8 +28,6 @@
 .iconManual:hover{    
     color:rgb(136, 136, 57);
 }
-
-
 
 /* The slider */
 .slider {

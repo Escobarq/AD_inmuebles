@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare, faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import { Table, Button, Modal } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
-import { Link } from "react-router-dom";
 import useActualizarEstadoEmpleados from "../../Hooks/InhabilitarEmpleado";
 import { toast } from "react-toastify";
 
@@ -97,6 +96,7 @@ export const InhabilitarRol = () => {
     };
 
     const createRowRol = (roles) => {
+        const maskedPassword = '*'.repeat(Math.min(10,roles.Contrasena.length));  
         if (roles.idrol !== 4) {
 
             return (
@@ -105,7 +105,7 @@ export const InhabilitarRol = () => {
                     <td>{roles.Nombre}</td>
                     <td>{roles.Apellido}</td>
                     <td>{roles.Correo}</td>
-                    <td>{roles.Contrasena}</td>
+                    <td>{maskedPassword}</td>
                     <td>{roles.Telefono}</td>
                     <td>{convertirIdRolATexto(roles.Idrol)}</td>
                     <td>
