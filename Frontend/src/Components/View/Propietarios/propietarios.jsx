@@ -293,7 +293,7 @@ export const Propietarios = () => {
 
           <OverlayTrigger
             key="tooltip-add-propietario"
-            placement="top"
+            placement="bottom"
             overlay={
               showTooltip ? (
                 <Tooltip id="tooltip-prop">Agregar Propietario</Tooltip>
@@ -310,7 +310,7 @@ export const Propietarios = () => {
 
           <OverlayTrigger
             key="tooltip-ver-inhabilitados-propietarios"
-            placement="top"
+            placement="bottom"
             overlay={
               showTooltip ? (
                 <Tooltip id="tooltip-prop">

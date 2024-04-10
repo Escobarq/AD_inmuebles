@@ -6,6 +6,10 @@
 .error{
   display: block;
 }
+/*Tooltip*/
+#tooltip-prop{
+  position: fixed;
+}
 .Contener-todo {
   display: flex;
   width: 100%;
