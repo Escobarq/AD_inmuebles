@@ -675,7 +675,7 @@ export const Inmueble = () => {
           </div>
           <OverlayTrigger
             key="tooltip-add-inmueble"
-            placement="top"
+            placement="bottom"
             overlay={
               showTooltip ? (
                 <Tooltip id="tooltip-prop">Agregar Inmueble</Tooltip>

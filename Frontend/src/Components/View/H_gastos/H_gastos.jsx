@@ -1,9 +1,15 @@
-import { Table, Button, OverlayTrigger, Tooltip, Form, Modal, ListGroup } from "react-bootstrap";
+import {
+  Table,
+  Button,
+  OverlayTrigger,
+  Tooltip,
+  Form,
+  Modal,
+  ListGroup,
+} from "react-bootstrap";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useState, useEffect } from "react";
@@ -36,14 +42,17 @@ export const H_gastos = () => {
   };
   const resetPropie = () => {
     setSelectedPropietario("");
-    setFiltroData({ ...filtroData, "Propietario": "" });
+    setFiltroData({ ...filtroData, Propietario: "" });
     setMostrarModalA(false);
     fetchDataPropietario("");
   };
   const handlePropietarioChange = async (Propietario) => {
     console.log(Propietario);
     setSelectedPropietario(Propietario);
-    setFiltroData({ ...filtroData, ["Propietario"]: Propietario.IdPropietario });
+    setFiltroData({
+      ...filtroData,
+      ["Propietario"]: Propietario.IdPropietario,
+    });
     fetchDataPropietario(Propietario);
     setMostrarModalA(false);
   };
@@ -53,7 +62,16 @@ export const H_gastos = () => {
   const handleMostrarAClick = async () => {
     setMostrarModalA(true);
   };
+  // State y funciones para el modal de detalles
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
 
+  const handleCloseDetailsModal = () => setShowDetailsModal(false);
+  const handleShowDetailsModal = (rowData) => {
+    setSelectedRowData(rowData);
+    setShowDetailsModal(true);
+  };
+  // State y funciones para el modal de detalles
   useEffect(() => {
     fetchData();
     fetchDataPropietario();
@@ -62,7 +80,9 @@ export const H_gastos = () => {
   const fetchData = async () => {
     const queryParams = new URLSearchParams(filtroData);
     try {
-      const response = await fetch(`http://localhost:3006/VComisionPropie?${queryParams.toString()}`);
+      const response = await fetch(
+        `http://localhost:3006/VComisionPropie?${queryParams.toString()}`
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -101,12 +121,7 @@ export const H_gastos = () => {
         <th>Elaborado Por</th>
         <th>Pago Arriendo</th>
         <th>Administracion</th>
-        <th>Aseo</th>
-        <th>Mantenimiento</th>
-        <th>Cuota Extraordinaria</th>
-        <th>Pagos de Recibos</th>
         <th>Valor Total</th>
-        <th>Descripción</th>
       </tr>
     );
   };
@@ -129,7 +144,10 @@ export const H_gastos = () => {
 
   const createrow = (CPropietario) => {
     return (
-      <tr key={CPropietario.IdComisionPropietario}>
+      <tr
+        key={CPropietario.IdComisionPropietario}
+        onClick={() => handleShowDetailsModal(CPropietario)}
+      >
         <td>{CPropietario.IdComisionPropietario}</td>
         <td>{CPropietario.NombreCompleto}</td>
         <td>{formatDate(CPropietario.FechaElaboracion)}</td>
@@ -137,13 +155,41 @@ export const H_gastos = () => {
         <td>{CPropietario.ElaboradoPor}</td>
         <td>${CPropietario.PagoArriendo}</td>
         <td>${CPropietario.AdmInmobi}</td>
-        <td>${CPropietario.AseoEntrega}</td>
-        <td>${CPropietario.Mantenimiento}</td>
-        <td>${CPropietario.CuotaExtra}</td>
-        <td>${CPropietario.PagoRecibos}</td>
         <td>${CPropietario.ValorTotal}</td>
-        <td>{CPropietario.Descripcion}</td>
       </tr>
+    );
+  };
+  const renderDetailsModalContent = () => {
+    if (!selectedRowData) {
+      return (
+        <>
+          <h1>No hay Detalles</h1>
+        </>
+      );
+    }
+    return (
+      <>
+        <Modal.Header closeButton>
+          <Modal.Title>Detalles de la comisión</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            <strong>Descripción:</strong> {selectedRowData.Descripcion || "N/A"}
+          </p>
+          <p>
+            <strong>Aseo:</strong> ${selectedRowData.AseoEntrega}
+          </p>
+          <p>
+            <strong>Mantenimiento:</strong> ${selectedRowData.Mantenimiento}
+          </p>
+          <p>
+            <strong>Cuota Extraordinaria:</strong> ${selectedRowData.CuotaExtra}
+          </p>
+          <p>
+            <strong>Pagos de Recibos:</strong> ${selectedRowData.PagoRecibos}
+          </p>
+        </Modal.Body>
+      </>
     );
   };
   //Variables Paginacion
@@ -162,7 +208,7 @@ export const H_gastos = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = infoComision.slice(indexOfFirstItem, indexOfLastItem);
-  
+
   const [pagesToShow, setPagesToShow] = useState([]);
   const [pageCount, setPageCount] = useState(0); // Agregamos el estado de pageCount
 
@@ -198,7 +244,7 @@ export const H_gastos = () => {
     setPageCount(newPageCount); // Actualizamos el estado de pageCount
     renderPaginator(newPageCount); // Llamamos a la función renderPaginator con el nuevo pageCount
   }, [infoComision, itemsPerPage, currentPage]);
-     //Tooltip
+  //Tooltip
   const [showTooltip, setShowTooltip] = useState(window.innerWidth <= 1366);
 
   useEffect(() => {
@@ -210,27 +256,23 @@ export const H_gastos = () => {
     return () => window.removeEventListener("resize", updateTooltipVisibility);
   }, []);
 
+  // Objeto para descripciones de filtros
+  const filtroDescriptions = {
+    Propietario: " Propietario",
+    FormaPago: "Forma Pago",
+    FechaElaboracionMin: "Elaboracion Minima",
+    FechaElaboracionMax: "Elaboracion Maxima",
+  };
 
-
-// Objeto para descripciones de filtros
-const filtroDescriptions = {
-  Propietario: " Propietario",
-  FormaPago: "Forma Pago",
-  FechaElaboracionMin: "Elaboracion Minima",
-  FechaElaboracionMax: "Elaboracion Maxima",
-
-};
-
-// Formatear los filtros aplicados
-let formattedFilters = "";
-if (Object.values(filtroData).filter(value => value).length > 0) {
-formattedFilters = Object.keys(filtroData)
-  .filter(key => filtroData[key]) // Filtrar solo los valores que no están vacíos
-  .map(key => ` ${filtroDescriptions[key]}: ${filtroData[key]}`)
-  
-} else {
-  formattedFilters = " Ninguno";
-}
+  // Formatear los filtros aplicados
+  let formattedFilters = "";
+  if (Object.values(filtroData).filter((value) => value).length > 0) {
+    formattedFilters = Object.keys(filtroData)
+      .filter((key) => filtroData[key]) // Filtrar solo los valores que no están vacíos
+      .map((key) => ` ${filtroDescriptions[key]}: ${filtroData[key]}`);
+  } else {
+    formattedFilters = " Ninguno";
+  }
 
   //AQUI EMPIEZA GENERACION DE PDF
   const HistorialPDF = () => {
@@ -254,7 +296,7 @@ formattedFilters = Object.keys(filtroData)
     doc.text("Historial de comisiones propietario", 44, 20);
     doc.setFontSize(13);
     doc.setTextColor(128);
-    doc.text("Adminmuebles", 44, 26); 
+    doc.text("Adminmuebles", 44, 26);
     doc.setFontSize(7);
     doc.text(` Filtros aplicados:\n${formattedFilters}`, 44, 31);
 
@@ -275,8 +317,9 @@ formattedFilters = Object.keys(filtroData)
       "Diciembre",
     ];
 
-    const formattedDate = `${monthNames[date.getMonth()]
-      }/${date.getDate()}/${date.getFullYear()}`;
+    const formattedDate = `${
+      monthNames[date.getMonth()]
+    }/${date.getDate()}/${date.getFullYear()}`;
     doc.setTextColor(128); // Gris
     doc.setFontSize(10);
     doc.text(formattedDate, 190, 18, null, null, "right");
@@ -284,7 +327,7 @@ formattedFilters = Object.keys(filtroData)
     const columns = [
       { header: "No Comision", dataKey: "IdComisionPropietario" },
       { header: "Propietario", dataKey: "NombreCompleto" },
-      { header: "Fecha Elaboracion", dataKey: "FechaElaboracion"},
+      { header: "Fecha Elaboracion", dataKey: "FechaElaboracion" },
       { header: "Forma pago", dataKey: "FormaPago" },
       { header: "Elaborado Por", dataKey: "ElaboradoPor" },
       { header: "Pago Arriendo", dataKey: "PagoArriendo" },
@@ -295,7 +338,6 @@ formattedFilters = Object.keys(filtroData)
     ];
     // Datos de la tabla
     const data = infoComision.map((Historial) => ({
-
       IdComisionPropietario: Historial.IdComisionPropietario,
       NombreCompleto: Historial.NombreCompleto,
       FechaElaboracion: formatDate(Historial.FechaElaboracion),
@@ -305,8 +347,7 @@ formattedFilters = Object.keys(filtroData)
       AdmInmobi: `$${Historial.AdmInmobi}`,
       AseoEntrega: `$${Historial.AseoEntrega}`,
       Mantenimiento: `$${Historial.Mantenimiento}`,
-      ValorTotal: `$${Historial.ValorTotal},`
-
+      ValorTotal: `$${Historial.ValorTotal},`,
     }));
     const itemsPerPage = 21;
     let startY = 45;
@@ -345,17 +386,17 @@ formattedFilters = Object.keys(filtroData)
         "Noviembre",
         "Diciembre",
       ];
-      const formattedDate = `${monthNames[date.getMonth()]
-        }/${date.getDate()}/${date.getFullYear()}`;
+      const formattedDate = `${
+        monthNames[date.getMonth()]
+      }/${date.getDate()}/${date.getFullYear()}`;
       doc.setTextColor(128); // Gris
       doc.setFontSize(10);
       doc.text(formattedDate, 190, 18, null, null, "right");
 
-
       addHoraEmision();
       doc.addImage(logo, "PNG", 15, 15, 20, 15);
       doc.setFontSize(13);
-      
+
       doc.text("Adminmuebles", 44, 26);
     }
 
@@ -373,12 +414,11 @@ formattedFilters = Object.keys(filtroData)
       );
     }
     doc.save("Historial de comisiones propietario-PDF");
-
   };
   //AQUI TERMINA
   const redireccion = (ruta) => {
     window.location.href = ruta;
-  }
+  };
   return (
     <>
       <div className="contener-home">
@@ -387,14 +427,15 @@ formattedFilters = Object.keys(filtroData)
             <label className="l1">Propietario: </label>
             <Form.Select
               className="input-filtroRe"
-
               value={
                 selectedPropietario ? selectedPropietario.IdPropietario : "a?"
               }
               onChange={(e) => handlePropietarioChange(e.target.value)}
               onClick={() => handleMostrarAClick(true)}
             >
-              <option value="" selected >Seleccionar Numero de Propietario</option>
+              <option value="" selected>
+                Seleccionar Numero de Propietario
+              </option>
               {PropietariosDisponibles.map((Propietario, index) => (
                 <option key={index} value={Propietario.IdPropietario}>
                   {Propietario.NombreCompleto}
@@ -438,21 +479,28 @@ formattedFilters = Object.keys(filtroData)
 
           <OverlayTrigger
             key="tooltip-generar-recibo-gastos"
-            placement="top"
-            overlay={showTooltip ? <Tooltip id="tooltip-prop">Generar Recibo gastos</Tooltip> : <></>}
+            placement="bottom"
+            overlay={
+              showTooltip ? (
+                <Tooltip id="tooltip-prop">Generar Recibo gastos</Tooltip>
+              ) : (
+                <></>
+              )
+            }
           >
-            <Button variant="success" className="btn-add"onClick={() => redireccion("/Rcomision")}>
-
-                <FontAwesomeIcon className="icon" icon={faUserPlus} />
-                <p className="AgregarPA">Generar Recibo gastos</p>
-
+            <Button
+              variant="success"
+              className="btn-add"
+              onClick={() => redireccion("/Rcomision")}
+            >
+              <FontAwesomeIcon className="icon" icon={faUserPlus} />
+              <p className="AgregarPA">Generar Recibo gastos</p>
             </Button>
           </OverlayTrigger>
           <Button
             variant="success"
             className="bottom-button"
-          onClick={HistorialPDF}
-
+            onClick={HistorialPDF}
           >
             <FontAwesomeIcon icon={faFilePdf} />
             Generar PDF
@@ -464,19 +512,29 @@ formattedFilters = Object.keys(filtroData)
           </h1>
         </div>
         <div className="view_esp">
-        {NoResult == true ? (
+          {NoResult == true ? (
             <div>
               <img className="Noresult" src={NoResultImg} alt="" />
             </div>
           ) : (
-          <div className="table-container">
-            <Table striped bordered hover>
-              <thead> {createheader()} </thead>
-              <tbody>
-                {currentItems.map((CPropietarios) => createrow(CPropietarios))}
-              </tbody>
-            </Table>
-          </div>
+            <div className="table-container">
+              <Table striped bordered hover>
+                <thead> {createheader()} </thead>
+                <tbody>
+                  {currentItems.map((CPropietarios) =>
+                    createrow(CPropietarios)
+                  )}
+                </tbody>
+              </Table>
+              <Modal
+                size="lg"
+                show={showDetailsModal}
+                onHide={handleCloseDetailsModal}
+                aria-labelledby="example-modal-sizes-title-lg"
+              >
+                {renderDetailsModalContent()}
+              </Modal>
+            </div>
           )}
         </div>
         <div className="paginador">
@@ -486,7 +544,8 @@ formattedFilters = Object.keys(filtroData)
               disabled={currentPage === 1}
             />
             {pagesToShow.map((page) => (
-              <Pagination.Item className="item-paginador"
+              <Pagination.Item
+                className="item-paginador"
                 key={page}
                 active={page === currentPage}
                 onClick={() => setCurrentPage(page)}
@@ -508,16 +567,13 @@ formattedFilters = Object.keys(filtroData)
         aria-labelledby="example-modal-sizes-title-lg"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Seleccionar Propietario</Modal.Title>             
-          </Modal.Header>
-        <Modal.Body>         
+          <Modal.Title>Seleccionar Propietario</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <ListGroup>
-          <ListGroup.Item
-                action
-                onClick={resetPropie}
-              >
-                Reset filtro Propietario
-              </ListGroup.Item>
+            <ListGroup.Item action onClick={resetPropie}>
+              Reset filtro Propietario
+            </ListGroup.Item>
             {PropietariosDisponibles.map((Propietario, index) => (
               <ListGroup.Item
                 key={index}
@@ -525,7 +581,6 @@ formattedFilters = Object.keys(filtroData)
                 onClick={() => handlePropietarioChange(Propietario)}
               >
                 {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
-
                 {Propietario.NombreCompleto}
               </ListGroup.Item>
             ))}

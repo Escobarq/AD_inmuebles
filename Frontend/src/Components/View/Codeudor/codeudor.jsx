@@ -248,7 +248,7 @@ export const Codeudor = () => {
           </div>
           <OverlayTrigger
             key="tooltip-add-codeudor"
-            placement="top"
+            placement="bottom"
             overlay={
               showTooltip ? (
                 <Tooltip id="tooltip-prop">Agregar Codeudor</Tooltip>
@@ -269,7 +269,7 @@ export const Codeudor = () => {
 
           <OverlayTrigger
             key="tooltip-ver-inhabilitados-codeudores"
-            placement="top"
+            placement="bottom"
             overlay={
               showTooltip ? (
                 <Tooltip id="tooltip-prop">

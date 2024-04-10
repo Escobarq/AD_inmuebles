@@ -272,7 +272,7 @@ const redireccion = (ruta) => {
           </div>
           <OverlayTrigger
             key="tooltip-add-arrendatario"
-            placement="top"
+            placement="bottom"
             overlay={showTooltip ? <Tooltip id="tooltip-prop">Agregar Arrendatario</Tooltip> : <></>}
           >
             <Button variant="success" className="btn-add" onClick={() => redireccion("/ReArrendatario")}>
@@ -283,7 +283,7 @@ const redireccion = (ruta) => {
 
           <OverlayTrigger
             key="tooltip-ver-inhabilitados-arrendatario"
-            placement="top"
+            placement="bottom"
             overlay={showTooltip ? <Tooltip id="tooltip-prop">Ver Arrendatarios Inhabilitados</Tooltip> : <></>}
           >
             <Button variant="dark" className="btn-add-info" onClick={() => redireccion("/Inharrendatario")}>

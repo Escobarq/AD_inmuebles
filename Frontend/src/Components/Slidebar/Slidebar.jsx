@@ -22,8 +22,6 @@ import {
   OverlayTrigger,
   Tooltip,
   Dropdown,
-  DropdownMenu,
-  DropdownItem,
 } from "react-bootstrap";
 import { useEffect } from "react";
 import useRoleInfo from "../Hooks/useRoleInfo";
@@ -396,7 +394,7 @@ export const Slidebar = ({ darkMode, handleDarkModeToggle }) => {
     <>
       <div
         className=" sliderbard d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
-        style={{ width: "280px", marginRight: "3%", minHeight: "100vh" }}
+        style={{ width: "280px", marginRight: "1.5%", minHeight: "100vh" }}
       >
         <span className=" User fs-4">
           {nombre} {apellido}

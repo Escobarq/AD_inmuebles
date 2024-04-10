@@ -439,7 +439,7 @@ formattedFilters = Object.keys(filtroData)
           </div>
           <OverlayTrigger
             key="tooltip-add-arrendamiento"
-            placement="top"
+            placement="bottom"
             overlay={
               showTooltip ? (
                 <Tooltip id="tooltip-prop">Agregar Pago arrendamiento</Tooltip>
