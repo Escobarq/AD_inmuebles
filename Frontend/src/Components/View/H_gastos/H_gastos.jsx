@@ -580,8 +580,7 @@ export const H_gastos = () => {
                 action
                 onClick={() => handlePropietarioChange(Propietario)}
               >
-                {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
-                {Propietario.NombreCompleto}
+                {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad} {Propietario.NombreCompleto}
               </ListGroup.Item>
             ))}
           </ListGroup>

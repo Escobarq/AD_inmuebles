@@ -1,4 +1,4 @@
-import { Table, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Table, Button, OverlayTrigger, Tooltip, Form, Modal, ListGroup } from "react-bootstrap";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +6,8 @@ import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import Pagination from "react-bootstrap/Pagination";
 import moment from "moment";
 import "moment/locale/es";
+import { toast } from "react-toastify";
+import axios from "axios";
 import NoResultImg from "../../../assets/NoResult.gif";
 import "./H_recibos.css";
 import { useMediaQuery } from "@react-hook/media-query";
@@ -16,9 +18,13 @@ import autoTable from "jspdf-autotable";
 export const H_recibos = () => {
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const [infoPArrendamiento, setinfoPArrendamiento] = useState([]);
+  const [ArrendatariosDisponibles, setArrendatariosDisponibles] = useState([]);
+  const [mostrarModalA, setMostrarModalA] = useState(false);
+  const [selectedArrendatario, setSelectedArrendatario] = useState("");
 
   const [filtroData, setFiltroData] = useState({
     estado: "",
+    Arrendatario: "",
     FechaPagoIni: "",
     FechaPagoFin: "",
     FormaPago: "",
@@ -28,11 +34,32 @@ export const H_recibos = () => {
   //Mostrar informaicon
   useEffect(() => {
     fetchData();
+    fetchDataArrendatario();
   }, [filtroData]);
+
+  const resetPropie = () => {
+    setSelectedArrendatario("");
+    setFiltroData({ ...filtroData, "Arrendatario": "" });
+    setMostrarModalA(false);
+    fetchDataArrendatario("");
+  };
+  const handleArrendatarioChange = async (Arrendatario) => {
+    console.log(Arrendatario);
+    setSelectedArrendatario(Arrendatario);
+    setFiltroData({ ...filtroData, ["Arrendatario"]: Arrendatario.IdArrendatario });
+    fetchDataArrendatario(Arrendatario);
+    setMostrarModalA(false);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFiltroData({ ...filtroData, [name]: value });
+  };
+  const handleCloseModalA = () => {
+    setMostrarModalA(false);
+  };
+  const handleMostrarAClick = async () => {
+    setMostrarModalA(true);
   };
 
   const fetchData = async () => {
@@ -55,6 +82,18 @@ export const H_recibos = () => {
       }
     } catch (error) {
       console.error("Error fetching products:", error);
+    }
+  };
+  const fetchDataArrendatario = async () => {
+    try {
+      const response = await axios.get("http://localhost:3006/VArrendatario?");
+      const Arrendatarios = response.data.map((prop) => prop);
+      setArrendatariosDisponibles(Arrendatarios);
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
     }
   };
   const createheader = () => {
@@ -128,7 +167,7 @@ export const H_recibos = () => {
         <tr key={PArrendamiento.IdPagoArrendamiento}>
           <td>{PArrendamiento.IdPagoArrendamiento}</td>
           <td>{PArrendamiento.IdContrato}</td>
-          <td>{PArrendamiento.IdArrendatario}</td>
+          <td>{PArrendamiento.NombreArrendatario}</td>
           <td>Pendiente</td>
           <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
           <td>{PArrendamiento.FormaPago}</td>
@@ -142,7 +181,7 @@ export const H_recibos = () => {
         <tr key={PArrendamiento.IdPagoArrendamiento}>
           <td>{PArrendamiento.IdPagoArrendamiento}</td>
           <td>{PArrendamiento.IdContrato}</td>
-          <td>{PArrendamiento.IdArrendatario}</td>
+          <td>{PArrendamiento.NombreArrendatario}</td>
           <td>{formatDate(PArrendamiento.FechaPago)}</td>
           <td>{formatDate(PArrendamiento.FechaPagoFija)}</td>
           <td>{PArrendamiento.FormaPago}</td>
@@ -224,6 +263,7 @@ export const H_recibos = () => {
 
   // Objeto para descripciones de filtros
   const filtroDescriptions = {
+    Arrendatario: " Arrendatario",
     estado: "Estado",
     FormaPago: "Forma Pago",
     FechaPagoIni: "Pago Inicio",
@@ -389,6 +429,24 @@ formattedFilters = Object.keys(filtroData)
       <div className="contener-home">
         <div className="conten-filtro">
           <div className="conten-inputs">
+          <label className="l1">Arrendatario: </label>
+            <Form.Select
+              className="input-filtroRe"
+
+              value={
+                selectedArrendatario ? selectedArrendatario.IdArrendatario : "a?"
+              }
+              onChange={(e) => handleArrendatarioChange(e.target.value)}
+              onClick={() => handleMostrarAClick(true)}
+            >
+              <option value="" selected >Seleccionar Numero de Arrendatario</option>
+              {ArrendatariosDisponibles.map((Arrendatario, index) => (
+                <option key={index} value={Arrendatario.IdArrendatario}>
+                  {Arrendatario.NombreCompleto}
+                </option>
+              ))}
+            </Form.Select>
+
             <label className="l1">Estado: </label>
             <select
               className="input-filtroRe"
@@ -418,7 +476,7 @@ formattedFilters = Object.keys(filtroData)
               <option value="Transferencia">Transferencia</option>
               <option value="Efectivo">Efectivo</option>
             </select>
-            <label className="l1">Fecha Pago Minima: </label>
+            <label className="l1">Fecha Pago Inicial: </label>
             <input
               className="input-filtroRe"
               type="date"
@@ -427,7 +485,7 @@ formattedFilters = Object.keys(filtroData)
               name="FechaPagoIni"
               id=""
             />
-            <label className="l1">Fecha Pago Maxima: </label>
+            <label className="l1">Fecha Pago Final: </label>
             <input
               className="input-filtroRe"
               type="date"
@@ -507,6 +565,35 @@ formattedFilters = Object.keys(filtroData)
           </Pagination>
         </div>
       </div>
+      <Modal
+        size="lg"
+        show={mostrarModalA}
+        onHide={handleCloseModalA}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Arrendatario</Modal.Title>             
+          </Modal.Header>
+        <Modal.Body>         
+          <ListGroup>
+          <ListGroup.Item
+                action
+                onClick={resetPropie}
+              >
+                Reset filtro Arrendatario
+              </ListGroup.Item>
+            {ArrendatariosDisponibles.map((Arrendatario, index) => (
+              <ListGroup.Item
+                key={index}
+                action
+                onClick={() => handleArrendatarioChange(Arrendatario)}
+              >
+                {Arrendatario.TipoDocumento} :{Arrendatario.DocumentoIdentidad} {Arrendatario.NombreCompleto}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

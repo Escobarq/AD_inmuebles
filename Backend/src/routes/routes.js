@@ -103,8 +103,8 @@ router.get("/Vpropietarios", (req, res) => {
       queryParams.push(FechaIngresoMAX);
     }
     if (Cedula) {
-      query += " AND DocumentoIdentidad = ?";
-      queryParams.push(Cedula);
+      query += " AND DocumentoIdentidad like ?";
+      queryParams.push(`${Cedula}%`);
     }
 
     if (FechaIngresoMIN) {
@@ -144,8 +144,8 @@ JOIN codeudor ON arrendatario.IdCodeudor = codeudor.IdCodeudor `; // Inicializa 
     const queryParams = []; // Almacena los valores de los parámetros
 
     if (Cedula) {
-      query += " AND arrendatario.DocumentoIdentidad = ?";
-      queryParams.push(Cedula);
+      query += " AND arrendatario.DocumentoIdentidad LIKE ?";
+      queryParams.push(`${Cedula}%`);
     }
 
     if (Estado) {
@@ -362,8 +362,8 @@ router.get("/Vcodeudor", (req, res) => {
     const queryParams = []; // Almacena los valores de los parámetros
 
     if (Cedula) {
-      query += " AND DocumentoIdentidad = ?";
-      queryParams.push(Cedula);
+      query += " AND DocumentoIdentidad LIKE ?";
+      queryParams.push(`${Cedula}%`);
     }
 
     query += "ORDER BY IdCodeudor ASC";
@@ -387,29 +387,37 @@ router.get("/Vcodeudor", (req, res) => {
 
 router.get("/VPagoArren", (req, res) => {
   const connection = getConnection(); 
-  const { FechaPagoIni, IdContrato, FechaPagoFin, FormaPago, estado } = req.query;
+  const { FechaPagoIni, IdContrato, FechaPagoFin, FormaPago, estado, Arrendatario } = req.query;
 
   try {
-    let query = "SELECT * FROM pagos_arrendamiento WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
+    let query = "SELECT  p.*,  i.NombreCompleto AS NombreArrendatario FROM  pagos_arrendamiento p LEFT JOIN arrendatario i ON p.IdArrendatario = i.IdArrendatario WHERE 1 = 1 "; // Inicializa la consulta con una condición verdadera
 
     const queryParams = []; // Almacena los valores de los parámetros
 
     if (FechaPagoIni) {
-      query += " AND FechaPago >= ?";
+      query += " AND p.FechaPago >= ?";
       queryParams.push(FechaPagoIni);
     }
+    if (FechaPagoFin) {
+      query += " AND p.FechaPago <= ?";
+      queryParams.push(FechaPagoFin);
+    }
     if (IdContrato) {
-      query += " AND IdContrato = ?";
+      query += " AND p.IdContrato = ?";
       queryParams.push(IdContrato);
     }
 
     if (estado) {
-      query += " AND Estado = ?";
+      query += " AND p.Estado = ?";
       queryParams.push(estado);
     }
     if (FormaPago) {
-      query += " AND FormaPago = ?";
+      query += " AND p.FormaPago = ?";
       queryParams.push(FormaPago);
+    }
+    if (Arrendatario) {
+      query += " AND p.IdArrendatario = ?";
+      queryParams.push(Arrendatario);
     }
 
     query += "ORDER BY IdPagoArrendamiento ASC";
@@ -428,7 +436,7 @@ router.get("/VPagoArren", (req, res) => {
       }
     );
   } catch (error) {
-    res(error);
+    console.log(error);
   }
 });
 
@@ -476,7 +484,7 @@ router.get("/VComisionPropie", (req, res) => {
       }
     );
   } catch (error) {
-    res(error);
+    console.log(error);
   }
 
 });
@@ -513,7 +521,7 @@ router.get("/contratoFiltro", (req, res) => {
   }
 
   if (NContrato) {
-    filtroConditions.push(`contratoarrendamiento.IdContrato = '${NContrato}'`);
+    filtroConditions.push(`contratoarrendamiento.IdContrato like '${NContrato}%'`);
   }
 
   if (Estado) {
@@ -586,7 +594,7 @@ router.get("/Infouser", (req, res) => {
 //Ruta para Traer Empleados
 router.get("/Vroles", (req, res) => {
   const connection = getConnection(); 
-  const { VRol, } = req.query;
+  const { VRol, Empleado,} = req.query;
 
   
   try {
@@ -594,6 +602,10 @@ router.get("/Vroles", (req, res) => {
 
     const queryParams = []; // Almacena los valores de los parámetros
 
+    if (Empleado) {
+      query += " AND IdTrabajador = ?";
+      queryParams.push(Empleado);
+    }
     if (VRol) {
       query += " AND Idrol = ?";
       queryParams.push(VRol);

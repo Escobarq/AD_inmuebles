@@ -270,7 +270,7 @@ export const Propietarios = () => {
               max={9999999999}
               id=""
             />
-            <label className="l1">Fecha Ingreso Minimo: </label>
+            <label className="l1">Fecha Ingreso Inicial: </label>
             <input
               className="input-filtroRe"
               value={filtroData.FechaIngresoMIN}
@@ -280,7 +280,7 @@ export const Propietarios = () => {
               id=""
             />
 
-            <label className="l1">Fecha Ingreso Maxima: </label>
+            <label className="l1">Fecha Ingreso Final: </label>
             <input
               className="input-filtroRe"
               value={filtroData.FechaIngresoMAX}
