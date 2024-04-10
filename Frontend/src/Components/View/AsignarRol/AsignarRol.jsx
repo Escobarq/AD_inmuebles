@@ -1,21 +1,26 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare, faUserSlash ,faUserPlus} from "@fortawesome/free-solid-svg-icons";
-import { Table, Button, Modal } from "react-bootstrap";
+import { Table, Button, Modal, Form, ListGroup } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import useActualizarEstadoEmpleados from "../../Hooks/InhabilitarEmpleado";
 import { toast } from "react-toastify";
 import { useMediaQuery } from "@react-hook/media-query";
+import axios from "axios";
 
 
 export const AsignarRol = () => {
+  const [EmpleadosDisponibles, setEmpleadosDisponibles] = useState([]);
+  const [mostrarModalA, setMostrarModalA] = useState(false);
+  const [selectedEmpleado, setSelectedEmpleado] = useState("");
   const [infoRol, setInfoRol] = useState([]);
   const isSmallScreen = useMediaQuery("(max-width: 1366px)");
   const { actualizarEstadoempleados } = useActualizarEstadoEmpleados();
-  const [Empleados, setHarrenndamiento] = useState(null);
+  const [EmpleadosIn, setHarrenndamiento] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [filtroData, setFiltroData] = useState({
     VRol: "",
+    Empleado: "",
   });
 
   const handleChange = (event) => {
@@ -61,7 +66,22 @@ export const AsignarRol = () => {
   //Mostrar datos
   useEffect(() => {    
     fetchData();
+    fetchDataEmpleado();
   }, [filtroData]);
+
+  const resetPropie = () => {
+    setSelectedEmpleado("");
+    setFiltroData({ ...filtroData, "Empleado": "" });
+    setMostrarModalA(false);
+    fetchDataEmpleado("");
+  };
+  const handleEmpleadoChange = async (Empleado) => {
+    console.log(Empleado);
+    setSelectedEmpleado(Empleado);
+    setFiltroData({ ...filtroData, ["Empleado"]: Empleado.IdTrabajador });
+    fetchDataEmpleado(Empleado);
+    setMostrarModalA(false);
+  };
   const fetchData = async () => {
     try {
       const queryParams = new URLSearchParams(filtroData);
@@ -77,6 +97,27 @@ export const AsignarRol = () => {
 
     } catch (error) {
       console.error("Error fetching products:", error);
+    }
+  };
+  const handleCloseModalA = () => {
+    setMostrarModalA(false);
+  };
+  const handleMostrarAClick = async () => {
+    setMostrarModalA(true);
+  };
+
+  const fetchDataEmpleado = async () => {
+    try {
+      const response = await axios.get("http://localhost:3006/Vroles?");
+      const Empleados = response.data.filter(
+        (Empleados) => Empleados.Idrol != 3
+      )
+      setEmpleadosDisponibles(Empleados);
+    } catch (error) {
+      console.error("Error al cargar las matrículas:", error);
+      toast.error(
+        "Error al cargar las matrículas. Inténtalo de nuevo más tarde."
+      );
     }
   };
   const createHeaderRol = () => {
@@ -223,6 +264,24 @@ export const AsignarRol = () => {
         <h1 className="tittle_propetario">Empleados</h1>
         <div className="conten-filtro">        
         <div className="conten-inputs">
+        <label className="l1">Empleado: </label>
+            <Form.Select
+              className="input-filtroRe"
+
+              value={
+                selectedEmpleado ? selectedEmpleado.IdTrabajador : "a?"
+              }
+              onChange={(e) => handleEmpleadoChange(e.target.value)}
+              onClick={() => handleMostrarAClick(true)}
+            >
+              <option value="" selected >Seleccionar Numero de Empleado</option>
+              {EmpleadosDisponibles.map((Empleado, index) => (
+                <option key={index} value={Empleado.IdTrabajador}>
+                  {Empleado.Nombre} {Empleado.Apellido}
+                </option>
+              ))}
+            </Form.Select>
+
           <label className="l1">Rol</label>
           <select value={filtroData.VRol}
               onChange={handleChange} className="input-filtroRe"name="VRol" id="rol">
@@ -287,12 +346,41 @@ export const AsignarRol = () => {
           </Button>
           <Button
             variant="danger"
-            onClick={() => handleInhabilitarEmpleados(Empleados)}
+            onClick={() => handleInhabilitarEmpleados(EmpleadosIn)}
           >
             Confirmar
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+      <Modal
+        size="lg"
+        show={mostrarModalA}
+        onHide={handleCloseModalA}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Seleccionar Empleado</Modal.Title>             
+          </Modal.Header>
+        <Modal.Body>         
+          <ListGroup>
+          <ListGroup.Item
+                action
+                onClick={resetPropie}
+              >
+                Reset filtro Empleado
+              </ListGroup.Item>
+            {EmpleadosDisponibles.map((Empleado, index) => (
+              <ListGroup.Item
+                key={index}
+                action
+                onClick={() => handleEmpleadoChange(Empleado)}
+              >
+              {convertirIdRolATexto(Empleado.Idrol)}: {Empleado.Nombre} {Empleado.Apellido}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
+    </div>    
   );
 };

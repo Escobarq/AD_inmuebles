@@ -150,6 +150,7 @@ export const Contrato = () => {
   };
 
   const handleMatriculaChange = async (matricula) => {
+    
     setSelectedMatricula(matricula);
     try {
       const response = await axios.get(
@@ -168,6 +169,7 @@ export const Contrato = () => {
 
         // Establecer el valor del depósito en el campo del formulario utilizando setValue
         setValue("ValorDeposito", mitadValorInmueble);
+        setShowMatriculaModal(false)
       } else {
         setSelectedTipoInmueble("");
         setSelectedIdInmueble(null);
@@ -176,6 +178,7 @@ export const Contrato = () => {
       console.error("Error al obtener el tipo de inmueble:", error);
       toast.error("Error al obtener el tipo de inmueble. Inténtalo de nuevo.");
     }
+
   };
 
   const handleSelectArrendatario = (arrendatario) => {

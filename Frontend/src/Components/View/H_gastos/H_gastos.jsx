@@ -524,9 +524,7 @@ formattedFilters = Object.keys(filtroData)
                 action
                 onClick={() => handlePropietarioChange(Propietario)}
               >
-                {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad}
-
-                {Propietario.NombreCompleto}
+                {Propietario.TipoDocumento} :{Propietario.DocumentoIdentidad} {Propietario.NombreCompleto}
               </ListGroup.Item>
             ))}
           </ListGroup>
