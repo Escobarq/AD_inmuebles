@@ -14,6 +14,7 @@ function configureDatabase({ host, user, password, database }) {
     user,
     password,
     database,
+    connectTimeout: 10000,
   });
 
   connection.connect((error) => {
@@ -40,7 +41,10 @@ function getConnection() {
   }
 
   if (!connection) {
-    connection = mysql.createConnection(databaseConfig);
+    connection = mysql.createConnection({
+      ...databaseConfig,
+      connectTimeout: 10000,
+    });
 
     connection.connect((error) => {
       if (error) {

@@ -4,5 +4,8 @@
         "Apellido",
         "Asistente",
         "Tiporol"
+    ],
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
     ]
 }
